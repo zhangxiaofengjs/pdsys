@@ -18,8 +18,8 @@ import java.lang.reflect.Method;
 
 /**
  * 多数据源，切面处理类
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017/9/16 22:20
  */
 @Aspect

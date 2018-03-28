@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * 角色
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年9月18日 上午9:27:38
  */
 public class SysRoleEntity implements Serializable {

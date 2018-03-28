@@ -17,8 +17,8 @@ import java.util.Set;
 /**
  * oauth认证
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-05-20 14:00
  */
 @Component

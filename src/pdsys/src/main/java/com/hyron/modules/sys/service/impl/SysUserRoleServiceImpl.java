@@ -13,8 +13,8 @@ import com.hyron.modules.sys.service.SysUserRoleService;
 /**
  * 用户与角色对应关系
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年9月18日 上午9:45:48
  */
 @Service("sysUserRoleService")

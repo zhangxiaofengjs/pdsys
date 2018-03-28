@@ -12,8 +12,8 @@ import java.util.Date;
 
 /**
  * jwt工具类
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017/9/21 22:21
  */
 @ConfigurationProperties(prefix = "api.jwt")

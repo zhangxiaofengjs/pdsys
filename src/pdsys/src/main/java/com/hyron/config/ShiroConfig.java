@@ -23,8 +23,8 @@ import com.hyron.modules.sys.oauth.OAuthRealm;
 /**
  * Shiro配置
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-04-20 18:33
  */
 @Configuration

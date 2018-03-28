@@ -8,8 +8,8 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * 代码生成器
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年12月19日 下午3:32:04
  */
 @Mapper

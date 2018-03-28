@@ -23,8 +23,8 @@ import java.util.Set;
 /**
  * 系统菜单
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年10月27日 下午9:58:15
  */
 @RestController

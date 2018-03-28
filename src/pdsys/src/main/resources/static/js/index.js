@@ -96,16 +96,6 @@ var vm = new Vue({
                     location.href = baseURL + 'login.html';
                 }
             });
-        },
-        donate: function () {
-            layer.open({
-                type: 2,
-                title: false,
-                area: ['806px', '667px'],
-                closeBtn: 1,
-                shadeClose: false,
-                content: ['https://www.allen-software.cn:443/upload/2018/01/10/170318_01.jpg', 'no']
-            });
         }
 	},
 	created: function(){

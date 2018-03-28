@@ -18,8 +18,8 @@ import java.io.IOException;
 /**
  * oauth过滤器
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-05-20 13:00
  */
 public class OAuthFilter extends AuthenticatingFilter {

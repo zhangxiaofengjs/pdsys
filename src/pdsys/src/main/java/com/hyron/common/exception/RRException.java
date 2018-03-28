@@ -3,8 +3,8 @@ package com.hyron.common.exception;
 /**
  * 自定义异常
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2018-01-22
  */
 public class RRException extends RuntimeException {

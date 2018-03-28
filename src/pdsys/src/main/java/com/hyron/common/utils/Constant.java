@@ -3,8 +3,8 @@ package com.hyron.common.utils;
 /**
  * 常量
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2018-01-22
  */
 public class Constant {
@@ -15,7 +15,7 @@ public class Constant {
 	/**
 	 * 菜单类型
 	 * 
-	 * @author Allen
+	 * @author ZHAI
 	 */
 	public enum MenuType {
 		/**
@@ -45,7 +45,7 @@ public class Constant {
 	/**
 	 * 定时任务状态
 	 * 
-	 * @author Allen
+	 * @author ZHAI
 	 */
 	public enum ScheduleStatus {
 		/**

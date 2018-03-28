@@ -12,8 +12,8 @@ import com.hyron.common.utils.R;
 /**
  * 异常处理器
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2018-01-22
  */
 @RestControllerAdvice

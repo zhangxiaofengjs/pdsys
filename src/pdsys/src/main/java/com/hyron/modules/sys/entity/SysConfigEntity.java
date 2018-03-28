@@ -5,8 +5,8 @@ import org.hibernate.validator.constraints.NotBlank;
 /**
  * 系统配置信息
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年12月4日 下午6:43:36
  */
 public class SysConfigEntity {

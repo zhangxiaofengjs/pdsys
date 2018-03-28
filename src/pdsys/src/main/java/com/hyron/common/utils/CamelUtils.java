@@ -3,8 +3,8 @@ package com.hyron.common.utils;
 /**
  * 驼峰处理
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2018-01-22
  */
 public class CamelUtils {

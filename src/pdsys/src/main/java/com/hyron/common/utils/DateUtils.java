@@ -6,8 +6,8 @@ import java.util.Date;
 /**
  * 日期处理
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2018-01-22
  */
 public class DateUtils {

@@ -10,8 +10,8 @@ import java.util.Map;
 /**
  * 查询参数
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2018-01-22
  */
 public class Query extends LinkedHashMap<String, Object> {

@@ -8,8 +8,8 @@ import com.hyron.modules.sys.dao.BaseDao;
 /**
  * 用户
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-03-23 15:22:06
  */
 @Mapper

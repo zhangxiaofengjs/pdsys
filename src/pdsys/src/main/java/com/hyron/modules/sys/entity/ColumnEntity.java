@@ -3,8 +3,8 @@ package com.hyron.modules.sys.entity;
 /**
  * 列的属性
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年12月20日 上午12:01:45
  */
 public class ColumnEntity {

@@ -6,8 +6,8 @@ import com.hyron.common.exception.RRException;
 
 /**
  * 数据校验
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-03-23 15:50
  */
 public abstract class Assert {

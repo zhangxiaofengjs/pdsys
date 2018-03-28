@@ -8,8 +8,8 @@ import com.hyron.modules.sys.entity.SysMenuEntity;
 /**
  * 菜单管理
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年9月18日 上午9:42:16
  */
 public interface SysMenuService {

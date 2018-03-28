@@ -9,10 +9,7 @@ import com.hyron.modules.sys.entity.SysUserEntity;
 
 /**
  * Shiro工具类
- * 
- * @author Allen
- * @webSite https://www.allen-software.cn
- * @date 2016年11月12日 上午9:49:19
+ * @author ZHAI
  */
 public class ShiroUtils {
 

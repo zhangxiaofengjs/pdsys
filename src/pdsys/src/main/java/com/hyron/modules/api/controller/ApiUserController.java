@@ -21,8 +21,8 @@ import com.hyron.modules.api.service.UserService;
 /**
  * 用户接口
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-03-23 15:47
  */
 @RestController

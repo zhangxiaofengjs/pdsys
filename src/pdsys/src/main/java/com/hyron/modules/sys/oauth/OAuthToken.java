@@ -5,8 +5,8 @@ import org.apache.shiro.authc.AuthenticationToken;
 /**
  * token
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-05-20 13:22
  */
 public class OAuthToken implements AuthenticationToken {

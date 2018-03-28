@@ -6,8 +6,8 @@ import java.util.List;
 /**
  * 分页工具类
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2018-01-22
  */
 public class PageUtils implements Serializable {

@@ -1,7 +1,7 @@
 /**
  * 初始化 Tree Table 的封装
  *
- * @author Allen
+ * @author ZHAI
  */
 (function () {
     var TreeTable = function (tableId, url, columns) {

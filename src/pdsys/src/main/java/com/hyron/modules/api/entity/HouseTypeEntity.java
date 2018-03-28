@@ -7,8 +7,8 @@ import org.hibernate.validator.constraints.NotBlank;
 /**
  * 房屋类型
  * 
- * @author allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2018-02-07 13:16:54
  */
 public class HouseTypeEntity implements Serializable {

@@ -24,8 +24,8 @@ import java.util.Date;
 /**
  * 系统日志，切面处理类
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2018-01-22
  */
 @Aspect

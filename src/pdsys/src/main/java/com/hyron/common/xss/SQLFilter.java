@@ -8,8 +8,8 @@ import com.hyron.common.utils.CamelUtils;
 /**
  * SQL过滤
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-04-01 16:16
  */
 public class SQLFilter {

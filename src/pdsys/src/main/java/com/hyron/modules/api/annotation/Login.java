@@ -5,8 +5,8 @@ import java.lang.annotation.*;
 /**
  * app登录效验
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017/9/23 14:30
  */
 @Target(ElementType.METHOD)

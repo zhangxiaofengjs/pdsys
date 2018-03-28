@@ -16,8 +16,8 @@ import com.hyron.modules.api.service.UserService;
 
 /**
  * 有@LoginUser注解的方法参数，注入当前登录用户
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-03-23 22:02
  */
 @Component

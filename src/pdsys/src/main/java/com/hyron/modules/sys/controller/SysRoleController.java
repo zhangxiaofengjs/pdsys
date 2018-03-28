@@ -21,8 +21,8 @@ import java.util.Map;
 /**
  * 角色管理
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年11月8日 下午2:18:33
  */
 @RestController

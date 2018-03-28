@@ -8,8 +8,8 @@ import java.lang.annotation.Target;
 /**
  * 登录用户信息
  *
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-03-23 20:39
  */
 @Target(ElementType.PARAMETER)

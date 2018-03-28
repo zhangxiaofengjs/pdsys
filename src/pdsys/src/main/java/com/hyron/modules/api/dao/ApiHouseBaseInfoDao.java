@@ -11,8 +11,8 @@ import com.hyron.modules.sys.dao.BaseDao;
 /**
  * 房屋基础信息
  * 
- * @author allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2018-02-05 16:06:10
  */
 @Mapper

@@ -10,9 +10,8 @@ import java.util.Map;
 /**
  * 系统用户
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
- * @date 2016年9月18日 上午9:34:11
+ * @author ZHAI
+ * @date 2018年3月28日 上午9:34:11
  */
 @Mapper
 public interface SysUserDao extends BaseDao<SysUserEntity> {

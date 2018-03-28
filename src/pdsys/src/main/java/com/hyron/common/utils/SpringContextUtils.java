@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 /**
  * Spring Context 工具类
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年11月29日 下午11:45:51
  */
 @Component

@@ -24,9 +24,8 @@ import java.util.Map;
 /**
  * 系统用户
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
- * @date 2016年9月18日 上午9:46:09
+ * @author ZHAI
+ * @date 2018年9月18日 上午9:46:09
  */
 @Service("sysUserService")
 public class SysUserServiceImpl implements SysUserService {

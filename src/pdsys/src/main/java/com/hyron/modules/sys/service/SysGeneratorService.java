@@ -15,8 +15,8 @@ import java.util.zip.ZipOutputStream;
 /**
  * 代码生成器
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年12月19日 下午3:33:38
  */
 @Service

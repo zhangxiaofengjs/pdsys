@@ -14,8 +14,8 @@ import com.hyron.modules.sys.service.SysRoleMenuService;
 /**
  * 角色与菜单对应关系
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年9月18日 上午9:44:35
  */
 @Service("sysRoleMenuService")

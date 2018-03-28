@@ -8,8 +8,8 @@ import com.hyron.common.exception.RRException;
 /**
  * 生成token
  *
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-05-20 14:41
  */
 public class TokenGenerator {

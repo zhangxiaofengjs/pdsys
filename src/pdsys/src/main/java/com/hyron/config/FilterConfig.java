@@ -15,8 +15,8 @@ import javax.servlet.DispatcherType;
 /**
  * Filter配置
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-04-21 21:56
  */
 @Configuration

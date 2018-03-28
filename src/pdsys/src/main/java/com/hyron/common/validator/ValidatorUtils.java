@@ -14,8 +14,8 @@ import java.util.Set;
  * 参考文档：http://docs.jboss.org/hibernate/validator/5.4/reference/en-US/
  * html_single/
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-03-15 10:50
  */
 public class ValidatorUtils {

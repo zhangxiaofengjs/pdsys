@@ -7,8 +7,8 @@ import com.hyron.modules.sys.entity.SysUserTokenEntity;
 /**
  * 系统用户Token
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-03-23 15:22:07
  */
 @Mapper

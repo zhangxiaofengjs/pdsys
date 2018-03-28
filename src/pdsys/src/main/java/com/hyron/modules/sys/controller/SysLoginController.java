@@ -29,8 +29,8 @@ import com.hyron.modules.sys.service.SysUserTokenService;
 /**
  * 登录相关
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年11月10日 下午1:15:31
  */
 @RestController

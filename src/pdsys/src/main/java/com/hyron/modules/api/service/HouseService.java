@@ -9,8 +9,8 @@ import com.hyron.modules.api.entity.HouseTypeEntity;
 /**
  * 房屋信息
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2018-02-05 15:47
  */
 public interface HouseService {

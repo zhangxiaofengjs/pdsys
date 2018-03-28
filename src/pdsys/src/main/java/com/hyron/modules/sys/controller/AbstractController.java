@@ -9,8 +9,8 @@ import com.hyron.modules.sys.entity.SysUserEntity;
 /**
  * Controller公共组件
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年11月9日 下午9:42:26
  */
 public abstract class AbstractController {

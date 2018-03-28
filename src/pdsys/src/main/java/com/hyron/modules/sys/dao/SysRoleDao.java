@@ -9,8 +9,8 @@ import java.util.List;
 /**
  * 角色管理
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年9月18日 上午9:33:33
  */
 @Mapper

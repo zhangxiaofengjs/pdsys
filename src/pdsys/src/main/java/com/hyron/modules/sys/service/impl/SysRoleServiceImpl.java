@@ -20,8 +20,8 @@ import com.hyron.modules.sys.service.SysUserService;
 /**
  * 角色
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年9月18日 上午9:45:12
  */
 @Service("sysRoleService")

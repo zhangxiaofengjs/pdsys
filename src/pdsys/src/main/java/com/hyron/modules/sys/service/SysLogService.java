@@ -8,8 +8,8 @@ import com.hyron.modules.sys.entity.SysLogEntity;
 /**
  * 系统日志
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-03-08 10:40:56
  */
 public interface SysLogService {

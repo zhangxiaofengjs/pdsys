@@ -18,8 +18,8 @@ import java.util.Map;
 /**
  * 系统参数信息
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2016年12月4日 下午6:55:53
  */
 @RestController

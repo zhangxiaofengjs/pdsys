@@ -11,8 +11,8 @@ import java.util.Properties;
 /**
  * 生成验证码配置
  *
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-04-20 19:22
  */
 @Configuration

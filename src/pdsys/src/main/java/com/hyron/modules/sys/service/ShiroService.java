@@ -7,8 +7,8 @@ import com.hyron.modules.sys.entity.SysUserTokenEntity;
 
 /**
  * shiro相关接口
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-06-06 8:49
  */
 public interface ShiroService {

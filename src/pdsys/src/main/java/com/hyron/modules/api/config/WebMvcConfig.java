@@ -14,8 +14,8 @@ import java.util.List;
 /**
  * MVC配置
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-04-20 22:30
  */
 @Configuration

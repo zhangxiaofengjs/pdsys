@@ -13,8 +13,8 @@ import com.hyron.modules.api.service.UserService;
 
 /**
  * 注册
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2017-03-26 17:27
  */
 @RestController

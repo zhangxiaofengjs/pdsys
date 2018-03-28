@@ -24,8 +24,8 @@ import com.hyron.modules.api.service.HouseService;
 /**
  * 房屋信息接口
  * 
- * @author Allen
- * @webSite https://www.allen-software.cn
+ * @author ZHAI
+ * 
  * @date 2018-02-05 15:47
  */
 @RestController
