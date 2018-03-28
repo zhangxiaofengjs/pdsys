@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hyron.modules.api.dao.ApiHouseBaseInfoDao">
+
+    <resultMap type="com.hyron.modules.api.entity.HouseBaseInfoEntity" id="houseBaseInfoMap">
+        <result property="houseId" column="house_id"/>
+        <result property="houseTitle" column="house_title"/>
+        <result property="type" column="type"/>
+        <result property="location" column="location"/>
+        <result property="areaConstruction" column="area_construction"/>
+        <result property="areaUsing" column="area_using"/>
+        <result property="areaUnit" column="area_unit"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.hyron.modules.api.entity.HouseBaseInfoEntity">
+		select * from tb_house_base_info where house_id = #{value}
+	</select>
+
+	<select id="queryAllTypeList" resultType="com.hyron.modules.api.entity.HouseTypeEntity">
+		select house_type_id, house_type_name, house_type_name_cn  from data_house_type 
+        order by house_type_id asc
+	</select>
+
+	<select id="queryList" resultType="com.hyron.modules.api.entity.HouseBaseInfoEntity">
+		select * from tb_house_base_info
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by house_id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from tb_house_base_info 
+	</select>
+	 
+	<insert id="save" parameterType="com.hyron.modules.api.entity.HouseBaseInfoEntity" useGeneratedKeys="true" keyProperty="houseId">
+		insert into tb_house_base_info
+		(
+			`house_title`, 
+			`type`, 
+			`location`, 
+			`area_construction`, 
+			`area_using`, 
+			`area_unit`, 
+			`create_time`
+		)
+		values
+		(
+			#{houseTitle}, 
+			#{type}, 
+			#{location}, 
+			#{areaConstruction}, 
+			#{areaUsing}, 
+			#{areaUnit}, 
+			#{createTime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.hyron.modules.api.entity.HouseBaseInfoEntity">
+		update tb_house_base_info 
+		<set>
+			<if test="houseTitle != null">`house_title` = #{houseTitle}, </if>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="location != null">`location` = #{location}, </if>
+			<if test="areaConstruction != null">`area_construction` = #{areaConstruction}, </if>
+			<if test="areaUsing != null">`area_using` = #{areaUsing}, </if>
+			<if test="areaUnit != null">`area_unit` = #{areaUnit}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}</if>
+		</set>
+		where house_id = #{houseId}
+	</update>
+	
+	<delete id="delete">
+		delete from tb_house_base_info where house_id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from tb_house_base_info where house_id in 
+		<foreach item="houseId" collection="array" open="(" separator="," close=")">
+			#{houseId}
+		</foreach>
+	</delete>
+
+</mapper>
