@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.zworks.pdsys.entities.OrderEntity;
+import com.zworks.pdsys.models.OrderModel;
 
 @Mapper
 public interface OrderMapper {
 	
-	List<OrderEntity> queryList();
+	List<OrderModel> queryList();
 }

@@ -2,12 +2,16 @@ $(document).ready(function(){
   $("a[id^='menu_']").click(function(){
 	  var self = $(this);
 
-	  showPage(self.attr('id'), self.attr('refURL'));
+	  showPage(self);
   });
 });
 
-function showPage(menuId, url)
+function showPage(pATag)
 {
+	var menuId = pATag.attr('id');
+	var url = pATag.attr('refURL')
+	var menuDisplay = pATag.attr('displayText')
+	
 	//reset background color
 	var menus = $("a[id^='menu_']");
 	menus.each(function()
@@ -19,12 +23,14 @@ function showPage(menuId, url)
 		else
 		{
 			$(this).removeClass('active');
-				}
 		}
-	);
+	});
 
 	var frame = $("iframe[id='frame_content']");
 	frame.attr('src', url);
+
+	//更新导航条
+	$("#nav_title").html(menuDisplay);
 }
 
 //iframe自适应

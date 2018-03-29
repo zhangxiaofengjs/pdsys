@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.zworks.pdsys.entities.OrderEntity;
+import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.services.OrderService;
 
 @Controller
@@ -18,7 +18,7 @@ public class OrderController {
 	
 	@RequestMapping("/list")
     public String list(Model model) {
-		List<OrderEntity> list = orderService.queryList();
+		List<OrderModel> list = orderService.queryList();
 		model.addAttribute("orders", list);
 		
         return "order/list";
