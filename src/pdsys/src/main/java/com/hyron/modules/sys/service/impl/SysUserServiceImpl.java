@@ -1,9 +1,9 @@
 package com.hyron.modules.sys.service.impl;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringUtils;
-
-import org.apache.shiro.crypto.hash.Sha256Hash;
+//import org.apache.commons.lang.RandomStringUtils;
+//import org.apache.commons.lang.StringUtils;
+//
+//import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,9 +74,9 @@ public class SysUserServiceImpl implements SysUserService {
 	public void save(SysUserEntity user) {
 		user.setCreateTime(new Date());
 		//sha256加密
-		String salt = RandomStringUtils.randomAlphanumeric(20);
-		user.setPassword(new Sha256Hash(user.getPassword(), salt).toHex());
-		user.setSalt(salt);
+//		String salt = RandomStringUtils.randomAlphanumeric(20);
+//		user.setPassword(new Sha256Hash(user.getPassword(), salt).toHex());
+//		user.setSalt(salt);
 		sysUserDao.save(user);
 		//检查角色是否越权
 		checkRole(user);
@@ -87,11 +87,11 @@ public class SysUserServiceImpl implements SysUserService {
 	@Override
 	@Transactional
 	public void update(SysUserEntity user) {
-		if (StringUtils.isBlank(user.getPassword())) {
-			user.setPassword(null);
-		} else {
-			user.setPassword(new Sha256Hash(user.getPassword(), user.getSalt()).toHex());
-		}
+//		if (StringUtils.isBlank(user.getPassword())) {
+//			user.setPassword(null);
+//		} else {
+//			user.setPassword(new Sha256Hash(user.getPassword(), user.getSalt()).toHex());
+//		}
 		sysUserDao.update(user);
 		//检查角色是否越权
 		checkRole(user);

@@ -1,2 +1,5 @@
 
 doc/~$fd.xlsx
+download/*
+env/*
+doc/~$env.xlsx

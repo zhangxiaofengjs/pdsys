@@ -6,26 +6,39 @@ server:
         min-spare-threads: 30
     port: 8080
     connection-timeout: 5000
-    context-path: /pro-manage
+    servlet:
+        context-path: /pdsys
 
 spring:
-    # 环境 dev
-    profiles:
+    profiles: # 环境 dev
         active: dev
-    # jackson时间格式化
-    jackson:
+    jackson: # jackson时间格式化
         time-zone: GMT+8
         date-format: yyyy-MM-dd HH:mm:ss
-    http:
+    servlet:
         multipart:
             max-file-size: 100MB
             max-request-size: 100MB
             enabled: true
     resources: # 指定静态资源的路径
         static-locations: classpath:/static/,classpath:/views/
+    datasource: # 数据库配置
+        url: jdbc:mysql://localhost:3306/pdsys
+        username: root
+        password: root
+        driverClassName: com.mysql.jdbc.Driver
+    thymeleaf: #thymeleaf
+        prefix: classpath:/templates/
+        suffix: .html
+        mode: HTML
+        encoding: UTF-8
+        cache: false #turn off when in developing or cant refresh immdiately
+        servlet:
+            content-type: text/html
 
 # Mybatis配置
 mybatis:
-    mapperLocations: classpath:mapper/**/*.xml
+    mapperLocations: classpath:mappers/*.xml
+    type-aliases-package: com.hyron.entities
     configuration:
         map-underscore-to-camel-case: true
