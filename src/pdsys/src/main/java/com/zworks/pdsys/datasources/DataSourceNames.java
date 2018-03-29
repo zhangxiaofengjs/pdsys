@@ -1,0 +1,11 @@
+package com.zworks.pdsys.datasources;
+
+/**
+ * 增加多数据源，在此配置
+ *
+ * @author ZHAI
+ * @date 2018/03/27 23:46
+ */
+public interface DataSourceNames {
+    String FIRST = "first";
+}

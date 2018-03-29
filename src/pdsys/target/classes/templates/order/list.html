@@ -3,13 +3,16 @@
 <head th:include="common/header::header"></head>
 <body>
 	<table class="table table-bordered table-hover table-condensed table-striped" contenteditable="false">
-	<thead>
-		<tr>
-			<th>编号</th>
-		</tr>
-	    <tr th:each="order : ${orders}">
-	      <td th:text="'#' + ${order.id}"></td>
-	    </tr>
+		<thead>
+			<tr>
+				<th>编号</th>
+			</tr>
+		</thead>
+		<tbody>
+		    <tr th:each="order : ${orders}">
+		      <td th:text="'#' + ${order.id}"></td>
+		    </tr>
+		</tbody>
 	</table>
 </body>
 </html>

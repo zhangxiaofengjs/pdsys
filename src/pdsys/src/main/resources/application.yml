@@ -39,6 +39,6 @@ spring:
 # Mybatis配置
 mybatis:
     mapperLocations: classpath:mappers/*.xml
-    type-aliases-package: com.hyron.entities
+    type-aliases-package: com.zworks.pdsys.entities
     configuration:
         map-underscore-to-camel-case: true
