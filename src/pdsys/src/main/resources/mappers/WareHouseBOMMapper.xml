@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.WareHouseBOMMapper">
+	<resultMap id="unitResultMap" type="unitModel" >  
+        <id column="unit_id" property="id"/>  
+        <result column="unit_name" property="name"/>  
+    </resultMap>
+	<resultMap id="supplierResultMap" type="supplierModel" >  
+        <id column="supplier_id" property="id" />  
+        <result column="supplier_name" property="name"/>  
+    </resultMap>
+    <resultMap id="bomResultMap" type="BOMModel" >  
+        <id column="bom_id" property="id" />  
+        <result column="bom_pn" property="pn"/>  
+        <result column="bom_name" property="name"/>  
+        <result column="bom_type" property="type"/>  
+        <association property="unit" resultMap="unitResultMap"/>
+        <association property="supplier" resultMap="supplierResultMap"/>
+    </resultMap>
+	<resultMap id="warehouseBOMResultMap" type="wareHouseBOMModel" >  
+        <id column="wh_id" property="id" />  
+        <result column="wh_num" property="num" />  
+        <association property="bom" resultMap="bomResultMap"/>
+    </resultMap>
+    
+	<select id="queryList" resultMap="warehouseBOMResultMap">
+		select wh_bom.c_id as wh_id,
+		       wh_bom.c_num as wh_num,
+		       bom.c_id as bom_id,
+		       bom.c_pn as bom_pn,
+		       bom.c_name as bom_name,
+		       bom.c_type as bom_type,
+		       unit.c_id as unit_id,
+		       unit.c_name as unit_name,
+		       supplier.c_id as supplier_id,
+		       supplier.c_name as supplier_name
+		from warehouse_bom_tbl as wh_bom
+		<where>
+			
+		</where>
+		left join bom_tbl as bom on wh_bom.c_bom_id = bom.c_id
+		left join unit_tbl as unit on bom.c_unit_id = unit.c_id
+		left join supplier_tbl as supplier on bom.c_supplier_id = supplier.c_id
+	</select>
+</mapper>

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="header">
+<html lang="zh-CN" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" >
+<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>xxxxxxxxxxxxxxx</title>
@@ -12,5 +14,7 @@
 	<script th:src="@{/libs/bootstrap/js/bootstrap.min.js}"></script> 
 </head>
 <body>
+	<div layout:fragment="content"></div>
+	<div th:replace="common/footer::copyright"></div>
 </body>
 </html>

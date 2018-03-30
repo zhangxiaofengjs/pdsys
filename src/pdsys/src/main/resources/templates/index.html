@@ -28,7 +28,7 @@
 				</a>  
 				<ul id="pdmgr" class="nav nav-list collapse secondmenu" style="height: 0px;">  
 				    <li>
-				    	<a href="#" id="menu_order_list" th:refURL="'order/list'" th:displayText="订单管理">
+				    	<a href="#" id="menu_order_list" th:refURL="'order/list'" th:displayText="'生产管理/订单管理'">
 				    		&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-th-large">订单管理</span>
 				    	</a>
 				    </li>  
@@ -40,7 +40,10 @@
                      <span class="pull-right glyphicon glyphicon-chevron-down"></span>  
                  </a>  
                  <ul id="warehousemgr" class="nav nav-list collapse secondmenu" style="height: 0px;">  
-	                <li><a href="#"><span class="glyphicon glyphicon-user"></span>入库管理</a></li>  
+	                <li>
+	                	<a href="#" id="menu_order_list" th:refURL="'warehouse/list/main'" th:displayText="'仓库管理/在库管理'">
+	                	<span class="glyphicon glyphicon-th-list"></span>在库管理</a>
+	                </li>  
 	                <li><a href="#"><span class="glyphicon glyphicon-th-list"></span>出库管理</a></li>  
             	</ul>  
        		</li>  
