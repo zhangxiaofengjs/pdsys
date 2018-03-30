@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.zworks.pdsys.mappers.WareHouseBOMMapper">
+<mapper namespace="com.zworks.pdsys.mappers.WareHousePnMapper">
 	<resultMap id="unitResultMap" type="unitModel" >  
         <id column="unit_id" property="id"/>  
         <result column="unit_name" property="name"/>  
-    </resultMap>
-	<resultMap id="supplierResultMap" type="supplierModel" >  
-        <id column="supplier_id" property="id" />  
-        <result column="supplier_name" property="name"/>  
     </resultMap>
     <resultMap id="bomResultMap" type="BOMModel" >  
         <id column="bom_id" property="id" />  
@@ -16,7 +12,6 @@
         <result column="bom_name" property="name"/>  
         <result column="bom_type" property="type"/>  
         <association property="unit" resultMap="unitResultMap"/>
-        <association property="supplier" resultMap="supplierResultMap"/>
     </resultMap>
 	<resultMap id="warehouseBOMResultMap" type="wareHouseBOMModel" >  
         <id column="wh_id" property="id" />  

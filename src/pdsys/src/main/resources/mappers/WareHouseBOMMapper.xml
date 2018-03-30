@@ -24,7 +24,7 @@
         <association property="bom" resultMap="bomResultMap"/>
     </resultMap>
     
-	<select id="queryList" resultMap="warehouseBOMResultMap">
+	<select id="queryList" parameterType="wareHouseBOMModel" resultMap="warehouseBOMResultMap">
 		select wh_bom.c_id as wh_id,
 		       wh_bom.c_num as wh_num,
 		       bom.c_id as bom_id,
@@ -36,11 +36,13 @@
 		       supplier.c_id as supplier_id,
 		       supplier.c_name as supplier_name
 		from warehouse_bom_tbl as wh_bom
-		<where>
-			
-		</where>
 		left join bom_tbl as bom on wh_bom.c_bom_id = bom.c_id
 		left join unit_tbl as unit on bom.c_unit_id = unit.c_id
 		left join supplier_tbl as supplier on bom.c_supplier_id = supplier.c_id
+		<where>
+			<if test="bom != null">
+				and bom.c_pn like '%${bom.pn}%'
+			</if>
+		</where>
 	</select>
 </mapper>

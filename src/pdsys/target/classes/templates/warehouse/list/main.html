@@ -7,15 +7,15 @@
 		<li role="presentation" th:class="(${type}=='bom'? 'active' : '')">
 			<a id="bom_list" th:href="@{main?type=bom}">BOM库</a>
 		</li>
-		<li role="presentation" th:class="(${type}=='orderitemlist'? 'active' : '')">
-			<a id="order_item_list" th:href="@{main?type=orderitemlist}">生产库</a>
+		<li role="presentation" th:class="(${type}=='pn'? 'active' : '')">
+			<a id="order_item_list" th:href="@{main?type=pn}">生产库</a>
 		</li>
 		<li role="presentation" th:class="(${type}=='machine'? 'active' : '')">
 			<a id="machine_list" th:href="@{main?type=machine}">设备库</a>
 		</li>
 	</ul>
 	
-<div th:replace="warehouse/list/__${type}__::content(${wareHouseBoms})"></div>
+<div th:replace="warehouse/list/__${type}__::content(${list})"></div>
 <div th:replace="common/footer::copyright"></div>
 </body>
 </html>

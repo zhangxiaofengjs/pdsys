@@ -19,20 +19,21 @@ USE `pdsys`;
 --  テーブル pdsys.bom_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `bom_tbl` (
   `c_id` int(11) NOT NULL COMMENT 'ID',
+  `c_pn` varchar(50) NOT NULL COMMENT 'BOM品番',
   `c_name` varchar(50) NOT NULL COMMENT 'BOM名',
   `c_unit_id` int(11) NOT NULL COMMENT '单位ID',
   `c_supplier_id` int(11) NOT NULL COMMENT '供应商ID',
-  `c_type` int(11) NOT NULL COMMENT '原材(0) 包材(1)'
+  `c_type` int(11) NOT NULL DEFAULT '0' COMMENT '原材(0) 包材(1)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='BOM定义表';
 
 -- テーブル pdsys.bom_tbl: ~4 rows (約) のデータをダンプしています
 DELETE FROM `bom_tbl`;
 /*!40000 ALTER TABLE `bom_tbl` DISABLE KEYS */;
-INSERT INTO `bom_tbl` (`c_id`, `c_name`, `c_unit_id`, `c_supplier_id`, `c_type`) VALUES
-	(1, '杯身纸', 1, 1, 0),
-	(2, '塑料包装袋', 2, 2, 1),
-	(3, '杯底纸', 3, 1, 0),
-	(4, '包装箱', 4, 1, 1);
+INSERT INTO `bom_tbl` (`c_id`, `c_pn`, `c_name`, `c_unit_id`, `c_supplier_id`, `c_type`) VALUES
+	(1, 'X01', '杯身纸', 1, 1, 0),
+	(2, 'X012', '塑料包装袋', 2, 2, 1),
+	(3, 'X031', '杯底纸', 3, 1, 0),
+	(4, 'X0S1', '包装箱', 4, 1, 1);
 /*!40000 ALTER TABLE `bom_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.order_item_tbl の構造をダンプしています
@@ -94,7 +95,7 @@ INSERT INTO `supplier_tbl` (`c_id`, `c_name`, `c_address`, `c_phone`) VALUES
 --  テーブル pdsys.unit_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `unit_tbl` (
   `c_id` int(11) NOT NULL COMMENT 'ID',
-  `c_unit` varchar(50) NOT NULL COMMENT '单位',
+  `c_name` varchar(50) NOT NULL COMMENT '单位',
   `c_sub_unit_id` int(11) NOT NULL DEFAULT '-1' COMMENT '子单位ID',
   `c_ratio` float NOT NULL DEFAULT '0' COMMENT '和子单位的换算，如1箱=100个'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='单位定义表';
@@ -102,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `unit_tbl` (
 -- テーブル pdsys.unit_tbl: ~4 rows (約) のデータをダンプしています
 DELETE FROM `unit_tbl`;
 /*!40000 ALTER TABLE `unit_tbl` DISABLE KEYS */;
-INSERT INTO `unit_tbl` (`c_id`, `c_unit`, `c_sub_unit_id`, `c_ratio`) VALUES
+INSERT INTO `unit_tbl` (`c_id`, `c_name`, `c_sub_unit_id`, `c_ratio`) VALUES
 	(1, '吨', -1, 0),
 	(2, '卷', -1, 0),
 	(3, '捆', -1, 0),
