@@ -1,13 +1,13 @@
 package com.zworks.pdsys.models;
 
-public class OrderModel {
-	private int id;
+public class OrderModel extends BaseModel{
+	private String no;
 
-	public int getId() {
-		return id;
+	public String getNo() {
+		return no;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setNo(String no) {
+		this.no = no;
 	}
 }

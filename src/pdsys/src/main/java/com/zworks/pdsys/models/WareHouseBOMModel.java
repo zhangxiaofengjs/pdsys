@@ -7,10 +7,9 @@ import org.apache.ibatis.type.Alias;
  * @version: 2018/03/30
  */
 @Alias("wareHouseBOMModel")
-public class WareHouseBOMModel {
+public class WareHouseBOMModel extends BaseModel{
 	public static final WareHouseBOMModel Empty = new WareHouseBOMModel();
 	
-	private int id;
 	private float num;
 	private BOMModel bom;
 	
@@ -18,14 +17,6 @@ public class WareHouseBOMModel {
 		this.bom = new BOMModel();
 	}
 	
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public BOMModel getBom() {
 		return bom;
 	}

@@ -7,8 +7,7 @@ import org.apache.ibatis.type.Alias;
  * @version: 2018/03/30
  */
 @Alias("supplierModel")
-public class SupplierModel {
-	private int id;
+public class SupplierModel extends BaseModel{
 	private String name;
 	private String address;
 	private String phone;
@@ -35,13 +34,5 @@ public class SupplierModel {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 }

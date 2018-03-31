@@ -7,12 +7,19 @@ import org.apache.ibatis.type.Alias;
  * @version: 2018/03/30
  */
 @Alias("pnModel")
-public class PnModel {
-	private int id;
+public class PnModel extends BaseModel{
+	public static final PnModel Empty = new PnModel();
+	
 	private String pn;
-	private PnModel subPn;
+	private String name;
+	private PnClsModel pnCls;
 	private UnitModel unit;
 
+	public PnModel() {
+		setPnCls(PnClsModel.Empty);
+		unit = UnitModel.Empty;
+	}
+	
 	public String getPn() {
 		return pn;
 	}
@@ -29,19 +36,19 @@ public class PnModel {
 		this.unit = unit;
 	}
 
-	public int getId() {
-		return id;
+	public String getName() {
+		return name;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public PnModel getSubPn() {
-		return subPn;
+	public PnClsModel getPnCls() {
+		return pnCls;
 	}
 
-	public void setSubPn(PnModel subPn) {
-		this.subPn = subPn;
+	public void setPnCls(PnClsModel pnCls) {
+		this.pnCls = pnCls;
 	}
 }

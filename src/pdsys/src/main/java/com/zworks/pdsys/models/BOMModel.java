@@ -7,8 +7,7 @@ import org.apache.ibatis.type.Alias;
  * @version: 2018/03/30
  */
 @Alias("BOMModel")
-public class BOMModel {
-	private int id;
+public class BOMModel extends BaseModel {
 	private String pn;
 	private String name;
 	private int type;
@@ -45,14 +44,6 @@ public class BOMModel {
 
 	public void setSupplier(SupplierModel supplier) {
 		this.supplier = supplier;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public int getType() {

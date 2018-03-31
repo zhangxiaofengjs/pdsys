@@ -7,8 +7,9 @@ import org.apache.ibatis.type.Alias;
  * @version: 2018/03/30
  */
 @Alias("unitModel")
-public class UnitModel {
-	private int id;
+public class UnitModel extends BaseModel{
+	public static final UnitModel Empty = new UnitModel();
+	
 	private String name;
 	private UnitModel subUnit;
 	private float ratio;
@@ -35,13 +36,5 @@ public class UnitModel {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 }

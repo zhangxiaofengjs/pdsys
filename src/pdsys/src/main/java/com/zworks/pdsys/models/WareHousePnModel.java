@@ -7,25 +7,17 @@ import org.apache.ibatis.type.Alias;
  * @version: 2018/03/30
  */
 @Alias("wareHousePnModel")
-public class WareHousePnModel {
+public class WareHousePnModel extends BaseModel{
 	public static final WareHousePnModel Empty = new WareHousePnModel();
 	
-	private int id;
+	private OrderItemModel orderItem;
 	private float num;
-	private PnModel pn;
+	private int type;
 	
 	public WareHousePnModel() {
-		this.setPn(new PnModel());
+		orderItem = OrderItemModel.Empty;
 	}
 	
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public float getNum() {
 		return num;
 	}
@@ -34,11 +26,19 @@ public class WareHousePnModel {
 		this.num = num;
 	}
 
-	public PnModel getPn() {
-		return pn;
+	public OrderItemModel getOrderItem() {
+		return orderItem;
 	}
 
-	public void setPn(PnModel pn) {
-		this.pn = pn;
+	public void setOrderItem(OrderItemModel orderItem) {
+		this.orderItem = orderItem;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 }
