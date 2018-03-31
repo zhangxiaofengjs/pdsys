@@ -6,9 +6,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.form.beans.WareHouseListFormBean;
 import com.zworks.pdsys.models.BaseModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
@@ -47,6 +50,17 @@ public class WareHouseController {
 		
 		model.addAttribute("formBean", formBean);
 		model.addAttribute("type", type);
+		return "warehouse/list/main";
+    }
+	
+	@RequestMapping("/addcheckout")
+	@ResponseBody
+    public String addcheckout(@RequestParam(name="type",required = false, defaultValue="bom")String type, 
+    		@RequestBody WareHouseListFormBean formBean,
+    		Model model) {
+
+		JSONResponse.success("追加到出库订单成功!");
+		
 		return "warehouse/list/main";
     }
 }
