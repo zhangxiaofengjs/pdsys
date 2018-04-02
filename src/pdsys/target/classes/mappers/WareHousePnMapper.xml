@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.WareHousePnMapper">
+	<resultMap id="unitResultMap" type="unitModel" >  
+        <id column="unit_id" property="id"/>  
+        <result column="unit_name" property="name"/>  
+    </resultMap>
+    <resultMap id="pnClsResultMap" type="pnClsModel" >  
+        <id column="pn_cls_id" property="id" />  
+        <result column="pn_cls_name" property="name"/>  
+    </resultMap>
+    <resultMap id="pnResultMap" type="pnModel" >  
+        <id column="pn_id" property="id" />  
+        <result column="pn_pn" property="pn"/>  
+        <result column="pn_name" property="name"/>  
+        <association property="pnCls" resultMap="pnClsResultMap"/>
+        <association property="unit" resultMap="unitResultMap"/>
+    </resultMap>
+    <resultMap id="orderResultMap" type="orderModel" >  
+        <id column="order_id" property="id" />  
+        <result column="order_no" property="no"/>  
+    </resultMap>
+    <resultMap id="orderItemResultMap" type="orderItemModel" >  
+        <id column="order_item_id" property="id" />  
+        <result column="order_item_num" property="num"/>  
+        <association property="pn" resultMap="pnResultMap" />
+        <association property="order" resultMap="orderResultMap"/>
+    </resultMap>
+	<resultMap id="warehousePnResultMap" type="wareHousePnModel" >  
+        <id column="wh_id" property="id" />  
+        <result column="wh_num" property="num" />  
+        <result column="wh_type" property="type" />  
+        <association property="orderItem" resultMap="orderItemResultMap"/>
+    </resultMap>
+    
+	<select id="queryList" parameterType="wareHousePnModel" resultMap="warehousePnResultMap">
+		select wh_pn.c_id as wh_id,
+		       wh_pn.c_num as wh_num,
+		       wh_pn.c_type as wh_type,
+		       pn.c_id as pn_id,
+		       pn.c_pn as pn_pn,
+		       pn.c_name as pn_name,
+		       pn_cls.c_id as pn_cls_id,
+		       pn_cls.c_name as pn_cls_name,
+		       unit.c_id as unit_id,
+		       unit.c_name as unit_name,
+		       od_item.c_id as order_item_id,
+		       od_item.c_num as order_item_num,
+		       od.c_id as order_id,
+		       od.c_no as order_no
+		from warehouse_pn_tbl as wh_pn
+		left join order_item_tbl as od_item on wh_pn.c_order_item_id = od_item.c_id
+		left join pn_tbl as pn on od_item.c_pn_id = pn.c_id
+		left join pn_cls_tbl as pn_cls on od_item.c_pn_cls_id = pn_cls.c_id
+		left join unit_tbl as unit on pn.c_unit_id = unit.c_id
+		left join order_tbl as od on od_item.c_order_id = od.c_id
+		<where>
+			<if test="orderItem != null and orderItem.pn != null">
+				and pn.c_pn like '%${orderItem.pn.pn}%'
+			</if>
+		</where>
+	</select>
+</mapper>
