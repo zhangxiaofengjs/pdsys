@@ -1,6 +1,4 @@
-// var a = "我喜欢吃{0}，也喜欢吃{1}，但是最喜欢的还是{0},偶尔再买点{2}";
-// alert(String.format(a, "苹果","香蕉","香梨"));
-// 结果:我喜欢吃苹果，也喜欢吃香蕉，但是最喜欢的还是苹果,偶尔再买点香梨
+// "aaa{0},{1}".format("1","2")
 String.prototype.format = function() {
     var str = String(this);
     
@@ -8,5 +6,13 @@ String.prototype.format = function() {
         var re = new RegExp('\\{' + (i) + '\\}', 'gm');
         str = str.replace(re, arguments[i]);
     }
+    return str;
+};
+
+// Jquery中带点的选择器替换 a.b =>  a\.b
+String.prototype.safeJqueryId = function() {
+    var str = String(this);
+    str = str.replace(/\./g, "\\\.");
+    
     return str;
 };

@@ -62,7 +62,9 @@
 		<swagger.version>2.2.2</swagger.version>
 		<fastjson.version>1.2.31</fastjson.version>
 		<velocity.version>1.7</velocity.version>
-
+<jackson-mapper-asl-version>1.9.12</jackson-mapper-asl-version>
+    <jackson-core-asl-version>1.9.12</jackson-core-asl-version>
+    
 		<!--wagon plugin 配置-->
 		<service-path>/work/AtlantaCenter</service-path>
 		<pack-name>${artifactId}-${version}.jar</pack-name>
@@ -105,6 +107,18 @@
 		<dependency>  
             <groupId>org.springframework.boot</groupId>  
             <artifactId>spring-boot-starter-thymeleaf</artifactId>  
+        </dependency>
+        
+        <!--springmvc 转 Json-->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>${jackson-mapper-asl-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>${jackson-core-asl-version}</version>
         </dependency>
         
 		 <!-- 以下未整理 

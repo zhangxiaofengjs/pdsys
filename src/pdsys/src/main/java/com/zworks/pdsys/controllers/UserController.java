@@ -19,12 +19,10 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	@RequestMapping("/Json/list")
+	@RequestMapping("/list")
 	@ResponseBody
-    public String list(UserModel user, Model model) {
+    public List<UserModel> list(UserModel user, Model model) {
 		List<UserModel> list = userService.queryList(user);
-		model.addAttribute("users", list);
-
-        return "order/list";
+        return list;
     }
 }

@@ -7,15 +7,15 @@ import org.apache.ibatis.type.Alias;
  * @version: 2018/03/31
  */
 @Alias("orderItemModel")
-public class OrderItemModel extends BaseModel{
-	public static final OrderItemModel Empty = new OrderItemModel();
+public class OrderPnModel extends BaseModel{
+	public static final OrderPnModel Empty = new OrderPnModel();
 
 	private PnModel pn;
 	private OrderModel order;
 	private float num;
 	private float rejectRatio;
 	
-	public OrderItemModel() {
+	public OrderPnModel() {
 		pn = PnModel.Empty;
 	}
 	

@@ -8,6 +8,7 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("BOMModel")
 public class BOMModel extends BaseModel {
+	public static final BOMModel Empty = new BOMModel();
 	private String pn;
 	private String name;
 	private int type;

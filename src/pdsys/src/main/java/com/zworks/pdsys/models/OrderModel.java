@@ -1,7 +1,5 @@
 package com.zworks.pdsys.models;
 
-<<<<<<< HEAD
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,27 +8,7 @@ import java.util.Date;
  * @author ZHAI
  * @date 2018-03-30 13:22:06
  */
-public class OrderModel implements Serializable {
-	private static final long serialVersionUID = 1L;
-	
-	//订单ID
-	private int id;
-	
-	public int getId() {
-		return id;
-=======
-public class OrderModel extends BaseModel{
-	private String no;
-
-	public String getNo() {
-		return no;
->>>>>>> a23fc52c7c3825c36d3ae5e75e24c43d6a716470
-	}
-
-	public void setNo(String no) {
-		this.no = no;
-	}
-
+public class OrderModel extends BaseModel {
 	public String getNo() {
 		return no;
 	}

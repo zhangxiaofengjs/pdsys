@@ -4,15 +4,6 @@ function CommonDlg() {
 
 CommonDlg.ajaxSubmitOption = null;
 
-CommonDlg.prototype.dlgId = function() {
-	return 
-};
-
-CommonDlg.prototype.dlgFormId = function(option) {
-	return ;
-};
-
-//取到选择的Id
 CommonDlg.prototype.showMsgDlg = function(opt) {
 	this.option = opt;
 	
@@ -41,34 +32,35 @@ CommonDlg.prototype.showMsgDlg = function(opt) {
 };
 
 CommonDlg.prototype.showFormDlg = function(opt) {
+	var self = this;
 	this.option = opt;
 	
 	var dlgId = this.option.target + "_dlg";
 	
-	var strFormHtml = '<form class="form-horizontal" id="{0}" action={1}>'.format(this.option.target + "_dlg_form", this.option.url);
+	var strFormHtml = '<form class="form-horizontal" id="{0}" action="{1}" enctype="application/x-www-form-urlencoded">'.format(this.option.target + "_dlg_form", PdSys.url(this.option.url));
 	this.option.fields.forEach(function(f, idx) {
-		if(f.type == "select") {
+		
+		//hidden不需要单独占行
+		if(f.type != "hidden") {
 			strFormHtml += 
-				'<div class="form-group">\
-					<label for="{0}" class="col-sm-3 control-label">{1}</label>\
-					<div class="col-sm-9">\
-						<div id={0} class="form-control" style="box-shadow:0 1px 1px rgba(0, 0, 0, 0);border-width:0px;padding-left:0px;"><img src="icons/loading.gif" width=48px/>加载中...</div>\
-					</div>\
-				</div>'.
-				format(f.name + "_ajax_field");
+					'<div class="form-group">\
+						<label for="{0}" class="col-sm-4 control-label">{1}</label>\
+						<div class="col-sm-8">'.
+					format(f.name,
+						   f.label);
 		}
-		else {
-			strFormHtml += 
-				'<div class="form-group">\
-					<label for="{0}" class="col-sm-3 control-label">{1}</label>\
-					<div class="col-sm-9">\
-						<input type="{2}" class="form-control" name="{0}" placeholder="{3}">\
-					</div>\
-				</div>'.
-				format(f.name,
-						f.label,
-						f.type,
-						f.placeholder?f.placeholder:"");
+		
+		if(f.ajax) {
+			//如果数据是ajax取得，先追加一个等待图标
+			strFormHtml += '<div id={0} class="form-control" style="box-shadow:0 1px 1px rgba(0, 0, 0, 0);border-width:0px;padding-left:0px;"><img src="{1}" height="24px" /><span class="text-muted">加载中...</span></div>'.
+				format(f.name + "_ajax_field",
+						PdSys.url("/icons/loading.gif"));
+		} else {
+			strFormHtml += self.buildField(f);
+		}
+
+		if(f.type != "hidden") {
+			strFormHtml += '</div></div>';
 		}
 	});
 	strFormHtml += '</form>';
@@ -76,14 +68,14 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 	CommonDlg.ajaxSubmitOption = this.option;
 	
 	var strHtml = 
-		'<div id="{0}" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">\
+		'<div id="{0}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">\
 		  <div class="modal-dialog modal-sm" role="document">\
 		    <div class="modal-content">\
 				<div class="modal-header">\
 		    	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
-			    	<h4 class="modal-title" id="myModalLabel">提示</h4>\
+			    	<h4 class="modal-title" id="myModalLabel">{1}</h4>\
 			  	</div>\
-				<div class="modal-body">{1}\
+				<div class="modal-body">{2}\
 				</div>\
 				<div class="modal-footer">\
 	    			<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">取消</button>\
@@ -91,25 +83,134 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 				</div>\
 		    </div>\
 		  </div>\
-		</div>'.format(dlgId, strFormHtml, this.option.url);
+		</div>'.format(dlgId, this.option.caption, strFormHtml);
 	
 	var targetDiv = $("#"+this.option.target);
 	targetDiv.children().remove();
 	targetDiv.append(strHtml);
 	$("#" + dlgId).modal();
+
+	//取得数据
+	this.option.fields.forEach(function(f, idx) {
+		if(f.ajax) {
+			self.getAjaxField(f);
+		}
+	});	
 }
+
+CommonDlg.prototype.buildField = function(field) {
+	var strFormHtml = "";
+
+	if(field.type == "select") {
+		strFormHtml += '<select class="form-control" name={0} id={0}>'.format(field.name);
+		field.options.forEach(function(fo, idxo) {
+			strFormHtml += '<option value ="{0}" {2}>{1}</option>'.
+				format(fo.value, fo.caption,
+				fo.selected?"selected":"");
+		});
+		strFormHtml += '</select>';
+	} else {
+		strFormHtml += '<input type="{0}" class="form-control" name="{1}" id="{1}" value="{2}" placeholder="{3}">'.
+			format(field.type,
+				   field.name,
+				   field.value,
+				   field.placeholder?field.placeholder:"");
+	}
+
+	return strFormHtml;
+}
+
+//ajax取得field的信息
+CommonDlg.prototype.getAjaxField = function(field) {
+	var self = this;
+
+	$.ajax({
+		url:PdSys.url(field.url),
+		async:true,
+		dataType:"json",
+		type:"post",
+		data:field.ajaxData,
+		context:$(("#"+field.name + "_ajax_field").safeJqueryId())[0],//设置success/error的回调上下文this([0]表示转化为dom元素咯)
+		success: function(response) {
+			var newField = field.convertAjaxData(response);
+			var strFieldHtml = self.buildField(newField);
+			$(this).parent().append(strFieldHtml);
+			$(this).remove();
+		},
+		error: function(response) {
+			$(this).empty();
+			$(this).append('<img src="{0}" height="16px" /><span class="text-danger">&nbsp;取得信息失败!!</span>'.format(PdSys.url("/icons/error.png")));
+		}
+	});
+};
+
+//formJson = {
+//	'num': 11,
+//	'bom':{
+//		'id':22
+//	}
+//};
+//将 a.b.c=1的名字转化为{'a':{'b':{'c':1}}}取得b对象,
+function getJsonObj(o, strName) {
+	var names = strName.split(".");
+	
+	var ret = o;
+	for(var i = 0; i < names.length -1; i++) {
+		var name = names[i];
+		if (ret[this.name] == undefined) {
+			ret[this.name] = {};
+		}
+		ret =  ret[this.name];
+	}
+	
+	return ret;
+}
+
+CommonDlg.encodeFormJson = function(frm) {
+   var o = {};
+   var a = $(frm).serializeArray();
+
+   $.each(a, function() {
+	   var obj = getJsonObj(o, this.name);
+	   var names = strName.split(".");
+	   var name = names.pop();
+	   
+	   obj[name] = this.value || '';
+	   
+//      if (o[this.name] !== undefined) {
+//         if (!o[this.name].push) {
+//            o[this.name] = [ o[this.name] ];
+//         }
+//         o[this.name].push(this.value || '');
+//      } else {
+//         o[this.name] = this.value || '';
+//      }
+   });
+   return o;
+};
 
 //静态方法
 CommonDlg.ajaxSubmitForm = function() {
 	var option = CommonDlg.ajaxSubmitOption;
+	var formJson = CommonDlg.encodeFormJson("#"+option.target + "_dlg_form");
+	formJson = {
+		'num': 11,
+		'bom':{
+			'id':22
+		}
+	};
+	//	var ff = new FormData();//FormData不好用，暂用json代替
 	
 	var args = {
-    	url : option.url,
-        type : 'POST',
-        dataType : 'json',
-        headers : {"ClientCallMode" : "ajax"},
+    	url : PdSys.url(option.url),
+        type : 'post',
+        dataType : 'json',//接受服务端数据类型
+        contentType:"application/json",
+        processData: false,
+        cache: false,
+        data: JSON.stringify(formJson),
         success : function(data) {
-        	if(data.success) 
+        	if(data.success)
         	{
         		option.success(data);
         	}
@@ -123,5 +224,6 @@ CommonDlg.ajaxSubmitForm = function() {
         }
      };
     
-	 $("#"+option.target + "_dlg_form").ajaxSubmit(args);
+	//提交
+	$.ajax(args);
 }

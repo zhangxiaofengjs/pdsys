@@ -3,6 +3,8 @@ package com.zworks.pdsys.controllers;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.form.beans.WareHouseListFormBean;
 import com.zworks.pdsys.models.BaseModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
+import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.services.WareHouseBOMService;
 import com.zworks.pdsys.services.WareHousePnService;
@@ -53,14 +56,12 @@ public class WareHouseController {
 		return "warehouse/list/main";
     }
 	
-	@RequestMapping("/addcheckout")
+	@RequestMapping(value="/addcheckout")
 	@ResponseBody
-    public String addcheckout(@RequestParam(name="type",required = false, defaultValue="bom")String type, 
-    		@RequestBody WareHouseListFormBean formBean,
+    public JSONResponse addcheckout( 
+    		HttpServletRequest req,
+    		@RequestBody WareHouseDeliveryBOMModel wareHouseDeliveryBOM,
     		Model model) {
-
-		JSONResponse.success("追加到出库订单成功!");
-		
-		return "warehouse/list/main";
+		return JSONResponse.success("追加到出库订单成功!");
     }
 }
