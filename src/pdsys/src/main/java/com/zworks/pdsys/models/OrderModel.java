@@ -1,6 +1,5 @@
 package com.zworks.pdsys.models;
 
-<<<<<<< HEAD
 import java.io.Serializable;
 import java.util.Date;
 
@@ -15,29 +14,6 @@ public class OrderModel implements Serializable {
 	
 	//订单ID
 	private int id;
-	
-	public int getId() {
-		return id;
-=======
-public class OrderModel extends BaseModel{
-	private String no;
-
-	public String getNo() {
-		return no;
->>>>>>> a23fc52c7c3825c36d3ae5e75e24c43d6a716470
-	}
-
-	public void setNo(String no) {
-		this.no = no;
-	}
-
-	public String getNo() {
-		return no;
-	}
-
-	public void setNo(String no) {
-		this.no = no;
-	}
 
 	//订单编号
 	private String no;
@@ -56,6 +32,23 @@ public class OrderModel extends BaseModel{
 	
 	//状态
 	private String comment;
+	
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public String getNo() {
+		return no;
+	}
+
+	public void setNo(String no) {
+		this.no = no;
+	}
 
 	public Date getOrderDate() {
 		return orderDate;
