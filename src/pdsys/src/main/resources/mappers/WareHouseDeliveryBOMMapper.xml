@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.WareHouseDeliveryBOMMapper">
+	<resultMap id="warehouseBOMResultMap" type="wareHouseBOMModel" >  
+        <id column="wh_id" property="id" />  
+        <result column="wh_num" property="num" />  
+        <association property="bom" resultMap="bomResultMap"/>
+    </resultMap>
+    
+	<select id="add" parameterType="wareHouseDeliveryBOMModel" resultMap="int">
+		insert into warehouse_delivery_bom_tbl (
+			c_user_id, c_delivery_id, c_num
+			) values (
+				#{delivery.user.id},#{num}
+			)
+	</select>
+</mapper>

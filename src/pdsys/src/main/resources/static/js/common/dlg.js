@@ -157,10 +157,10 @@ function getJsonObj(o, strName) {
 	var ret = o;
 	for(var i = 0; i < names.length -1; i++) {
 		var name = names[i];
-		if (ret[this.name] == undefined) {
-			ret[this.name] = {};
+		if (ret[name] == undefined) {
+			ret[name] = {};
 		}
-		ret =  ret[this.name];
+		ret = ret[name];
 	}
 	
 	return ret;
@@ -172,7 +172,7 @@ CommonDlg.encodeFormJson = function(frm) {
 
    $.each(a, function() {
 	   var obj = getJsonObj(o, this.name);
-	   var names = strName.split(".");
+	   var names = this.name.split(".");
 	   var name = names.pop();
 	   
 	   obj[name] = this.value || '';
@@ -193,12 +193,6 @@ CommonDlg.encodeFormJson = function(frm) {
 CommonDlg.ajaxSubmitForm = function() {
 	var option = CommonDlg.ajaxSubmitOption;
 	var formJson = CommonDlg.encodeFormJson("#"+option.target + "_dlg_form");
-	formJson = {
-		'num': 11,
-		'bom':{
-			'id':22
-		}
-	};
 	//	var ff = new FormData();//FormData不好用，暂用json代替
 	
 	var args = {

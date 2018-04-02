@@ -3,3 +3,4 @@ doc/~$fd.xlsx
 download/*
 env/*
 doc/~$env.xlsx
+src/pdsys/target/*
