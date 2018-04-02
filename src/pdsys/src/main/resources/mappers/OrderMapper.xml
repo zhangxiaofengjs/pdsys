@@ -3,10 +3,16 @@
 
 <mapper namespace="com.zworks.pdsys.mappers.OrderMapper">
 	<resultMap id="orderResultMap" type="com.zworks.pdsys.models.OrderModel" >  
-        <id column="c_id" property="id" jdbcType="INTEGER" />  
+        <id column="c_id" property="id" jdbcType="INTEGER" />
+        <id column="c_no" property="no" jdbcType="VARCHAR" />
+        <id column="c_order_date" property="orderDate" jdbcType="DATE" />
+        <id column="c_ship_dead_date" property="shipDeadDate" jdbcType="DATE" />
+        <id column="c_ship_date" property="shipDate" jdbcType="DATE" />
+        <id column="c_state" property="state" jdbcType="INTEGER" />
+        <id column="c_comment" property="comment" jdbcType="VARCHAR" />
     </resultMap>
     
 	<select id="queryList" resultMap="orderResultMap">
-		select * from order_tbl 
+		select * from order_tbl order by c_no desc
 	</select>
 </mapper>

@@ -18,6 +18,7 @@ public class OrderController {
 	
 	@RequestMapping("/list")
     public String list(Model model) {
+		
 		List<OrderModel> list = orderService.queryList();
 		model.addAttribute("orders", list);
 		
