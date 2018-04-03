@@ -10,13 +10,12 @@
         <id column="supplier_id" property="id" />  
         <result column="supplier_name" property="name"/>  
     </resultMap>
-    <resultMap id="bomResultMap" type="BOMModel" >  
-        <id column="bom_id" property="id" />  
-        <result column="bom_pn" property="pn"/>  
-        <result column="bom_name" property="name"/>  
-        <result column="bom_type" property="type"/>  
+    <resultMap id="pnResultMap" type="pnModel" >  
+        <id column="od_pn_id" property="id" />  
+        <result column="od_pn_pn" property="pn"/>  
+        <result column="od_pn_name" property="name"/>  
         <association property="unit" resultMap="unitResultMap"/>
-        <association property="supplier" resultMap="supplierResultMap"/>
+        <association property="pn_cls" resultMap="supplierResultMap"/>
     </resultMap>
 	<resultMap id="orderDetailMapper" type="orderPnModel" >  
         <id column="order_pn_id" property="id" />  
@@ -27,7 +26,8 @@
     
 	<select id="queryList" parameterType="com.zworks.pdsys.mappers.OrderMapper" resultMap="orderDetailMapper">
 		select order_pn.c_id as order_pn_id,
-			   pn.c_pn as od_pn,
+			   pn.c_id as od_pn_id,
+			   pn.c_pn as od_pn_pn,
 			   pn.c_name as od_pn_name,
 		       pn_cls.c_name as od_pn_cls_name,
 		       order_pn.c_num as order_pn_num,

@@ -15,23 +15,48 @@ $(document).ready(function(){
 		//显示选择收件人
 		dlg.showFormDlg({
 			"target":"checkout_dlg_div",
+			"caption":"添加到出库单",
 			"fields":[
 				{
-					"name":"whBomIds",
+					"name":"bom.id",
 					"type":"hidden",
 					"value":selIds.join(",")
 				},
 				{
-					"name":"userName",
+					"name":"wareHouseDelivery.user.id",
 					"label":"领收人",
 					"type":"select",
-					"value":0,
-					"url":"",
+					"ajax":true,
+					"url":"/user/list",
+					"convertAjaxData" : function(data) {
+						//将返回的值转化为Field规格数据,以供重新渲染
+						var field = {
+							"name":"wareHouseDelivery.user.id",
+							"label":"领收人",
+							"type":"select",
+							"options":[]
+						};
+						//做成选择分支
+						data.forEach(function(user, idx) {
+							field.options.push({
+								"value": user.id,
+								"caption":user.name,
+							});
+						});
+						
+						return field;
+					}
+				},
+				{
+					"name":"num",
+					"label":"数量",
+					"type":"text",
+					"value":"1",
 				}
 			],
 			"url":"/warehouse/addcheckout",
 			"success": function(data) {
-				alert(11);
+				alert(data);
 			},
 			"error": function(data) {
 				alert(22);

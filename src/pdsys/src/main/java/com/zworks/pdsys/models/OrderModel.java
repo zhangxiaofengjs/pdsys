@@ -9,11 +9,8 @@ import java.util.Date;
  * @author ZHAI
  * @date 2018-03-30 13:22:06
  */
-public class OrderModel implements Serializable {
+public class OrderModel extends BaseModel implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	//订单ID
-	private int id;
 
 	//订单编号
 	private String no;
@@ -32,15 +29,6 @@ public class OrderModel implements Serializable {
 	
 	//状态
 	private String comment;
-	
-	
-	public int getId() {
-		return id;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
-	}
 	
 	public String getNo() {
 		return no;

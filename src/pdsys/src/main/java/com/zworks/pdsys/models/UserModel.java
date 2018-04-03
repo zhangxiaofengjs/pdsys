@@ -8,6 +8,7 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("userModel")
 public class UserModel extends BaseModel {
+	public static final UserModel Empty = new UserModel();
 	private String name;
 
 	public String getName() {

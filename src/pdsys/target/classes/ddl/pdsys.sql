@@ -96,16 +96,28 @@ INSERT INTO `order_tbl` (`c_id`, `c_no`, `c_order_date`, `c_ship_dead_date`, `c_
 	(7, 'JK-900-206', '2018-03-28', '2018-03-30', '2018-03-28', 3, NULL);
 /*!40000 ALTER TABLE `order_tbl` ENABLE KEYS */;
 
+--  テーブル pdsys.pn_bom_relation_tbl の構造をダンプしています
+CREATE TABLE IF NOT EXISTS `pn_bom_relation_tbl` (
+  `c_pn_id` int(11) NOT NULL,
+  `c_bom_id` int(11) NOT NULL,
+  `c_use_num` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- テーブル pdsys.pn_bom_relation_tbl: ~0 rows (approximately) のデータをダンプしています
+DELETE FROM `pn_bom_relation_tbl`;
+/*!40000 ALTER TABLE `pn_bom_relation_tbl` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pn_bom_relation_tbl` ENABLE KEYS */;
+
 --  テーブル pdsys.pn_cls_relation_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `pn_cls_relation_tbl` (
   `c_pn_id` int(11) NOT NULL,
-  `c_class_id` int(11) NOT NULL
+  `c_cls_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='品目和子类对应表';
 
 -- テーブル pdsys.pn_cls_relation_tbl: ~6 rows (approximately) のデータをダンプしています
 DELETE FROM `pn_cls_relation_tbl`;
 /*!40000 ALTER TABLE `pn_cls_relation_tbl` DISABLE KEYS */;
-INSERT INTO `pn_cls_relation_tbl` (`c_pn_id`, `c_class_id`) VALUES
+INSERT INTO `pn_cls_relation_tbl` (`c_pn_id`, `c_cls_id`) VALUES
 	(1, 1),
 	(1, 2),
 	(2, 3),
@@ -218,7 +230,7 @@ INSERT INTO `warehouse_bom_tbl` (`c_id`, `c_bom_id`, `c_num`) VALUES
 --  テーブル pdsys.warehouse_pn_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `warehouse_pn_tbl` (
   `c_id` int(11) DEFAULT NULL COMMENT 'ID',
-  `c_order_item_id` int(11) DEFAULT NULL COMMENT '订单条目ID',
+  `c_order_pn_id` int(11) DEFAULT NULL COMMENT '订单条目ID',
   `c_type` int(11) DEFAULT NULL COMMENT '半成品(0) 成品(1)',
   `c_num` float DEFAULT NULL COMMENT '数量'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单条目仓库表 		\r\n';
@@ -226,7 +238,7 @@ CREATE TABLE IF NOT EXISTS `warehouse_pn_tbl` (
 -- テーブル pdsys.warehouse_pn_tbl: ~4 rows (approximately) のデータをダンプしています
 DELETE FROM `warehouse_pn_tbl`;
 /*!40000 ALTER TABLE `warehouse_pn_tbl` DISABLE KEYS */;
-INSERT INTO `warehouse_pn_tbl` (`c_id`, `c_order_item_id`, `c_type`, `c_num`) VALUES
+INSERT INTO `warehouse_pn_tbl` (`c_id`, `c_order_pn_id`, `c_type`, `c_num`) VALUES
 	(1, 1, 1, 1256),
 	(2, 2, 0, 698),
 	(3, 3, 0, 698),

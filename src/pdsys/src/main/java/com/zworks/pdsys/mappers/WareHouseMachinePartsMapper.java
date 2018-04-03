@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.zworks.pdsys.models.OrderModel;
-import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 
 /**

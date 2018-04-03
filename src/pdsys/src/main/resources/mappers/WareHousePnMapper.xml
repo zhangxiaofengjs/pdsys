@@ -21,7 +21,7 @@
         <id column="order_id" property="id" />  
         <result column="order_no" property="no"/>  
     </resultMap>
-    <resultMap id="orderItemResultMap" type="orderItemModel" >  
+    <resultMap id="orderPnResultMap" type="orderPnModel" >  
         <id column="order_pn_id" property="id" />  
         <result column="order_pn_num" property="num"/>  
         <association property="pn" resultMap="pnResultMap" />
@@ -31,7 +31,7 @@
         <id column="wh_id" property="id" />  
         <result column="wh_num" property="num" />  
         <result column="wh_type" property="type" />  
-        <association property="orderItem" resultMap="orderItemResultMap"/>
+        <association property="orderItem" resultMap="orderPnResultMap"/>
     </resultMap>
     
 	<select id="queryList" parameterType="wareHousePnModel" resultMap="warehousePnResultMap">
