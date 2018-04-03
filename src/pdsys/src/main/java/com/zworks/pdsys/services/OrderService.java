@@ -13,7 +13,15 @@ public class OrderService {
 	@Autowired
     private OrderMapper orderMapper;
 	
-	public List<OrderModel> queryList() {
-		return orderMapper.queryList();
+	public List<OrderModel> queryList( OrderModel orderModel ) {
+		return orderMapper.queryList( orderModel );
+	}
+	
+	public void delete(OrderModel orderModel) {
+		orderMapper.delete( orderModel );
+	}
+	
+	public OrderModel queryObject(int id) {
+		return orderMapper.queryObject( id );
 	}
 }

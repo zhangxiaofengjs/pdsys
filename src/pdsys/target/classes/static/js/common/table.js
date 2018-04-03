@@ -46,6 +46,11 @@ function getSelectedRowId() {
 			selectIdArr.push($(this).attr("rowid"));
 		}
 	});
+	
+    if(selectIdArr.length < 1){
+    	alert("请选择一条记录");
+    	return ;
+    }
 		
 	return selectIdArr;
 }

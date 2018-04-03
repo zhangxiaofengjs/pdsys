@@ -11,6 +11,8 @@ public class JSONResponse extends HashMap<String, Object> {
 	private static final long serialVersionUID = 1L;
 	
 	public JSONResponse() {
+		put("success", true);
+		put("msg", "success");
 	}
 	
 	public static JSONResponse success(String msg) {

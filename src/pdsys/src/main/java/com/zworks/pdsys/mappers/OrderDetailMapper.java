@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.zworks.pdsys.models.OrderModel;
 
 @Mapper
-public interface OrderMapper {
+public interface OrderDetailMapper {
 	
 	List<OrderModel> queryList( OrderModel orderModel );
 	

@@ -22,12 +22,7 @@ $(function () {
 			});
 		});
 	});
-	
-    $("#checkAll").click(function () {
-        $("input[name='orderChecked']:checkbox").prop("checked", this.checked);
-    });
-    
-    
+
     $("#jqGrid").jqGrid({
         url: baseURL + 'sys/user/list',
         datatype: "json",

@@ -6,16 +6,16 @@ import org.apache.ibatis.type.Alias;
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/03/31
  */
-@Alias("orderItemModel")
-public class OrderItemModel extends BaseModel{
-	public static final OrderItemModel Empty = new OrderItemModel();
+@Alias("orderPnModel")
+public class OrderPnModel extends BaseModel{
+	public static final OrderPnModel Empty = new OrderPnModel();
 
 	private PnModel pn;
 	private OrderModel order;
 	private float num;
 	private float rejectRatio;
 	
-	public OrderItemModel() {
+	public OrderPnModel() {
 		pn = PnModel.Empty;
 	}
 	
@@ -45,4 +45,5 @@ public class OrderItemModel extends BaseModel{
 	public void setOrder(OrderModel order) {
 		this.order = order;
 	}
+
 }
