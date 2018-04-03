@@ -47,10 +47,5 @@ function getSelectedRowId() {
 		}
 	});
 	
-    if(selectIdArr.length < 1){
-    	alert("请选择一条记录");
-    	return ;
-    }
-		
 	return selectIdArr;
 }

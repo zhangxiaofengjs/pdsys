@@ -4,15 +4,17 @@ $(document).ready(function(){
 		var self = $(this);
 		var selIds = getSelectedRowId();
 
-		var dlg = new CommonDlg();
-		if(selIds.length == 0) {
+		if(!selIds || selIds.length == 0) {
+			var dlg = new CommonDlg();
 			dlg.showMsgDlg({
 				"target":"msg_div",
+				"type":"ok",
 				"msg":"请选择要添加到出库的单的对象。"});
 			return;
 		}
 		
 		//显示选择收件人
+		var dlg = new CommonDlg();
 		dlg.showFormDlg({
 			"target":"checkout_dlg_div",
 			"caption":"添加到出库单",
@@ -26,25 +28,18 @@ $(document).ready(function(){
 					"name":"wareHouseDelivery.user.id",
 					"label":"领收人",
 					"type":"select",
+					"options":[],
 					"ajax":true,
 					"url":"/user/list",
-					"convertAjaxData" : function(data) {
+					"convertAjaxData" : function(thisField, data) {
 						//将返回的值转化为Field规格数据,以供重新渲染
-						var field = {
-							"name":"wareHouseDelivery.user.id",
-							"label":"领收人",
-							"type":"select",
-							"options":[]
-						};
 						//做成选择分支
 						data.forEach(function(user, idx) {
-							field.options.push({
+							thisField.options.push({
 								"value": user.id,
 								"caption":user.name,
 							});
 						});
-						
-						return field;
 					}
 				},
 				{
@@ -57,9 +52,11 @@ $(document).ready(function(){
 			"url":"/warehouse/addcheckout",
 			"success": function(data) {
 				alert(data);
+				dlg.hide();
 			},
 			"error": function(data) {
 				alert(22);
+				dlg.hide();
 			}
 		});
 	});
