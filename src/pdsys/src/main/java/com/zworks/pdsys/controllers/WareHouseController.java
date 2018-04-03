@@ -16,8 +16,11 @@ import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.form.beans.WareHouseListFormBean;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
+import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.services.WareHouseBOMService;
+import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
+import com.zworks.pdsys.services.WareHouseDeliveryService;
 import com.zworks.pdsys.services.WareHousePnService;
 
 @Controller
@@ -27,6 +30,10 @@ public class WareHouseController {
 	WareHouseBOMService wareHouseBOMService;
 	@Autowired
 	WareHousePnService wareHousePnService;
+	@Autowired
+	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
+	@Autowired
+	WareHouseDeliveryService wareHouseDeliveryService;
 	
 	@RequestMapping("/list/main")
     public String main(@RequestParam(name="type",required = false, defaultValue="bom")String type, 
@@ -57,9 +64,11 @@ public class WareHouseController {
 	@RequestMapping(value="/addcheckout")
 	@ResponseBody
     public JSONResponse addcheckout( 
-    		HttpServletRequest req,
     		@RequestBody WareHouseDeliveryBOMModel wareHouseDeliveryBOM,
     		Model model) {
+		
+		wareHouseDeliveryBOMService.add(wareHouseDeliveryBOM);
+		
 		return JSONResponse.success("追加到出库订单成功!");
     }
 }

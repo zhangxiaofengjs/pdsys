@@ -4,10 +4,27 @@ function CommonDlg() {
 
 CommonDlg.ajaxSubmitOption = null;
 
+//var dlg = new CommonDlg()
+//dlg.showMsgDlg({
+//	"target":"msg_div",
+//	"type":"yesno",
+//	"yes": function() {alert('yes');},
+//	"ok": function() {alert('ok');},
+//	"msg":"请选择要添加到出库的单的对象。"});
 CommonDlg.prototype.showMsgDlg = function(opt) {
 	this.option = opt;
 	
 	var dlgId = this.option.target + "_dlg";
+	
+	var strButtonHtml = "";
+	if(this.option.type == "yesno") {
+		strButtonHtml += '<button type="button" class="btn btn-info btn-sm" id="{0}" name="{0}">是</button>\
+						  <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="{1}" name="{1}">否</button>'.
+						  format(this.option.target + "_btn_yes",
+								  this.option.target + "_btn_no");
+	} else {
+		strButtonHtml += '<button type="button" class="btn btn-info btn-sm" data-dismiss="modal">确定</button>';
+	}
 	//bootstrap dialog
 	var strHtml = 
 	'<div id="{0}" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">\
@@ -18,16 +35,28 @@ CommonDlg.prototype.showMsgDlg = function(opt) {
 		    	<h4 class="modal-title" id="myModalLabel">提示</h4>\
 		  	</div>\
 			<div class="modal-body">{1}</div>\
-			<div class="modal-footer">\
-    			<button type="button" class="btn btn-info btn-sm" data-dismiss="modal">确定</button>\
-			</div>\
+			<div class="modal-footer">{2}</div>\
 	    </div>\
 	  </div>\
-	</div>'.format(dlgId, this.option.msg);
+	</div>'.format(dlgId, this.option.msg, strButtonHtml);
 
 	var targetDiv = $("#"+ this.option.target);
 	targetDiv.children().remove();
 	targetDiv.append(strHtml);
+	
+	//按钮的click回调函数
+	$("#" + dlgId + " button").click(
+		function() {
+			if(this.name == opt.target + "_btn_yes" && opt.yes) {
+				(opt.yes)();
+			} else if(this.name == opt.target + "_btn_no" && opt.no) {
+				(opt.no)();
+			} else if(this.name == opt.target + "_btn_ok" && opt.ok) {
+				(opt.ok)();
+			}
+		}
+	);
+
 	$("#" + dlgId).modal();
 };
 
@@ -98,6 +127,11 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 	});	
 }
 
+CommonDlg.prototype.hide = function() {
+	var dlgId = this.option.target + "_dlg";
+	$("#" + dlgId).modal('hide');
+}
+
 CommonDlg.prototype.buildField = function(field) {
 	var strFormHtml = "";
 
@@ -132,8 +166,8 @@ CommonDlg.prototype.getAjaxField = function(field) {
 		data:field.ajaxData,
 		context:$(("#"+field.name + "_ajax_field").safeJqueryId())[0],//设置success/error的回调上下文this([0]表示转化为dom元素咯)
 		success: function(response) {
-			var newField = field.convertAjaxData(response);
-			var strFieldHtml = self.buildField(newField);
+			field.convertAjaxData(field, response);
+			var strFieldHtml = self.buildField(field);
 			$(this).parent().append(strFieldHtml);
 			$(this).remove();
 		},
