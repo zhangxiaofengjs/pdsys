@@ -1,5 +1,7 @@
 package com.zworks.pdsys.models;
 
+import java.util.List;
+
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -14,6 +16,7 @@ public class PnModel extends BaseModel{
 	private String name;
 	private PnClsModel pnCls;
 	private UnitModel unit;
+	private List<BOMModel> boms;
 
 	public PnModel() {
 		setPnCls(PnClsModel.Empty);
@@ -50,5 +53,13 @@ public class PnModel extends BaseModel{
 
 	public void setPnCls(PnClsModel pnCls) {
 		this.pnCls = pnCls;
+	}
+
+	public List<BOMModel> getBoms() {
+		return boms;
+	}
+
+	public void setBoms(List<BOMModel> boms) {
+		this.boms = boms;
 	}
 }
