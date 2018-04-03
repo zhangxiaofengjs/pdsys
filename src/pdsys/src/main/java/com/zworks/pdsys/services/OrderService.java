@@ -24,4 +24,8 @@ public class OrderService {
 	public OrderModel queryObject(int id) {
 		return orderMapper.queryObject( id );
 	}
+	
+	public void save(OrderModel orderModel) {
+		orderMapper.save( orderModel );
+	}
 }

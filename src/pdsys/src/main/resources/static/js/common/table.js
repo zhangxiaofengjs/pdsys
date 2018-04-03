@@ -46,6 +46,6 @@ function getSelectedRowId() {
 			selectIdArr.push($(this).attr("rowid"));
 		}
 	});
-	
+
 	return selectIdArr;
 }
