@@ -14,4 +14,6 @@ public interface OrderMapper {
 	void delete(OrderModel orderModel);
 	
 	OrderModel queryObject(int id);
+	
+	void save(OrderModel orderModel);
 }

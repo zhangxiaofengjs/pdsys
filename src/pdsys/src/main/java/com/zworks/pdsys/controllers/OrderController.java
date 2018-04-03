@@ -48,4 +48,14 @@ public class OrderController {
 		}
 		return JSONResponse.success("删除订单成功!");
 	}
+	
+	/**
+	 * 新增订单
+	 */
+	@RequestMapping("/save")
+	@ResponseBody
+	public JSONResponse save(@RequestBody OrderModel order) {
+		orderService.save(order);
+		return JSONResponse.success("新增订单成功!");
+	}
 }

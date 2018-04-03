@@ -3,12 +3,15 @@ package com.zworks.pdsys.models;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.apache.ibatis.type.Alias;
+
 /**
  * 订单
  * 
  * @author ZHAI
  * @date 2018-03-30 13:22:06
  */
+@Alias("orderModel")
 public class OrderModel extends BaseModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -29,6 +32,10 @@ public class OrderModel extends BaseModel implements Serializable {
 	
 	//状态
 	private String comment;
+	
+	private UserModel user;
+	
+	private CustomerModel customer;
 	
 	public String getNo() {
 		return no;
@@ -76,6 +83,22 @@ public class OrderModel extends BaseModel implements Serializable {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public UserModel getUser() {
+		return user;
+	}
+
+	public void setUser(UserModel user) {
+		this.user = user;
+	}
+
+	public CustomerModel getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(CustomerModel customer) {
+		this.customer = customer;
 	}
 
 }
