@@ -23,7 +23,7 @@ public class WareHouseDeliveryService {
 		return wareHouseDeliveryMapper.queryList(obj);
 	}
 	
-	public int add(WareHouseDeliveryModel obj) {
-		return wareHouseDeliveryMapper.add(obj);
+	public void add(WareHouseDeliveryModel obj) {
+		wareHouseDeliveryMapper.add(obj);
 	}
 }

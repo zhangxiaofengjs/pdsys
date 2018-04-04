@@ -20,12 +20,12 @@ $(document).ready(function(){
 			"caption":"添加到出库单",
 			"fields":[
 				{
-					"name":"wareHouseBOMIds",
+					"name":"wareHousePnIds",
 					"type":"hidden",
 					"value":selIds.join(",")
 				},
 				{
-					"name":"wareHouseDeliveryBOM.wareHouseDelivery.user.id",
+					"name":"wareHouseDeliveryPn.wareHouseDelivery.user.id",
 					"label":"领收人",
 					"type":"select",
 					"options":[],
@@ -43,13 +43,13 @@ $(document).ready(function(){
 					}
 				},
 				{
-					"name":"wareHouseDeliveryBOM.num",
+					"name":"wareHouseDeliveryPn.num",
 					"label":"数量",
 					"type":"number",
 					"value":"1",
 				}
 			],
-			"url":"/warehouse/add/delivery/bom",
+			"url":"/warehouse/add/delivery/pn",
 			"success": function(data) {
 				dlg.hide();
 				

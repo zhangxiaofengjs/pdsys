@@ -136,10 +136,11 @@ CommonDlg.prototype.buildField = function(field) {
 	var strFormHtml = "";
 
 	if(field.type == "select") {
-		strFormHtml += '<select class="form-control" name={0} id={0}>'.format(field.name);
+		strFormHtml += '<select class="form-control" name="{0}" id="{0}">'.format(field.name);
 		field.options.forEach(function(fo, idxo) {
 			strFormHtml += '<option value ="{0}" {2}>{1}</option>'.
-				format(fo.value, fo.caption,
+				format(fo.value || '', 
+					   fo.caption || '',
 				fo.selected?"selected":"");
 		});
 		strFormHtml += '</select>';
@@ -147,8 +148,8 @@ CommonDlg.prototype.buildField = function(field) {
 		strFormHtml += '<input type="{0}" class="form-control" name="{1}" id="{1}" value="{2}" placeholder="{3}">'.
 			format(field.type,
 				   field.name,
-				   field.value,
-				   field.placeholder?field.placeholder:"");
+				   field.value || '',
+				   field.placeholder || "");
 	}
 
 	return strFormHtml;

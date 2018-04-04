@@ -9,6 +9,7 @@ import org.apache.ibatis.type.Alias;
 @Alias("userModel")
 public class UserModel extends BaseModel {
 	public static final UserModel Empty = new UserModel();
+	private String no;
 	private String name;
 
 	public String getName() {
@@ -17,5 +18,13 @@ public class UserModel extends BaseModel {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getNo() {
+		return no;
+	}
+
+	public void setNo(String no) {
+		this.no = no;
 	}
 }

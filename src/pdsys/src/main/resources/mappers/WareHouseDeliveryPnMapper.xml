@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.zworks.pdsys.mappers.WareHouseDeliveryBOMMapper">
-	<resultMap id="wareHouseBOMResultMap" type="wareHouseBOMModel" >  
-        <id column="wh_bom_id" property="id" />  
-        <result column="wh_bom_num" property="num" />
+<mapper namespace="com.zworks.pdsys.mappers.WareHouseDeliveryPnMapper">
+	<resultMap id="wareHousePnResultMap" type="wareHousePnModel" >  
+        <id column="wh_pn_id" property="id" />  
+        <result column="wh_pn_num" property="num" />
     </resultMap>
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="user_id" property="id" />  
@@ -16,51 +16,51 @@
         <result column="d_time" property="time" />  
         <association property="user" resultMap="userResultMap"/>
     </resultMap>
-	<resultMap id="wareHouseDeliveryBOMResultMap" type="wareHouseDeliveryBOMModel" >  
-        <id column="d_bom_id" property="id" />  
-        <result column="d_bom_num" property="num" />  
+	<resultMap id="wareHouseDeliveryPnResultMap" type="wareHouseDeliveryPnModel" >  
+        <id column="d_pn_id" property="id" />  
+        <result column="d_pn_num" property="num" />  
         <association property="wareHouseDelivery" resultMap="wareHouseDeliveryResultMap"/>
-        <association property="wareHouseBOM" resultMap="wareHouseBOMResultMap"/>
+        <association property="wareHousePn" resultMap="wareHousePnResultMap"/>
     </resultMap>
 
-	<select id="queryList" parameterType="wareHouseDeliveryBOMModel" resultMap="wareHouseDeliveryBOMResultMap">
-		select d_bom.c_id as d_bom_id,
-			   d_bom.c_num as d_bom_num,
+	<select id="queryList" parameterType="wareHouseDeliveryPnModel" resultMap="wareHouseDeliveryPnResultMap">
+		select d_pn.c_id as d_pn_id,
+			   d_pn.c_num as d_pn_num,
 		       d.c_id as d_id,
 		       user.c_id as user_id,
 		       user.c_name as user_name,
-		       wh_bom.c_id as wh_bom_id,
-		       wh_bom.c_num as wh_bom_num
-		from delivery_bom_tbl as d_bom
-		left join delivery_tbl as d on d_bom.c_delivery_id = d.c_id
+		       wh_pn.c_id as wh_pn_id,
+		       wh_pn.c_num as wh_pn_num
+		from delivery_pn_tbl as d_pn
+		left join delivery_tbl as d on d_pn.c_delivery_id = d.c_id
 		left join user_tbl as user on d.c_user_id = user.c_id
-		left join warehouse_bom_tbl as wh_bom on d_bom.c_ref_id = wh_bom.c_id
+		left join warehouse_pn_tbl as wh_pn on d_pn.c_ref_id = wh_pn.c_id
 		<where>
 			<if test="wareHouseDelivery.user != null and wareHouseDelivery.user.id >= 0">
 				and user.c_id = #{wareHouseDelivery.user.id}
 			</if>
-			<if test="wareHouseBOM != null and wareHouseBOM.id >= 0">
-				and wh_bom.c_id = #{wareHouseBOM.id}
+			<if test="wareHousePn != null and wareHousePn.id >= 0">
+				and wh_pn.c_id = #{wareHousePn.id}
 			</if>
 		</where>
 	</select>
 	
-	<insert id="add"  parameterType="wareHouseDeliveryBOMModel">
-    	insert into delivery_bom_tbl (
+	<insert id="add"  parameterType="wareHouseDeliveryPnModel">
+    	insert into delivery_pn_tbl (
     		c_delivery_id,
     		c_ref_id,
     		c_num) 
     	values (
     		#{wareHouseDelivery.id},
-    		#{wareHouseBOM.id},
+    		#{wareHousePn.id},
     		#{num})
       	<selectKey keyProperty="id" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
       	</selectKey>
     </insert>
     
-    <update id="update"  parameterType="wareHouseDeliveryBOMModel">
-    	update delivery_bom_tbl
+    <update id="update"  parameterType="wareHouseDeliveryPnModel">
+    	update delivery_pn_tbl
 		set	c_num = #{num}
     	<where>
 			c_id = #{id}
