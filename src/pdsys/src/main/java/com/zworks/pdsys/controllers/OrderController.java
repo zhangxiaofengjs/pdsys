@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.OrderModel;
+import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.services.OrderService;
 
 @Controller
@@ -58,4 +59,17 @@ public class OrderController {
 		orderService.save(order);
 		return JSONResponse.success("新增订单成功!");
 	}
+	
+	/**
+	 * 订单详细
+	 */
+	@RequestMapping("/detail")
+    //public String showOrderDetail(@PathVariable(name="orderId") int orderId, OrderModel order, Model model) {
+	public String showOrderDetail(OrderModel order, Model model) {
+		List<OrderPnModel> list = orderService.showOrderDetail(order);
+		model.addAttribute("orderDetail", list);
+		model.addAttribute("order", order);
+		
+        return "order/detail";
+    }
 }

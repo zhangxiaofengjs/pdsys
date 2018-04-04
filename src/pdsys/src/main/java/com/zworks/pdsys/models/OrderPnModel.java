@@ -14,6 +14,7 @@ public class OrderPnModel extends BaseModel{
 	private OrderModel order;
 	private float num;
 	private float rejectRatio;
+	private WareHousePnModel whpn;
 	
 	public OrderPnModel() {
 		pn = PnModel.Empty;
@@ -44,6 +45,14 @@ public class OrderPnModel extends BaseModel{
 
 	public void setOrder(OrderModel order) {
 		this.order = order;
+	}
+
+	public WareHousePnModel getWhpn() {
+		return whpn;
+	}
+
+	public void setWhpn(WareHousePnModel whpn) {
+		this.whpn = whpn;
 	}
 
 }

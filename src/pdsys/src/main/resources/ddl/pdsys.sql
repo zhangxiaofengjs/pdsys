@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `delivery_bom_tbl` (
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COMMENT='出库单表';
 
--- テーブル pdsys.delivery_bom_tbl: ~13 rows (約) のデータをダンプしています
+-- テーブル pdsys.delivery_bom_tbl: ~16 rows (約) のデータをダンプしています
 DELETE FROM `delivery_bom_tbl`;
 /*!40000 ALTER TABLE `delivery_bom_tbl` DISABLE KEYS */;
 INSERT INTO `delivery_bom_tbl` (`c_id`, `c_delivery_id`, `c_ref_id`, `c_num`) VALUES
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `delivery_pn_tbl` (
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='出库单表PN';
 
--- テーブル pdsys.delivery_pn_tbl: ~0 rows (約) のデータをダンプしています
+-- テーブル pdsys.delivery_pn_tbl: ~8 rows (約) のデータをダンプしています
 DELETE FROM `delivery_pn_tbl`;
 /*!40000 ALTER TABLE `delivery_pn_tbl` DISABLE KEYS */;
 INSERT INTO `delivery_pn_tbl` (`c_id`, `c_delivery_id`, `c_ref_id`, `c_num`) VALUES
@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `delivery_tbl` (
   KEY `c_id` (`c_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COMMENT='出库单表';
 
--- テーブル pdsys.delivery_tbl: ~7 rows (約) のデータをダンプしています
+-- テーブル pdsys.delivery_tbl: ~11 rows (約) のデータをダンプしています
 DELETE FROM `delivery_tbl`;
 /*!40000 ALTER TABLE `delivery_tbl` DISABLE KEYS */;
 INSERT INTO `delivery_tbl` (`c_id`, `c_user_id`, `c_time`) VALUES
