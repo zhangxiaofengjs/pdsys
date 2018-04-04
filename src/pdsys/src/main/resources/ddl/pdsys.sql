@@ -39,29 +39,97 @@ INSERT INTO `bom_tbl` (`c_id`, `c_pn`, `c_name`, `c_unit_id`, `c_supplier_id`, `
 --  テーブル pdsys.customer_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `customer_tbl` (
   `c_id` int(11) DEFAULT NULL COMMENT 'ID',
-  `c_name` int(11) DEFAULT NULL COMMENT '顾客名',
-  `c_address` int(11) DEFAULT NULL COMMENT '地址',
-  `c_phone` int(11) DEFAULT NULL COMMENT '联系方式'
+  `c_name` varchar(50) DEFAULT NULL COMMENT '顾客名',
+  `c_address` varchar(50) DEFAULT NULL COMMENT '地址',
+  `c_phone` varchar(50) DEFAULT NULL COMMENT '联系方式'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='顾客表 ';
 
--- テーブル pdsys.customer_tbl: ~0 rows (約) のデータをダンプしています
+-- テーブル pdsys.customer_tbl: ~2 rows (約) のデータをダンプしています
 DELETE FROM `customer_tbl`;
 /*!40000 ALTER TABLE `customer_tbl` DISABLE KEYS */;
+INSERT INTO `customer_tbl` (`c_id`, `c_name`, `c_address`, `c_phone`) VALUES
+	(1, '王子造纸', '开发区002号', '888-888-588'),
+	(2, '王子造飞机', '前门大街001号', '888-888-888');
 /*!40000 ALTER TABLE `customer_tbl` ENABLE KEYS */;
+
+--  テーブル pdsys.delivery_bom_tbl の構造をダンプしています
+CREATE TABLE IF NOT EXISTS `delivery_bom_tbl` (
+  `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_delivery_id` int(11) NOT NULL COMMENT '出库单ID',
+  `c_ref_id` int(11) NOT NULL COMMENT '出库品目ID',
+  `c_num` float NOT NULL DEFAULT '0' COMMENT '数量',
+  PRIMARY KEY (`c_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COMMENT='出库单表';
+
+-- テーブル pdsys.delivery_bom_tbl: ~13 rows (約) のデータをダンプしています
+DELETE FROM `delivery_bom_tbl`;
+/*!40000 ALTER TABLE `delivery_bom_tbl` DISABLE KEYS */;
+INSERT INTO `delivery_bom_tbl` (`c_id`, `c_delivery_id`, `c_ref_id`, `c_num`) VALUES
+	(33, 1, 1, 111),
+	(34, 8, 1, 6),
+	(35, 8, 2, 6),
+	(38, 6, 1, 1),
+	(39, 6, 2, 1),
+	(40, 1, 1, 1),
+	(41, 9, 2, 1),
+	(42, 1, 1, 1),
+	(43, 10, 2, 1),
+	(44, 10, 1, 1),
+	(45, 1, 1, 1),
+	(46, 11, 2, 1),
+	(47, 11, 1, 1),
+	(48, 17, 1, 999),
+	(49, 17, 2, 999),
+	(50, 17, 4, 999);
+/*!40000 ALTER TABLE `delivery_bom_tbl` ENABLE KEYS */;
+
+--  テーブル pdsys.delivery_pn_tbl の構造をダンプしています
+CREATE TABLE IF NOT EXISTS `delivery_pn_tbl` (
+  `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_delivery_id` int(11) NOT NULL COMMENT '出库单ID',
+  `c_ref_id` int(11) NOT NULL COMMENT '出库品目ID',
+  `c_num` float NOT NULL DEFAULT '0' COMMENT '数量',
+  PRIMARY KEY (`c_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='出库单表PN';
+
+-- テーブル pdsys.delivery_pn_tbl: ~0 rows (約) のデータをダンプしています
+DELETE FROM `delivery_pn_tbl`;
+/*!40000 ALTER TABLE `delivery_pn_tbl` DISABLE KEYS */;
+INSERT INTO `delivery_pn_tbl` (`c_id`, `c_delivery_id`, `c_ref_id`, `c_num`) VALUES
+	(1, 17, 1, 907),
+	(2, 17, 2, 907),
+	(5, 18, 1, 1),
+	(6, 18, 2, 1),
+	(7, 12, 1, 1),
+	(8, 12, 2, 1),
+	(9, 12, 3, 1),
+	(10, 12, 4, 1);
+/*!40000 ALTER TABLE `delivery_pn_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.delivery_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `delivery_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT,
   `c_user_id` int(11) NOT NULL,
   `c_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`c_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='出库单表';
+  PRIMARY KEY (`c_id`),
+  KEY `c_id` (`c_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COMMENT='出库单表';
 
--- テーブル pdsys.delivery_tbl: ~1 rows (約) のデータをダンプしています
+-- テーブル pdsys.delivery_tbl: ~7 rows (約) のデータをダンプしています
 DELETE FROM `delivery_tbl`;
 /*!40000 ALTER TABLE `delivery_tbl` DISABLE KEYS */;
 INSERT INTO `delivery_tbl` (`c_id`, `c_user_id`, `c_time`) VALUES
-	(1, 1, NULL);
+	(6, 18, NULL),
+	(9, 999, NULL),
+	(10, 188, NULL),
+	(11, 4, NULL),
+	(12, 2, NULL),
+	(13, 333, NULL),
+	(14, 333, NULL),
+	(15, 333, NULL),
+	(16, 333, NULL),
+	(17, 16, NULL),
+	(18, 1, NULL);
 /*!40000 ALTER TABLE `delivery_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.order_pn_tbl の構造をダンプしています
@@ -224,7 +292,7 @@ CREATE TABLE IF NOT EXISTS `user_tbl` (
 DELETE FROM `user_tbl`;
 /*!40000 ALTER TABLE `user_tbl` DISABLE KEYS */;
 INSERT INTO `user_tbl` (`c_id`, `c_no`, `c_name`, `c_phone`, `c_address`) VALUES
-	(1, 'x01', '小花猫', '1123', '前门大街'),
+	(1, 'x01', '李四', '1123', '前门大街'),
 	(2, 'x02', '张三', '1156', '日本皇宫');
 /*!40000 ALTER TABLE `user_tbl` ENABLE KEYS */;
 

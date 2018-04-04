@@ -14,7 +14,7 @@ import com.zworks.pdsys.models.WareHouseDeliveryModel;
 @Mapper
 public interface WareHouseDeliveryMapper {
 	
-	int add(WareHouseDeliveryModel obj);
+	void add(WareHouseDeliveryModel obj);
 
 	List<WareHouseDeliveryModel> queryList(WareHouseDeliveryModel obj);
 }

@@ -31,7 +31,7 @@
         <id column="wh_id" property="id" />  
         <result column="wh_num" property="num" />  
         <result column="wh_type" property="type" />  
-        <association property="orderItem" resultMap="orderPnResultMap"/>
+        <association property="orderPn" resultMap="orderPnResultMap"/>
     </resultMap>
     
 	<select id="queryList" parameterType="wareHousePnModel" resultMap="warehousePnResultMap">
@@ -43,8 +43,8 @@
 		LEFT JOIN unit_tbl AS unit ON pn.c_unit_id = unit.c_id
 		LEFT JOIN order_tbl AS od ON od_pn.c_order_id = od.c_id
 		<where>
-			<if test="orderItem != null and orderItem.pn != null">
-				and pn.c_pn like '%${orderItem.pn.pn}%'
+			<if test="orderPn != null and orderPn.pn != null">
+				and pn.c_pn like '%${orderPn.pn.pn}%'
 			</if>
 		</where>
 	</select>

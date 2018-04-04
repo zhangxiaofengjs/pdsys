@@ -10,12 +10,12 @@ import org.apache.ibatis.type.Alias;
 public class WareHousePnModel extends BaseModel{
 	public static final WareHousePnModel Empty = new WareHousePnModel();
 	
-	private OrderPnModel orderItem;
+	private OrderPnModel orderPn;
 	private float num;
 	private int type;
 	
 	public WareHousePnModel() {
-		orderItem = OrderPnModel.Empty;
+		orderPn = OrderPnModel.Empty;
 	}
 	
 	public float getNum() {
@@ -26,12 +26,12 @@ public class WareHousePnModel extends BaseModel{
 		this.num = num;
 	}
 
-	public OrderPnModel getOrderItem() {
-		return orderItem;
+	public OrderPnModel getOrderPn() {
+		return orderPn;
 	}
 
-	public void setOrderItem(OrderPnModel orderItem) {
-		this.orderItem = orderItem;
+	public void setOrderPn(OrderPnModel orderPn) {
+		this.orderPn = orderPn;
 	}
 
 	public int getType() {

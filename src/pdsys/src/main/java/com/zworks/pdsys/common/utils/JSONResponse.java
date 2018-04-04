@@ -22,6 +22,12 @@ public class JSONResponse extends HashMap<String, Object> {
 		return r;
 	}
 	
+	public static JSONResponse success() {
+		JSONResponse r = new JSONResponse();
+		r.put("success", true);
+		return r;
+	}
+	
 	public static JSONResponse error(String msg) {
 		JSONResponse r = new JSONResponse();
 		r.put("success", false);

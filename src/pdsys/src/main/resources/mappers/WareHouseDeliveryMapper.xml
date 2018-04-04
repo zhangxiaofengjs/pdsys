@@ -30,7 +30,7 @@
 	
 	<insert id="add"  parameterType="wareHouseDeliveryModel">
     	insert into delivery_tbl (c_user_id) values (#{user.id})
-      	<selectKey keyProperty="id" resultType="java.lang.Integer">
+      	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
       	</selectKey>
     </insert>
