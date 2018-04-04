@@ -15,11 +15,10 @@ $(function () {
 					"name":"customer.id",
 					"label":"顾客",
 					"type":"select",
+					"options":[],
 					"ajax":true,
 					"url":"/customer/list",
-					"options":[],
 					"convertAjaxData" : function(field, data) {
-						console.log(data);
 						//将返回的值转化为Field规格数据,以供重新渲染
 						//做成选择分支
 						data.forEach(function(customer, idx) {
