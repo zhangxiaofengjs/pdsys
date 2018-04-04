@@ -23,7 +23,8 @@ CommonDlg.prototype.showMsgDlg = function(opt) {
 						  format(this.option.target + "_btn_yes",
 								  this.option.target + "_btn_no");
 	} else {
-		strButtonHtml += '<button type="button" class="btn btn-info btn-sm" data-dismiss="modal">确定</button>';
+		strButtonHtml += '<button type="button" class="btn btn-info btn-sm" data-dismiss="modal" id="{0}" name="{0}">确定</button>'.
+						  format(this.option.target + "_btn_ok");
 	}
 	//bootstrap dialog
 	var strHtml = 
