@@ -17,14 +17,10 @@ $(function () {
 					"type":"select",
 					"ajax":true,
 					"url":"/customer/list",
-					"convertAjaxData" : function(data) {
+					"options":[],
+					"convertAjaxData" : function(field, data) {
+						console.log(data);
 						//将返回的值转化为Field规格数据,以供重新渲染
-						var field = {
-							"name":"customer.id",
-							"label":"顾客",
-							"type":"select",
-							"options":[]
-						};
 						//做成选择分支
 						data.forEach(function(customer, idx) {
 							field.options.push({
@@ -32,8 +28,6 @@ $(function () {
 								"caption":customer.name,
 							});
 						});
-						
-						return field;
 					}
 				}],
 			"url":"/order/save",
