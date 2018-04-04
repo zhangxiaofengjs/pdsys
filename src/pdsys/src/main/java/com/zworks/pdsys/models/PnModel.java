@@ -16,6 +16,7 @@ public class PnModel extends BaseModel{
 	private String name;
 	private PnClsModel pnCls;
 	private UnitModel unit;
+	private BomRelationModel bomRel;
 	private List<BOMModel> boms;
 
 	public PnModel() {
@@ -61,5 +62,13 @@ public class PnModel extends BaseModel{
 
 	public void setBoms(List<BOMModel> boms) {
 		this.boms = boms;
+	}
+
+	public BomRelationModel getBomRel() {
+		return bomRel;
+	}
+
+	public void setBomRel(BomRelationModel bomRel) {
+		this.bomRel = bomRel;
 	}
 }

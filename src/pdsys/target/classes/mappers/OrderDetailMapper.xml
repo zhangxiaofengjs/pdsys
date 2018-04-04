@@ -19,13 +19,19 @@
         <id column="bom_ut_id" property="id"/>
         <result column="bom_ut_name" property="name"/>  
     </resultMap>
+    <resultMap id="bomRelResultMap" type="bomRelationModel" >  
+        <result column="bom_rel_pn_id" property="pnId"/>
+        <result column="bom_rel_bom_id" property="bomId"/> 
+        <result column="bom_rel_use_num" property="useNum"/> 
+    </resultMap>
     <resultMap id="pnResultMap" type="pnModel" >  
         <id column="od_pn_id" property="id" />  
         <result column="od_pn_pn" property="pn"/>  
         <result column="od_pn_name" property="name"/>  
         <association property="unit" resultMap="pnUnitResultMap"/>
         <association property="pnCls" resultMap="pnClsResultMap"/>
-        <collection property="boms" ofType="com.zworks.pdsys.models.BOMModel" > 
+        <association property="bomRel" resultMap="bomRelResultMap"/>
+        <collection property="boms" ofType="BOMModel" javaType="list"> 
 	        <id column="bom_id" property="id" />
 	        <result column="bom_name" property="name" />
 	        <result column="bom_type" property="type" />
@@ -54,7 +60,9 @@
 		       bom.c_id as bom_id,
 		       bom.c_name as bom_name,
 		       bom.c_type as bom_type,
-		       pn_bom_relation.c_use_num as bom_relation_num,
+		       pn_bom_relation.c_pn_id as bom_rel_pn_id,
+		       pn_bom_relation.c_bom_id as bom_rel_bom_id,
+		       pn_bom_relation.c_use_num as bom_rel_use_num,
 		       bom_ut.c_id as bom_ut_id,
 		       bom_ut.c_name as bom_ut_name,
 		       wh_pn.c_id as wh_pn_id,
