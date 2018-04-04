@@ -64,10 +64,11 @@ public class OrderController {
 	 * 订单详细
 	 */
 	@RequestMapping("/detail")
-    //public String showOrderDetail(@PathVariable(name="orderId") int orderId, OrderModel order, Model model) {
 	public String showOrderDetail(OrderModel order, Model model) {
 		List<OrderPnModel> list = orderService.showOrderDetail(order);
 		model.addAttribute("orderDetail", list);
+		int orderId = order.getId();
+		order = orderService.queryObject(orderId);
 		model.addAttribute("order", order);
 		
         return "order/detail";

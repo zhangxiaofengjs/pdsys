@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.CustomerMapper">
-	<resultMap id="userResultMap" type="userModel" >  
+	<resultMap id="customerResultMap" type="customerModel" >  
         <id column="c_id" property="id"/>  
         <id column="c_name" property="name"/>  
     </resultMap>
     
-	<select id="queryList" resultMap="userResultMap">
+	<select id="queryList" resultMap="customerResultMap">
 		select * from customer_tbl 
 	</select>
 </mapper>

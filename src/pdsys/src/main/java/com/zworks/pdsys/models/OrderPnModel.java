@@ -1,5 +1,7 @@
 package com.zworks.pdsys.models;
 
+import java.util.List;
+
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -14,7 +16,7 @@ public class OrderPnModel extends BaseModel{
 	private OrderModel order;
 	private float num;
 	private float rejectRatio;
-	private WareHousePnModel whpn;
+	private List<WareHousePnModel> whpns;
 	
 	public OrderPnModel() {
 		pn = PnModel.Empty;
@@ -47,12 +49,12 @@ public class OrderPnModel extends BaseModel{
 		this.order = order;
 	}
 
-	public WareHousePnModel getWhpn() {
-		return whpn;
+	public List<WareHousePnModel> getWhpns() {
+		return whpns;
 	}
 
-	public void setWhpn(WareHousePnModel whpn) {
-		this.whpn = whpn;
+	public void setWhpns(List<WareHousePnModel> whpns) {
+		this.whpns = whpns;
 	}
 
 }

@@ -2,11 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.OrderDetailMapper">
-	<resultMap id="wareHousePnResultMap" type="wareHousePnModel" >  
-        <id column="wh_pn_id" property="id"/>
-        <result column="wh_pn_type" property="type"/> 
-        <result column="wh_pn_num" property="num"/> 
-    </resultMap>
 	<resultMap id="pnClsResultMap" type="pnClsModel" >  
         <id column="od_pn_cls_id" property="id"/>
         <result column="od_pn_cls_name" property="name"/>   
@@ -43,7 +38,11 @@
         <result column="order_pn_num" property="num" />  
         <result column="order_pn_reject_ratio" property="rejectRatio" />  
         <association property="pn" resultMap="pnResultMap"/>
-        <association property="whpn" resultMap="wareHousePnResultMap"/>
+        <collection property="whpns" ofType="wareHousePnModel" javaType="list"> 
+	        <id column="wh_pn_id" property="id" />
+	        <result column="wh_pn_type" property="type" />
+	        <result column="wh_pn_num" property="num" />
+	    </collection>
     </resultMap>
     
 	<select id="showOrderDetail" parameterType="orderPnModel" resultMap="orderDetailMapper">
