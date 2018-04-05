@@ -109,18 +109,6 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>  
         </dependency>
         
-        <!--springmvc 转 Json-->
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${jackson-mapper-asl-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>${jackson-core-asl-version}</version>
-        </dependency>
-        
 		 <!-- 以下未整理 
 		<dependency>
 			<groupId>org.springframework</groupId>
