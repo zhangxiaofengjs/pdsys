@@ -1,5 +1,7 @@
 package com.zworks.pdsys.models;
 
+import java.util.Date;
+
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -9,7 +11,25 @@ import org.apache.ibatis.type.Alias;
 @Alias("baseModel")
 public class BaseModel {
 	private int id;
+	private Date updateTime;
+	public Date getUpdateTime() {
+		return updateTime;
+	}
 
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public UserModel getUser() {
+		return user;
+	}
+
+	public void setUser(UserModel user) {
+		this.user = user;
+	}
+
+	private UserModel user;
+	
 	public int getId() {
 		return id;
 	}

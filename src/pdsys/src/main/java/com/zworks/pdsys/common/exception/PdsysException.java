@@ -1,35 +1,36 @@
 package com.zworks.pdsys.common.exception;
 
 /**
- * 自定义异常
- * 
- * @author ZHAI
- * 
- * @date 2018-01-22
+ * @author: zhangxiaofengjs@163.com
+ * @version: 2018/04/05
  */
-public class RRException extends RuntimeException {
+public class PdsysException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	private String msg;
 	private int code = 500;
 
-	public RRException(String msg) {
+	public PdsysException(String msg) {
 		super(msg);
 		this.msg = msg;
 	}
 
-	public RRException(String msg, Throwable e) {
+	public PdsysException(int code) {
+		this.code = code;
+	}
+	
+	public PdsysException(String msg, Throwable e) {
 		super(msg, e);
 		this.msg = msg;
 	}
 
-	public RRException(String msg, int code) {
+	public PdsysException(String msg, int code) {
 		super(msg);
 		this.msg = msg;
 		this.code = code;
 	}
 
-	public RRException(String msg, int code, Throwable e) {
+	public PdsysException(String msg, int code, Throwable e) {
 		super(msg, e);
 		this.msg = msg;
 		this.code = code;

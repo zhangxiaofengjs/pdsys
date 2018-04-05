@@ -1,0 +1,53 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<div th:fragment="content(wareHouseMachineParts)">
+	<script th:src="@{/js/warehouse/list/machinePart.js}"></script> 
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+	  		<div class="navbar-header">
+	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
+	  		</div>
+	 		<p class="navbar-text">品番</p>
+	 		<form class="navbar-form navbar-left" role="form" th:object="${formBean.wareHouseMachinePart}" th:action="@{main?type=machinepart}" method="post">
+				 <div class="form-group">
+				   <input type="text" class="form-control" th:field="*{machinePart.pn}">
+	 			</div>
+	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
+	 			<button type="button" class="btn btn-sm btn-info" name="checkout">加到出库单</button>
+			</form>
+		</div>
+	</nav>
+	<table class="table table-striped table-bordered table-hover table-condensed" >
+		<thead>
+		    <tr>
+				<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
+				<th>品番</th>
+				<th>名称</th>
+				<th>在库数量</th>
+				<th>单位</th>
+				<th>供应商</th>
+		    </tr>
+		</thead>
+		<tbody>
+		<tr th:each="wareHouseMachinePart : ${wareHouseMachineParts}"
+			th:with="machinePart=${wareHouseMachinePart.machinePart},
+					 unit=(${wareHouseMachinePart.machinePart}?${wareHouseMachinePart.machinePart.unit}:_),
+					 supplier=(${wareHouseMachinePart.machinePart}?${wareHouseMachinePart.machinePart.supplier}:_)"
+			th:rowid="${wareHouseMachinePart.id}">
+			<td>
+				<input type="checkbox" name="select" th:rowid="${wareHouseMachinePart.id}">
+			</td>
+			<td th:text="${machinePart}?${machinePart.pn}:_"></td>
+			<td th:text="${machinePart}?${machinePart.name}:_"></td>
+			<td th:text="${wareHouseMachinePart.num}"></td>
+			<td th:text="${unit}?${unit.name}:_"></td>
+			<td th:text="${supplier}?${supplier.name}:_"></td>
+	    </tr>
+	  </tbody>
+	</table>
+	<div id="checkout_dlg_div"></div>
+	<div id="msg_div"></div>
+</div>
+</body>
+</html>

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.common.exception.PdsysException;
+import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.StringUtils;
 import com.zworks.pdsys.form.beans.WareHouseAddDeliveryObjFormBean;
@@ -23,13 +25,20 @@ import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
+import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.services.WareHouseBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
+import com.zworks.pdsys.services.WareHouseDeliveryMachinePartService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
 import com.zworks.pdsys.services.WareHouseDeliveryService;
+import com.zworks.pdsys.services.WareHouseMachinePartService;
 import com.zworks.pdsys.services.WareHousePnService;
 
+/**
+ * @author: zhangxiaofengjs@163.com
+ * @version: 2018/04/05
+ */
 @Controller
 @RequestMapping("/warehouse")
 public class WareHouseController {
@@ -38,7 +47,11 @@ public class WareHouseController {
 	@Autowired
 	WareHousePnService wareHousePnService;
 	@Autowired
+	WareHouseMachinePartService wareHouseMachinePartService;
+	@Autowired
 	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
+	@Autowired
+	WareHouseDeliveryMachinePartService wareHouseDeliveryMachinePartService;
 	@Autowired
 	WareHouseDeliveryPnService wareHouseDeliveryPnService;
 	@Autowired
@@ -58,13 +71,20 @@ public class WareHouseController {
 			List<?> list = wareHouseBOMService.queryList(whBom);
 			model.addAttribute("list", list);
 		}
-		
-		if(type.equals("pn")) {
+		else if(type.equals("pn")) {
 			WareHousePnModel whPn = formBean.getWareHousePn();
 			List<?> list = wareHousePnService.queryList(whPn);
 			model.addAttribute("list", list);
 		}
-		
+		else if(type.equals("machinepart")) {
+			WareHouseMachinePartModel whPn = formBean.getWareHouseMachinePart();
+			List<?> list = wareHouseMachinePartService.queryList(whPn);
+			model.addAttribute("list", list);
+		}
+		else {
+			throw new PdsysException("错误参数:/list/main?type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
+		}
+				
 		model.addAttribute("formBean", formBean);
 		model.addAttribute("type", type);
 		return "warehouse/list/main";
@@ -88,9 +108,12 @@ public class WareHouseController {
 			wareHouseDeliveryPnService.addOrUpdate(wareHouseAddDeliveryObjFormBean.getWareHousePnIds(),
 					wareHouseAddDeliveryObjFormBean.getWareHouseDeliveryPn());
 			return JSONResponse.success();
+		} else if("machinepart".equals(type)) {
+			wareHouseDeliveryMachinePartService.addOrUpdate(wareHouseAddDeliveryObjFormBean.getWareHouseMachinePartIds(),
+					wareHouseAddDeliveryObjFormBean.getWareHouseDeliveryMachinePart());
+			return JSONResponse.success();
 		} else {
-			return JSONResponse.error("错误的请求:" + type);
+			throw new PdsysException(PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
-		
     }
 }

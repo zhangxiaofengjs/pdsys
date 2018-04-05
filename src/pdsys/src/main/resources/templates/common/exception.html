@@ -1,0 +1,27 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta th:include="common/header::header">
+</head>
+<body>
+<div th:fragment="content(wareHousePns)">
+	<table class="table table-bordered table-condensed" contenteditable="false">
+		<thead>
+		    <tr class="alert-warning">
+				<th colspan="2">系统错误</th>
+		    </tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td th:text="错误代码" style="width:120px;"></td>
+				<td th:with="errCode = ${'000000' + error.code}, errCodeLen=${#strings.length(errCode)}"
+					th:text="${#strings.substring(errCode,errCodeLen-6,errCodeLen)}"></td>
+			</tr>
+			<tr>
+				<td th:text="详细消息"></td>
+				<td th:text="${error.msg}"></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</body>
+</html>
