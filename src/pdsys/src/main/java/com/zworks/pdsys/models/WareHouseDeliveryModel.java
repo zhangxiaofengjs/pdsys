@@ -13,21 +13,12 @@ public class WareHouseDeliveryModel extends BaseModel{
 	public static final WareHouseDeliveryModel Empty = new WareHouseDeliveryModel();
 	
 	private UserModel user;
-	private float num;
 	private Date time;
 	
 	public WareHouseDeliveryModel() {
 		setUser(UserModel.Empty);
 	}
 	
-	public float getNum() {
-		return num;
-	}
-
-	public void setNum(float num) {
-		this.num = num;
-	}
-
 	public Date getTime() {
 		return time;
 	}

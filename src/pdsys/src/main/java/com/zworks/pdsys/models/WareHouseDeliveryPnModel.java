@@ -6,17 +6,17 @@ import org.apache.ibatis.type.Alias;
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/04/04
  */
-@Alias("wareHouseDeliveryBOMModel")
-public class WareHouseDeliveryBOMModel extends BaseModel{
-	public static final WareHouseDeliveryBOMModel Empty = new WareHouseDeliveryBOMModel();
+@Alias("wareHouseDeliveryPnModel")
+public class WareHouseDeliveryPnModel extends BaseModel{
+	public static final WareHouseDeliveryPnModel Empty = new WareHouseDeliveryPnModel();
 	
 	private WareHouseDeliveryModel wareHouseDelivery;
-	private WareHouseBOMModel wareHouseBOM;
+	private WareHousePnModel wareHousePn;
 	private float num;
 	
-	public WareHouseDeliveryBOMModel() {
+	public WareHouseDeliveryPnModel() {
 		setWareHouseDelivery(WareHouseDeliveryModel.Empty);
-		setWareHouseBOM(WareHouseBOMModel.Empty);
+		setWareHousePn(WareHousePnModel.Empty);
 	}
 	
 	public float getNum() {
@@ -35,11 +35,11 @@ public class WareHouseDeliveryBOMModel extends BaseModel{
 		this.wareHouseDelivery = wareHouseDelivery;
 	}
 
-	public WareHouseBOMModel getWareHouseBOM() {
-		return wareHouseBOM;
+	public WareHousePnModel getWareHousePn() {
+		return wareHousePn;
 	}
 
-	public void setWareHouseBOM(WareHouseBOMModel wareHouseBOM) {
-		this.wareHouseBOM = wareHouseBOM;
+	public void setWareHousePn(WareHousePnModel wareHousePn) {
+		this.wareHousePn = wareHousePn;
 	}
 }

@@ -8,19 +8,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.zworks.pdsys.models.UserModel;
-import com.zworks.pdsys.services.UserService;
+import com.zworks.pdsys.models.CustomerModel;
+import com.zworks.pdsys.services.CustomerService;
 
 @Controller
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/customer")
+public class CustomerController {
 	@Autowired
-	UserService userService;
+	CustomerService customerService;
 	
 	@RequestMapping("/list")
 	@ResponseBody
-    public List<UserModel> list(UserModel user, Model model) {
-		List<UserModel> list = userService.queryList(user);
+    public List<CustomerModel> list(CustomerModel customer, Model model) {
+		List<CustomerModel> list = customerService.queryList(customer);
         return list;
     }
 }

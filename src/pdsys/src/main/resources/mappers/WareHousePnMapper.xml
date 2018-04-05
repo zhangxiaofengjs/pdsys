@@ -21,9 +21,9 @@
         <id column="order_id" property="id" />  
         <result column="order_no" property="no"/>  
     </resultMap>
-    <resultMap id="orderItemResultMap" type="orderItemModel" >  
-        <id column="order_item_id" property="id" />  
-        <result column="order_item_num" property="num"/>  
+    <resultMap id="orderPnResultMap" type="orderPnModel" >  
+        <id column="order_pn_id" property="id" />  
+        <result column="order_pn_num" property="num"/>  
         <association property="pn" resultMap="pnResultMap" />
         <association property="order" resultMap="orderResultMap"/>
     </resultMap>
@@ -31,33 +31,20 @@
         <id column="wh_id" property="id" />  
         <result column="wh_num" property="num" />  
         <result column="wh_type" property="type" />  
-        <association property="orderItem" resultMap="orderItemResultMap"/>
+        <association property="orderPn" resultMap="orderPnResultMap"/>
     </resultMap>
     
 	<select id="queryList" parameterType="wareHousePnModel" resultMap="warehousePnResultMap">
-		select wh_pn.c_id as wh_id,
-		       wh_pn.c_num as wh_num,
-		       wh_pn.c_type as wh_type,
-		       pn.c_id as pn_id,
-		       pn.c_pn as pn_pn,
-		       pn.c_name as pn_name,
-		       pn_cls.c_id as pn_cls_id,
-		       pn_cls.c_name as pn_cls_name,
-		       unit.c_id as unit_id,
-		       unit.c_name as unit_name,
-		       od_item.c_id as order_item_id,
-		       od_item.c_num as order_item_num,
-		       od.c_id as order_id,
-		       od.c_no as order_no
-		from warehouse_pn_tbl as wh_pn
-		left join order_item_tbl as od_item on wh_pn.c_order_item_id = od_item.c_id
-		left join pn_tbl as pn on od_item.c_pn_id = pn.c_id
-		left join pn_cls_tbl as pn_cls on od_item.c_pn_cls_id = pn_cls.c_id
-		left join unit_tbl as unit on pn.c_unit_id = unit.c_id
-		left join order_tbl as od on od_item.c_order_id = od.c_id
+		SELECT wh_pn.c_id AS wh_id, wh_pn.c_num AS wh_num, wh_pn.c_type AS wh_type, pn.c_id AS pn_id, pn.c_pn AS pn_pn, pn.c_name AS pn_name, pn_cls.c_id AS pn_cls_id, pn_cls.c_name AS pn_cls_name, unit.c_id AS unit_id, unit.c_name AS unit_name, od_pn.c_id AS order_pn_id, od_pn.c_num AS order_pn_num, od.c_id AS order_id, od.c_no AS order_no
+		FROM warehouse_pn_tbl AS wh_pn
+		LEFT JOIN order_pn_tbl AS od_pn ON wh_pn.c_order_pn_id = od_pn.c_id
+		LEFT JOIN pn_tbl AS pn ON od_pn.c_pn_id = pn.c_id
+		LEFT JOIN pn_cls_tbl AS pn_cls ON od_pn.c_pn_cls_id = pn_cls.c_id
+		LEFT JOIN unit_tbl AS unit ON pn.c_unit_id = unit.c_id
+		LEFT JOIN order_tbl AS od ON od_pn.c_order_id = od.c_id
 		<where>
-			<if test="orderItem != null and orderItem.pn != null">
-				and pn.c_pn like '%${orderItem.pn.pn}%'
+			<if test="orderPn != null and orderPn.pn != null">
+				and pn.c_pn like '%${orderPn.pn.pn}%'
 			</if>
 		</where>
 	</select>

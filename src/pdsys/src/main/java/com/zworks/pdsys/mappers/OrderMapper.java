@@ -9,5 +9,11 @@ import com.zworks.pdsys.models.OrderModel;
 @Mapper
 public interface OrderMapper {
 	
-	List<OrderModel> queryList();
+	List<OrderModel> queryList( OrderModel orderModel );
+	
+	void delete(OrderModel orderModel);
+	
+	OrderModel queryObject(int id);
+	
+	void save(OrderModel orderModel);
 }

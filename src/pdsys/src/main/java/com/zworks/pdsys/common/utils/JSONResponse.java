@@ -11,12 +11,20 @@ public class JSONResponse extends HashMap<String, Object> {
 	private static final long serialVersionUID = 1L;
 	
 	public JSONResponse() {
+		put("success", true);
+		put("msg", "success");
 	}
 	
 	public static JSONResponse success(String msg) {
 		JSONResponse r = new JSONResponse();
 		r.put("success", true);
 		r.put("msg", msg);
+		return r;
+	}
+	
+	public static JSONResponse success() {
+		JSONResponse r = new JSONResponse();
+		r.put("success", true);
 		return r;
 	}
 	
