@@ -13,25 +13,25 @@ public class WareHouseDeliveryModel extends BaseModel{
 	public static final WareHouseDeliveryModel Empty = new WareHouseDeliveryModel();
 	
 	private UserModel user;
-	private Date time;
+	private Date deliveryTime;
 	
 	public WareHouseDeliveryModel() {
 		setUser(UserModel.Empty);
 	}
 	
-	public Date getTime() {
-		return time;
-	}
-
-	public void setTime(Date time) {
-		this.time = time;
-	}
-
 	public UserModel getUser() {
 		return user;
 	}
 
 	public void setUser(UserModel user) {
 		this.user = user;
+	}
+
+	public Date getDeliveryTime() {
+		return deliveryTime;
+	}
+
+	public void setDeliveryTime(Date deliveryTime) {
+		this.deliveryTime = deliveryTime;
 	}
 }

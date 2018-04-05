@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  $("a[id^='menu_']").click(function(){
+  $("a[refURL]").click(function(){
 	  var self = $(this);
 
 	  showPage(self);

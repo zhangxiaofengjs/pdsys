@@ -82,7 +82,7 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 		
 		if(f.ajax) {
 			//如果数据是ajax取得，先追加一个等待图标
-			strFormHtml += '<div id={0} class="form-control" style="box-shadow:0 1px 1px rgba(0, 0, 0, 0);border-width:0px;padding-left:0px;"><img src="{1}" height="24px" /><span class="text-muted">加载中...</span></div>'.
+			strFormHtml += '<div id="{0}" class="form-control" style="box-shadow:0 1px 1px rgba(0, 0, 0, 0);border-width:0px;padding-left:0px;"><img src="{1}" height="24px" /><span class="text-muted">加载中...</span></div>'.
 				format(f.name + "_ajax_field",
 						PdSys.url("/icons/loading.gif"));
 		} else {

@@ -9,13 +9,13 @@
     </resultMap>
 	<resultMap id="wareHouseDeliveryResultMap" type="wareHouseDeliveryModel" >  
         <id column="d_id" property="id" />  
-        <result column="d_time" property="time" />  
+        <result column="d_delivery_time" property="deliveryTime" />  
         <association property="user" resultMap="userResultMap"/>
     </resultMap>
 
 	<select id="queryList" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
 		select delivery.c_id as d_id,
-			   delivery.c_time as d_time,
+			   delivery.c_delivery_time as d_delivery_time,
 		       user.c_id as user_id,
 		       user.c_no as user_no,
 		       user.c_name as user_name

@@ -22,47 +22,87 @@
 		<ul id="main-nav" class="nav nav-tabs nav-stacked">  
 	    	<li>  
 				<a href="#pdmgr" class="nav-header collapsed" data-toggle="collapse">  
-				     <i class="glyphicon glyphicon-credit-card"></i>
-				     <span>&nbsp;生产管理</span>
+				     <i class="glyphicon glyphicon-th"></i>
+				     <span style="margin-left:5px;" class="text-info"><b>生产管理</b></span>
 				     <span class="pull-right glyphicon glyphicon-chevron-down"></span>  
 				</a>  
 				<ul id="pdmgr" class="nav nav-list collapse secondmenu" style="height: 0px;">  
 				    <li>
-				    	<a href="#" id="menu_order_list" th:refURL="'order/list'" th:displayText="'生产管理/订单管理'">
-				    		&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-th-large">订单管理</span>
+				    	<a href="#" th:refURL="'order/list'" th:displayText="'生产管理/订单管理'">
+				    		<i style="padding-left:20px;" class="glyphicon glyphicon-list-alt"></i>
+				    		<span style="margin-left:5px;"><b>订单管理</b></span>
+				    	</a>
+				    </li>  
+				    <li>
+				    	<a href="#" th:refURL="'order/list'" th:displayText="'生产管理/订单计划'">
+				    		<i style="padding-left:20px;" class="glyphicon glyphicon-calendar"></i>
+				    		<span style="margin-left:5px;"><b>生产计划</b></span>
 				    	</a>
 				    </li>  
 				</ul> 
 	         </li>  
 	         <li>  
-                 <a href="#warehousemgr" class="nav-header collapsed" data-toggle="collapse">  
-                     <span class="glyphicon glyphicon-cog">仓库管理</span>  
+                 <a href="#warehousemgr" class="nav-header collapsed" data-toggle="collapse">
+                 	 <i class="glyphicon glyphicon-home"></i>
+				     <span style="margin-left:5px;"><b>仓库管理</b></span> 
                      <span class="pull-right glyphicon glyphicon-chevron-down"></span>  
                  </a>  
                  <ul id="warehousemgr" class="nav nav-list collapse secondmenu" style="height: 0px;">  
 	                <li>
-	                	<a href="#" id="menu_order_list" th:refURL="'warehouse/list/main'" th:displayText="'仓库管理/在库管理'">
-	                	<span class="glyphicon glyphicon-th-list"></span>在库管理</a>
+	                	<a href="#" th:refURL="'warehouse/list/main'" th:displayText="'仓库管理/在库管理'">
+	                		<i style="padding-left:20px;" class="glyphicon glyphicon-th-list"></i>
+	                		<span style="margin-left:5px;"><b>在库管理</b></span>
+	                	</a>
 	                </li>  
-	                <li><a href="#"><span class="glyphicon glyphicon-th-list"></span>出库管理</a></li>  
+	                <li>
+	                	<a href="#" th:refURL="'warehouse/entry/main'" th:displayText="'仓库管理/入库管理'">
+	                		<i style="padding-left:20px;" class="glyphicon glyphicon-log-in"></i>
+	                		<span style="margin-left:5px;"><b>入库管理</b></span>
+	                	</a>
+	                </li>  
+	                <li>
+	                	<a href="#" th:refURL="'warehouse/delivery/main'" th:displayText="'仓库管理/出库管理'">
+	                		<i style="padding-left:20px;" class="glyphicon glyphicon-shopping-cart"></i>
+	                		<span style="margin-left:5px;"><b>出库管理</b></span>
+	                	</a>
+	                </li>  
             	</ul>  
-       		</li>  
-	        <li>  
-	            <a href="./grid.html">  
-	                <span class="glyphicon glyphicon-globe">通知消息<span class="label label-danger">5</span></span>
-	                <span class="pull-right glyphicon glyphicon-chevron-down"></span>  
-	            </a>  
-	        </li>  
-	        <li>
-	            <a href="./charts.html">  
-	                <i class="glyphicon glyphicon-calendar"></i>图表统计 
-	            </a>  
-	        </li>  
-	        <li>  
-	            <a href="#">  
-	                <span class="glyphicon glyphicon-fire">管理员</span>  
-	            </a>  
-	        </li>  
+       		</li>
+       		<li>  
+                 <a href="#msgmgr" class="nav-header collapsed" data-toggle="collapse">
+                 	 <i class="glyphicon glyphicon-bell"></i>
+				     <span style="margin-left:5px;">
+				     	<b>通知消息</b>
+				     	<span style="margin-left:5px;" class="badge label-danger">5</span>
+				     </span> 
+                     <span class="pull-right glyphicon glyphicon-chevron-down"></span>  
+                 </a>  
+                 <ul id="msgmgr" class="nav nav-list collapse secondmenu" style="height: 0px;">  
+	                <li>
+	                	<a href="#" th:refURL="'warehouse/list/main'" th:displayText="'仓库管理/在库管理'">
+	                		<i style="padding-left:20px;" class="glyphicon glyphicon-star"></i>
+	                		<span style="margin-left:5px;"><b>通知管理</b></span>
+	                	</a>
+	                </li>  
+            	</ul>  
+       		</li>
+       		<li>  
+                 <a href="#sysmgr" class="nav-header collapsed" data-toggle="collapse">
+                 	 <i class="glyphicon glyphicon-cog"></i>
+				     <span style="margin-left:5px;">
+				     	<b>系统维护</b>
+				     </span> 
+                     <span class="pull-right glyphicon glyphicon-chevron-down"></span>  
+                 </a>  
+                 <ul id="sysmgr" class="nav nav-list collapse secondmenu" style="height: 0px;">  
+	                <li>
+	                	<a href="#" th:refURL="'warehouse/list/main'" th:displayText="'系统维护/用户维护'">
+	                		<i style="padding-left:20px;" class="glyphicon glyphicon-user"></i>
+	                		<span style="margin-left:5px;"><b>用户维护</b></span>
+	                	</a>
+	                </li>  
+            	</ul>  
+       		</li> 
 	    </ul>  
 	</div>  
   	<div style="height:100%;margin-left:250px;background-color:#eee;">

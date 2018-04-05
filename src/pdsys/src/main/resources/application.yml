@@ -23,9 +23,9 @@ spring:
     resources: # 指定静态资源的路径
         static-locations: classpath:/static/,classpath:/views/
     datasource: # 数据库配置
-        url: jdbc:mysql://localhost:3306/pdsys
+        url: jdbc:mysql://localhost:3306/pdsys?useSSL=false
         username: root
-        password: 123456
+        password: root
         driverClassName: com.mysql.jdbc.Driver
     thymeleaf: #thymeleaf
         prefix: classpath:/templates/

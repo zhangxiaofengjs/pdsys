@@ -3,19 +3,20 @@
 <head th:include="common/header::header">
 </head>
 <body>
+<div th:text="${xxx}"></div>
 	<ul class="nav nav-tabs">
 		<li role="presentation" th:class="(${type}=='pn'? 'active' : '')">
-			<a th:href="@{/warehouse/list/main?type=pn}">生产库</a>
+			<a th:href="@{/warehouse/entry/main?type=pn}">生产入库</a>
 		</li>
 		<li role="presentation" th:class="(${type}=='bom'? 'active' : '')">
-			<a th:href="@{/warehouse/list/main?type=bom}">原/包材库</a>
+			<a th:href="@{/warehouse/entry/main?type=bom}">原/包材入库</a>
 		</li>
 		<li role="presentation" th:class="(${type}=='machinepart'? 'active' : '')">
-			<a th:href="@{/warehouse/list/main?type=machinepart}">设备备件库</a>
+			<a th:href="@{/warehouse/entry/main?type=machinepart}">设备备件入库</a>
 		</li>
 	</ul>
 	
-<div th:replace="/warehouse/list/__${type}__::content(${list})"></div>
+<div th:replace="/warehouse/entry/__${type}__::content(${entry})"></div>
 <div th:replace="common/footer::copyright"></div>
 </body>
 </html>
