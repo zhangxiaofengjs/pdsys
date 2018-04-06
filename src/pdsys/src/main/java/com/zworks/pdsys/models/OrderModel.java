@@ -100,5 +100,4 @@ public class OrderModel extends BaseModel implements Serializable {
 	public void setCustomer(CustomerModel customer) {
 		this.customer = customer;
 	}
-
 }

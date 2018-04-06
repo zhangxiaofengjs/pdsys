@@ -27,6 +27,7 @@ import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
+import com.zworks.pdsys.models.WareHouseEntryPnModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.services.WareHouseBOMService;
@@ -34,6 +35,7 @@ import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryMachinePartService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
 import com.zworks.pdsys.services.WareHouseDeliveryService;
+import com.zworks.pdsys.services.WareHouseEntryPnService;
 import com.zworks.pdsys.services.WareHouseEntryService;
 import com.zworks.pdsys.services.WareHouseMachinePartService;
 import com.zworks.pdsys.services.WareHousePnService;
@@ -56,25 +58,32 @@ public class WareHouseEntryController {
 	@Autowired
 	WareHouseDeliveryMachinePartService wareHouseDeliveryMachinePartService;
 	@Autowired
-	WareHouseDeliveryPnService wareHouseDeliveryPnService;
+	WareHouseEntryPnService wareHouseEntryPnService;
 	@Autowired
 	WareHouseEntryService wareHouseEntryService;
 	
-	@RequestMapping("/main")
-    public String entryMain(@RequestParam(name="type",required = false, defaultValue="pn")String type,
-    		WareHouseEntryModel entry,
+	@RequestMapping(value= {"/main", "/main/{type}", "/main/{type}/{id}"})
+    public String entryMain(
+    		@PathVariable(name="type" ,required=false)String type,
+    		@PathVariable(name="id", required=false)Integer id,
     		Model model) {
 
-		if(type.equals("bom")) {
+		if(type == null) {
+			type = "pn";
+		} else if(!(type.equals("bom") || type.equals("pn") || type.equals("machinepart"))) {
+			throw new PdsysException("错误参数:/entry/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
-		else if(type.equals("pn")) {
+		
+		WareHouseEntryModel entry;
+		if(id != null) {
+			entry = wareHouseEntryService.queryOne(id);
+			if(entry == null) {
+				throw new PdsysException("错误参数:/entry/type/id=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
+			}
+		} else {
+			entry = new WareHouseEntryModel();
 		}
-		else if(type.equals("machinepart")) {
-		}
-		else {
-			throw new PdsysException("错误参数:/entry/main?type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
-		}
-				
+		
 		model.addAttribute("entry", entry);
 		model.addAttribute("type", type);
 		return "warehouse/entry/main";
@@ -83,11 +92,30 @@ public class WareHouseEntryController {
 	/**
 	 * 新建入库单
 	 * */
-	@RequestMapping(value="/add")
-    public JSONResponse addEntry(Model model) {
-		//wareHouseEntryService.add(wareHouseEntry);
-		model.addAttribute("xxx", "xxxxx");
-		WareHouseEntryModel entry = new WareHouseEntryModel();
-		return JSONResponse.success().put("entry", entry);
+	@RequestMapping(value="/add/entry")
+	@ResponseBody
+    public JSONResponse addEntry(@RequestBody WareHouseEntryModel entry, Model model) {
+		wareHouseEntryService.add(entry);
+		return JSONResponse.success().put("id", entry.getId());
+    }
+	
+	/**
+	 * 新建入库明细
+	 * */
+	@RequestMapping(value="/add/pn")
+	@ResponseBody
+    public JSONResponse addEntry(@RequestBody WareHouseEntryPnModel entryPn, Model model) {
+		wareHouseEntryPnService.add(entryPn);
+		return JSONResponse.success();
+    }
+	
+	/**
+	 * 新建入库明细
+	 * */
+	@RequestMapping(value="/delete/pn")
+	@ResponseBody
+    public JSONResponse addEntry(@RequestBody List<WareHouseEntryPnModel> entryPns, Model model) {
+		wareHouseEntryPnService.delete(entryPns);
+		return JSONResponse.success();
     }
 }

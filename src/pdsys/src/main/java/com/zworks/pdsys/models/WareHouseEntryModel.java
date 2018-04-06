@@ -1,6 +1,7 @@
 package com.zworks.pdsys.models;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.ibatis.type.Alias;
 
@@ -14,9 +15,9 @@ public class WareHouseEntryModel extends BaseModel{
 	
 	private UserModel user;
 	private Date entryTime;
+	private List<WareHouseEntryPnModel> wareHouseEntryPns;
 	
 	public WareHouseEntryModel() {
-		setUser(UserModel.Empty);
 	}
 	
 	public UserModel getUser() {
@@ -33,5 +34,13 @@ public class WareHouseEntryModel extends BaseModel{
 
 	public void setEntryTime(Date entryTime) {
 		this.entryTime = entryTime;
+	}
+
+	public List<WareHouseEntryPnModel> getWareHouseEntryPns() {
+		return wareHouseEntryPns;
+	}
+
+	public void setWareHouseEntryPns(List<WareHouseEntryPnModel> wareHouseEntryPns) {
+		this.wareHouseEntryPns = wareHouseEntryPns;
 	}
 }

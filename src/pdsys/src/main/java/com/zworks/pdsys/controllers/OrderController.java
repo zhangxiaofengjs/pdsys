@@ -31,6 +31,13 @@ public class OrderController {
         return "order/list";
     }
 	
+	@RequestMapping("/list/json")
+	@ResponseBody
+	public List<OrderModel> listJson(OrderModel order, Model model) {
+		List<OrderModel> list = orderService.queryList(order);
+		return list;
+	}
+	
 	/**
 	 * 删除订单(非物理删除)
 	 * @param JSONResponse 
@@ -65,7 +72,7 @@ public class OrderController {
 	 */
 	@RequestMapping("/detail")
 	public String showOrderDetail(OrderModel order, Model model) {
-		List<OrderPnModel> list = orderService.showOrderDetail(order);
+		List<OrderPnModel> list = orderService.queryOrderPnList(order.getOrderPn());
 		model.addAttribute("orderDetail", list);
 		int orderId = order.getId();
 		order = orderService.queryObject(orderId);
@@ -73,4 +80,14 @@ public class OrderController {
 		
         return "order/detail";
     }
+	
+	/**
+	 * 取得订单项目
+	 */
+	@RequestMapping("/pn/list/json")
+	@ResponseBody
+	public List<OrderPnModel> pnListJson(@RequestBody OrderPnModel orderPn, Model model) {
+		List<OrderPnModel> list = orderService.queryOrderPnList(orderPn);
+		return list;
+	}
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.zworks.pdsys.mappers.OrderDetailMapper">
+<mapper namespace="com.zworks.pdsys.mappers.OrderPnMapper">
 	<resultMap id="pnClsResultMap" type="pnClsModel" >  
         <id column="od_pn_cls_id" property="id"/>
         <result column="od_pn_cls_name" property="name"/>   
@@ -45,7 +45,7 @@
 	    </collection>
     </resultMap>
     
-	<select id="showOrderDetail" parameterType="orderPnModel" resultMap="orderDetailMapper">
+	<select id="queryList" parameterType="orderPnModel" resultMap="orderDetailMapper">
 		select order_pn.c_id as order_pn_id,
 		       order_pn.c_num as order_pn_num,
 		  	   order_pn.c_reject_ratio as order_pn_reject_ratio,	
@@ -76,8 +76,8 @@
 		left join unit_tbl as bom_ut on bom.c_unit_id = bom_ut.c_id 
 		left join warehouse_pn_tbl as wh_pn on wh_pn.c_order_pn_id = order_pn.c_id 
 		<where>
-			<if test="id != null">
-				and order_pn.c_order_id = #{id}
+			<if test="order != null">
+				and order_pn.c_order_id = #{order.id}
 			</if>
 		</where>
 	</select>

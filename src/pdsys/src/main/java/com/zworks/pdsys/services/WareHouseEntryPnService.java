@@ -4,40 +4,34 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.mappers.WareHouseDeliveryBOMMapper;
 import com.zworks.pdsys.mappers.WareHouseDeliveryMapper;
 import com.zworks.pdsys.mappers.WareHouseEntryMapper;
+import com.zworks.pdsys.mappers.WareHouseEntryPnMapper;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
+import com.zworks.pdsys.models.WareHouseEntryPnModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
- * @version: 2018/04/05
+ * @version: 2018/04/06
  */
 @Service
-public class WareHouseEntryService {
+public class WareHouseEntryPnService {
 	@Autowired
-    private WareHouseEntryMapper wareHouseEntryMapper;
+    private WareHouseEntryPnMapper wareHouseEntryPnMapper;
 	
-	public List<WareHouseEntryModel> queryList(WareHouseEntryModel obj) {
-		return wareHouseEntryMapper.queryList(obj);
-	}
-	
-	public void add(WareHouseEntryModel obj) {
-		wareHouseEntryMapper.add(obj);
+	public void add(WareHouseEntryPnModel entryPn) {
+		wareHouseEntryPnMapper.add(entryPn);
 	}
 
-	public WareHouseEntryModel queryOne(int id) {
-		WareHouseEntryModel entry = new WareHouseEntryModel();
-		entry.setId(id);
-
-		List<WareHouseEntryModel> entries = this.queryList(entry);
-		if(entries.size() == 1) {
-			return entries.get(0);
+	@Transactional
+	public void delete(List<WareHouseEntryPnModel> entryPns) {
+		for(WareHouseEntryPnModel entryPn : entryPns) {
+			wareHouseEntryPnMapper.delete(entryPn);
 		}
-		
-		return null;
 	}
 }

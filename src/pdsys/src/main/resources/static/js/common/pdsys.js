@@ -15,3 +15,32 @@ PdSys.contextPath = function() {
 PdSys.url = function(subUrl) {
     return PdSys.contextPath() + subUrl;
 }
+
+PdSys.ajax = function(option) {
+	var args = {
+    	url : PdSys.url(option.url),
+        type : 'post',
+        dataType : 'json',//接受服务端数据类型
+        contentType:"application/json",
+        processData: false,
+        cache: false,
+        data: JSON.stringify(option.data),
+        success : function(data) {
+        	if(option.success) {
+        		option.success(data);
+        	}
+        },
+        error: function(data) {
+        	if(option.error) {
+        		option.error(data);
+        	}
+        }
+     };
+    
+	//提交
+	$.ajax(args);
+};
+
+PdSys.refresh = function() {
+	document.location.reload();
+}

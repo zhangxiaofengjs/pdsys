@@ -8,7 +8,7 @@ import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
 
 @Mapper
-public interface OrderDetailMapper {
+public interface OrderPnMapper {
 	
-	List<OrderPnModel> showOrderDetail( OrderModel orderModel );
+	List<OrderPnModel> queryList( OrderPnModel orderPnModel );
 }

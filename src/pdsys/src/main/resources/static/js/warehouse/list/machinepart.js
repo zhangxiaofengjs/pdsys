@@ -30,7 +30,7 @@ $(document).ready(function(){
 					"type":"select",
 					"options":[],
 					"ajax":true,
-					"url":"/user/list",
+					"url":"/user/list/json",
 					"convertAjaxData" : function(thisField, data) {
 						//将返回的值转化为Field规格数据,以供重新渲染
 						//做成选择分支

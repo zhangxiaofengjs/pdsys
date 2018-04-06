@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zworks.pdsys.mappers.OrderDetailMapper;
+import com.zworks.pdsys.mappers.OrderPnMapper;
 import com.zworks.pdsys.mappers.OrderMapper;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
@@ -16,7 +16,7 @@ public class OrderService {
     private OrderMapper orderMapper;
 	
 	@Autowired
-    private OrderDetailMapper orderDetailMapper;
+    private OrderPnMapper orderPnMapper;
 	
 	public List<OrderModel> queryList( OrderModel orderModel ) {
 		return orderMapper.queryList( orderModel );
@@ -34,7 +34,7 @@ public class OrderService {
 		orderMapper.save( orderModel );
 	}
 	
-	public List<OrderPnModel> showOrderDetail( OrderModel orderModel ) {
-		return orderDetailMapper.showOrderDetail( orderModel );
+	public List<OrderPnModel> queryOrderPnList( OrderPnModel orderPnModel ) {
+		return orderPnMapper.queryList( orderPnModel );
 	}
 }

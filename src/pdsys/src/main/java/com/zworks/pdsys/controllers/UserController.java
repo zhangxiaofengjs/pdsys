@@ -17,7 +17,7 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	@RequestMapping("/list")
+	@RequestMapping("/list/json")
 	@ResponseBody
     public List<UserModel> list(UserModel user, Model model) {
 		List<UserModel> list = userService.queryList(user);

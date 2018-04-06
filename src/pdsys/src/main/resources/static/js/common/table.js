@@ -47,5 +47,13 @@ function getSelectedRowId() {
 		}
 	});
 
+	if(!selectIdArr || selectIdArr.length == 0) {
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"msg_div",
+			"type":"ok",
+			"msg":"请选择要操作的对象。"});
+	}
+	
 	return selectIdArr;
 }

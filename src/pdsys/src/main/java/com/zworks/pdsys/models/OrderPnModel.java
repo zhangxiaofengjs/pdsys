@@ -19,7 +19,6 @@ public class OrderPnModel extends BaseModel{
 	private List<WareHousePnModel> whpns;
 	
 	public OrderPnModel() {
-		pn = PnModel.Empty;
 	}
 	
 	public PnModel getPn() {

@@ -8,11 +8,10 @@
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/entry/main?type=pn}" method="post">
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/entry/main/pn}" method="post">
 	 			<button type="button" class="btn btn-sm btn-info" name="addEntry">新建入库单</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="add">增加</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="modify">修改</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="modify">删除</button>
+	 			<button type="button" class="btn btn-sm btn-info" name="addEntryPn">增加</button>
+	 			<button type="button" class="btn btn-sm btn-info" name="deleteEntryPn">删除</button>
 	 			<button type="button" class="btn btn-sm btn-info" name="checkin">入库</button>
 			</form>
 		</div>
@@ -20,14 +19,21 @@
 	<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
 		<thead>
 			<tr>
-				<th style="text-align:center;text-decoration:underline;" th:colspan="9">
+				<th style="text-align:center;" th:colspan="9">
 					<h4><b>入库单明细表</b></h4>
 				</th>
 			</tr>
 			<tr>
-				<th th:colspan="2">入库单号:&nbsp;<b>20180103120908#1</b></th>
-				<th th:colspan="1">日期:&nbsp;<b>2018/1/3</b></th>
-				<th th:colspan="5">提交人:&nbsp;<a href="javascript:void(0);">赵有才</a></th>
+				<th th:colspan="2">入库单号:&nbsp;
+					<a href="javascript:void(0);" th:text="((${entry.entryTime} != null) ? ${#dates.format(entry.entryTime, 'yyyyMMddHHmmss')} : '00000000000000') + '#' + ${entry.id}"></a>
+					<input type="hidden" id="entry_id" name="entry_id" th:value="${entry.id}">
+					<a href="javascript:void(0);" class="glyphicon glyphicon-trash"></a>
+				</th>
+				<th th:colspan="1">日期:&nbsp;<b th:text="((${entry.entryTime} != null) ? ${#dates.format(entry.entryTime, 'yyyy-MM-dd')} : '')"></b></th>
+				<th th:colspan="5">提交人:&nbsp;
+					<a href="javascript:void(0);" th:text="${entry.user!=null?entry.user.name:''}"></a>
+					<i class="pull-right" th:text="'更新:' + ${entry.updateUser!=null?entry.updateUser.name:''} + '&nbsp;' + (${entry.updateTime!=null}?${#dates.format(entry.updateTime, 'yyyy-MM-dd')}:'')"></i>
+				</th>
 			</tr>
 		    <tr>
 		    	<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
@@ -40,31 +46,31 @@
 				<th>入库数量</th>
 		    </tr>
 		</thead>
-		<tbody><!-- 
-			<tr th:each="wareHousePn : ${wareHousePns}"
-				th:with="orderPn=(${wareHousePn.orderPn}?${wareHousePn.orderPn}:_),
+		<tbody>
+			<tr th:each="wareHouseEntryPn : ${entry.wareHouseEntryPns}"
+				th:with="orderPn=(${wareHouseEntryPn.orderPn}?${wareHouseEntryPn.orderPn}:_),
 						 pn=(${orderPn.pn}?${orderPn.pn}:_),
 						 unit=(${pn.unit}?${pn.unit}:_),
 						 pnCls=(${pn.pnCls}?${pn.pnCls}:_),
-						 order=(${orderPn.order}?${orderPn.order}:_)"
-						 th:rowid="${wareHousePn.id}">
+ 						 order=(${orderPn.order}?${orderPn.order}:_)"
+						 th:rowid="${wareHouseEntryPn.id}">
 				<td>
-					<input type="checkbox" name="select" th:rowid="${wareHousePn.id}">
+					<input type="checkbox" name="select" th:rowid="${wareHouseEntryPn.id}">
 				</td>
 				<td th:text="${order}?${order.no}:_"></td>
 				<td th:text="${pn}?${pn.pn}:_"></td>
 				<td th:text="${pn}?${pn.name}:_"></td>
 				<td th:text="${pnCls}?${pnCls.name}:_"></td>
-				<td th:switch="${wareHousePn}?${wareHousePn.type}:0">
+				<td th:switch="${wareHouseEntryPn.type}">
 				  <span th:case="0">半成品</span>
 				  <span th:case="*">成品</span>
 				</td>
 				<td th:text="${unit}?${unit.name}:_"></td>
-				<td th:text="${orderPn.num}"></td>
-		    </tr> -->
+				<td th:text="${wareHouseEntryPn.num}"></td>
+		    </tr>
 		</tbody>
 	</table>
-	<div id="checkin_dlg_div"></div>
+	<div id="dlg_div"></div>
 	<div id="msg_div"></div>
 </div>
 </body>

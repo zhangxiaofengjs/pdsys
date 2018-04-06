@@ -3,13 +3,7 @@ $(document).ready(function(){
 	$("button[name^='checkout']").click(function(){
 		var self = $(this);
 		var selIds = getSelectedRowId();
-
-		if(!selIds || selIds.length == 0) {
-			var dlg = new CommonDlg();
-			dlg.showMsgDlg({
-				"target":"msg_div",
-				"type":"ok",
-				"msg":"请选择要添加到出库的单的对象。"});
+		if(selIds.length == 0) {
 			return;
 		}
 		
@@ -30,7 +24,7 @@ $(document).ready(function(){
 					"type":"select",
 					"options":[],
 					"ajax":true,
-					"url":"/user/list",
+					"url":"/user/list/json",
 					"convertAjaxData" : function(thisField, data) {
 						//将返回的值转化为Field规格数据,以供重新渲染
 						//做成选择分支

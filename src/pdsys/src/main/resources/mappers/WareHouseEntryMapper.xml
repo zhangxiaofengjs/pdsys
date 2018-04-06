@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.WareHouseEntryMapper">
+	<resultMap id="orderResultMap" type="orderModel" >  
+        <id column="o_id" property="id" />  
+        <id column="o_no" property="no" />  
+    </resultMap>
+	<resultMap id="pnClsResultMap" type="pnClsModel" >  
+        <id column="pn_cls_id" property="id" />  
+        <id column="pn_cls_name" property="name" />  
+    </resultMap>
+	<resultMap id="unitResultMap" type="unitModel" >  
+        <id column="unit_id" property="id" />  
+        <id column="unit_name" property="name" />  
+    </resultMap>
+	<resultMap id="pnResultMap" type="pnModel" >  
+        <id column="pn_id" property="id" />  
+        <id column="pn_pn" property="pn" />  
+        <id column="pn_name" property="name" />  
+        <association property="pnCls" resultMap="pnClsResultMap"/>
+        <association property="unit" resultMap="unitResultMap"/>
+    </resultMap>
+	<resultMap id="orderPnResultMap" type="orderPnModel" >  
+        <id column="o_pn_id" property="id" />  
+        <association property="pn" resultMap="pnResultMap" />
+        <association property="order" resultMap="orderResultMap" />
+    </resultMap>
+	<resultMap id="wareHouseEntryPnResultMap" type="wareHouseEntryPnModel">  
+        <id column="e_pn_id" property="id" />  
+        <result column="e_pn_num" property="num" />  
+        <result column="e_pn_type" property="type" />  
+        <association property="orderPn" resultMap="orderPnResultMap" />
+    </resultMap>
+	<resultMap id="userResultMap" type="userModel" >  
+        <id column="user_id" property="id" />  
+        <result column="user_no" property="no" />  
+        <result column="user_name" property="name" />  
+    </resultMap>
+	<resultMap id="wareHouseEntryResultMap" type="wareHouseEntryModel" >  
+        <id column="e_id" property="id" />  
+        <result column="e_entry_time" property="entryTime" />  
+        <result column="e_update_time" property="updateTime" />  
+        <association property="user" resultMap="userResultMap"/>
+        <association property="updateUser" resultMap="userResultMap" columnPrefix="upt_"/>
+        <collection property="wareHouseEntryPns" ofType="wareHouseEntryPnModel" resultMap="wareHouseEntryPnResultMap" />
+    </resultMap>
+
+	<select id="queryList" parameterType="wareHouseEntryModel" resultMap="wareHouseEntryResultMap">
+		select entry.c_id as e_id,
+			   entry.c_entry_time as e_entry_time,
+			   entry.c_update_time as e_update_time,
+		       user.c_id as user_id,
+		       user.c_no as user_no,
+		       user.c_name as user_name,
+		       upt_user.c_id as upt_user_id,
+		       upt_user.c_no as upt_user_no,
+		       upt_user.c_name as upt_user_name,
+		       e_pn.c_id as e_pn_id,
+		       e_pn.c_num as e_pn_num,
+		       e_pn.c_type as e_pn_type,
+		       o_pn.c_id as o_pn_id,
+		       o_pn.c_num as o_pn_num,
+		       pn.c_id as pn_id,
+		       pn.c_pn as pn_pn,
+		       pn.c_name as pn_name,
+		       pn_cls.c_id as pn_cls_id,
+		       pn_cls.c_name as pn_cls_name,
+		       unit.c_id as unit_id,
+		       unit.c_name as unit_name,
+		       o.c_id as o_id,
+		       o.c_no as o_no
+		from entry_tbl as entry
+		left join user_tbl as user on entry.c_user_id = user.c_id
+		left join user_tbl as upt_user on entry.c_update_user_id = upt_user.c_id
+		left join entry_pn_tbl as e_pn on entry.c_id = e_pn.c_entry_id
+		left join order_pn_tbl as o_pn on e_pn.c_ref_id = o_pn.c_id
+		left join pn_tbl as pn on o_pn.c_pn_id = pn.c_id
+		left join unit_tbl as unit on pn.c_unit_id = unit.c_id
+		left join pn_cls_tbl as pn_cls on o_pn.c_pn_cls_id = pn_cls.c_id
+		left join order_tbl as o on o_pn.c_order_id = o.c_id
+		<where>
+			<if test="id >= 0">
+				and entry.c_id = #{id}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="add" parameterType="wareHouseEntryModel">
+    	insert into entry_tbl (c_user_id) values (#{user.id})
+      	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+    </insert>
+</mapper>

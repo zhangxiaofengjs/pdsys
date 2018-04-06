@@ -3,60 +3,18 @@ $(document).ready(function(){
 	$("button[name='addEntry']").click(function(){
 		var self = $(this);
 		
-		//显示选择收件人
-		$.ajax({
-	    	url : PdSys.url("/warehouse/entry/add"),
-	        type : 'post',
-	        dataType : 'json',//接受服务端数据类型
-	        contentType:"application/json",
-	        processData: false,
-	        cache: false,
-	        success : function(data) {
-	        	console.log(data);
-	        	if(data.success)
-	        	{
-	        		console.log(data);
-	        	}
-	        	else
-	        	{
-	        	}
-	        },
-	        error: function(data) {
-	        	console.log(data);
-	        }
-	    });
-	});
-	$("button[name='add']").click(function(){
-		var self = $(this);
-		var selIds = getSelectedRowId();
-		
-		if(!selIds || selIds.length == 0) {
-			var dlg = new CommonDlg();
-			dlg.showMsgDlg({
-				"target":"msg_div",
-				"type":"ok",
-				"msg":"请选择要添加到出库的单的对象。"});
-			return;
-		}
-		
-		//显示选择收件人
 		var dlg = new CommonDlg();
 		dlg.showFormDlg({
-			"target":"checkout_dlg_div",
-			"caption":"添加到出库单",
+			"target":"dlg_div",
+			"caption":"选择入库提交人",
 			"fields":[
 				{
-					"name":"wareHousePnIds",
-					"type":"hidden",
-					"value":selIds.join(",")
-				},
-				{
-					"name":"wareHouseDeliveryPn.wareHouseDelivery.user.id",
-					"label":"领收人",
+					"name":"user.id",
+					"label":"提交人",
 					"type":"select",
 					"options":[],
 					"ajax":true,
-					"url":"/user/list",
+					"url":"/user/list/json",
 					"convertAjaxData" : function(thisField, data) {
 						//将返回的值转化为Field规格数据,以供重新渲染
 						//做成选择分支
@@ -67,31 +25,206 @@ $(document).ready(function(){
 							});
 						});
 					}
+				}
+			],
+	    	url : "/warehouse/entry/add/entry",
+	        success : function(data) {
+	        	if(data.success)
+	        	{
+	        		$(location).attr('href', PdSys.url('/warehouse/entry/main/pn/' + data.id));
+	        	}
+	        	else
+	        	{
+	        		var dlg = new CommonDlg();
+	    			dlg.showMsgDlg({
+	    				"target":"msg_div",
+	    				"type":"ok",
+	    				"msg":"新建入库单号发生错误。"});
+	        	}
+	        },
+	        error: function(data) {
+	        	var dlg = new CommonDlg();
+    			dlg.showMsgDlg({
+    				"target":"msg_div",
+    				"type":"ok",
+    				"msg":"发生错误。"});
+	        }
+	    });
+	});
+	
+	$("button[name='addEntryPn']").click(function(){
+		var self = $(this);
+
+		var fields = [
+		{
+			"name":"wareHouseEntry.id",
+			"type":"hidden",
+			"value":$('#entry_id').val()
+		},
+		{
+			"name":"orderPn.order.id",
+			"label":"订单",
+			"type":"select",
+			"options":[],
+			"ajax":true,
+			"url":"/order/list/json",
+			"convertAjaxData" : function(thisField, data) {
+				//将返回的值转化为Field规格数据,以供重新渲染
+				//做成选择分支
+				thisField.options.push({
+					"value": -1,
+					"caption":"请选择订单...",
+				});
+				data.forEach(function(order, idx) {
+					thisField.options.push({
+						"value": order.id,
+						"caption":order.no,
+					});
+				});
+			},
+			"afterBuild": function() {
+				var self = this;
+				
+				var thisElem = dlg.fieldElem(self.type, self.name);
+				
+				//select选择以后刷新品目
+				thisElem.change(function() {
+					var selIndex = thisElem[0].selectedIndex;
+					if(selIndex == 0) {
+						//第一项是[请选择]，无视
+						return;
+					}
+					var val = self.options[selIndex].value;
+					
+					var orderPnField = fields[2];
+					orderPnField.ajaxData = {
+						"order":{
+							"id": val
+						}
+					};
+					
+					dlg.buildAjaxField(orderPnField);
+				});
+			}
+		},
+		{
+			"name":"orderPn.id",
+			"label":"品目",
+			"type":"select",
+			"options":[],
+			"ajax":true,
+			"depend":true,//不立即执行，等订单项目的刷新
+			"url":"/order/pn/list/json",
+			"ajaxData":{
+				"order":{
+					"id": -1
+				}
+			},
+			"convertAjaxData" : function(thisField, data) {
+				//将返回的值转化为Field规格数据,以供重新渲染
+				//做成选择分支
+				thisField.options = [];
+				thisField.options.push({
+					"value": -1,
+					"caption":"请选择品目...",
+				});
+				data.forEach(function(orderPn, idx) {
+					thisField.options.push({
+						"value": orderPn.id,
+						"caption": "{0} {1} / {2}".format(orderPn.pn.pn, orderPn.pn.name, orderPn.pn.pnCls.name)
+					});
+				});
+			},
+		},
+		{
+			"name":"type",
+			"label":"产品种类",
+			"type":"select",
+			"options":[],
+			"ajax":false,
+			"options":[
+				{
+					"value":0,
+					"caption":'半成品'
 				},
 				{
-					"name":"wareHouseDeliveryPn.num",
-					"label":"数量",
-					"type":"number",
-					"value":"1",
+					"value":1,
+					"caption":'成品'
 				}
-				],
-				"url":"/warehouse/add/delivery/pn",
-				"success": function(data) {
-					dlg.hide();
-					
-					var msgDlg = new CommonDlg();
-					msgDlg.showMsgDlg({
-						"target":"msg_div",
-						"type":"ok",
-						"msg":"成功添加到出库单!"});
-				},
-				"error": function(data) {
-					var msgDlg = new CommonDlg();
-					msgDlg.showMsgDlg({
-						"target":"msg_div",
-						"type":"ok",
-						"msg":"添加到出库单失败,请联系管理员!"});
-				}
+			]
+		},
+		{
+			"name":"num",
+			"label":"数量",
+			"type":"number",
+			"value":"1",
+		}];
+		
+		var dlg = new CommonDlg();
+		dlg.showFormDlg({
+			"target":"dlg_div",
+			"caption":"添加到入库单",
+			"fields":fields,
+			"url":"/warehouse/entry/add/pn",
+			"success": function(data) {
+				dlg.hide();
+				var msgDlg = new CommonDlg();
+				msgDlg.showMsgDlg({
+					"target":"msg_div",
+					"type":"ok",
+					"msg":"成功添加到入库单!"});
+				PdSys.refresh();
+			},
+			"error": function(data) {
+				var msgDlg = new CommonDlg();
+				msgDlg.showMsgDlg({
+					"target":"msg_div",
+					"type":"ok",
+					"msg":"添加到入库单失败,请联系管理员!"});
+			}
+		});
+	});
+	
+	$("button[name='deleteEntryPn']").click(function(){
+		var self = $(this);
+		var selIds = getSelectedRowId();
+		if(selIds.length == 0) {
+			return;
+		}
+		
+		var ajaxDatas = [];
+		$.each(selIds, function() {
+			ajaxDatas.push({"id":this});
+		});
+		
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"dlg_div",
+			"caption":"删除入库单",
+			"type":"yesno",
+			"msg":"确定删除选择的入库项目?",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/warehouse/entry/delete/pn",
+					"data":ajaxDatas,
+					"success": function(data) {
+						dlg.hide();
+						var msgDlg = new CommonDlg();
+						msgDlg.showMsgDlg({
+							"target":"msg_div",
+							"type":"ok",
+							"msg":"删除成功!"});
+						PdSys.refresh();
+					},
+					"error": function(data) {
+						var msgDlg = new CommonDlg();
+						msgDlg.showMsgDlg({
+							"target":"msg_div",
+							"type":"ok",
+							"msg":"删除失败,请联系管理员!"});
+					}
+				});
+			}
 		});
 	});
 });

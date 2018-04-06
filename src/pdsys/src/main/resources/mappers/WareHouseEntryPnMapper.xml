@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.WareHouseEntryPnMapper">
+	<insert id="add" parameterType="wareHouseEntryPnModel">
+    	insert into entry_pn_tbl (
+    		c_entry_id,
+    		c_ref_id,
+    		c_type,
+    		c_num)
+    	values (
+    		#{wareHouseEntry.id},
+    		#{orderPn.id},
+    		#{type},
+    		#{num}
+    	)
+      	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+    </insert>
+    
+    <delete id="delete" parameterType="wareHouseEntryPnModel">
+    	delete from entry_pn_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
+</mapper>

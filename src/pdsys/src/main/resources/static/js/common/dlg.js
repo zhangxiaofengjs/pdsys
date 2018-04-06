@@ -57,7 +57,7 @@ CommonDlg.prototype.showMsgDlg = function(opt) {
 			}
 		}
 	);
-
+	
 	$("#" + dlgId).modal();
 };
 
@@ -83,8 +83,7 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 		if(f.ajax) {
 			//如果数据是ajax取得，先追加一个等待图标
 			strFormHtml += '<div id="{0}" class="form-control" style="box-shadow:0 1px 1px rgba(0, 0, 0, 0);border-width:0px;padding-left:0px;"><img src="{1}" height="24px" /><span class="text-muted">加载中...</span></div>'.
-				format(f.name + "_ajax_field",
-						PdSys.url("/icons/loading.gif"));
+				format(f.name, PdSys.url("/icons/loading.gif"));
 		} else {
 			strFormHtml += self.buildField(f);
 		}
@@ -118,14 +117,15 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 	var targetDiv = $("#"+this.option.target);
 	targetDiv.children().remove();
 	targetDiv.append(strHtml);
-	$("#" + dlgId).modal();
 
 	//取得数据
 	this.option.fields.forEach(function(f, idx) {
-		if(f.ajax) {
-			self.getAjaxField(f);
+		if(f.ajax && !f.depend) { //需要ajax并且不依赖其他ajaxDepend的项目之间初始化
+			self.buildAjaxField(f);
 		}
-	});	
+	});
+	
+	$("#" + dlgId).modal();
 }
 
 CommonDlg.prototype.hide = function() {
@@ -157,27 +157,43 @@ CommonDlg.prototype.buildField = function(field) {
 }
 
 //ajax取得field的信息
-CommonDlg.prototype.getAjaxField = function(field) {
+CommonDlg.prototype.buildAjaxField = function(field) {
 	var self = this;
 
 	$.ajax({
 		url:PdSys.url(field.url),
 		async:true,
 		dataType:"json",
+		contentType:"application/json;charset=UTF-8",
 		type:"post",
-		data:field.ajaxData,
-		context:$(("#"+field.name + "_ajax_field").safeJqueryId())[0],//设置success/error的回调上下文this([0]表示转化为dom元素咯)
+		data:JSON.stringify(field.ajaxData),
+		processData: false,
+        cache: false,
+		context:$(("#"+field.name).safeJqueryId())[0],//设置success/error的回调上下文this([0]表示转化为dom元素咯)
 		success: function(response) {
 			field.convertAjaxData(field, response);
 			var strFieldHtml = self.buildField(field);
 			$(this).parent().append(strFieldHtml);
 			$(this).remove();
+			
+			if(field.afterBuild) {
+				(field.afterBuild)();
+			}
 		},
 		error: function(response) {
 			$(this).empty();
 			$(this).append('<img src="{0}" height="16px" /><span class="text-danger">&nbsp;取得信息失败!!</span>'.format(PdSys.url("/icons/error.png")));
 		}
 	});
+};
+
+CommonDlg.prototype.fieldElem = function(type, name) {
+	var strId = "#{0}_dlg {1}[name='{2}']".format(
+		this.option.target,
+		type != 'select' ? 'input' : 'select',
+		name.safeJqueryId());
+	
+	return $(strId);
 };
 
 //formJson = {
