@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.enumClass.OrderState;
@@ -71,13 +72,18 @@ public class OrderController {
 	 * 订单详细
 	 */
 	@RequestMapping("/detail")
-	public String showOrderDetail(OrderModel order, Model model) {
-		List<OrderPnModel> list = orderService.queryOrderPnList(order.getOrderPn());
-		model.addAttribute("orderDetail", list);
-		int orderId = order.getId();
-		order = orderService.queryObject(orderId);
-		model.addAttribute("order", order);
+	public String showOrderDetail(@RequestParam(name="id") int id, Model model) {
+		OrderPnModel orderPn = new OrderPnModel();
+		OrderModel order = new OrderModel();
+		order.setId(id);
+		orderPn.setOrder(order);
 		
+		List<OrderPnModel> list = orderService.queryOrderPnList(orderPn);
+		model.addAttribute("orderDetail", list);
+
+		order = orderService.queryObject(id);
+		model.addAttribute("order", order);
+
         return "order/detail";
     }
 	
