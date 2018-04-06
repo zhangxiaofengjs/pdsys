@@ -26,4 +26,15 @@ public class WareHouseDeliveryService {
 	public void add(WareHouseDeliveryModel obj) {
 		wareHouseDeliveryMapper.add(obj);
 	}
+
+	public WareHouseDeliveryModel queryOne(Integer id) {
+		WareHouseDeliveryModel obj = new WareHouseDeliveryModel();
+		obj.setId(id);
+		List<WareHouseDeliveryModel> list = wareHouseDeliveryMapper.queryList(obj);
+		
+		if(list.size() != 0) {
+			return list.get(0);
+		}
+		return null;
+	}
 }

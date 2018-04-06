@@ -48,16 +48,6 @@ import com.zworks.pdsys.services.WareHousePnService;
 @RequestMapping("/warehouse/entry")
 public class WareHouseEntryController {
 	@Autowired
-	WareHouseBOMService wareHouseBOMService;
-	@Autowired
-	WareHousePnService wareHousePnService;
-	@Autowired
-	WareHouseMachinePartService wareHouseMachinePartService;
-	@Autowired
-	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
-	@Autowired
-	WareHouseDeliveryMachinePartService wareHouseDeliveryMachinePartService;
-	@Autowired
 	WareHouseEntryPnService wareHouseEntryPnService;
 	@Autowired
 	WareHouseEntryService wareHouseEntryService;

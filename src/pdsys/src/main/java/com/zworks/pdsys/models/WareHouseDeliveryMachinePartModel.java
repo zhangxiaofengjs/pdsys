@@ -8,15 +8,12 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("wareHouseDeliveryMachinePartModel")
 public class WareHouseDeliveryMachinePartModel extends BaseModel{
-	public static final WareHouseDeliveryMachinePartModel Empty = new WareHouseDeliveryMachinePartModel();
 	
 	private WareHouseDeliveryModel wareHouseDelivery;
 	private WareHouseMachinePartModel wareHouseMachinePart;
 	private float num;
 	
 	public WareHouseDeliveryMachinePartModel() {
-		setWareHouseDelivery(WareHouseDeliveryModel.Empty);
-		setWareHouseMachinePart(WareHouseMachinePartModel.Empty);
 	}
 	
 	public float getNum() {

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/header::header">
+</head>
+<body>
+	<ul class="nav nav-tabs">
+		<li role="presentation" th:class="(${type}=='pn'? 'active' : '')">
+			<a th:href="@{/warehouse/delivery/main/pn}">生产出库</a>
+		</li>
+		<li role="presentation" th:class="(${type}=='bom'? 'active' : '')">
+			<a th:href="@{/warehouse/delivery/main/bom}">原/包材出库</a>
+		</li>
+		<li role="presentation" th:class="(${type}=='machinepart'? 'active' : '')">
+			<a th:href="@{/warehouse/delivery/main/machinepart}">设备备件出库</a>
+		</li>
+	</ul>
+	
+<div th:replace="/warehouse/delivery/__${type}__::content(${delivery})"></div>
+<div th:replace="common/footer::copyright"></div>
+</body>
+</html>

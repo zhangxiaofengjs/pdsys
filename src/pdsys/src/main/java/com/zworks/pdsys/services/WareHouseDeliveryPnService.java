@@ -58,4 +58,14 @@ public class WareHouseDeliveryPnService {
 			}
 		}
 	}
+
+	public void add(WareHouseDeliveryPnModel deliveryPn) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void delete(List<WareHouseDeliveryPnModel> deliveryPns) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -1,6 +1,7 @@
 package com.zworks.pdsys.models;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.ibatis.type.Alias;
 
@@ -10,13 +11,11 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("wareHouseDeliveryModel")
 public class WareHouseDeliveryModel extends BaseModel{
-	public static final WareHouseDeliveryModel Empty = new WareHouseDeliveryModel();
-	
 	private UserModel user;
 	private Date deliveryTime;
+	private List<WareHouseDeliveryPnModel> wareHouseDeliveryPns;
 	
 	public WareHouseDeliveryModel() {
-		setUser(UserModel.Empty);
 	}
 	
 	public UserModel getUser() {
@@ -33,5 +32,13 @@ public class WareHouseDeliveryModel extends BaseModel{
 
 	public void setDeliveryTime(Date deliveryTime) {
 		this.deliveryTime = deliveryTime;
+	}
+
+	public List<WareHouseDeliveryPnModel> getWareHouseDeliveryPns() {
+		return wareHouseDeliveryPns;
+	}
+
+	public void setWareHouseDeliveryPns(List<WareHouseDeliveryPnModel> wareHouseDeliveryPns) {
+		this.wareHouseDeliveryPns = wareHouseDeliveryPns;
 	}
 }
