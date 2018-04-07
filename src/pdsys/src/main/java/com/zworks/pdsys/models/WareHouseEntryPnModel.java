@@ -9,6 +9,7 @@ import org.apache.ibatis.type.Alias;
 @Alias("wareHouseEntryPnModel")
 public class WareHouseEntryPnModel extends BaseModel{
 	private OrderPnModel orderPn;
+	private WareHousePnModel wareHousePn;
 	private WareHouseEntryModel wareHouseEntry;
 	private int type;
 	private float num;
@@ -46,5 +47,13 @@ public class WareHouseEntryPnModel extends BaseModel{
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public WareHousePnModel getWareHousePn() {
+		return wareHousePn;
+	}
+
+	public void setWareHousePn(WareHousePnModel wareHousePn) {
+		this.wareHousePn = wareHousePn;
 	}
 }

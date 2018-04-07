@@ -12,6 +12,7 @@ import org.apache.ibatis.type.Alias;
 public class BaseModel {
 	private int id;
 	private UserModel updateUser;
+	private Date createTime;
 	private Date updateTime;
 	public Date getUpdateTime() {
 		return updateTime;
@@ -45,5 +46,13 @@ public class BaseModel {
 
 	public void setUpdateUser(UserModel updateUser) {
 		this.updateUser = updateUser;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 }

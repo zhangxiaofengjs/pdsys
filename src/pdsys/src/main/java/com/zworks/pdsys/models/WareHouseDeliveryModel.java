@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.ibatis.type.Alias;
 
+import com.zworks.pdsys.common.enumClass.DeliveryState;
+
 /**
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/04/02
@@ -14,6 +16,7 @@ public class WareHouseDeliveryModel extends BaseModel{
 	private UserModel user;
 	private Date deliveryTime;
 	private List<WareHouseDeliveryPnModel> wareHouseDeliveryPns;
+	private int state;
 	
 	public WareHouseDeliveryModel() {
 	}
@@ -40,5 +43,13 @@ public class WareHouseDeliveryModel extends BaseModel{
 
 	public void setWareHouseDeliveryPns(List<WareHouseDeliveryPnModel> wareHouseDeliveryPns) {
 		this.wareHouseDeliveryPns = wareHouseDeliveryPns;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
 	}
 }

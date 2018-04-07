@@ -2,6 +2,43 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseDeliveryMapper">
+
+	<resultMap id="wareHousePnResultMap" type="wareHousePnModel" >  
+        <id column="wh_pn_id" property="id" />
+        <id column="wh_pn_num" property="num" />  
+        <id column="wh_pn_type" property="type" />  
+    </resultMap>
+	<resultMap id="orderResultMap" type="orderModel" >  
+        <id column="o_id" property="id" />  
+        <id column="o_no" property="no" />  
+    </resultMap>
+	<resultMap id="pnClsResultMap" type="pnClsModel" >  
+        <id column="pn_cls_id" property="id" />  
+        <id column="pn_cls_name" property="name" />  
+    </resultMap>
+	<resultMap id="unitResultMap" type="unitModel" >  
+        <id column="unit_id" property="id" />  
+        <id column="unit_name" property="name" />  
+    </resultMap>
+	<resultMap id="pnResultMap" type="pnModel" >  
+        <id column="pn_id" property="id" />  
+        <id column="pn_pn" property="pn" />  
+        <id column="pn_name" property="name" />  
+        <association property="pnCls" resultMap="pnClsResultMap"/>
+        <association property="unit" resultMap="unitResultMap"/>
+    </resultMap>
+	<resultMap id="orderPnResultMap" type="orderPnModel" >  
+        <id column="o_pn_id" property="id" />  
+        <association property="pn" resultMap="pnResultMap" />
+        <association property="order" resultMap="orderResultMap" />
+    </resultMap>
+	<resultMap id="wareHouseDeliveryPnResultMap" type="wareHouseDeliveryPnModel">  
+        <id column="d_pn_id" property="id" />  
+        <result column="d_pn_num" property="num" />  
+        <result column="d_pn_type" property="type" />  
+        <association property="orderPn" resultMap="orderPnResultMap" />
+        <association property="wareHousePn" resultMap="wareHousePnResultMap" />
+    </resultMap>
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="user_id" property="id" />  
         <result column="user_no" property="no" />  
@@ -10,20 +47,56 @@
 	<resultMap id="wareHouseDeliveryResultMap" type="wareHouseDeliveryModel" >  
         <id column="d_id" property="id" />  
         <result column="d_delivery_time" property="deliveryTime" />  
+        <result column="d_create_time" property="createTime" />  
+        <result column="d_update_time" property="updateTime" />  
+        <result column="d_state" property="state" />  
         <association property="user" resultMap="userResultMap"/>
+        <association property="updateUser" resultMap="userResultMap" columnPrefix="upt_"/>
+        <collection property="wareHouseDeliveryPns" ofType="wareHouseDeliveryPnModel" resultMap="wareHouseDeliveryPnResultMap" />
     </resultMap>
 
 	<select id="queryList" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
 		select delivery.c_id as d_id,
 			   delivery.c_delivery_time as d_delivery_time,
+			   delivery.c_create_time as d_create_time,
+			   delivery.c_update_time as d_update_time,
+			   delivery.c_state as d_state,
 		       user.c_id as user_id,
 		       user.c_no as user_no,
-		       user.c_name as user_name
+		       user.c_name as user_name,
+		       upt_user.c_id as upt_user_id,
+		       upt_user.c_no as upt_user_no,
+		       upt_user.c_name as upt_user_name,
+		       d_pn.c_id as d_pn_id,
+		       d_pn.c_num as d_pn_num,
+		       d_pn.c_type as d_pn_type,
+		       o_pn.c_id as o_pn_id,
+		       o_pn.c_num as o_pn_num,
+		       pn.c_id as pn_id,
+		       pn.c_pn as pn_pn,
+		       pn.c_name as pn_name,
+		       pn_cls.c_id as pn_cls_id,
+		       pn_cls.c_name as pn_cls_name,
+		       unit.c_id as unit_id,
+		       unit.c_name as unit_name,
+		       o.c_id as o_id,
+		       o.c_no as o_no,
+		       wh_pn.c_id as wh_pn_id,
+		       wh_pn.c_num as wh_pn_num,
+		       wh_pn.c_type as wh_pn_type
 		from delivery_tbl as delivery
 		left join user_tbl as user on delivery.c_user_id = user.c_id
+		left join user_tbl as upt_user on delivery.c_update_user_id = upt_user.c_id
+		left join delivery_pn_tbl as d_pn on delivery.c_id = d_pn.c_delivery_id
+		left join order_pn_tbl as o_pn on d_pn.c_ref_id = o_pn.c_id
+		left join pn_tbl as pn on o_pn.c_pn_id = pn.c_id
+		left join unit_tbl as unit on pn.c_unit_id = unit.c_id
+		left join pn_cls_tbl as pn_cls on o_pn.c_pn_cls_id = pn_cls.c_id
+		left join order_tbl as o on o_pn.c_order_id = o.c_id
+		left join warehouse_pn_tbl as wh_pn on d_pn.c_ref_id = wh_pn.c_order_pn_id and d_pn.c_type = wh_pn.c_type
 		<where>
-			<if test="user != null and user.id >= 0">
-				and user.c_id = #{user.id}
+			<if test="id >= 0">
+				and delivery.c_id = #{id}
 			</if>
 		</where>
 	</select>
@@ -34,4 +107,20 @@
       		select LAST_INSERT_ID() as id
       	</selectKey>
     </insert>
+    
+    <update id="update"  parameterType="wareHouseDeliveryModel">
+    	update delivery_tbl
+		set	c_state = #{state},
+			c_delivery_time = #{deliveryTime}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
+    
+    <delete id="delete"  parameterType="wareHouseDeliveryModel">
+    	delete from delivery_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
 </mapper>

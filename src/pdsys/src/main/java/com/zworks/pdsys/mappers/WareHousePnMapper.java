@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 
 /**
@@ -14,4 +15,10 @@ import com.zworks.pdsys.models.WareHousePnModel;
 public interface WareHousePnMapper {
 	
 	List<WareHousePnModel> queryList(WareHousePnModel filterObj);
+
+	void update(WareHousePnModel wareHousePn);
+
+	void delete(WareHouseDeliveryPnModel deliveryPn);
+
+	void add(WareHousePnModel wareHousePn);
 }

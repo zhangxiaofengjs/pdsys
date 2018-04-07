@@ -35,6 +35,12 @@ public class JSONResponse extends HashMap<String, Object> {
 		return r;
 	}
 
+	public static JSONResponse error() {
+		JSONResponse r = new JSONResponse();
+		r.put("success", false);
+		return r;
+	}
+	
 	public JSONResponse put(String key, Object value) {
 		super.put(key, value);
 		return this;

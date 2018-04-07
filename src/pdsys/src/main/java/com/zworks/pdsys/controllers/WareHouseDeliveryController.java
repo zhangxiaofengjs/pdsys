@@ -31,7 +31,7 @@ public class WareHouseDeliveryController {
 	WareHouseDeliveryService wareHouseDeliveryService;
 	
 	@RequestMapping(value= {"/main", "/main/{type}", "/main/{type}/{id}"})
-    public String deliveryMain(
+    public String main(
     		@PathVariable(name="type" ,required=false)String type,
     		@PathVariable(name="id", required=false)Integer id,
     		Model model) {
@@ -39,14 +39,14 @@ public class WareHouseDeliveryController {
 		if(type == null) {
 			type = "pn";
 		} else if(!(type.equals("bom") || type.equals("pn") || type.equals("machinepart"))) {
-			throw new PdsysException("错误参数:/delivery/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
+			throw new PdsysException("错误参数:/delivery/main/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
 		
 		WareHouseDeliveryModel delivery;
 		if(id != null) {
 			delivery = wareHouseDeliveryService.queryOne(id);
 			if(delivery == null) {
-				throw new PdsysException("错误参数:/delivery/type/id=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
+				throw new PdsysException("错误参数:/delivery/main/" + type + "/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 			}
 		} else {
 			delivery = new WareHouseDeliveryModel();
@@ -72,18 +72,49 @@ public class WareHouseDeliveryController {
 	 * */
 	@RequestMapping(value="/add/pn")
 	@ResponseBody
-    public JSONResponse addDelivery(@RequestBody WareHouseDeliveryPnModel deliveryPn, Model model) {
+    public JSONResponse addDeliveryPn(@RequestBody WareHouseDeliveryPnModel deliveryPn, Model model) {
 		wareHouseDeliveryPnService.add(deliveryPn);
 		return JSONResponse.success();
     }
 	
 	/**
-	 * 新建出库明细
+	 * 删除出库单
+	 * */
+	@RequestMapping(value="/delete/delivery/{id}")
+	@ResponseBody
+	public JSONResponse deleteDelivery(@PathVariable(name="id", required=false)Integer id, Model model) {
+		WareHouseDeliveryModel delivery = wareHouseDeliveryService.queryOne(id);
+		if(delivery == null) {
+			throw new PdsysException("错误参数:/delivery/delete/delivery/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM); 
+		}
+		wareHouseDeliveryService.delete(delivery);
+		return JSONResponse.success();
+	}
+	
+	/**
+	 * 删除出库明细
 	 * */
 	@RequestMapping(value="/delete/pn")
 	@ResponseBody
-    public JSONResponse addDelivery(@RequestBody List<WareHouseDeliveryPnModel> deliveryPns, Model model) {
+    public JSONResponse deleteDeliveryPn(@RequestBody List<WareHouseDeliveryPnModel> deliveryPns, Model model) {
 		wareHouseDeliveryPnService.delete(deliveryPns);
 		return JSONResponse.success();
+    }
+	
+	/**
+	 * 出库
+	 * */
+	@RequestMapping(value="/delivery/{id}")
+	@ResponseBody
+    public JSONResponse delivery(@PathVariable(name="id", required=false)Integer id, Model model) {
+		WareHouseDeliveryModel delivery = wareHouseDeliveryService.queryOne(id);
+		if(delivery == null) {
+			throw new PdsysException("错误参数:/delivery/delivery/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM); 
+		}
+		if(wareHouseDeliveryService.delivery(delivery)) {
+			return JSONResponse.success();
+		} else {
+			return JSONResponse.error("库存不足,请刷新页面。");
+		}
     }
 }

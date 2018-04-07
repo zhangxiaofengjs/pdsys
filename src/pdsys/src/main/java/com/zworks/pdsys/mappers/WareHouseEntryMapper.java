@@ -18,4 +18,6 @@ public interface WareHouseEntryMapper {
 	void add(WareHouseEntryModel obj);
 
 	List<WareHouseEntryModel> queryList(WareHouseEntryModel obj);
+
+	void update(WareHouseEntryModel entry);
 }

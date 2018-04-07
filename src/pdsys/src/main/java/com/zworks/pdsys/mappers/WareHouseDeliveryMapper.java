@@ -17,4 +17,8 @@ public interface WareHouseDeliveryMapper {
 	void add(WareHouseDeliveryModel obj);
 
 	List<WareHouseDeliveryModel> queryList(WareHouseDeliveryModel obj);
+
+	void update(WareHouseDeliveryModel delivery);
+
+	void delete(WareHouseDeliveryModel delivery);
 }

@@ -30,42 +30,43 @@ public class WareHouseDeliveryPnService {
 
 	@Transactional
 	public void addOrUpdate(String strIds, WareHouseDeliveryPnModel wareHouseDeliveryPn) {
-		List<Integer> whPnIds = StringUtils.split(strIds);
-		
-		for(int whPnId : whPnIds) {
-			WareHousePnModel wareHousePn = wareHouseDeliveryPn.getWareHousePn();
-			wareHousePn.setId(whPnId);
-			
-			WareHouseDeliveryModel wareHouseDelivery =  wareHouseDeliveryPn.getWareHouseDelivery();
-			
-			List<WareHouseDeliveryModel> deliverys = wareHouseDeliveryService.queryList(wareHouseDelivery);
-			if(deliverys == null || deliverys.size() == 0) {
-				//该领收人还未创建输出单的话，先创建
-				wareHouseDeliveryService.add(wareHouseDelivery);
-			} else {
-				WareHouseDeliveryModel wareHouseDeliveryExist = deliverys.get(0);
-				wareHouseDelivery.setId(wareHouseDeliveryExist.getId());
-			}
-			
-			List<WareHouseDeliveryPnModel> whDeliveryPns = wareHouseDeliveryPnMapper.queryList(wareHouseDeliveryPn);
-			if(whDeliveryPns == null || whDeliveryPns.size() == 0) {
-				//该领收人还未创建输出单的话，先创建
-				wareHouseDeliveryPnMapper.add(wareHouseDeliveryPn);
-			} else {
-				WareHouseDeliveryPnModel wareHouseDeliveryPnExist = whDeliveryPns.get(0);
-				wareHouseDeliveryPn.setId(wareHouseDeliveryPnExist.getId());
-				wareHouseDeliveryPnMapper.update(wareHouseDeliveryPn);
-			}
-		}
+//		List<Integer> whPnIds = StringUtils.split(strIds);
+//		
+//		for(int whPnId : whPnIds) {
+//			WareHousePnModel wareHousePn = wareHouseDeliveryPn.getWareHousePn();
+//			wareHousePn.setId(whPnId);
+//			
+//			WareHouseDeliveryModel wareHouseDelivery =  wareHouseDeliveryPn.getWareHouseDelivery();
+//			
+//			List<WareHouseDeliveryModel> deliverys = wareHouseDeliveryService.queryList(wareHouseDelivery);
+//			if(deliverys == null || deliverys.size() == 0) {
+//				//该领收人还未创建输出单的话，先创建
+//				wareHouseDeliveryService.add(wareHouseDelivery);
+//			} else {
+//				WareHouseDeliveryModel wareHouseDeliveryExist = deliverys.get(0);
+//				wareHouseDelivery.setId(wareHouseDeliveryExist.getId());
+//			}
+//			
+//			List<WareHouseDeliveryPnModel> whDeliveryPns = wareHouseDeliveryPnMapper.queryList(wareHouseDeliveryPn);
+//			if(whDeliveryPns == null || whDeliveryPns.size() == 0) {
+//				//该领收人还未创建输出单的话，先创建
+//				wareHouseDeliveryPnMapper.add(wareHouseDeliveryPn);
+//			} else {
+//				WareHouseDeliveryPnModel wareHouseDeliveryPnExist = whDeliveryPns.get(0);
+//				wareHouseDeliveryPn.setId(wareHouseDeliveryPnExist.getId());
+//				wareHouseDeliveryPnMapper.update(wareHouseDeliveryPn);
+//			}
+//		}
 	}
 
 	public void add(WareHouseDeliveryPnModel deliveryPn) {
-		// TODO Auto-generated method stub
-		
+		wareHouseDeliveryPnMapper.add(deliveryPn);
 	}
 
+	@Transactional
 	public void delete(List<WareHouseDeliveryPnModel> deliveryPns) {
-		// TODO Auto-generated method stub
-		
+		for(WareHouseDeliveryPnModel deliveryPn : deliveryPns) {
+			wareHouseDeliveryPnMapper.delete(deliveryPn);
+		}
 	}
 }

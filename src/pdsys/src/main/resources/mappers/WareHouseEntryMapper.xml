@@ -2,7 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseEntryMapper">
-	<resultMap id="orderResultMap" type="orderModel" >  
+	<resultMap id="wareHousePnResultMap" type="wareHousePnModel" >  
+        <id column="wh_pn_id" property="id" />
+        <id column="wh_pn_num" property="num" />  
+        <id column="wh_pn_type" property="type" />  
+    </resultMap>
+    <resultMap id="orderResultMap" type="orderModel" >  
         <id column="o_id" property="id" />  
         <id column="o_no" property="no" />  
     </resultMap>
@@ -31,6 +36,7 @@
         <result column="e_pn_num" property="num" />  
         <result column="e_pn_type" property="type" />  
         <association property="orderPn" resultMap="orderPnResultMap" />
+        <association property="wareHousePn" resultMap="wareHousePnResultMap" />
     </resultMap>
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="user_id" property="id" />  
@@ -40,6 +46,8 @@
 	<resultMap id="wareHouseEntryResultMap" type="wareHouseEntryModel" >  
         <id column="e_id" property="id" />  
         <result column="e_entry_time" property="entryTime" />  
+        <result column="e_state" property="state" />  
+        <result column="e_create_time" property="createTime" />  
         <result column="e_update_time" property="updateTime" />  
         <association property="user" resultMap="userResultMap"/>
         <association property="updateUser" resultMap="userResultMap" columnPrefix="upt_"/>
@@ -50,6 +58,8 @@
 		select entry.c_id as e_id,
 			   entry.c_entry_time as e_entry_time,
 			   entry.c_update_time as e_update_time,
+			   entry.c_create_time as e_create_time,
+			   entry.c_state as e_state,
 		       user.c_id as user_id,
 		       user.c_no as user_no,
 		       user.c_name as user_name,
@@ -69,7 +79,10 @@
 		       unit.c_id as unit_id,
 		       unit.c_name as unit_name,
 		       o.c_id as o_id,
-		       o.c_no as o_no
+		       o.c_no as o_no,
+		       wh_pn.c_id as wh_pn_id,
+		       wh_pn.c_num as wh_pn_num,
+		       wh_pn.c_type as wh_pn_type
 		from entry_tbl as entry
 		left join user_tbl as user on entry.c_user_id = user.c_id
 		left join user_tbl as upt_user on entry.c_update_user_id = upt_user.c_id
@@ -79,9 +92,10 @@
 		left join unit_tbl as unit on pn.c_unit_id = unit.c_id
 		left join pn_cls_tbl as pn_cls on o_pn.c_pn_cls_id = pn_cls.c_id
 		left join order_tbl as o on o_pn.c_order_id = o.c_id
+		left join warehouse_pn_tbl as wh_pn on e_pn.c_ref_id = wh_pn.c_order_pn_id and e_pn.c_type = wh_pn.c_type
 		<where>
 			<if test="id >= 0">
-				and entry.c_id = #{id}
+				and entry.c_id=#{id}
 			</if>
 		</where>
 	</select>
@@ -92,4 +106,13 @@
       		select LAST_INSERT_ID() as id
       	</selectKey>
     </insert>
+    
+    <update id="update" parameterType="wareHouseEntryModel">
+		update entry_tbl
+		set c_state=#{state},
+			c_entry_time=#{entryTime}
+      	<where>
+      		c_id=#{id}
+      	</where>
+    </update>
 </mapper>

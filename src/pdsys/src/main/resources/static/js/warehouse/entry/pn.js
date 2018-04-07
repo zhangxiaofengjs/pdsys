@@ -1,4 +1,8 @@
 $(document).ready(function(){
+	$("button[name='refresh']").click(function(){
+		PdSys.refresh();
+	});
+	
 	//新建入库单
 	$("button[name='addEntry']").click(function(){
 		var self = $(this);
@@ -172,8 +176,10 @@ $(document).ready(function(){
 				msgDlg.showMsgDlg({
 					"target":"msg_div",
 					"type":"ok",
-					"msg":"成功添加到入库单!"});
-				PdSys.refresh();
+					"msg":"成功添加到入库单!",
+					"ok":function(){
+						PdSys.refresh();
+					}});
 			},
 			"error": function(data) {
 				var msgDlg = new CommonDlg();
@@ -213,8 +219,10 @@ $(document).ready(function(){
 						msgDlg.showMsgDlg({
 							"target":"msg_div",
 							"type":"ok",
-							"msg":"删除成功!"});
-						PdSys.refresh();
+							"msg":"删除成功!",
+							"ok":function(){
+								PdSys.refresh();
+							}});
 					},
 					"error": function(data) {
 						var msgDlg = new CommonDlg();
@@ -222,6 +230,85 @@ $(document).ready(function(){
 							"target":"msg_div",
 							"type":"ok",
 							"msg":"删除失败,请联系管理员!"});
+					}
+				});
+			}
+		});
+	});
+	
+	$("button[name='doEntry']").click(function(){
+		var self = $(this);
+		
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"dlg_div",
+			"caption":"确定入库单",
+			"type":"yesno",
+			"msg":"确定执行入库?",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/warehouse/entry/entry/" + $("#entry_id").val(),
+					"success": function(data) {
+						dlg.hide();
+						
+						if(data.success) {
+							var msgDlg = new CommonDlg();
+							msgDlg.showMsgDlg({
+								"target":"msg_div",
+								"type":"ok",
+								"msg":"入库成功!",
+								"ok": function(){
+									PdSys.refresh();
+								}});
+						} else {
+							var msgDlg = new CommonDlg();
+							msgDlg.showMsgDlg({
+								"target":"msg_div",
+								"type":"ok",
+								"msg":data.msg});
+						}
+					},
+					"error": function(data) {
+						var msgDlg = new CommonDlg();
+						msgDlg.showMsgDlg({
+							"target":"msg_div",
+							"type":"ok",
+							"msg":"发生错误,请联系管理员!"});
+					}
+				});
+			}
+		});
+	});
+	
+	$("#deleteEntry").click(function(){
+		var self = $(this);
+		
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"dlg_div",
+			"caption":"删除入库单",
+			"type":"yesno",
+			"msg":"确定删除入库单?",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/warehouse/entry/delete/entry/" + $("#entry_id").val(),
+					"success": function(data) {
+						dlg.hide();
+						var msgDlg = new CommonDlg();
+						msgDlg.showMsgDlg({
+							"target":"msg_div",
+							"type":"ok",
+							"msg":"入库单已删除!",
+							"ok": function(){
+								PdSys.refresh();
+							}});
+					},
+					"error": function(data) {
+						var msgDlg = new CommonDlg();
+						msgDlg.showMsgDlg({
+							"target":"msg_div",
+							"type":"ok",
+							"msg":"发生错误,请联系管理员!"});
 					}
 				});
 			}

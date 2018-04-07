@@ -100,12 +100,43 @@ public class WareHouseEntryController {
     }
 	
 	/**
-	 * 新建入库明细
+	 * 删除入库明细
 	 * */
 	@RequestMapping(value="/delete/pn")
 	@ResponseBody
-    public JSONResponse addEntry(@RequestBody List<WareHouseEntryPnModel> entryPns, Model model) {
+    public JSONResponse addEntryPn(@RequestBody List<WareHouseEntryPnModel> entryPns, Model model) {
 		wareHouseEntryPnService.delete(entryPns);
 		return JSONResponse.success();
+    }
+	
+	/**
+	 * 删除入库单
+	 * */
+	@RequestMapping(value="/delete/entry/{id}")
+	@ResponseBody
+	public JSONResponse deleteEntry(@PathVariable(name="id") Integer id, Model model) {
+		WareHouseEntryModel entry = wareHouseEntryService.queryOne(id);
+		if(entry == null) {
+			throw new PdsysException("错误参数:/entry/delete/entry/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM); 
+		}
+		wareHouseEntryService.delete(entry);
+		return JSONResponse.success();
+	}
+	
+	/**
+	 * 入库
+	 * */
+	@RequestMapping(value="/entry/{id}")
+	@ResponseBody
+    public JSONResponse delivery(@PathVariable(name="id", required=false)Integer id, Model model) {
+		WareHouseEntryModel entry = wareHouseEntryService.queryOne(id);
+		if(entry == null) {
+			throw new PdsysException("错误参数:/entry/entry/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM); 
+		}
+		if(wareHouseEntryService.entry(entry)) {
+			return JSONResponse.success();
+		} else {
+			return JSONResponse.error();
+		}
     }
 }

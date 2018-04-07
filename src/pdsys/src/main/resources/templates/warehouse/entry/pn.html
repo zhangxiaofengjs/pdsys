@@ -9,10 +9,13 @@
 	  			<span class="navbar-brand glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/entry/main/pn}" method="post">
+	 			<button type="button" class="btn btn-sm btn-info" name="refresh">刷新</button>
 	 			<button type="button" class="btn btn-sm btn-info" name="addEntry">新建入库单</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="addEntryPn">增加</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="deleteEntryPn">删除</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="checkin">入库</button>
+	 			<div style="display:inline-block;" th:if="${entry.state == 0}">
+	 				<button type="button" class="btn btn-sm btn-info" name="addEntryPn">增加</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntryPn">删除</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="doEntry">入库</button>
+		 		</div>
 			</form>
 		</div>
 	</nav>
@@ -25,11 +28,12 @@
 			</tr>
 			<tr>
 				<th th:colspan="2">入库单号:&nbsp;
-					<a href="javascript:void(0);" th:text="((${entry.entryTime} != null) ? ${#dates.format(entry.entryTime, 'yyyyMMddHHmmss')} : '00000000000000') + '#' + ${entry.id}"></a>
+					<a th:style="${entry.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="((${entry.createTime} != null) ? ${#dates.format(entry.createTime, 'yyyyMMddHHmmss')} : '00000000000000') + '#' + ${entry.id}"></a>
+					<i th:if="${entry.state == 2}" th:text="已删除" class="text-muted"></i>
 					<input type="hidden" id="entry_id" name="entry_id" th:value="${entry.id}">
-					<a href="javascript:void(0);" class="glyphicon glyphicon-trash"></a>
+					<a th:if="${entry.state == 0}" href="javascript:void(0);" class="glyphicon glyphicon-trash" id="deleteEntry"></a>
 				</th>
-				<th th:colspan="1">日期:&nbsp;<b th:text="((${entry.entryTime} != null) ? ${#dates.format(entry.entryTime, 'yyyy-MM-dd')} : '')"></b></th>
+				<th th:colspan="1">入库日期:&nbsp;<b th:text="((${entry.entryTime} != null) ? ${#dates.format(entry.entryTime, 'yyyy-MM-dd')} : '')"></b></th>
 				<th th:colspan="5">提交人:&nbsp;
 					<a href="javascript:void(0);" th:text="${entry.user!=null?entry.user.name:''}"></a>
 					<i class="pull-right" th:text="'更新:' + ${entry.updateUser!=null?entry.updateUser.name:''} + '&nbsp;' + (${entry.updateTime!=null}?${#dates.format(entry.updateTime, 'yyyy-MM-dd')}:'')"></i>

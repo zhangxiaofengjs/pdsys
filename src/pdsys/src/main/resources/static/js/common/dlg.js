@@ -177,7 +177,7 @@ CommonDlg.prototype.buildAjaxField = function(field) {
 			$(this).remove();
 			
 			if(field.afterBuild) {
-				(field.afterBuild)();
+				(field.afterBuild)('ajax');
 			}
 		},
 		error: function(response) {

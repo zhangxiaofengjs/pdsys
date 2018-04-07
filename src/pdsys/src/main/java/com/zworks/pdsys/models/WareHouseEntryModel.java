@@ -15,6 +15,7 @@ public class WareHouseEntryModel extends BaseModel{
 	
 	private UserModel user;
 	private Date entryTime;
+	private int state;
 	private List<WareHouseEntryPnModel> wareHouseEntryPns;
 	
 	public WareHouseEntryModel() {
@@ -42,5 +43,13 @@ public class WareHouseEntryModel extends BaseModel{
 
 	public void setWareHouseEntryPns(List<WareHouseEntryPnModel> wareHouseEntryPns) {
 		this.wareHouseEntryPns = wareHouseEntryPns;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
 	}
 }

@@ -1,4 +1,8 @@
 $(document).ready(function(){
+	$("button[name='refresh']").click(function(){
+		PdSys.refresh();
+	});
+	
 	//新建出库单
 	$("button[name='addDelivery']").click(function(){
 		var self = $(this);
@@ -172,8 +176,10 @@ $(document).ready(function(){
 				msgDlg.showMsgDlg({
 					"target":"msg_div",
 					"type":"ok",
-					"msg":"成功添加到出库单!"});
-				PdSys.refresh();
+					"msg":"成功添加到出库单!",
+					"ok": function() {
+						PdSys.refresh();
+					}});
 			},
 			"error": function(data) {
 				var msgDlg = new CommonDlg();
@@ -213,8 +219,11 @@ $(document).ready(function(){
 						msgDlg.showMsgDlg({
 							"target":"msg_div",
 							"type":"ok",
-							"msg":"删除成功!"});
-						PdSys.refresh();
+							"msg":"删除成功!",
+							"ok": function() {
+								PdSys.refresh();
+							}});
+						
 					},
 					"error": function(data) {
 						var msgDlg = new CommonDlg();
@@ -222,6 +231,85 @@ $(document).ready(function(){
 							"target":"msg_div",
 							"type":"ok",
 							"msg":"删除失败,请联系管理员!"});
+					}
+				});
+			}
+		});
+	});
+	
+	$("button[name='doDelivery']").click(function(){
+		var self = $(this);
+		
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"dlg_div",
+			"caption":"确定出库单",
+			"type":"yesno",
+			"msg":"确定执行出库?",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/warehouse/delivery/delivery/" + $("#delivery_id").val(),
+					"success": function(data) {
+						dlg.hide();
+						
+						if(data.success) {
+							var msgDlg = new CommonDlg();
+							msgDlg.showMsgDlg({
+								"target":"msg_div",
+								"type":"ok",
+								"msg":"出库成功!",
+								"ok": function(){
+									PdSys.refresh();
+								}});
+						} else {
+							var msgDlg = new CommonDlg();
+							msgDlg.showMsgDlg({
+								"target":"msg_div",
+								"type":"ok",
+								"msg":data.msg});
+						}
+					},
+					"error": function(data) {
+						var msgDlg = new CommonDlg();
+						msgDlg.showMsgDlg({
+							"target":"msg_div",
+							"type":"ok",
+							"msg":"出库失败,请联系管理员!"});
+					}
+				});
+			}
+		});
+	});
+	
+	$("#deleteDelivery").click(function(){
+		var self = $(this);
+		
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"dlg_div",
+			"caption":"删除出库单",
+			"type":"yesno",
+			"msg":"确定删除出库单?",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/warehouse/delivery/delete/delivery/" + $("#delivery_id").val(),
+					"success": function(data) {
+						dlg.hide();
+						var msgDlg = new CommonDlg();
+						msgDlg.showMsgDlg({
+							"target":"msg_div",
+							"type":"ok",
+							"msg":"出库单已删除!",
+							"ok": function(){
+								PdSys.refresh();
+							}});
+					},
+					"error": function(data) {
+						var msgDlg = new CommonDlg();
+						msgDlg.showMsgDlg({
+							"target":"msg_div",
+							"type":"ok",
+							"msg":"发生错误,请联系管理员!"});
 					}
 				});
 			}

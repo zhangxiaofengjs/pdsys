@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.mappers.WareHousePnMapper;
+import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 
 /**
@@ -21,5 +22,17 @@ public class WareHousePnService {
 		List<WareHousePnModel> list = wareHousePnMapper.queryList(filterObj);
 		
 		return list;
+	}
+
+	public void update(WareHousePnModel wareHousePn) {
+		wareHousePnMapper.update(wareHousePn);
+	}
+
+	public void delete(WareHouseDeliveryPnModel deliveryPn) {
+		wareHousePnMapper.delete(deliveryPn);
+	}
+
+	public void add(WareHousePnModel wareHousePn) {
+		wareHousePnMapper.add(wareHousePn);
 	}
 }

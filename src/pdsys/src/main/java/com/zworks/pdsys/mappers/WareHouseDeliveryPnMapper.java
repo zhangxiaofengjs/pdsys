@@ -13,9 +13,11 @@ import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 @Mapper
 public interface WareHouseDeliveryPnMapper {
 	
-	int add(WareHouseDeliveryPnModel wareHouseDeliveryPn);
+	void add(WareHouseDeliveryPnModel wareHouseDeliveryPn);
 
 	List<WareHouseDeliveryPnModel> queryList(WareHouseDeliveryPnModel wareHouseDeliveryPn);
 
 	void update(WareHouseDeliveryPnModel wareHouseDeliveryPn);
+
+	void delete(WareHouseDeliveryPnModel deliveryPn);
 }

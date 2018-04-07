@@ -9,10 +9,13 @@
 	  			<span class="navbar-brand glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/delivery/main/pn}" method="post">
+	 			<button type="button" class="btn btn-sm btn-info" name="refresh">刷新</button>
 	 			<button type="button" class="btn btn-sm btn-info" name="addDelivery">新建出库单</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="addDeliveryPn">增加</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="deleteDeliveryPn">删除</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="checkin">出库</button>
+	 			<div style="display:inline-block;" th:if="${delivery.state == 0}">
+		 			<button type="button" class="btn btn-sm btn-info" name="addDeliveryPn">增加</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="deleteDeliveryPn">删除</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="doDelivery">出库</button>
+	 			</div>
 			</form>
 		</div>
 	</nav>
@@ -25,12 +28,13 @@
 			</tr>
 			<tr>
 				<th th:colspan="2">出库单号:&nbsp;
-					<a href="javascript:void(0);" th:text="((${delivery.deliveryTime} != null) ? ${#dates.format(delivery.deliveryTime, 'yyyyMMddHHmmss')} : '00000000000000') + '#' + ${delivery.id}"></a>
+					<a th:style="${delivery.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="((${delivery.createTime} != null) ? ${#dates.format(delivery.createTime, 'yyyyMMddHHmmss')} : '00000000000000') + '#' + ${delivery.id}"></a>
+					<i th:if="${delivery.state == 2}" th:text="已删除" class="text-muted"></i>
 					<input type="hidden" id="delivery_id" name="delivery_id" th:value="${delivery.id}">
-					<a href="javascript:void(0);" class="glyphicon glyphicon-trash"></a>
+					<a th:if="${delivery.state == 0}" href="javascript:void(0);" class="glyphicon glyphicon-trash" id="deleteDelivery"></a>
 				</th>
-				<th th:colspan="1">日期:&nbsp;<b th:text="((${delivery.deliveryTime} != null) ? ${#dates.format(delivery.deliveryTime, 'yyyy-MM-dd')} : '')"></b></th>
-				<th th:colspan="5">提交人:&nbsp;
+				<th th:colspan="1">出库日期:&nbsp;<b th:text="((${delivery.deliveryTime} != null) ? ${#dates.format(delivery.deliveryTime, 'yyyy-MM-dd')} : '')"></b></th>
+				<th th:colspan="6">提交人:&nbsp;
 					<a href="javascript:void(0);" th:text="${delivery.user!=null?delivery.user.name:''}"></a>
 					<i class="pull-right" th:text="'更新:' + ${delivery.updateUser!=null?delivery.updateUser.name:''} + '&nbsp;' + (${delivery.updateTime!=null}?${#dates.format(delivery.updateTime, 'yyyy-MM-dd')}:'')"></i>
 				</th>
@@ -43,6 +47,7 @@
 				<th>子类</th>
 				<th>种类</th>
 				<th>单位</th>
+				<th>在库数量</th>
 				<th>出库数量</th>
 		    </tr>
 		</thead>
@@ -52,7 +57,9 @@
 						 pn=(${orderPn.pn}?${orderPn.pn}:_),
 						 unit=(${pn.unit}?${pn.unit}:_),
 						 pnCls=(${pn.pnCls}?${pn.pnCls}:_),
- 						 order=(${orderPn.order}?${orderPn.order}:_)"
+ 						 order=(${orderPn.order}?${orderPn.order}:_),
+ 						 wareHousePn=(${wareHouseDeliveryPn.wareHousePn}),
+ 						 wareHouseNum=(${wareHousePn}?${wareHousePn.num}:0)"
 						 th:rowid="${wareHouseDeliveryPn.id}">
 				<td>
 					<input type="checkbox" name="select" th:rowid="${wareHouseDeliveryPn.id}">
@@ -66,7 +73,9 @@
 				  <span th:case="*">成品</span>
 				</td>
 				<td th:text="${unit}?${unit.name}:_"></td>
-				<td th:text="${wareHouseDeliveryPn.num}"></td>
+				<td th:text="${wareHouseNum}"></td>
+				<td th:text="${wareHouseDeliveryPn.num}" 
+					th:class="${wareHouseNum < wareHouseDeliveryPn.num}?'text-danger':''"></td>
 		    </tr>
 		</tbody>
 	</table>

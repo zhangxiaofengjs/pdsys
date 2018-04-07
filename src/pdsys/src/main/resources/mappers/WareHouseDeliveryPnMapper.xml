@@ -49,10 +49,12 @@
     	insert into delivery_pn_tbl (
     		c_delivery_id,
     		c_ref_id,
+    		c_type,
     		c_num) 
     	values (
     		#{wareHouseDelivery.id},
-    		#{wareHousePn.id},
+    		#{orderPn.id},
+    		#{type},
     		#{num})
       	<selectKey keyProperty="id" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
@@ -66,4 +68,11 @@
 			c_id = #{id}
 		</where>
     </update>
+    
+    <delete id="delete"  parameterType="wareHouseDeliveryPnModel">
+    	delete from delivery_pn_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
 </mapper>
