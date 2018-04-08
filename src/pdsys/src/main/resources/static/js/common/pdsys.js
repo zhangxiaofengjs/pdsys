@@ -45,6 +45,14 @@ PdSys.refresh = function() {
 	document.location.reload();
 }
 
+PdSys.alert = function(msg) {
+	var dlg = new CommonDlg();
+	dlg.showMsgDlg({
+		"target":"msg_div",
+		"type":"ok",
+		"msg": msg});
+}
+
 PdSys.success = function(option) {
 	var dlg = new CommonDlg();
 	dlg.showMsgDlg({

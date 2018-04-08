@@ -14,4 +14,8 @@ import com.zworks.pdsys.models.UserModel;
 public interface UserMapper {
 	
 	List<UserModel> queryList(UserModel filterObj);
+
+	void add(UserModel filterObj);
+
+	void update(UserModel filterObj);
 }

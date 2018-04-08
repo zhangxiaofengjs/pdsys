@@ -4,10 +4,52 @@
 <mapper namespace="com.zworks.pdsys.mappers.UserMapper">
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="c_id" property="id"/>  
+        <id column="c_no" property="no"/>  
         <id column="c_name" property="name"/>  
+        <id column="c_phone" property="phone"/>  
+        <id column="c_address" property="address"/>  
     </resultMap>
     
 	<select id="queryList" resultMap="userResultMap">
-		select * from user_tbl 
+		select * from user_tbl as u
+		<where>
+			<if test="id > 0">
+				and u.c_id = #{id}
+			</if>
+			<if test="no != null">
+				and u.c_no = #{no}
+			</if>
+			<if test="name != null">
+				and u.c_name = #{name}
+			</if>
+		</where>
 	</select>
+	
+	<insert id="add" parameterType="userModel">
+    	insert into user_tbl (
+    		c_no,
+    		c_name,
+    		c_phone,
+    		c_address)
+    	values (
+    		#{no},
+    		#{name},
+    		#{phone},
+    		#{address}
+    	)
+      	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+    </insert>
+    
+	<update id="update">
+    	update user_tbl
+		set	c_no = #{no},
+			c_name = #{name},
+			c_phone = #{phone},
+			c_address = #{address}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
 </mapper>

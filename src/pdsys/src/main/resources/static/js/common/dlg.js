@@ -251,7 +251,7 @@ CommonDlg.ajaxSubmitForm = function() {
     	url : PdSys.url(option.url),
         type : 'post',
         dataType : 'json',//接受服务端数据类型
-        contentType:"application/json",
+        contentType:"application/json;charset=UTF-8",
         processData: false,
         cache: false,
         data: JSON.stringify(formJson),
@@ -266,7 +266,7 @@ CommonDlg.ajaxSubmitForm = function() {
         	}
         },
         error: function(data) {
-        	option.error(data);
+        	PdSys.sysError();
         }
      };
     
