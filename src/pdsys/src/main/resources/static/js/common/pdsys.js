@@ -44,3 +44,24 @@ PdSys.ajax = function(option) {
 PdSys.refresh = function() {
 	document.location.reload();
 }
+
+PdSys.success = function(option) {
+	var dlg = new CommonDlg();
+	dlg.showMsgDlg({
+		"target":"msg_div",
+		"type":"ok",
+		"msg":"操作成功。",
+		"ok": function() {
+			if(option.ok) {
+				(option.ok)();
+			}
+		}});
+}
+
+PdSys.sysError = function() {
+	var dlg = new CommonDlg();
+	dlg.showMsgDlg({
+		"target":"msg_div",
+		"type":"ok",
+		"msg":"发生系统错误,请联系管理员。"});
+}

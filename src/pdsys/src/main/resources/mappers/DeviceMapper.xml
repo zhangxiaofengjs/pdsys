@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.DeviceMapper">
+	<resultMap id="userResultMap" type="userModel" >  
+        <id column="user_id" property="id"/>
+        <result column="user_name" property="name"/>   
+    </resultMap>
+	<resultMap id="placeResultMap" type="placeModel" >  
+        <id column="p_id" property="id"/>
+        <result column="p_name" property="name"/>   
+    </resultMap>
+	<resultMap id="supplierResultMap" type="supplierModel" >  
+        <id column="s_id" property="id"/> 
+        <result column="s_name" property="name"/>  
+    </resultMap>
+   	<resultMap id="unitResultMap" type="unitModel" >  
+        <id column="u_id" property="id"/>
+        <result column="u_name" property="name"/>  
+    </resultMap>
+    <resultMap id="machineResultMap" type="machineModel" >  
+        <id column="m_id" property="id" />  
+        <result column="m_pn" property="pn"/>  
+        <result column="m_name" property="name"/>  
+        <result column="m_maitenace_period" property="maitenacePeriod"/>  
+        <association property="unit" resultMap="unitResultMap"/>
+        <association property="supplier" resultMap="supplierResultMap"/>
+    </resultMap>
+	<resultMap id="deviceResultMapper" type="deviceModel" >  
+        <id column="d_id" property="id" />  
+        <result column="d_no" property="no" />  
+        <result column="d_maitenaced_date" property="maitenacedDate" />  
+        <result column="d_state" property="state" />  
+        <association property="machine" resultMap="machineResultMap"/>
+        <association property="place" resultMap="placeResultMap"/>
+        <association property="user" resultMap="userResultMap"/>
+    </resultMap>
+    
+	<select id="queryList" parameterType="deviceModel" resultMap="deviceResultMapper">
+		select d.c_id as d_id,
+		       d.c_no as d_no,
+		  	   d.c_maitenaced_date as d_maitenaced_date,	
+		  	   d.c_state as d_state,	
+			   m.c_id as m_id,
+			   m.c_pn as m_pn,
+			   m.c_name as m_name,
+			   m.c_maitenace_period as m_maitenace_period,
+   		       u.c_id as u_id,
+   		       u.c_name as u_name,
+   		       s.c_id as s_id,
+		       s.c_name as s_name,
+		       p.c_id as p_id,
+		       p.c_name as p_name,
+		       user.c_id as user_id,
+		       user.c_name as user_name
+		from device_tbl as d 
+		left join machine_tbl as m on d.c_machine_id = m.c_id 
+		left join unit_tbl as u on m.c_unit_id = u.c_id 
+		left join supplier_tbl as s on m.c_supplier_id = s.c_id 
+		left join place_tbl as p on d.c_place_id = p.c_id 
+		left join user_tbl as user on d.c_user_id = user.c_id 
+	</select>
+	
+	<insert id="add" parameterType="deviceModel">
+    	insert into device_tbl (
+    		c_no,
+    		c_machine_id,
+    		c_place_id,
+    		c_user_id)
+    	values (
+    		#{no},
+    		#{machine.id},
+    		#{place.id},
+    		#{user.id}
+    	)
+      	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+    </insert>
+    
+	<update id="update">
+    	update device_tbl
+		set	c_state = #{state}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
+</mapper>

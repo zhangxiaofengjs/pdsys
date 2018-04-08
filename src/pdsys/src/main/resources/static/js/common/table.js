@@ -37,7 +37,7 @@ $(document).ready(function(){
 });
 
 //取到选择的Id
-function getSelectedRowId() {
+function getSelectedRowId(option) {
 	var chkBoxes = $(":checkbox[name='select']");
 	var selectIdArr = [];
 	
@@ -53,7 +53,16 @@ function getSelectedRowId() {
 			"target":"msg_div",
 			"type":"ok",
 			"msg":"请选择要操作的对象。"});
+		return selectIdArr;
 	}
 	
+	if(option && option.checkOne && selectIdArr.length != 1) {
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"msg_div",
+			"type":"ok",
+			"msg":"请只选择一个要操作的对象。"});
+		return selectIdArr;
+	}
 	return selectIdArr;
 }
