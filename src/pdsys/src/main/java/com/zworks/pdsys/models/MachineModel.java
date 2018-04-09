@@ -1,5 +1,7 @@
 package com.zworks.pdsys.models;
 
+import java.util.List;
+
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -13,7 +15,8 @@ public class MachineModel extends BaseModel {
 	private UnitModel unit;
 	private float maitenacePeriod;
 	private SupplierModel supplier;
-
+	private List<MachineMachinePartRelModel> machineMachinePartRels;
+	
 	public String getPn() {
 		return pn;
 	}
@@ -52,5 +55,13 @@ public class MachineModel extends BaseModel {
 
 	public void setMaitenacePeriod(float maitenacePeriod) {
 		this.maitenacePeriod = maitenacePeriod;
+	}
+
+	public List<MachineMachinePartRelModel> getMachineMachinePartRels() {
+		return machineMachinePartRels;
+	}
+
+	public void setMachineMachinePartRels(List<MachineMachinePartRelModel> machineMachinePartRels) {
+		this.machineMachinePartRels = machineMachinePartRels;
 	}
 }
