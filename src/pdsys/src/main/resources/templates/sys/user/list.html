@@ -25,6 +25,7 @@
 				<th>姓名</th>
 				<th>手机</th>
 				<th>地址</th>
+				<th>权限</th>
 		    </tr>
 		</thead>
 		<tbody>
@@ -37,6 +38,7 @@
 				<td th:id="${'name_' + user.id}" th:text="${user.name}"></td>
 				<td th:id="${'phone_' + user.id}" th:text="${user.phone}"></td>
 				<td th:id="${'addr_' + user.id}" th:text="${user.address}"></td>
+				<td th:text="'开发中...'"></td>
 		    </tr>
 		</tbody>
 	</table>
