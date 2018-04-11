@@ -19,6 +19,7 @@ import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.StringUtils;
+import com.zworks.pdsys.form.beans.DeviceMaitenaceMachinePartsBean;
 import com.zworks.pdsys.form.beans.WareHouseAddDeliveryObjFormBean;
 import com.zworks.pdsys.form.beans.WareHouseEntryFormBean;
 import com.zworks.pdsys.form.beans.WareHouseListFormBean;
@@ -75,5 +76,12 @@ public class DeviceController {
 	public JSONResponse add(@RequestBody DeviceModel device, Model model) {
 		deviceService.add(device);
 		return JSONResponse.success();
+	}
+	
+	@RequestMapping(value= {"/machineparts"})
+	@ResponseBody
+	public JSONResponse machineParts(@RequestBody List<Integer> deviceIds, Model model) {
+		List<DeviceMaitenaceMachinePartsBean> result = deviceService.getMaitenaceParts(deviceIds);
+		return JSONResponse.success().put("data", result);
 	}
 }

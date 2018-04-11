@@ -47,7 +47,12 @@ function getSelectedRowId(option) {
 		}
 	});
 
-	if(!selectIdArr || selectIdArr.length == 0) {
+	var isShowMsg = true;
+	if(option && !option.showMsg) {
+		isShowMsg = false;
+	}
+	
+	if(isShowMsg && selectIdArr.length == 0) {
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
 			"target":"msg_div",
@@ -56,7 +61,7 @@ function getSelectedRowId(option) {
 		return selectIdArr;
 	}
 	
-	if(option && option.checkOne && selectIdArr.length != 1) {
+	if(isShowMsg && option && option.checkOne && selectIdArr.length != 1) {
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
 			"target":"msg_div",

@@ -28,12 +28,12 @@ PdSys.ajax = function(option) {
         success : function(data) {
         	if(option.success) {
         		option.success(data);
+        	} else if(option.error) {
+        		option.error(data);
         	}
         },
         error: function(data) {
-        	if(option.error) {
-        		option.error(data);
-        	}
+        	PdSys.sysError();
         }
      };
     

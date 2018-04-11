@@ -1,10 +1,12 @@
 package com.zworks.pdsys.models;
 
+import java.util.List;
+
 import org.apache.ibatis.type.Alias;
 
 /**
  * @author: zhangxiaofengjs@163.com
- * @version: 2018/04/05
+ * @version: 2018/04/09
  */
 @Alias("machinePartModel")
 public class MachinePartModel extends BaseModel {
@@ -13,7 +15,8 @@ public class MachinePartModel extends BaseModel {
 	private String name;
 	private UnitModel unit;
 	private SupplierModel supplier;
-
+	private List<MachineMachinePartRelModel> machineMachinePartRels;
+	
 	public String getPn() {
 		return pn;
 	}
@@ -44,5 +47,13 @@ public class MachinePartModel extends BaseModel {
 
 	public void setSupplier(SupplierModel supplier) {
 		this.supplier = supplier;
+	}
+
+	public List<MachineMachinePartRelModel> getMachineMachinePartRels() {
+		return machineMachinePartRels;
+	}
+
+	public void setMachineMachinePartRels(List<MachineMachinePartRelModel> machineMachinePartRels) {
+		this.machineMachinePartRels = machineMachinePartRels;
 	}
 }

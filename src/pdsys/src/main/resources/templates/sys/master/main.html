@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/header::header">
+</head>
+<body>
+	<ul class="nav nav-tabs">
+		<li role="presentation" th:class="(${type}=='customer'? 'active' : '')">
+			<a th:href="@{/sys/master/main/customer}">客户列表</a>
+		</li>
+		<li role="presentation" th:class="(${type}=='place'? 'active' : '')">
+			<a th:href="@{/sys/master/main/place}">办公地点定义</a>
+		</li>
+		<li role="presentation" th:class="(${type}=='pn'? 'active' : '')">
+			<a th:href="@{/sys/master/main/pn}">品番定义</a>
+		</li>
+		<li role="presentation" th:class="(${type}=='bom'? 'active' : '')">
+			<a th:href="@{/sys/master/main/bom}">原包材定义</a>
+		</li>
+		<li role="presentation" th:class="(${type}=='machine'? 'active' : '')">
+			<a th:href="@{/sys/master/main/machine}">设备定义</a>
+		</li>
+	</ul>
+	
+<div th:replace="/sys/master/__${type}__::content(${list})"></div>
+<div th:replace="common/footer::copyright"></div>
+</body>
+</html>

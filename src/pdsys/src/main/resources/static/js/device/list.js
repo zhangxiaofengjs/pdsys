@@ -116,4 +116,33 @@ $(document).ready(function(){
 			}
 		});
 	});
+	
+	//选择后合计维护备件表
+	$("input[name^='select']").click(function(){
+		var selIds = getSelectedRowId({"showMsg":false});
+		
+		PdSys.ajax({
+			"url":"/device/machineparts",
+			"data":selIds,
+			"success": function(data) {
+				console.log(data);
+				var bodyHtml = "";
+				data.data.forEach(function(obj, idx) {
+					var machineStr = "";
+					obj.machines.forEach(function(machine, idx2) {
+						machineStr += machine.pn + " " + machine.name + "</br>";
+					});
+					bodyHtml += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
+						obj.machinePart.pn, obj.machinePart.name, machineStr, obj.machinePart.unit.name, obj.maitenaceNum, obj.wareHouseNum
+					);
+				});
+				var body = $('#machineParts');
+				body.children().remove();
+				body.append(bodyHtml);
+			},
+			"error": function(data) {
+				PdSys.alert("查询备件库发生错误，请刷新后重试。");
+			}
+		});
+	});
 });

@@ -25,4 +25,12 @@ public class MachineService {
 		
 		return list;
 	}
+
+	public MachineModel queryOne(MachineModel machine) {
+		List<MachineModel> list = machineMapper.queryList(machine);
+		if(list.size() != 0) {
+			return list.get(0);
+		}
+		return null;
+	}
 }
