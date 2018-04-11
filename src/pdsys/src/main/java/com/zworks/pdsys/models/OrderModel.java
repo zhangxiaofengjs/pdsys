@@ -2,8 +2,12 @@ package com.zworks.pdsys.models;
 
 import java.io.Serializable;
 import java.util.Date;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import org.apache.ibatis.type.Alias;
+import com.zworks.pdsys.common.utils.DateJsonDeserializer;
+import com.zworks.pdsys.common.utils.DateJsonSerializer;
 
 /**
  * 订单
@@ -19,18 +23,24 @@ public class OrderModel extends BaseModel implements Serializable {
 	private String no;
 	
 	//下单时间
+    @JsonSerialize(using=DateJsonSerializer.class)
+    @JsonDeserialize(using=DateJsonDeserializer.class)
 	private Date orderDate;
 	
 	//交货期限
+    @JsonSerialize(using=DateJsonSerializer.class)
+    @JsonDeserialize(using=DateJsonDeserializer.class)
 	private Date shipDeadDate;
 	
 	//交货时间
+    @JsonSerialize(using=DateJsonSerializer.class)
+    @JsonDeserialize(using=DateJsonDeserializer.class)
 	private Date shipDate;
 	
 	//状态
 	private int state;
 	
-	//状态
+	//备注
 	private String comment;
 	
 	private UserModel user;

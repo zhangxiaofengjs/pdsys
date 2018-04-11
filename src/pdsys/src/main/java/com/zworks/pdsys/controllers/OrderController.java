@@ -55,7 +55,7 @@ public class OrderController {
 				orderService.delete(order);
 			}
 		}
-		return JSONResponse.success("删除订单成功!");
+		return JSONResponse.success();
 	}
 	
 	/**
