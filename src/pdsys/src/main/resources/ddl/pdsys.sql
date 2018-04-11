@@ -171,18 +171,19 @@ CREATE TABLE IF NOT EXISTS `device_tbl` (
   `c_maitenaced_date` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '上次保养时间',
   `c_state` int(11) NOT NULL DEFAULT '0' COMMENT '状态 运行中(0) 维护中(1) 故障(2) 废除(3)',
   PRIMARY KEY (`c_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='设备表';
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='设备表';
 
 -- テーブル pdsys.device_tbl: ~6 rows (約) のデータをダンプしています
 DELETE FROM `device_tbl`;
 /*!40000 ALTER TABLE `device_tbl` DISABLE KEYS */;
 INSERT INTO `device_tbl` (`c_id`, `c_no`, `c_machine_id`, `c_place_id`, `c_user_id`, `c_maitenaced_date`, `c_state`) VALUES
 	(1, '#001', 1, 1, 1, '2018-04-08 09:40:22', 0),
-	(2, '#002', 1, 2, 2, '2018-04-10 09:40:22', 1),
+	(2, '#002', 2, 2, 2, '2018-04-10 09:40:22', 1),
 	(3, '#003', 2, 1, 1, '2018-04-05 09:40:22', 2),
 	(4, '#004', 2, 1, 1, '2018-03-31 09:40:22', 3),
 	(5, '5673', 2, 2, 2, NULL, 0),
-	(6, '999', 3, 1, 1, '2018-04-08 10:45:17', 0);
+	(6, '999', 3, 1, 1, '2018-04-08 10:45:17', 0),
+	(7, '333', 3, 1, 1, '2018-04-11 11:03:03', 0);
 /*!40000 ALTER TABLE `device_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.entry_bom_tbl の構造をダンプしています

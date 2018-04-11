@@ -128,12 +128,16 @@ $(document).ready(function(){
 				console.log(data);
 				var bodyHtml = "";
 				data.data.forEach(function(obj, idx) {
-					bodyHtml += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td></tr>".format(
-						obj.pn, obj.name, obj.machine.name, obj.unit.name, obj.wareHouseNum
+					var machineStr = "";
+					obj.machines.forEach(function(machine, idx2) {
+						machineStr += machine.pn + " " + machine.name + "</br>";
+					});
+					bodyHtml += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
+						obj.machinePart.pn, obj.machinePart.name, machineStr, obj.machinePart.unit.name, obj.maitenaceNum, obj.wareHouseNum
 					);
 				});
-				var body = $('# tbody'.format('machineParts'));
-				body.chilren.remove();
+				var body = $('#machineParts');
+				body.children().remove();
 				body.append(bodyHtml);
 			},
 			"error": function(data) {

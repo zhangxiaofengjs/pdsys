@@ -22,9 +22,10 @@
         <result column="u_name" property="name"/>
     </resultMap>
 	<resultMap id="machineResultMap" type="machineModel" >  
-        <id column="c_id" property="id"/>  
-        <result column="c_pn" property="pn"/>  
-        <result column="c_name" property="name"/>
+        <id column="m_id" property="id"/>  
+        <result column="m_pn" property="pn"/>  
+        <result column="m_name" property="name"/>
+        <result column="m_maitenace_period" property="maitenacePeriod"/>
         <association property="unit" resultMap="unitResultMap" />
         <association property="supplier" resultMap="supplierResultMap" />
         <collection property="machineMachinePartRels" ofType="machineMachinePartRelModel" resultMap="machineMachinePartRelResultMap" />

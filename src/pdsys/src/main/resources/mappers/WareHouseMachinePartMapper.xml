@@ -38,8 +38,11 @@
 		left join unit_tbl as unit on machine_part.c_unit_id = unit.c_id
 		left join supplier_tbl as supplier on machine_part.c_supplier_id = supplier.c_id
 		<where>
-			<if test="machinePart != null">
+			<if test="machinePart != null and machinePart.pn != null">
 				and machine_part.c_pn like '%${machinePart.pn}%'
+			</if>
+			<if test="machinePart != null and machinePart.id > 0">
+				and machine_part.c_id like '%${machinePart.id}%'
 			</if>
 		</where>
 	</select>

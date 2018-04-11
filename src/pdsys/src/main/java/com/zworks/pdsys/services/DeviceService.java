@@ -78,7 +78,7 @@ public class DeviceService {
 				int partId = part.getId();
 				DeviceMaitenaceMachinePartsBean partBean = machinePartMap.get(partId);
 				
-				if(partBean == null) {
+				if(partBean == null) {//还未添加的先添加并设定库存
 					partBean = new DeviceMaitenaceMachinePartsBean();
 					
 					partBean.setMachinePart(part);
@@ -90,8 +90,11 @@ public class DeviceService {
 					if(whPart != null) {
 						partBean.setWareHouseNum(whPart.getNum());
 					}
+					
+					machinePartMap.put(partId, partBean);
 				}
 				
+				//合计 使用机器以及使用量
 				List<MachineModel> machines = partBean.getMachines();
 				boolean contain = false;
 				for(MachineModel m : machines) {

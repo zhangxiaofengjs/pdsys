@@ -58,7 +58,12 @@
 		left join unit_tbl as u on m.c_unit_id = u.c_id 
 		left join supplier_tbl as s on m.c_supplier_id = s.c_id 
 		left join place_tbl as p on d.c_place_id = p.c_id 
-		left join user_tbl as user on d.c_user_id = user.c_id 
+		left join user_tbl as user on d.c_user_id = user.c_id
+		<where>
+			<if test="id > 0">
+				and d.c_id=#{id}
+			</if>
+		</where>
 	</select>
 	
 	<insert id="add" parameterType="deviceModel">

@@ -39,7 +39,8 @@
 								 place=(${device.place}),
 								 unit=(${machine.unit}),
 								 user=(${device.user})"
-								 th:rowid="${device.id}">
+						th:class="${device.state==2} ? 'danger' : (${device.state==1} ? 'warning':_)"
+						th:rowid="${device.id}">
 						<td>
 							<input type="checkbox" name="select" th:rowid="${device.id}">
 						</td> 
@@ -64,7 +65,7 @@
 		</div>
 		<div style="height:auto; overflow:auto">
 			<b>维护备件合计表：</b>
-			<table id="machineParts" class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
+			<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
 				<thead>
 				    <tr>
 						<th>品番</th>
@@ -75,7 +76,7 @@
 						<th>在库数量</th>
 				    </tr>
 				</thead>
-				<tbody>
+				<tbody id="machineParts">
 				</tbody>
 			</table>
 		</div>
