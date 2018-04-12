@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/header::header">
+</head>
+<body>
+	<script th:src="@{/js/notice/list.js}"></script> 
+	<nav style="border-radius:0px;margin-bottom:-1px;" class="navbar navbar-default">
+		<div class="container-fluid">
+	  		<div class="navbar-header">
+	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
+	  		</div>
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/device/list}" method="post">
+	 			<button type="submit" class="btn btn-sm btn-info">蛻ｷ譁ｰ</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addDevice'>豺ｻ蜉�譁ｰ隶ｾ螟�</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='changeState'>譖ｴ譁ｰ迥ｶ諤�</button>
+			</form>
+		</div>
+	</nav>
+
+	<div style="height:auto; overflow:auto">
+		<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
+			<thead>
+			    <tr>
+			    	<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
+					<th>郛門捷</th>
+					<th>譛ｺ蝎ｨ隶ｾ螟�</th>
+					<th>菴ｿ逕ｨ蝨ｰ轤ｹ</th>
+					<th>菫晏�ｻ蜻ｨ譛�(螟ｩ)</th>
+					<th>荳頑ｬ｡菫晏�ｻ譌ｶ髣ｴ</th>
+					<th>荳区ｬ｡菫晏�ｻ譌ｶ髣ｴ</th>
+					<th>迥ｶ諤�</th>
+					<th>雍溯ｴ｣莠ｺ</th>
+			    </tr>
+			</thead>
+			<tbody>
+				
+			</tbody>
+		</table>
+	</div>
+	<div id="dlg_div"></div>
+	<div id="msg_div"></div>
+	<div th:replace="common/footer::copyright"></div>
+</body>
+</html>

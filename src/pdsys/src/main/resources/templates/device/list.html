@@ -37,7 +37,7 @@
 					<tr th:each="device : ${list}"
 						th:with="machine=(${device.machine}),
 								 place=(${device.place}),
-								 unit=(${machine.unit}),
+								 unit=(${machine}?${machine.unit}:_),
 								 user=(${device.user})"
 						th:class="${device.state==2} ? 'danger' : (${device.state==1} ? 'warning':_)"
 						th:rowid="${device.id}">
@@ -46,7 +46,7 @@
 						</td> 
 						<td th:text="${device}?${device.no}:_"></td>
 						<td>
-							<a href="javascript:(void);" th:id="'machine_' + ${machine.id}" th:text="${machine}?${machine.pn + ' ' + machine.name}:_"></a>
+							<a href="javascript:(void);" th:id="'machine_' + (${machine}?${machine.id}:_)" th:text="${machine}?${machine.pn + ' ' + machine.name}:_"></a>
 						</td>
 						<td th:text="${place}?${place.name}:_"></td>
 						<td th:text="${machine}?${machine.maitenacePeriod}:_"></td>
@@ -58,7 +58,7 @@
 				  			<span class="label label-danger" th:case="2">故障</span>
 				  			<span class="label label-default" th:case="3">废除</span>
 				      	</td>
-						<td th:text="${user.name}"></td>
+						<td th:text="${user}?${user.name}:_"></td>
 				    </tr>
 				</tbody>
 			</table>
