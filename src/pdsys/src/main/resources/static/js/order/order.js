@@ -1,6 +1,7 @@
 $(function () {
 	$("#addOrder").click(function(){
 		var dlg = new CommonDlg();
+		var myDate = new Date(); 
 		dlg.showFormDlg({
 			"target":"addOrder_div",
 			"caption":"新增订单",
@@ -24,10 +25,43 @@ $(function () {
 						data.forEach(function(customer, idx) {
 							field.options.push({
 								"value": customer.id,
-								"caption":customer.name,
+								"caption":customer.name
 							});
 						});
 					}
+				},
+				{
+					"name":"orderDate",
+					"value":dateFormat(),
+					"type":"date",
+					"label":"下单时间",
+				},
+				{
+					"name":"shipDeadDate",
+					"value":dateFormat(),
+					"type":"date",
+					"label":"交货期限"
+				},
+				{
+					"name":"user.id",
+					"label":"责任者",
+					"type":"select",
+					"options":[],
+					"ajax":true,
+					"url":"/user/list/json",
+					"convertAjaxData" : function(field, data) {
+						data.forEach(function(user, idx) {
+							field.options.push({
+								"value": user.id,
+								"caption":user.name
+							});
+						});
+					}
+				},
+				{
+					"name":"comment",
+					"type":"text",
+					"label":"备注"
 				}],
 			"url":"/order/save",
 			"success": function(data) {
@@ -40,31 +74,44 @@ $(function () {
 	});
 	
 	$("#delOrder").click(function(){
+		var self = $(this);
 		var orderIds = getSelectedRowId();
-		var dlg = new CommonDlg();
 		if(orderIds.length == 0) {
-			dlg.showMsgDlg({
-				"target":"msg_div",
-				"msg":"请选择要删除的订单！！！"});
 			return;
 		}
 		
-		$.ajax({
-			type: "POST",
-		    url: PdSys.url("/order/delete"),
-            contentType: "application/json",
-            data: JSON.stringify(orderIds),
-		    success: function(r){
-				if(r.success){
-					alert('操作成功', function(){
-                        alert(r.msg);
-                        document.location.reload();
-					});
-				}else{
-					alert(r.msg);
-				}
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"dlg_div",
+			"caption":"删除订单",
+			"type":"yesno",
+			"msg":"确定删除已选订单?",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/order/delete",
+					"data":orderIds,
+					"success": function(data) {
+						dlg.hide();
+						var msgDlg = new CommonDlg();
+						msgDlg.showMsgDlg({
+							"target":"msg_div",
+							"type":"ok",
+							"msg":"删除成功!",
+							"ok":function(){
+								PdSys.refresh();
+							}});
+					},
+					"error": function(data) {
+						var msgDlg = new CommonDlg();
+						msgDlg.showMsgDlg({
+							"target":"msg_div",
+							"type":"ok",
+							"msg":"删除失败,请联系管理员!"});
+					}
+				});
 			}
 		});
+		
 	});
 
 });

@@ -14,6 +14,7 @@ public class BOMModel extends BaseModel {
 	private int type;
 	private UnitModel unit;
 	private SupplierModel supplier;
+	private WareHouseBOMModel whbom;
 
 	public String getPn() {
 		return pn;
@@ -53,5 +54,13 @@ public class BOMModel extends BaseModel {
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public WareHouseBOMModel getWhbom() {
+		return whbom;
+	}
+
+	public void setWhbom(WareHouseBOMModel whbom) {
+		this.whbom = whbom;
 	}
 }

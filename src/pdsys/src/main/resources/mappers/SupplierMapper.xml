@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.SupplierMapper">
+	<resultMap id="supplierResultMap" type="supplierModel" >
+        <id column="c_id" property="id"/> 
+        <result column="c_name" property="name"/>
+        <result column="c_address" property="address"/>
+        <result column="c_phone" property="phone"/> 
+    </resultMap>
+	
+	<select id="queryObject" resultMap="supplierResultMap">
+		select c_id,c_name,c_address,c_phone from supplier_tbl where c_id = #{id}
+	</select>
+
+</mapper>

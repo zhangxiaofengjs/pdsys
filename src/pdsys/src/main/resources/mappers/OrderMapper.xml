@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.OrderMapper">
-	<resultMap id="orderResultMap" type="orderModel" >  
-        <id column="c_id" property="id" jdbcType="INTEGER" />
-        <id column="c_no" property="no" jdbcType="VARCHAR" />
-        <id column="c_order_date" property="orderDate" jdbcType="DATE" />
-        <id column="c_ship_dead_date" property="shipDeadDate" jdbcType="DATE" />
-        <id column="c_ship_date" property="shipDate" jdbcType="DATE" />
-        <id column="c_state" property="state" jdbcType="INTEGER" />
-        <id column="c_comment" property="comment" jdbcType="VARCHAR" />
+	<resultMap id="orderResultMap" type="orderModel" >
+        <id column="c_id" property="id"/> 
+        <result column="c_no" property="no"/>
+        <result column="c_order_date" property="orderDate"/>  
+        <result column="c_ship_dead_date" property="shipDeadDate"/>  
+        <result column="c_ship_date" property="shipDate"/>  
+        <result column="c_state" property="state"/>  
+        <result column="c_comment" property="comment"/>  
     </resultMap>
     
 	<select id="queryList" resultMap="orderResultMap">
@@ -37,22 +37,21 @@
 	<insert id="save" parameterType="orderModel" useGeneratedKeys="true" keyProperty="id">
 		insert into order_tbl
 		(
-			`c_no`, 
-			`c_order_date`, 
-			`c_ship_dead_date`, 
-			`c_ship_date`,
-			`c_state`,
+			`c_no`,
 			`c_customer_id`,
+			`c_order_date`, 
+			`c_ship_dead_date`,
+			`c_master_id`,
 			`c_comment`
+			
 		)
 		values
 		(
-			#{no}, 
-			#{orderDate}, 
-			#{shipDeadDate}, 
-			#{shipDate}, 
-			#{state},
+			#{no},
 			#{customer.id},
+			#{orderDate},
+			#{shipDeadDate},
+			#{user.id},
 			#{comment}
 		)
 	</insert>

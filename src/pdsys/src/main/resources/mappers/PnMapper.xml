@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.PnMapper">
+   
+  	<resultMap id="supplierResultMap" type="supplierModel" >
+   	    <id column="supplier_id" property="id" />  
+        <result column="supplier_name" property="name" /> 
+    </resultMap>
+    
+	<resultMap id="bomDetailMap" type="com.zworks.pdsys.form.beans.BomDetailModel" > 
+        <result column="bom_num" property="bomNum" />  
+        <result column="bom_pn_name" property="bomName" />  
+        <result column="bom_type" property="bomType" />
+        <result column="bom_ut_name" property="unitName" />
+        <result column="wh_bom_num" property="whbomNum" /> 
+        <association property="supplier" resultMap="supplierResultMap"/>
+    </resultMap>
+    
+    
+	<resultMap id="utResultMap" type="unitModel" >  
+        <id column="ut_id" property="id"/> 
+        <result column="ut_name" property="name"/>  
+    </resultMap>
+
+	<resultMap id="pnResultMap" type="pnModel" >
+        <id column="pn_id" property="id" />  
+        <result column="pn_pn" property="pn" />  
+        <result column="pn_name" property="name" />
+        <association property="unit" resultMap="utResultMap"/>    
+    </resultMap>
+    
+   	<resultMap id="pnClsResultMap" type="pnClsModel" >
+        <id column="pn_cls_id" property="id" />  
+        <result column="pn_cls_name" property="name" />    
+    </resultMap>
+    
+	<select id="queryList" resultMap="pnResultMap">
+		select pn.c_id as pn_id,
+			   pn.c_pn as pn_pn,
+			   pn.c_name as pn_name,
+			   ut.c_id as ut_id,
+			   ut.c_name as ut_name from pn_tbl as pn 
+			   
+	    left join unit_tbl as ut on pn.c_unit_id = ut.c_id order by pn_id desc
+	</select>
+	
+	<select id="queryClsList" parameterType="pnModel" resultMap="pnClsResultMap">
+		select pn_cls.c_id as pn_cls_id,
+		pn_cls.c_name as pn_cls_name from pn_cls_tbl as pn_cls 
+		left join pn_cls_relation_tbl as pn_cls_relation on pn_cls_relation.c_cls_id = pn_cls.c_id
+		left join pn_tbl as pn on pn_cls_relation.c_pn_id = pn.c_id 
+		<where>
+			<if test="id != null">
+				and pn.c_id = #{id} 
+		    </if>
+		</where>
+		order by pn_cls_id desc
+	</select>
+	
+	<insert id="save" parameterType="OrderPnModel" keyProperty="id">
+		insert into order_pn_tbl
+		(
+			`c_order_id`,
+			`c_pn_id`, 
+			`c_pn_cls_id`,
+			`c_num`
+			
+		)
+		values
+		(
+			#{order.id},
+			#{pn.id},
+			#{pn.pnCls.id},
+			#{num}
+		)
+	</insert>
+	
+    <delete id="delete" parameterType="OrderPnModel">
+    	delete from order_pn_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
+    
+    <select id="queryBomList" parameterType="orderModel" resultMap="bomDetailMap">
+		select (order_pn.c_num * pn_bom_relation.c_use_num) as bom_num,
+		       CONCAT(bom.c_pn," ",bom.c_name) as bom_pn_name,
+		       bom.c_type as bom_type,
+		       bom_ut.c_name as bom_ut_name,
+			   wh_bom.c_num as wh_bom_num,
+			   supplier.c_id as supplier_id,
+			   supplier.c_name as supplier_name 
+		from order_pn_tbl as order_pn 
+		left join pn_tbl as pn on order_pn.c_pn_id = pn.c_id 
+		left join pn_cls_tbl as pn_cls on order_pn.c_pn_cls_id = pn_cls.c_id
+		left join pn_bom_relation_tbl as pn_bom_relation on pn_bom_relation.c_pn_id = pn.c_id and pn_bom_relation.c_cls_id = pn_cls.c_id
+		left join bom_tbl as bom on pn_bom_relation.c_bom_id = bom.c_id 
+		left join unit_tbl as bom_ut on bom.c_unit_id = bom_ut.c_id 
+		left join warehouse_bom_tbl as wh_bom on wh_bom.c_bom_id = bom.c_id 
+		left join supplier_tbl as supplier on bom.c_supplier_id = supplier.c_id 
+		<where>
+			<if test="id != null">
+				and order_pn.c_order_id = #{id}
+			</if>
+		</where>
+	</select>
+	
+</mapper>
