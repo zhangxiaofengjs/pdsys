@@ -37,5 +37,9 @@ public class OrderService {
 	public List<OrderPnModel> queryOrderPnList( OrderPnModel orderPnModel ) {
 		return orderPnMapper.queryList( orderPnModel );
 	}
+	
+	public void updateOrderPn(OrderPnModel orderPnModel) {
+		orderPnMapper.updateOrderPn( orderPnModel );
+	}
 
 }

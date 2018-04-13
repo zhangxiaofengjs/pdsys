@@ -22,4 +22,8 @@ public interface PnMapper {
 	void delete(OrderPnModel orderPn);
 	
 	List<BomDetailModel> queryBomList(OrderModel order);
+	
+	List<OrderPnModel> queryPnByOrderPnId( OrderPnModel orderPn );
+	
+	List<PnClsModel> queryClsByOrderPnId( OrderPnModel orderPn );
 }

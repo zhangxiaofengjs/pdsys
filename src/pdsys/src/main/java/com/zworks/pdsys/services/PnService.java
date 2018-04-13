@@ -37,4 +37,13 @@ public class PnService {
 		return pnMapper.queryBomList( order );
 	}
 	
+	public List<OrderPnModel> queryPnByOrderPnId( OrderPnModel orderPn ){
+		return pnMapper.queryPnByOrderPnId( orderPn );
+	}
+	
+	public List<PnClsModel> queryClsByOrderPnId( OrderPnModel orderPn ){
+		return pnMapper.queryClsByOrderPnId( orderPn );
+	}
+	
+	
 }

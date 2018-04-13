@@ -3,8 +3,8 @@ package com.zworks.pdsys.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
@@ -23,10 +23,9 @@ public class SupplierController {
 	 */
 	@RequestMapping("/detail")
 	@ResponseBody
-	public JSONResponse delete(@RequestParam(name="id") int id, Model model) {
+	public JSONResponse delete(@RequestBody SupplierModel supplier, Model model) {
 		
-		SupplierModel supplier = supplierService.queryObject(id);
-		model.addAttribute("supplier", supplier);
-		return JSONResponse.success();
+		SupplierModel sup = supplierService.queryObject(supplier.getId());
+		return JSONResponse.success().put("sup", sup);
 	}
 }

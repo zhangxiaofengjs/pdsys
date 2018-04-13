@@ -86,5 +86,33 @@ public class PnController {
 		
         return "order/bomDetail";
     }
+	
+	/**
+	 * 通过订单详细的ID取得品目
+	 */
+	@RequestMapping("/showPnInfo")
+	@ResponseBody
+	public JSONResponse queryPnByOrderPnId( OrderPnModel orderPn ){
+		List<OrderPnModel> ops = pnService.queryPnByOrderPnId( orderPn );
+		
+		return JSONResponse.success().put("data", ops);
+	}
+	
+	/**
+	 * 通过订单详细的ID取得品目
+	 */
+	@RequestMapping("/showClsInfo")
+	@ResponseBody
+	public JSONResponse queryClsByOrderPnId( OrderPnModel orderPn ){
+		List<PnClsModel> clss = pnService.queryClsByOrderPnId( orderPn );
+		return JSONResponse.success().put("data", clss);
+	}
+	
+	@RequestMapping("/updateOrderPnInfo")
+	@ResponseBody
+	public JSONResponse update(@RequestBody OrderPnModel orderPn, Model model) {
+		orderService.updateOrderPn(orderPn);
+		return JSONResponse.success();
+	}
 
 }

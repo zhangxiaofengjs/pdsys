@@ -137,7 +137,10 @@ CommonDlg.prototype.buildField = function(field) {
 	var strFormHtml = "";
 
 	if(field.type == "select") {
-		strFormHtml += '<select class="form-control" name="{0}" id="{0}">'.format(field.name);
+		if( field.disabled )
+			strFormHtml += '<select class="form-control" name="{0}" id="{0}" disabled="disabled">'.format(field.name);
+		else
+			strFormHtml += '<select class="form-control" name="{0}" id="{0}">'.format(field.name);
 		field.options.forEach(function(fo, idxo) {
 			strFormHtml += '<option value ="{0}" {2}>{1}</option>'.
 				format(fo.value || '', 

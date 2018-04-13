@@ -28,21 +28,23 @@
         <association property="bomRel" resultMap="bomRelResultMap"/>
         <collection property="boms" ofType="BOMModel" javaType="list"> 
 	        <id column="bom_id" property="id" />
+	        <result column="bom_pn" property="pn" />
 	        <result column="bom_name" property="name" />
 	        <result column="bom_type" property="type" />
 	        <association property="unit" resultMap="bomUnitResultMap"/>
 	    </collection>
+    </resultMap>
+    <resultMap id="whpnResultMap" type="wareHousePnModel" >  
+        <id column="wh_pn_id" property="id" />
+        <result column="wh_pn_produced_num" property="producedNum" />
+        <result column="wh_pn_semi_produced_num" property="semiProducedNum" />
     </resultMap>
 	<resultMap id="orderDetailMapper" type="orderPnModel" >  
         <id column="order_pn_id" property="id" />  
         <result column="order_pn_num" property="num" />  
         <result column="order_pn_reject_ratio" property="rejectRatio" />  
         <association property="pn" resultMap="pnResultMap"/>
-        <collection property="whpns" ofType="wareHousePnModel" javaType="list"> 
-	        <id column="wh_pn_id" property="id" />
-	        <result column="wh_pn_type" property="type" />
-	        <result column="wh_pn_num" property="num" />
-	    </collection>
+        <association property="whpn" resultMap="whpnResultMap"/> 
     </resultMap>
     
 	<select id="queryList" parameterType="orderPnModel" resultMap="orderDetailMapper">
@@ -57,6 +59,7 @@
    		       pn_cls.c_id as od_pn_cls_id,
 		       pn_cls.c_name as od_pn_cls_name,
 		       bom.c_id as bom_id,
+		       bom.c_pn as bom_pn,
 		       bom.c_name as bom_name,
 		       bom.c_type as bom_type,
 		       pn_bom_relation.c_pn_id as bom_rel_pn_id,
@@ -65,8 +68,8 @@
 		       bom_ut.c_id as bom_ut_id,
 		       bom_ut.c_name as bom_ut_name,
 		       wh_pn.c_id as wh_pn_id,
-			   wh_pn.c_type as wh_pn_type,
-			   wh_pn.c_num as wh_pn_num 
+			   wh_pn.c_produced_num as wh_pn_produced_num,
+			   wh_pn.c_semi_produced_num as wh_pn_semi_produced_num 
 		from order_pn_tbl as order_pn 
 		left join pn_tbl as pn on order_pn.c_pn_id = pn.c_id 
 		left join pn_cls_tbl as pn_cls on order_pn.c_pn_cls_id = pn_cls.c_id 
@@ -81,5 +84,13 @@
 			</if>
 		</where>
 	</select>
+	
+	<update id="updateOrderPn" parameterType="orderPnModel">
+    	update order_pn_tbl
+		set	c_num = #{num} 
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
 
 </mapper>
