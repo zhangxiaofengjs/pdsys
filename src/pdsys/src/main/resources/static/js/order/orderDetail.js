@@ -102,9 +102,14 @@ $(function () {
 					var selIndex = thisElem[0].selectedIndex;
 					var pnField = fields[2];
 					if(selIndex == 0) {
-						//第一项是[请选择]，无视
+						//第一项是[请选择]，其它控件清空处理
+						var clsElem = dlg.fieldElem("select", "pn.pnCls.id");
+						clsElem[0].selectedIndex = 0;
+						dlg.fieldElem("type", "pn.unit.name").val("");
+						dlg.fieldElem("number", "num").val("");
 						return;
 					}
+
 					var val = self.options[selIndex].value;
 					pnField.ajaxData = {
 						"id": val
@@ -114,8 +119,8 @@ $(function () {
 					
 					//单位
 					var utField = fields[4];
-					dlg.fieldElem("type", "pn.unit.name").val(unitArr[selIndex]);
-					dlg.fieldElem("type", "pn.unit.name").attr("readonly","readonly");
+					dlg.fieldElem("type", "pn.unit.name").val(unitArr[selIndex-1]);
+					utField.readonly = false;
 				});
 			}
 		},
@@ -123,10 +128,10 @@ $(function () {
 			"name":"pn.pnCls.id",
 			"label":"子类",
 			"type":"select",
+			"depend":true,//不立即执行，等订单项目的刷新
 			"disabled":false,
 			"options":[],
 			"ajax":true,
-			"depend":true,//不立即执行，等订单项目的刷新
 			"url":"/pn/clsList/json",
 			"ajaxData":{
 				"id": -1
@@ -157,7 +162,7 @@ $(function () {
 			"name":"pn.unit.name",
 			"label":"单位",
 			"type":"text",
-			"readonly":"readonly"
+			"readonly":true
 		}];
 		
 		
