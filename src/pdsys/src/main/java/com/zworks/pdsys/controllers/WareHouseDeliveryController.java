@@ -74,6 +74,7 @@ public class WareHouseDeliveryController {
 	@ResponseBody
     public JSONResponse addDeliveryPn(@RequestBody WareHouseDeliveryPnModel deliveryPn, Model model) {
 		wareHouseDeliveryPnService.add(deliveryPn);
+		//@todo 同种的东西需要更新 entry那边也是
 		return JSONResponse.success();
     }
 	

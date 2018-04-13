@@ -6,14 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.util.DateUtils;
-
 import com.zworks.pdsys.common.enumClass.DeliveryState;
-import com.zworks.pdsys.common.exception.PdsysException;
-import com.zworks.pdsys.common.exception.PdsysExceptionCode;
-import com.zworks.pdsys.mappers.WareHouseDeliveryBOMMapper;
 import com.zworks.pdsys.mappers.WareHouseDeliveryMapper;
-import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 import com.zworks.pdsys.models.WareHousePnModel;
@@ -64,8 +58,13 @@ public class WareHouseDeliveryService {
 	public boolean delivery(WareHouseDeliveryModel delivery) {
 		for(WareHouseDeliveryPnModel deliveryPn : delivery.getWareHouseDeliveryPns()) {
 			WareHousePnModel wareHousePn = deliveryPn.getWareHousePn();
-			float semiNum = wareHousePn.getSemiProducedNum() - deliveryPn.getSemiProducedNum();
-			float num = wareHousePn.getProducedNum() - deliveryPn.getProducedNum();
+			
+			float semiNum = -1, num = -1;
+			if(wareHousePn != null) {
+				semiNum = wareHousePn.getSemiProducedNum() - deliveryPn.getSemiProducedNum();
+				num = wareHousePn.getProducedNum() - deliveryPn.getProducedNum();
+			}
+			
 			if(num < 0 || semiNum < 0) {
 				//库存不足
 				return false;

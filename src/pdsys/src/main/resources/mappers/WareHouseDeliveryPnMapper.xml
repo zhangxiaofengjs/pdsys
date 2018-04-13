@@ -57,8 +57,8 @@
     	values (
     		#{wareHouseDelivery.id},
     		#{orderPn.id},
-    		#{producedNum},
-    		#{semiProducedNum})
+    		#{semiProducedNum},
+    		#{producedNum})
       	<selectKey keyProperty="id" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
       	</selectKey>
