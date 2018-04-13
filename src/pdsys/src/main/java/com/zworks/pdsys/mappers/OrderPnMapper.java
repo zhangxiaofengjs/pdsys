@@ -10,4 +10,6 @@ import com.zworks.pdsys.models.OrderPnModel;
 public interface OrderPnMapper {
 	
 	List<OrderPnModel> queryList( OrderPnModel orderPnModel );
+	
+	void updateOrderPn(OrderPnModel orderPnModel);
 }

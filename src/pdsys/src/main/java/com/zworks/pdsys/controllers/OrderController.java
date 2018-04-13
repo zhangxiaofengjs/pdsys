@@ -69,23 +69,44 @@ public class OrderController {
 	}
 	
 	/**
-	 * 订单详细
+	 * 订单详细（跳转用）
 	 */
 	@RequestMapping("/detail")
-	public String showOrderDetail(@RequestParam(name="id") int id, Model model) {
-		OrderPnModel orderPn = new OrderPnModel();
-		OrderModel order = new OrderModel();
-		order.setId(id);
-		orderPn.setOrder(order);
-		
-		List<OrderPnModel> list = orderService.queryOrderPnList(orderPn);
-		model.addAttribute("orderDetail", list);
-
-		order = orderService.queryObject(id);
+	public String show(@RequestParam(name="id") int id, Model model) {
+		OrderModel order = orderService.queryObject(id);
 		model.addAttribute("order", order);
 
         return "order/detail";
     }
+	
+	/**
+	 * 订单详细
+	 */
+	@RequestMapping("/detail/list")
+	@ResponseBody
+	public JSONResponse showOrderDetail(@RequestBody OrderModel order, Model model) {
+		OrderPnModel orderPn = new OrderPnModel();
+		OrderModel o = new OrderModel();
+		o.setId(order.getId());
+		orderPn.setOrder(o);
+		
+		List<OrderPnModel> list = orderService.queryOrderPnList(orderPn);
+
+		o = orderService.queryObject(order.getId());
+		model.addAttribute("order", o);
+
+		return JSONResponse.success().put("orderDetail", list);
+    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * 取得订单项目
