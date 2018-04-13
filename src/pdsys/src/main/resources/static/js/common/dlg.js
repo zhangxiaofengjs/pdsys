@@ -184,11 +184,22 @@ CommonDlg.prototype.buildField = function(field) {
 		});
 		strFormHtml += '</select>';
 	} else {
-		strFormHtml += '<input type="{0}" class="form-control" name="{1}" id="{1}" value="{2}" placeholder="{3}">'.
+		if( field.readonly )
+		{
+			strFormHtml += '<input type="{0}" class="form-control" name="{1}" id="{1}" value="{2}" placeholder="{3}" readonly = "readonly">'.
+				format(field.type,
+					   field.name,
+					   field.value || '',
+					   field.placeholder || "");
+		}
+		else
+		{
+			strFormHtml += '<input type="{0}" class="form-control" name="{1}" id="{1}" value="{2}" placeholder="{3}">'.
 			format(field.type,
 				   field.name,
 				   field.value || '',
 				   field.placeholder || "");
+		}
 	}
 
 	return strFormHtml;
