@@ -62,12 +62,15 @@ public class WareHouseEntryService {
 				//还没入库过，新建
 				wareHousePn = new WareHousePnModel();
 				wareHousePn.setOrderPn(entryPn.getOrderPn());
-				wareHousePn.setType(entryPn.getType());
-				wareHousePn.setNum(entryPn.getNum());
+				wareHousePn.setProducedNum(entryPn.getProducedNum());
+				wareHousePn.setSemiProducedNum(entryPn.getSemiProducedNum());
 				wareHousePnService.add(wareHousePn);
 			} else {
-				float num = wareHousePn.getNum() + entryPn.getNum();
-				wareHousePn.setNum(num);
+				float semiNum = wareHousePn.getSemiProducedNum() + entryPn.getSemiProducedNum();
+				wareHousePn.setSemiProducedNum(semiNum);
+				
+				float num = wareHousePn.getProducedNum() + entryPn.getProducedNum();
+				wareHousePn.setProducedNum(num);
 				wareHousePnService.update(wareHousePn);
 			}
 		}

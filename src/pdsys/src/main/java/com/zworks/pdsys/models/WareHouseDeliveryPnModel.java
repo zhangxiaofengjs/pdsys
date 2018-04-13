@@ -12,20 +12,12 @@ public class WareHouseDeliveryPnModel extends BaseModel{
 	private WareHouseDeliveryModel wareHouseDelivery;
 	private OrderPnModel orderPn;
 	private WareHousePnModel wareHousePn;
-	private float num;
-	private int type;
+	private float semiProducedNum;
+	private float producedNum;
 	
 	public WareHouseDeliveryPnModel() {
 	}
 	
-	public float getNum() {
-		return num;
-	}
-
-	public void setNum(float num) {
-		this.num = num;
-	}
-
 	public WareHouseDeliveryModel getWareHouseDelivery() {
 		return wareHouseDelivery;
 	}
@@ -42,19 +34,27 @@ public class WareHouseDeliveryPnModel extends BaseModel{
 		this.orderPn = orderPn;
 	}
 
-	public int getType() {
-		return type;
-	}
-
-	public void setType(int type) {
-		this.type = type;
-	}
-
 	public WareHousePnModel getWareHousePn() {
 		return wareHousePn;
 	}
 
 	public void setWareHousePn(WareHousePnModel wareHousePn) {
 		this.wareHousePn = wareHousePn;
+	}
+
+	public float getSemiProducedNum() {
+		return semiProducedNum;
+	}
+
+	public void setSemiProducedNum(float semiProducedNum) {
+		this.semiProducedNum = semiProducedNum;
+	}
+
+	public float getProducedNum() {
+		return producedNum;
+	}
+
+	public void setProducedNum(float producedNum) {
+		this.producedNum = producedNum;
 	}
 }

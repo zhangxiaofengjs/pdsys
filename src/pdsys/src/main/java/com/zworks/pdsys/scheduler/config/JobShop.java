@@ -26,19 +26,18 @@ public class JobShop {
 	 private Scheduler scheduler;
 	
 	public void initialize() {
-		createJob(DeviceMaitenaceJob.class.getName(),
+		createJob(DeviceMaitenaceJob.class,
 				  "PDSYS",
-				  "0/10 * * * * ?",
+				  "0 0 23 1/1 * ? *",//每天23:00执行
 				  "设备维护计划Job",
 				  "设备维护计划JobTrigger");
 	}
 	
-	private void createJob(String jobName, String jobGroup, String cronExpression, String jobDescription, String triggerDescription) {
+	private void createJob(Class<? extends Job> jobClass, String jobGroup, String cronExpression, String jobDescription, String triggerDescription) {
 		try {
+			String jobName = jobClass.getName();
 			JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
-			@SuppressWarnings("unchecked")
-			Class<? extends Job> clazz = (Class<? extends Job>)Class.forName(jobName);
-			JobDetail jobDetail = JobBuilder.newJob(clazz).withIdentity(jobKey).withDescription(jobDescription).build();
+			JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobKey).withDescription(jobDescription).build();
 			
 			//create a trigger
 			TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroup);
@@ -47,7 +46,7 @@ public class JobShop {
 			
 			//scheduled!!
 			scheduler.scheduleJob(jobDetail, trigger);
-		} catch (SchedulerException | ClassNotFoundException e) {
+		} catch (SchedulerException e) {
 			System.err.println(e);
 		}
 	}

@@ -64,13 +64,14 @@ public class WareHouseDeliveryService {
 	public boolean delivery(WareHouseDeliveryModel delivery) {
 		for(WareHouseDeliveryPnModel deliveryPn : delivery.getWareHouseDeliveryPns()) {
 			WareHousePnModel wareHousePn = deliveryPn.getWareHousePn();
-			float num = wareHousePn.getNum() - deliveryPn.getNum();
-			
-			if(num < 0) {
+			float semiNum = wareHousePn.getSemiProducedNum() - deliveryPn.getSemiProducedNum();
+			float num = wareHousePn.getProducedNum() - deliveryPn.getProducedNum();
+			if(num < 0 || semiNum < 0) {
 				//库存不足
 				return false;
 			}
-			wareHousePn.setNum(num);
+			wareHousePn.setProducedNum(num);
+			wareHousePn.setSemiProducedNum(num);
 			
 			wareHousePnService.update(wareHousePn);
 		}

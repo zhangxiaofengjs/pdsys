@@ -11,19 +11,11 @@ public class WareHousePnModel extends BaseModel{
 	public static final WareHousePnModel Empty = new WareHousePnModel();
 	
 	private OrderPnModel orderPn;
-	private float num;
-	private int type;
+	private float producedNum;
+	private float semiProducedNum;
 	
 	public WareHousePnModel() {
 		orderPn = OrderPnModel.Empty;
-	}
-	
-	public float getNum() {
-		return num;
-	}
-
-	public void setNum(float num) {
-		this.num = num;
 	}
 
 	public OrderPnModel getOrderPn() {
@@ -34,11 +26,19 @@ public class WareHousePnModel extends BaseModel{
 		this.orderPn = orderPn;
 	}
 
-	public int getType() {
-		return type;
+	public float getProducedNum() {
+		return producedNum;
 	}
 
-	public void setType(int type) {
-		this.type = type;
+	public void setProducedNum(float producedNum) {
+		this.producedNum = producedNum;
+	}
+
+	public float getSemiProducedNum() {
+		return semiProducedNum;
+	}
+
+	public void setSemiProducedNum(float semiProducedNum) {
+		this.semiProducedNum = semiProducedNum;
 	}
 }

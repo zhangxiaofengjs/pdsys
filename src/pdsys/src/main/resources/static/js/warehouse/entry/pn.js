@@ -141,27 +141,16 @@ $(document).ready(function(){
 			},
 		},
 		{
-			"name":"type",
-			"label":"产品种类",
-			"type":"select",
-			"options":[],
-			"ajax":false,
-			"options":[
-				{
-					"value":0,
-					"caption":'半成品'
-				},
-				{
-					"value":1,
-					"caption":'成品'
-				}
-			]
+			"name":"semiProducedNum",
+			"label":"半成品数",
+			"type":"number",
+			"value":"0",
 		},
 		{
-			"name":"num",
-			"label":"数量",
+			"name":"producedNum",
+			"label":"成品数",
 			"type":"number",
-			"value":"1",
+			"value":"0",
 		}];
 		
 		var dlg = new CommonDlg();
