@@ -2,6 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseEntryPnMapper">
+	<resultMap id="wareHouseEntryPnResultMap" type="wareHouseEntryPnModel" >  
+        <id column="e_pn_id" property="id" />  
+        <result column="e_pn_produced_num" property="producedNum" />  
+        <result column="e_pn_semi_produced_num" property="semiProducedNum" />  
+    </resultMap>
+
+	<select id="queryList" parameterType="wareHouseEntryPnModel" resultMap="wareHouseEntryPnResultMap">
+		select e_pn.c_id as e_pn_id,
+		       e_pn.c_entry_id as e_pn_entry_id,
+		       e_pn.c_produced_num as e_pn_produced_num,
+		       e_pn.c_semi_produced_num as e_pn_semi_produced_num
+		from entry_pn_tbl as e_pn
+		<where>
+			<if test="wareHouseEntry.id > 0">
+				and e_pn.c_entry_id=#{wareHouseEntry.id}
+			</if>
+			<if test="orderPn.id > 0">
+				and e_pn.c_ref_id=#{orderPn.id}
+			</if>
+		</where>
+	</select>
 	<insert id="add" parameterType="wareHouseEntryPnModel">
     	insert into entry_pn_tbl (
     		c_entry_id,
@@ -17,6 +38,17 @@
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
       	</selectKey>
+    </insert>
+    
+    <insert id="update" parameterType="wareHouseEntryPnModel">
+    	update entry_pn_tbl
+    	set c_produced_num=#{producedNum},
+    		c_semi_produced_num=#{semiProducedNum}
+    	<where>
+			<if test="id > 0">
+				and c_id=#{id}
+			</if>
+		</where>
     </insert>
     
     <delete id="delete" parameterType="wareHouseEntryPnModel">

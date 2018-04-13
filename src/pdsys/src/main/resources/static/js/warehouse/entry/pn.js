@@ -158,7 +158,7 @@ $(document).ready(function(){
 			"target":"dlg_div",
 			"caption":"添加到入库单",
 			"fields":fields,
-			"url":"/warehouse/entry/add/pn",
+			"url":"/warehouse/entry/update/pn",
 			"success": function(data) {
 				dlg.hide();
 				var msgDlg = new CommonDlg();

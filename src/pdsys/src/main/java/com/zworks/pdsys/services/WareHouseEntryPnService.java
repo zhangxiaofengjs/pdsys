@@ -24,8 +24,28 @@ public class WareHouseEntryPnService {
 	@Autowired
     private WareHouseEntryPnMapper wareHouseEntryPnMapper;
 	
-	public void add(WareHouseEntryPnModel entryPn) {
-		wareHouseEntryPnMapper.add(entryPn);
+	public List<WareHouseEntryPnModel> queryList(WareHouseEntryPnModel entryPn) {
+		return wareHouseEntryPnMapper.queryList(entryPn);
+	}
+	
+	public WareHouseEntryPnModel queryOne(WareHouseEntryPnModel entryPn) {
+		List<WareHouseEntryPnModel> ePns = queryList(entryPn);
+		if(ePns.size()==1) {
+			return ePns.get(0);
+		}
+		return null;
+	}
+	
+	public void update(WareHouseEntryPnModel entryPn, boolean createOnNotExist) {
+		WareHouseEntryPnModel ePn = queryOne(entryPn);
+		if(ePn == null) {
+			if(createOnNotExist) {
+				wareHouseEntryPnMapper.add(entryPn);
+			}
+		} else {
+			entryPn.setId(ePn.getId());
+			wareHouseEntryPnMapper.update(entryPn);
+		}
 	}
 
 	@Transactional

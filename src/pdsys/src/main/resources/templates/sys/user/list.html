@@ -34,10 +34,10 @@
 				<td>
 					<input type="checkbox" name="select" th:rowid="${user.id}">
 				</td>
-				<td th:id="${'no_' + user.id}" th:text="${user.no}"></td>
-				<td th:id="${'name_' + user.id}" th:text="${user.name}"></td>
-				<td th:id="${'phone_' + user.id}" th:text="${user.phone}"></td>
-				<td th:id="${'addr_' + user.id}" th:text="${user.address}"></td>
+				<td th:text="${user.no}"></td>
+				<td th:text="${user.name}"></td>
+				<td th:text="${user.phone}"></td>
+				<td th:text="${user.address}"></td>
 				<td th:text="'开发中...'"></td>
 		    </tr>
 		</tbody>

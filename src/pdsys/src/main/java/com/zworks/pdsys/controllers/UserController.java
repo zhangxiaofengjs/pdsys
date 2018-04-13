@@ -26,6 +26,16 @@ public class UserController {
         return list;
     }
 	
+	@RequestMapping("/get")
+	@ResponseBody
+	public JSONResponse get(@RequestBody UserModel user, Model model) {
+		UserModel u = userService.queryById(user.getId());
+		if(u == null) {
+			return JSONResponse.error("用户不存在。");
+		}
+		return JSONResponse.success().put("user", u);
+	}
+	
 	@RequestMapping("/list")
 	public String list(UserModel user, Model model) {
 		List<UserModel> list = userService.queryList(user);

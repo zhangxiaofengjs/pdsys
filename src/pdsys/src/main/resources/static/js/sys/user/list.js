@@ -63,25 +63,31 @@ $(document).ready(function(){
 				"name":"no",
 				"label":"工号",
 				"type":"text",
-				"value": $('#no_' + id).html()
+				"value": "",
+				"ajax": true,
+				"depend": true
 			},
 			{
 				"name":"name",
 				"label":"姓名",
 				"type":"text",
-				"value":$('#name_' + id).html()
+				"value":"",
+				"ajax": true,
+				"depend": true
 			},
 			{
 				"name":"phone",
 				"label":"手机",
-				"type":"text",
-				"value":$('#phone_' + id).html()
+				"value":"",
+				"ajax": true,
+				"depend": true
 			},
 			{
 				"name":"address",
 				"label":"地址",
-				"type":"text",
-				"value":$('#addr_' + id).html()
+				"value":"",
+				"ajax": true,
+				"depend": true
 			},
 		];
 		
@@ -90,6 +96,18 @@ $(document).ready(function(){
 			"target":"dlg_div",
 			"caption":"编辑用户",
 			"fields":fields,
+			"ajax": {
+				"url":"/user/get",
+				"data":{
+					"id":id
+				},
+				"convertAjaxData":function(data) {
+					dlg.rebuildFieldWithValue("no", data.user.no);
+					dlg.rebuildFieldWithValue("name", data.user.name);
+					dlg.rebuildFieldWithValue("phone", data.user.phone);
+					dlg.rebuildFieldWithValue("address", data.user.address);
+				}
+			},
 			"url":"/user/update",
 			"success": function(data) {
 				dlg.hide();

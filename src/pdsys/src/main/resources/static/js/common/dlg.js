@@ -105,6 +105,7 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 			    	<h4 class="modal-title" id="myModalLabel">{1}</h4>\
 			  	</div>\
 				<div class="modal-body">{2}\
+					<div id="{3}"></div>\
 				</div>\
 				<div class="modal-footer">\
 	    			<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">取消</button>\
@@ -112,25 +113,59 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 				</div>\
 		    </div>\
 		  </div>\
-		</div>'.format(dlgId, this.option.caption, strFormHtml);
+		</div>'.format(dlgId, this.option.caption, strFormHtml,  this.option.target + "_dlg_msg");
 	
 	var targetDiv = $("#"+this.option.target);
 	targetDiv.children().remove();
 	targetDiv.append(strHtml);
 
 	//取得数据
-	this.option.fields.forEach(function(f, idx) {
+	if(this.option.ajax) {//主FormAjax
+		self.buildAjaxFields();
+	}
+	this.option.fields.forEach(function(f, idx) {//各种Field的ajax
 		if(f.ajax && !f.depend) { //需要ajax并且不依赖其他ajaxDepend的项目之间初始化
 			self.buildAjaxField(f);
 		}
 	});
 	
 	$("#" + dlgId).modal();
-}
+};
 
 CommonDlg.prototype.hide = function() {
 	var dlgId = this.option.target + "_dlg";
 	$("#" + dlgId).modal('hide');
+};
+
+CommonDlg.prototype.rebuildField = function(field) {
+	var self = this;
+	var strFieldHtml = self.buildField(field);
+
+	var fieldElm = self.findFieldElem(field);
+	var fieldElmParent = fieldElm.parent();
+	fieldElmParent.empty();
+	fieldElmParent.append(strFieldHtml);
+	
+	if(field.afterBuild) {
+		(field.afterBuild)('ajax');
+	}
+};
+
+CommonDlg.prototype.rebuildFieldWithValue = function(fieldName, val) {
+	var field = this.fieldByName(fieldName)
+	field.value = val;
+	this.rebuildField(field);
+};
+
+CommonDlg.prototype.fieldByName = function(name) {
+	var ff = null;
+	this.option.fields.some(function(f, idx) {
+		if(f.name == name) {
+			ff = f;
+		}
+	});
+	
+	return ff;
 }
 
 CommonDlg.prototype.buildField = function(field) {
@@ -157,7 +192,30 @@ CommonDlg.prototype.buildField = function(field) {
 	}
 
 	return strFormHtml;
-}
+};
+
+CommonDlg.prototype.buildAjaxFields = function() {
+	var opt = this.option;
+	
+	$.ajax({
+		url:PdSys.url(opt.ajax.url),
+		async:true,
+		dataType:"json",
+		contentType:"application/json;charset=UTF-8",
+		type:"post",
+		data:JSON.stringify(opt.ajax.data),
+		processData: false,
+        cache: false,
+		success: function(response) {
+			opt.ajax.convertAjaxData(response);
+		},
+		error: function(response) {
+			var msgDiv = $("#" + this.option.target + "_dlg_msg");
+			msgDiv.empty();
+			msgDiv.append('<img src="{0}" height="16px" /><span class="text-danger">&nbsp;取得信息失败!!</span>'.format(PdSys.url("/icons/error.png")));
+		}
+	});
+};
 
 //ajax取得field的信息
 CommonDlg.prototype.buildAjaxField = function(field) {
@@ -191,12 +249,16 @@ CommonDlg.prototype.buildAjaxField = function(field) {
 };
 
 CommonDlg.prototype.fieldElem = function(type, name) {
-	var strId = "#{0}_dlg {1}[name='{2}']".format(
+	var strId = "#{0}_dlg [id='{2}']".format(
 		this.option.target,
 		type != 'select' ? 'input' : 'select',
 		name.safeJqueryId());
 	
 	return $(strId);
+};
+
+CommonDlg.prototype.findFieldElem = function(field) {
+	return this.fieldElem(field.type, field.name);
 };
 
 //formJson = {
