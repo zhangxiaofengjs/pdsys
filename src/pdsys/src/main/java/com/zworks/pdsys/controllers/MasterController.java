@@ -16,11 +16,13 @@ import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.CustomerModel;
 import com.zworks.pdsys.models.PlaceModel;
+import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 import com.zworks.pdsys.services.BOMService;
 import com.zworks.pdsys.services.CustomerService;
 import com.zworks.pdsys.services.PlaceService;
+import com.zworks.pdsys.services.PnService;
 import com.zworks.pdsys.services.WareHouseBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
 import com.zworks.pdsys.services.WareHouseDeliveryService;
@@ -38,6 +40,8 @@ public class MasterController {
 	CustomerService customerService;
 	@Autowired
 	BOMService bOMService;
+	@Autowired
+	PnService pnService;
 	
 	@RequestMapping(value= {"/main", "/main/{type}", "/main/{type}"})
     public String main(
@@ -55,6 +59,8 @@ public class MasterController {
 			model.addAttribute("list", customerService.queryList(new CustomerModel()));
 		} else if(type.equals("bom")) {
 			model.addAttribute("list", bOMService.queryList(new BOMModel()));
+		} else if(type.equals("pn")) {
+			model.addAttribute("list", pnService.queryList(new PnModel()));
 		} else {
 			model.addAttribute("list", placeService.queryList(new PlaceModel()));
 		}

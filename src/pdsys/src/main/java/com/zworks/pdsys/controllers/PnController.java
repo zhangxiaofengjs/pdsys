@@ -35,7 +35,7 @@ public class PnController {
 	@RequestMapping("/list/json")
 	@ResponseBody
 	public List<PnModel> listJson() {
-		List<PnModel> list = pnService.queryList();
+		List<PnModel> list = pnService.queryList(new PnModel());
 		return list;
 	}
 	

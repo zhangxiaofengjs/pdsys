@@ -17,14 +17,15 @@ public class PnService {
 	@Autowired
     private PnMapper pnMapper;
 	
-	public List<PnModel> queryList() {
-		return pnMapper.queryList();
+	public List<PnModel> queryList(PnModel pn) {
+		return pnMapper.queryList(pn);
 	}
 	
-	public List<PnClsModel> queryClsList( PnModel pn ) {
+	public List<PnClsModel> queryClsList(PnModel pn) {
 		return pnMapper.queryClsList( pn );
 	}
-	
+
+	//TODO 为什么有关订单的东西都在PnService??
 	public void save(OrderPnModel orderPn) {
 		pnMapper.save( orderPn );
 	}

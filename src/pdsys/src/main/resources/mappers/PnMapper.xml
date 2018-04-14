@@ -17,17 +17,17 @@
         <association property="supplier" resultMap="supplierResultMap"/>
     </resultMap>
     
-    
 	<resultMap id="utResultMap" type="unitModel" >  
         <id column="ut_id" property="id"/> 
         <result column="ut_name" property="name"/>  
     </resultMap>
-
+    
 	<resultMap id="pnResultMap" type="pnModel" >
         <id column="pn_id" property="id" />  
         <result column="pn_pn" property="pn" />  
         <result column="pn_name" property="name" />
         <association property="unit" resultMap="utResultMap"/>    
+        <collection property="pnClss" ofType="pnClsModel" resultMap="pnClsResultMap" />  
     </resultMap>
     
    	<resultMap id="pnClsResultMap" type="pnClsModel" >
@@ -41,14 +41,19 @@
         <association property="pn" resultMap="pnResultMap"/>
     </resultMap>
     
-	<select id="queryList" resultMap="pnResultMap">
+	<select id="queryList" parameterType="pnModel" resultMap="pnResultMap">
 		select pn.c_id as pn_id,
 			   pn.c_pn as pn_pn,
 			   pn.c_name as pn_name,
 			   ut.c_id as ut_id,
-			   ut.c_name as ut_name from pn_tbl as pn 
-			   
-	    left join unit_tbl as ut on pn.c_unit_id = ut.c_id order by pn_id desc
+			   ut.c_name as ut_name,
+			   pn_cls.c_id as pn_cls_id,
+			   pn_cls.c_name as pn_cls_name
+		from pn_tbl as pn 
+	    left join unit_tbl as ut on pn.c_unit_id = ut.c_id
+	    left join pn_cls_relation_tbl as pn_pn_cls on pn.c_id = pn_pn_cls.c_pn_id
+	    left join pn_cls_tbl as pn_cls on pn_pn_cls.c_cls_id = pn_cls.c_id
+	    order by pn_pn asc
 	</select>
 	
 	<select id="queryPnByOrderPnId" resultMap="orderPnMapper">

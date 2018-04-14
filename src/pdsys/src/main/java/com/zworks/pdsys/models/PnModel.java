@@ -10,18 +10,15 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("pnModel")
 public class PnModel extends BaseModel{
-	public static final PnModel Empty = new PnModel();
-	
 	private String pn;
 	private String name;
 	private PnClsModel pnCls;
 	private UnitModel unit;
 	private BomRelationModel bomRel;
 	private List<BOMModel> boms;
+	private List<PnClsModel> pnClss;//TODO 考虑将成员去除：pnCls，boms，同时bomRel似乎不合理
 
 	public PnModel() {
-		setPnCls(PnClsModel.Empty);
-		unit = UnitModel.Empty;
 	}
 	
 	public String getPn() {
@@ -70,5 +67,13 @@ public class PnModel extends BaseModel{
 
 	public void setBomRel(BomRelationModel bomRel) {
 		this.bomRel = bomRel;
+	}
+
+	public List<PnClsModel> getPnClss() {
+		return pnClss;
+	}
+
+	public void setPnClss(List<PnClsModel> pnClss) {
+		this.pnClss = pnClss;
 	}
 }
