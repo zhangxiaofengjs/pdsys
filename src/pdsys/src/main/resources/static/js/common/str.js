@@ -16,3 +16,10 @@ String.prototype.safeJqueryId = function() {
     
     return str;
 };
+
+String.prototype.compareNumber = function() {
+    var str = String(this);
+    var str2 = String(arguments[0]);
+    
+    return Number(str) - Number(str2);
+};

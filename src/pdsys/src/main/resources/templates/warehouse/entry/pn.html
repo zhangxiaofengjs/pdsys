@@ -11,10 +11,10 @@
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/entry/main/pn}" method="post">
 	 			<button type="button" class="btn btn-sm btn-info" name="refresh">刷新</button>
 	 			<button type="button" class="btn btn-sm btn-info" name="addEntry">新建入库单</button>
-	 			<div style="display:inline-block;" th:if="${entry.state == 0}">
+	 			<div style="display:inline-block;" th:if="${entry.id >0 }  and ${entry.state == 0}">
 	 				<button type="button" class="btn btn-sm btn-info" name="addEntryPn">增加</button>
-		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntryPn">删除</button>
-		 			<button type="button" class="btn btn-sm btn-info" name="doEntry">入库</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntryPn" >删除</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="doEntry" th:if="${!#lists.isEmpty(entry.wareHouseEntryPns)}">入库</button>
 		 		</div>
 			</form>
 		</div>
