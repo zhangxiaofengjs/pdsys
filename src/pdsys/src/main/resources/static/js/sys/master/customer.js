@@ -1,17 +1,13 @@
 $(document).ready(function(){
-	$("#addUser").click(function(){
+	$("#addCustomer").click(function(){
 		var self = $(this);
 
 		var fields = [
 			{
-				"name":"no",
-				"label":"工号",
-				"type":"text",
-			},
-			{
 				"name":"name",
 				"label":"姓名",
 				"type":"text",
+				"requried":"requried"
 			},
 			{
 				"name":"phone",
@@ -28,9 +24,9 @@ $(document).ready(function(){
 		var dlg = new CommonDlg();
 		dlg.showFormDlg({
 			"target":"dlg_div",
-			"caption":"添加用户",
+			"caption":"添加客户",
 			"fields":fields,
-			"url":"/user/add",
+			"url":"/customer/add",
 			"success": function(data) {
 				dlg.hide();
 				PdSys.success({
@@ -45,7 +41,7 @@ $(document).ready(function(){
 		});
 	});
 
-	$("#editUser").click(function(){
+	$("#editCustomer").click(function(){
 		var self = $(this);
 		var selIds = getSelectedRowId({"checkOne":true});
 		if(selIds.length != 1) {
@@ -60,18 +56,12 @@ $(document).ready(function(){
 				"value":selIds[0]
 			},
 			{
-				"name":"no",
-				"label":"工号",
-				"type":"text",
-				"value": "",
-				"depend": true
-			},
-			{
 				"name":"name",
 				"label":"姓名",
 				"type":"text",
 				"value":"",
-				"depend": true
+				"requried":"requried",
+				"depend": true,
 			},
 			{
 				"name":"phone",
@@ -90,21 +80,20 @@ $(document).ready(function(){
 		var dlg = new CommonDlg();
 		dlg.showFormDlg({
 			"target":"dlg_div",
-			"caption":"编辑用户",
+			"caption":"编辑客户",
 			"fields":fields,
 			"ajax": {
-				"url":"/user/get",
+				"url":"/customer/get",
 				"data":{
 					"id":id
 				},
 				"convertAjaxData":function(data) {
-					dlg.rebuildFieldWithValue("no", data.user.no);
-					dlg.rebuildFieldWithValue("name", data.user.name);
-					dlg.rebuildFieldWithValue("phone", data.user.phone);
-					dlg.rebuildFieldWithValue("address", data.user.address);
+					dlg.rebuildFieldWithValue("name", data.customer.name);
+					dlg.rebuildFieldWithValue("phone", data.customer.phone);
+					dlg.rebuildFieldWithValue("address", data.customer.address);
 				}
 			},
-			"url":"/user/update",
+			"url":"/customer/update",
 			"success": function(data) {
 				dlg.hide();
 				PdSys.success({

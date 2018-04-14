@@ -13,6 +13,10 @@ import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.services.UserService;
 
+/**
+ * @author: zhangxiaofengjs@163.com
+ * @version: 2018/04/14
+ */
 @Controller
 @RequestMapping("/user")
 public class UserController {

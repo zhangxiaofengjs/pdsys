@@ -89,6 +89,10 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 						   f.label);
 		}
 		
+		if(f.groupButton) {
+			strFormHtml += '<div class="input-group">';
+		}
+		
 		if(f.ajax) {
 			//如果数据是ajax取得，先追加一个等待图标'
 			strFormHtml += '<div id="{0}" class="form-control" style="box-shadow:0 1px 1px rgba(0, 0, 0, 0);border-width:0px;padding-left:0px;"><img src="{1}" height="24px" /><span class="text-muted">加载中...</span><span name={2} class="text-danger"></span></div>'.
@@ -97,6 +101,12 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 			strFormHtml += self.buildField(f);
 		}
 
+		if(f.groupButton) {
+			strFormHtml += '<span class="input-group-btn">\
+		        				<button name="{0}" id="{0}" class="btn btn-default" type="button">{1}</button>\
+		        			</span></div>'.format(f.groupButton.name, f.groupButton.text);
+		}
+		
 		if(f.type != "hidden") {
 			strFormHtml += '</div></div>';
 		}
@@ -139,6 +149,12 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 		if(f.ajax && !f.depend) { //需要ajax并且不依赖其他ajaxDepend的项目之间初始化
 			self.buildAjaxField(f);
 		}
+		
+		if(f.groupButton) {
+			$("#" + f.groupButton.name).click(function(){
+				(f.groupButton.click)(self);
+			});
+		}
 	});
 	
 	$("#" + this.id()).on('hidden.bs.modal', function(e) {
@@ -154,6 +170,11 @@ CommonDlg.prototype.hide = function() {
 
 CommonDlg.prototype.rebuildField = function(field) {
 	var self = this;
+	
+	if(field.ajax) {
+		self.buildAjaxField(field);
+		return;
+	}
 	var strFieldHtml = self.buildField(field);
 
 	var fieldElm = self.findFieldElem(field);
@@ -193,7 +214,7 @@ CommonDlg.prototype.buildField = function(field) {
 			strFormHtml += '<option value ="{0}" data="{3}" {2}>{1}</option>'.
 				format(fo.value || '', 
 					   fo.caption || '',
-				fo.selected?"selected":"",
+				(fo.selected || field.value==fo.value)?"selected":"",
 				fo.data);
 		});
 		strFormHtml += '</select><span name="{0}" class="text-danger"><span>'.format(field.name + "_err");
@@ -239,7 +260,7 @@ CommonDlg.prototype.buildAjaxFields = function() {
 			opt.ajax.convertAjaxData(response);
 		},
 		error: function(response) {
-			var msgDiv = $("#" + this.option.target + "_dlg_msg");
+			var msgDiv = $("#" + opt.target + "_dlg_msg");
 			msgDiv.empty();
 			msgDiv.append('<img src="{0}" height="16px" /><span class="text-danger">&nbsp;取得信息失败!!</span>'.format(PdSys.url("/icons/error.png")));
 		}
@@ -263,7 +284,7 @@ CommonDlg.prototype.buildAjaxField = function(field) {
 		success: function(response) {
 			field.convertAjaxData(field, response);
 			var strFieldHtml = self.buildField(field);
-			$(this).parent().append(strFieldHtml);
+			$(this).parent().prepend(strFieldHtml);
 			$(this).remove();
 			
 			if(field.afterBuild) {

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.mappers.CustomerMapper;
 import com.zworks.pdsys.models.CustomerModel;
+import com.zworks.pdsys.models.UserModel;
 
 @Service
 public class CustomerService {
@@ -15,5 +16,23 @@ public class CustomerService {
 	
 	public List<CustomerModel> queryList(CustomerModel customer) {
 		return customerMapper.queryList(customer);
+	}
+
+	public CustomerModel queryById(int id) {
+		CustomerModel c = new CustomerModel();
+		c.setId(id);
+		List<CustomerModel> cs = queryList(c);
+		
+		if(cs.size() ==1) {
+			return cs.get(0);
+		}
+		return null;
+	}
+	
+	public void add(CustomerModel filterObj) {
+		customerMapper.add(filterObj);
+	}
+	public void update(CustomerModel filterObj) {
+		customerMapper.update(filterObj);
 	}
 }

@@ -14,4 +14,8 @@ import com.zworks.pdsys.models.CustomerModel;
 public interface CustomerMapper {
 	
 	List<CustomerModel> queryList(CustomerModel customer);
+
+	void add(CustomerModel filterObj);
+
+	void update(CustomerModel filterObj);
 }
