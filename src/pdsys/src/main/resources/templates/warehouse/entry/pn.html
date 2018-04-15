@@ -9,11 +9,14 @@
 	  			<span class="navbar-brand glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/entry/main/pn}" method="post">
-	 			<button type="button" class="btn btn-sm btn-info" name="refresh">刷新</button>
+	 			<div class="form-group">
+				   <input type="text" class="form-control" placeholder="入库单号">
+	 			</div>
+	 			<button type="button" class="btn btn-sm btn-info" name="refresh">查询</button>
 	 			<button type="button" class="btn btn-sm btn-info" name="addEntry">新建入库单</button>
 	 			<div style="display:inline-block;" th:if="${entry.id >0 }  and ${entry.state == 0}">
-	 				<button type="button" class="btn btn-sm btn-info" name="addEntryPn">增加</button>
-		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntryPn" >删除</button>
+	 				<button type="button" class="btn btn-sm btn-info" name="addEntryPn">增加入库项目</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntryPn" >删除入库项目</button>
 		 			<button type="button" class="btn btn-sm btn-info" name="doEntry" th:if="${!#lists.isEmpty(entry.wareHouseEntryPns)}">入库</button>
 		 		</div>
 			</form>

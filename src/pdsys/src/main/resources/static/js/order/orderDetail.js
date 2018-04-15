@@ -18,25 +18,50 @@ $(function () {
 					orderPn.pn.boms.forEach(function(bom, idx2) {
 						if(idx2==0) {
 							bodyHtml += "<tr><td rowspan='{0}'><input type='checkbox' name='select' rowid='{1}'/></td><td rowspan='{0}'>{2}</td><td rowspan='{0}'>{3}</td><td rowspan='{0}'>{4}</td><td rowspan='{0}'>{5}</td><td rowspan='{0}'>{6}</td>".format(
-									bomNum, orderPn.id, orderPn.pn.pn, orderPn.pn.name, orderPn.pn.pnCls.name, orderPn.num,orderPn.pn.unit.name);
+									bomNum, 
+									orderPn.id, 
+									orderPn.pn.pn,
+									orderPn.pn.name,
+									orderPn.pn.pnCls.name,
+									orderPn.num,
+									orderPn.pn.unit.name);
 						
 							//原材,包材的追加
 							if( bom.type ==0 ) {
 								bodyHtml += "<td>{0}</td><td>{1}</td><td>{2}</td><td></td><td></td><td></td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
-										bom.pn, orderPn.pn.bomRel.useNum, bom.unit.name, orderPn.whpn.semiProducedNum, orderPn.whpn.producedNum, orderPn.rejectRatio);
+										bom.pn,
+										orderPn.pn.bomRel.useNum,
+										bom.unit.name,
+										orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+										orderPn.whpn ? orderPn.whpn.producedNum : 0, orderPn.rejectRatio);
 							}else if( bom.type ==1 ) {
 								bodyHtml += "<td></td><td></td><td></td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
-										bom.pn, orderPn.pn.bomRel.useNum, bom.unit.name, orderPn.whpn.semiProducedNum, orderPn.whpn.producedNum, orderPn.rejectRatio);
+										bom.pn, 
+										orderPn.pn.bomRel.useNum,
+										bom.unit.name,
+										orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+										orderPn.whpn ? orderPn.whpn.producedNum : 0,
+										orderPn.rejectRatio);
 							}
 						}
 						else {
 							
 							if( bom.type ==0 ) {
 								bodyHtml += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td></td><td></td><td></td><td>{3}</td><td>{4}</td><td>{5}</td></tr>>".format(
-									bom.pn, orderPn.pn.bomRel.useNum, bom.unit.name, orderPn.whpn.semiProducedNum, orderPn.whpn.producedNum, orderPn.rejectRatio);
+									bom.pn, 
+									orderPn.pn.bomRel.useNum, 
+									bom.unit.name, 
+									orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+									orderPn.whpn ? orderPn.whpn.producedNum : 0, 
+									orderPn.rejectRatio);
 							}else if( bom.type ==1 ) {
 								bodyHtml += "<tr><td></td><td></td><td></td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
-									bom.pn, orderPn.pn.bomRel.useNum, bom.unit.name, orderPn.whpn.semiProducedNum, orderPn.whpn.producedNum, orderPn.rejectRatio);
+									bom.pn,
+									orderPn.pn.bomRel.useNum,
+									bom.unit.name,
+									orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+											orderPn.whpn ? orderPn.whpn.producedNum : 0,
+									orderPn.rejectRatio);
 							}
 							
 						}

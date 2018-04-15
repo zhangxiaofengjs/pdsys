@@ -98,7 +98,11 @@ public class OrderController {
 		return JSONResponse.success().put("orderDetail", list);
     }
 	
-	
+	@RequestMapping("/plan")
+    public String plan(Model model) {
+		
+        return "order/plan";
+    }
 	
 	
 	
