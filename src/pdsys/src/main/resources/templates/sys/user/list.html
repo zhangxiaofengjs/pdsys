@@ -10,7 +10,10 @@
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/user/list}" method="post">
-	 			<button type="submit" class="btn btn-sm btn-info">刷新</button>
+	 			<div class="form-group">
+				   <input type="text" class="form-control" placeholder="工号">
+	 			</div>
+	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='addUser'>添加</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='editUser'>修改</button>
 			</form>
