@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.form.beans.BomDetailModel;
+import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.models.PnClsModel;
@@ -69,7 +70,7 @@ public class PnController {
     }
 	
 	/**
-	 * 添加
+	 * 添加子类
 	 * */
 	@RequestMapping(value="/addPnCls")
 	@ResponseBody
@@ -80,6 +81,21 @@ public class PnController {
 		pnService.addPnCls(pn);
 		return JSONResponse.success();
     }
+	
+	/**
+	 * 添加原包材
+	 * */
+	@RequestMapping(value="/addBOM")
+	@ResponseBody
+	public JSONResponse addBOM(@RequestBody PnModel pn) {
+		if(pnService.existsBOM(pn)) {
+			//已经存在该原包材 则做更新
+			pnService.updateBOM(pn);
+			return JSONResponse.success();
+		}
+		pnService.addBOM(pn);
+		return JSONResponse.success();
+	}
 	
 	/**
 	 * 当前品目下的子类一览

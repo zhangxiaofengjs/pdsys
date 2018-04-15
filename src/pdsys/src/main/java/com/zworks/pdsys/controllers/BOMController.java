@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.BOMModel;
-import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.services.BOMService;
-import com.zworks.pdsys.services.UserService;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -25,12 +23,19 @@ public class BOMController {
 	@Autowired
 	BOMService bomService;
 	
+	@RequestMapping("/list/json")
+	@ResponseBody
+	public List<BOMModel> listJson(@RequestBody BOMModel bom, Model model) {
+		List<BOMModel> list = bomService.queryList(bom);
+		return list;
+	}
+	
 	@RequestMapping("/add")
 	@ResponseBody
 	public JSONResponse add(@RequestBody BOMModel bom, Model model) {
 		List<BOMModel> list = bomService.queryList(bom);
 		if(list.size() != 0) {
-			return JSONResponse.error("该品番已经存在。");
+			return JSONResponse.error("该品番已经存在");
 		}
 		bomService.add(bom);
 		return JSONResponse.success();
@@ -41,7 +46,7 @@ public class BOMController {
 	public JSONResponse get(@RequestBody BOMModel bom, Model model) {
 		BOMModel b = bomService.queryById(bom.getId());
 		if(b == null) {
-			return JSONResponse.error("该品番不存在。");
+			return JSONResponse.error("该品番不存在");
 		}
 		return JSONResponse.success().put("bom", b);
 	}
@@ -51,7 +56,7 @@ public class BOMController {
 	public JSONResponse update(@RequestBody BOMModel bom, Model model) {
 		BOMModel u = bomService.queryById(bom.getId());
 		if(u == null) {
-			return JSONResponse.error("该品番不存在。");
+			return JSONResponse.error("该品番不存在");
 		}
 		bomService.update(bom);
 		return JSONResponse.success();

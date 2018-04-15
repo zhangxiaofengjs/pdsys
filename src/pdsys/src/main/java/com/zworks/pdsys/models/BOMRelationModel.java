@@ -6,13 +6,13 @@ import org.apache.ibatis.type.Alias;
  * @author: ZHAI
  * @version: 2018/04/03
  */
-@Alias("bomRelationModel")
-public class BomRelationModel {
+@Alias("BOMRelationModel")
+public class BOMRelationModel {
 
 	private int pnId;
 	
 	private int bomId;
-	
+	private BOMModel bom;
 	private String useNum;
 
 	public int getPnId() {
@@ -37,6 +37,14 @@ public class BomRelationModel {
 
 	public void setUseNum(String useNum) {
 		this.useNum = useNum;
+	}
+
+	public BOMModel getBom() {
+		return bom;
+	}
+
+	public void setBom(BOMModel bom) {
+		this.bom = bom;
 	}
 
 }

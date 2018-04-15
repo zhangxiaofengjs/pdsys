@@ -200,7 +200,7 @@ $(document).ready(function(){
 							"url":"/pncls/add",
 							"success" : function(data) {
 								dlgPnCls.hide();
-								dlg.rebuildFieldWithValue("pnCls.id", data.pnCls.id);
+								dlg.rebuildFieldWithValue("pnClss[0].id", data.pnCls.id);
 							},
 							"error": function(data) {
 								PdSys.alert(data.msg);
@@ -216,6 +216,89 @@ $(document).ready(function(){
 			"caption":"追加子类",
 			"fields":fields,
 			"url":"/pn/addPnCls",
+			"success": function(data) {
+				dlg.hide();
+				PdSys.success({
+					"ok" : function() {
+						PdSys.refresh();
+					}
+				});
+			},
+			"error": function(data) {
+				PdSys.alert(data.msg);
+			}
+		});
+	});
+	
+	$("button[id^='addBOM'").click(function(){
+		var self = $(this);
+		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
+		if(selIds.length != 1) {
+			return;
+		}
+		
+		var type = 0;
+		if(self.attr("id") == "addBOM1") {
+			type = 1;
+		}
+		
+		var dlg = new CommonDlg();
+		var id = selIds[0];
+		var fields = [
+			{
+				"name":"id",
+				"type":"hidden",
+				"value":selIds[0]
+			},
+			{
+				"name":"bomRels[0].bom.id",
+				"label": type == 0 ? "使用原材":"使用包材",
+				"type":"select",
+				"value":"",
+				"ajax": true,
+				"ajaxData":{"type":type},
+				"url":"/bom/list/json",
+				"convertAjaxData" : function(thisField, data) {
+					thisField.options = [];
+					data.forEach(function(bom, idx) {
+						thisField.options.push({
+							"value": bom.id,
+							"caption":bom.name,
+							"data":bom.unit.name
+						});
+					});
+				},
+				"afterBuild":function() {
+					var self = this;
+					var fieldElm = dlg.findFieldElem(self);
+					fieldElm.change(function() {
+						var selIndex = fieldElm[0].selectedIndex;
+						var val = self.options[selIndex].data;
+						dlg.rebuildFieldWithValue("bomRels[0].bom.unit.name", val);
+					});
+					
+					fieldElm.trigger("change");
+				},
+			},
+			{
+				"name":"bomRels[0].useNum",
+				"label":"品番消耗",
+				"type":"number",
+				"value":"0"
+			},
+			{
+				"name":"bomRels[0].bom.unit.name",
+				"label":"单位",
+				"type":"label",
+				"value":""
+			},
+		];
+		
+		dlg.showFormDlg({
+			"target":"dlg_div",
+			"caption":"添加使用原包材",
+			"fields":fields,
+			"url":"/pn/addBOM",
 			"success": function(data) {
 				dlg.hide();
 				PdSys.success({

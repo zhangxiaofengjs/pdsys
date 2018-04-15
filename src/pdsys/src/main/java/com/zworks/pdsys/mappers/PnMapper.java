@@ -30,4 +30,10 @@ public interface PnMapper {
 	void add(PnModel pn);
 
 	void update(PnModel pn);
+
+	void addPnCls(PnModel pn);
+
+	void addBOM(PnModel pn);
+
+	void updateBOM(PnModel pn);
 }

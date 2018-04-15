@@ -11,7 +11,7 @@ public class BOMModel extends BaseModel {
 	public static final BOMModel Empty = new BOMModel();
 	private String pn;
 	private String name;
-	private int type;
+	private int type = -1;
 	private UnitModel unit;
 	private SupplierModel supplier;
 	private WareHouseBOMModel whbom;

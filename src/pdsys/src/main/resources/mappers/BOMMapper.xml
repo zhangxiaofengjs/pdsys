@@ -39,6 +39,9 @@
 			<if test="pn != null">
 				and b.c_pn = #{pn}
 			</if>
+			<if test="type >= 0">
+				and b.c_type = #{type}
+			</if>
 		</where>
 		order by b.c_type
 	</select>

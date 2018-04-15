@@ -16,8 +16,8 @@
 	 			<button type="button" class="btn btn-sm btn-info" id='addPn'>添加品番</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='editPn'>修改品番</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='addPnCls'>添加子类</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addBOM0'>添加原材</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addBOM1'>添加包材</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addBOM0'>添加 / 修改原材</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addBOM1'>添加 / 修改包材</button>
 			</form>
 		</div>
 	</nav>
@@ -36,6 +36,7 @@
 		</thead>
 		<tbody>
 			<tr th:each="pn : ${list}"
+				th:with="bomRels=${pn.bomRels}"
 				th:rowid="${pn.id}">
 				<td>
 					<input type="checkbox" name="select" th:rowid="${pn.id}">
@@ -44,12 +45,25 @@
 				<td th:text="${pn.name}"></td>
 				<td>
 					<span th:each="pnCls,iterStat: ${pn.pnClss}">
-						<span th:text="${iterStat.index + 1} + '. ' + ${pnCls.name}"></span><br/>
+						<span th:text="'●'  + ${pnCls.name}"></span><br/>
 					</span>
 				</td>
 				<td th:text="${pn.unit.name}"></td>
-				<td th:text="'纸张，每1吨纸张使用销账值'"></td>
-				<td th:text="${pn.unit.name}"></td>
+				<td>
+					<span th:each="bomRel,iterStat: ${bomRels}"
+						  th:with="bom=${bomRel.bom},
+						  		   index=1">
+						<span th:if="${bom.type} == 0" th:text="'●' + ${bomRel.bom.name} + ' 品番单位消耗:' + ${bomRel.useNum} + ${bom.unit.name}"></span>
+						<br th:if="${bom.type} == 0"/>
+					</span>
+				</td>
+				<td>
+					<span th:each="bomRel,iterStat: ${bomRels}"
+						  th:with="bom=${bomRel.bom}">
+						<span th:if="${bom.type} == 1" th:text="'●' + ${bomRel.bom.name} + ' 品番单位消耗:' + ${bomRel.useNum} + ${bom.unit.name}"></span>
+						<br th:if="${bom.type} == 1"/>
+					</span>
+				</td>
 		    </tr>
 		</tbody>
 	</table>

@@ -368,16 +368,49 @@ CommonDlg.prototype.doValid = function() {
 //	}
 //};
 //将 a.b.c=1的名字转化为{'a':{'b':{'c':1}}}取得b对象,
+//将 a.b[0].c=1的名字转化为{'a':{'b':[{'c':1}]}}取得b对象,
 function getJsonObj(o, strName) {
 	var names = strName.split(".");
 	
 	var ret = o;
 	for(var i = 0; i < names.length -1; i++) {
 		var name = names[i];
-		if (ret[name] == undefined) {
-			ret[name] = {};
+		
+		var isArray = false;
+		var arrIndex = 0;
+		if(name.substring(name.length-1, name.length) == "]") {
+			//如果是数组
+			isArray = true;
+			var is = name.indexOf("[");
+			var ie = name.indexOf("]");
+			arrIndex = parseInt(name.substring(is+1, ie));
+			name = name.substring(0, is);
 		}
+			
+		if (ret[name] == undefined) {
+			if(isArray) {
+				ret[name] = [];
+				
+				var idx = arrIndex;
+				while(idx>-1) {
+					ret[name].push({});//放0到指定位置空对象
+					idx--;
+				}
+			} else {
+				ret[name] = {};
+			}
+		}
+		
+		//取元素
 		ret = ret[name];
+		
+		if(isArray) {
+			while(ret.length <= arrIndex) {
+				ret.push({});//放0到指定位置空对象
+			}
+			
+			ret = ret[arrIndex];
+		}
 	}
 	
 	return ret;
