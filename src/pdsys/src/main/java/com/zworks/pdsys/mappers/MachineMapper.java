@@ -15,4 +15,8 @@ import com.zworks.pdsys.models.UserModel;
 public interface MachineMapper {
 	
 	List<MachineModel> queryList(MachineModel filterObj);
+
+	void add(MachineModel machine);
+
+	void update(MachineModel machine);
 }

@@ -57,6 +57,43 @@
 			<if test="id > 0">
 				and m.c_id = #{id}
 			</if>
+			<if test="pn != null">
+				and m.c_pn = #{pn}
+			</if>
 		</where>
 	</select>
+	
+	<insert id="add" parameterType="machineModel" keyProperty="id">
+		insert into machine_tbl
+		(
+			c_pn,
+			c_name,
+			c_unit_id,
+			c_maitenace_period,
+			c_supplier_id
+		)
+		values
+		(
+			#{pn},
+			#{name},
+			#{unit.id},
+			#{maitenacePeriod},
+			#{supplier.id}
+		)
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="machineModel">
+    	update machine_tbl
+		set	c_pn = #{pn},
+			c_name = #{name},
+			c_unit_id = #{unit.id},
+			c_maitenace_period = #{maitenacePeriod},
+			c_supplier_id = #{supplier.id}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
 </mapper>

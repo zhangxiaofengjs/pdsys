@@ -152,7 +152,9 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 		
 		if(f.groupButtons) {
 			$("#" + f.groupButtons[0].name).click(function(){
-				(f.groupButtons[0].click)(self);
+				if(f.groupButtons[0].hasOwnProperty("click")) {
+					(f.groupButtons[0].click)(self);
+				}
 			});
 		}
 	});
@@ -179,8 +181,8 @@ CommonDlg.prototype.rebuildField = function(field) {
 
 	var fieldElm = self.findFieldElem(field);
 	var fieldElmParent = fieldElm.parent();
-	fieldElmParent.empty();
-	fieldElmParent.append(strFieldHtml);
+	fieldElm.remove();
+	fieldElmParent.prepend(strFieldHtml);
 	
 	if(field.afterBuild) {
 		(field.afterBuild)('ajax');
