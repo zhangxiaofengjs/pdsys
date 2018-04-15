@@ -53,7 +53,15 @@
 	    left join unit_tbl as ut on pn.c_unit_id = ut.c_id
 	    left join pn_cls_relation_tbl as pn_pn_cls on pn.c_id = pn_pn_cls.c_pn_id
 	    left join pn_cls_tbl as pn_cls on pn_pn_cls.c_cls_id = pn_cls.c_id
-	    order by pn_pn asc
+	    <where>
+			<if test="id > 0">
+				and pn.c_id = #{id} 
+		    </if>
+			<if test="pn != null">
+				and pn.c_pn = #{pn} 
+		    </if>
+		</where>
+	    order by pn.c_pn asc
 	</select>
 	
 	<select id="queryPnByOrderPnId" resultMap="orderPnMapper">
@@ -96,12 +104,27 @@
 		left join pn_cls_relation_tbl as pn_cls_relation on pn_cls_relation.c_cls_id = pn_cls.c_id
 		left join pn_tbl as pn on pn_cls_relation.c_pn_id = pn.c_id 
 		<where>
-			<if test="id != null">
+			<if test="id > 0">
 				and pn.c_id = #{id} 
 		    </if>
 		</where>
-		order by pn_cls_id desc
+		order by pn_cls.c_name asc
 	</select>
+	
+	<insert id="add" parameterType="pnModel" keyProperty="id">
+		insert into pn_tbl
+		(
+			c_pn, 
+			c_name,
+			c_unit_id
+		)
+		values
+		(
+			#{pn},
+			#{name},
+			#{unit.id}
+		)
+	</insert>
 	
 	<insert id="save" parameterType="OrderPnModel" keyProperty="id">
 		insert into order_pn_tbl
@@ -121,6 +144,16 @@
 		)
 	</insert>
 	
+	<update id="update">
+    	update pn_tbl
+		set	c_pn = #{pn},
+			c_name = #{name},
+			c_unit_id = #{unit.id}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
+    
     <delete id="delete" parameterType="OrderPnModel">
     	delete from order_pn_tbl
     	<where>

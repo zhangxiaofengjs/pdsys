@@ -5,15 +5,19 @@
 <body>
 <div th:fragment="content(${list})">
 	<script th:src="@{/js/sys/master/pn.js}"></script> 
+	<script th:src="@{/js/sys/master/unit.js}"></script> 
 	<nav style="border-radius:0px;margin-bottom:-1px;" class="navbar navbar-default">
 		<div class="container-fluid">
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/sys/master/main/pn}" method="post">
-	 			<button type="submit" class="btn btn-sm btn-info">刷新</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addPn'>添加</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='editPn'>修改</button>
+	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addPn'>添加品番</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='editPn'>修改品番</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addPnCls'>添加子类</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addBOM0'>添加原材</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addBOM1'>添加包材</button>
 			</form>
 		</div>
 	</nav>
@@ -51,7 +55,7 @@
 	</table>
 	<div id="dlg_div"></div>
 	<div id="unit_dlg_div"></div>
-	<div id="supplier_dlg_div"></div>
+	<div id="pncls_dlg_div"></div>
 	<div id="msg_div"></div>
 </div>
 </body>

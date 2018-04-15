@@ -53,6 +53,6 @@ public class SupplierController {
 			return JSONResponse.error("已经存在供应商");
 		}
 		supplierService.add(supplier);
-		return JSONResponse.success().put("unit", supplier);
+		return JSONResponse.success().put("supplier", supplier);
 	}
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zworks.pdsys.common.exception.PdsysException;
+import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.form.beans.BomDetailModel;
 import com.zworks.pdsys.mappers.PnMapper;
 import com.zworks.pdsys.models.OrderModel;
@@ -45,6 +47,37 @@ public class PnService {
 	public List<PnClsModel> queryClsByOrderPnId( OrderPnModel orderPn ){
 		return pnMapper.queryClsByOrderPnId( orderPn );
 	}
-	
-	
+
+	public void add(PnModel pn) {
+		pnMapper.add(pn);
+	}
+
+	public void update(PnModel pn) {
+		pnMapper.update(pn);
+	}
+
+	public PnModel queryOne(PnModel pn) {
+		List<PnModel> pns = queryList(pn);
+		if(pns.size()==1) {
+			return pns.get(0);
+		}
+		return null;
+	}
+
+	public void addPnCls(PnModel pn) {
+		
+	}
+
+	public boolean existsPnCls(PnModel pn) {
+		PnModel p = new PnModel();
+		p.setId(pn.getId());
+		p = queryOne(pn);
+		
+		if(p == null) {
+			throw new PdsysException("品番的ID或者品番未指定！", PdsysExceptionCode.ERROR_PARAM);
+		}
+
+		List<PnClsModel> clss = queryClsList(pn);
+		return clss.size() != 0;
+	}
 }

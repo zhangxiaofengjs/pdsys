@@ -89,7 +89,7 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 						   f.label);
 		}
 		
-		if(f.groupButton) {
+		if(f.groupButtons) {
 			strFormHtml += '<div class="input-group">';
 		}
 		
@@ -101,10 +101,10 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 			strFormHtml += self.buildField(f);
 		}
 
-		if(f.groupButton) {
+		if(f.groupButtons) {
 			strFormHtml += '<span class="input-group-btn">\
 		        				<button name="{0}" id="{0}" class="btn btn-default" type="button">{1}</button>\
-		        			</span></div>'.format(f.groupButton.name, f.groupButton.text);
+		        			</span></div>'.format(f.groupButtons[0].name, f.groupButtons[0].text);
 		}
 		
 		if(f.type != "hidden") {
@@ -150,9 +150,9 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 			self.buildAjaxField(f);
 		}
 		
-		if(f.groupButton) {
-			$("#" + f.groupButton.name).click(function(){
-				(f.groupButton.click)(self);
+		if(f.groupButtons) {
+			$("#" + f.groupButtons[0].name).click(function(){
+				(f.groupButtons[0].click)(self);
 			});
 		}
 	});

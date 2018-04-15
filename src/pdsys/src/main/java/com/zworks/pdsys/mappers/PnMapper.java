@@ -26,4 +26,8 @@ public interface PnMapper {
 	List<OrderPnModel> queryPnByOrderPnId( OrderPnModel orderPn );
 	
 	List<PnClsModel> queryClsByOrderPnId( OrderPnModel orderPn );
+
+	void add(PnModel pn);
+
+	void update(PnModel pn);
 }

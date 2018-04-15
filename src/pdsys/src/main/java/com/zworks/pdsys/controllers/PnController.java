@@ -28,16 +28,58 @@ public class PnController {
 	@Autowired
 	OrderService orderService;
 	
-	
 	/**
 	 * 品目一览
 	 */
 	@RequestMapping("/list/json")
 	@ResponseBody
-	public List<PnModel> listJson() {
-		List<PnModel> list = pnService.queryList(new PnModel());
+	public List<PnModel> listJson(PnModel pn, Model model) {
+		List<PnModel> list = pnService.queryList(pn);
 		return list;
 	}
+	
+	/**
+	 * 查询品目
+	 * */
+	@RequestMapping(value="/get")
+	@ResponseBody
+    public JSONResponse get(@RequestBody PnModel pn) {
+		PnModel retPn = pnService.queryOne(pn);
+		return JSONResponse.success().put("pn", retPn);
+    }
+
+	/**
+	 * 添加品目
+	 * */
+	@RequestMapping(value="/add")
+	@ResponseBody
+    public JSONResponse add(@RequestBody PnModel pn) {
+		pnService.add(pn);
+		return JSONResponse.success();
+    }
+	
+	/**
+	 * 修改品目
+	 * */
+	@RequestMapping(value="/update")
+	@ResponseBody
+    public JSONResponse update(@RequestBody PnModel pn) {
+		pnService.update(pn);
+		return JSONResponse.success();
+    }
+	
+	/**
+	 * 添加
+	 * */
+	@RequestMapping(value="/addPnCls")
+	@ResponseBody
+    public JSONResponse addPnCls(@RequestBody PnModel pn) {
+		if(pnService.existsPnCls(pn)) {
+			return JSONResponse.error("已经存在该子类");
+		}
+		pnService.addPnCls(pn);
+		return JSONResponse.success();
+    }
 	
 	/**
 	 * 当前品目下的子类一览

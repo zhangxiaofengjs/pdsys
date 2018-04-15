@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.PnClsMapper">
+	<resultMap id="pnClsResultMap" type="pnClsModel" >
+        <id column="c_id" property="id" />  
+        <result column="c_name" property="name" />
+    </resultMap>
+    
+	<select id="queryList" parameterType="pnClsModel" resultMap="pnClsResultMap">
+		select pn_cls.c_id as c_id,
+			   pn_cls.c_name as c_name
+		from pn_cls_tbl as pn_cls
+	    <where>
+			<if test="id > 0">
+				and pn_cls.c_id = #{id} 
+		    </if>
+			<if test="name != null">
+				and pn_cls.c_name = #{name} 
+		    </if>
+		</where>
+	    order by pn_cls.c_name asc
+	</select>
+	
+	<insert id="add" parameterType="pnClsModel" keyProperty="id">
+		insert into pn_cls_tbl
+		(
+			c_name
+		)
+		values
+		(
+			#{name}
+		)
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+	</insert>
+	
+	<update id="update">
+    	update pn_cls_tbl
+		set	c_name = #{name}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
+</mapper>
