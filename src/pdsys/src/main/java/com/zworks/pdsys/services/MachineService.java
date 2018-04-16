@@ -9,6 +9,7 @@ import com.zworks.pdsys.mappers.MachineMapper;
 import com.zworks.pdsys.mappers.WareHouseMachinePartMapper;
 import com.zworks.pdsys.models.DeviceModel;
 import com.zworks.pdsys.models.MachineModel;
+import com.zworks.pdsys.models.MachinePartModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 
 /**
@@ -32,5 +33,34 @@ public class MachineService {
 			return list.get(0);
 		}
 		return null;
+	}
+
+	public boolean exists(MachineModel machine) {
+		MachineModel m = new MachineModel();
+		m.setPn(machine.getPn());
+		return queryOne(m) != null;
+	}
+
+	public void add(MachineModel machine) {
+		machineMapper.add(machine);
+	}
+
+	public void update(MachineModel machine) {
+		machineMapper.update(machine);
+	}
+
+	public boolean existsMachinePart(MachineModel machine) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void updateMachinePart(MachineModel machine) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void addMachinePart(MachineModel machine) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -125,7 +125,6 @@ $(document).ready(function(){
 			"url":"/device/machineparts",
 			"data":selIds,
 			"success": function(data) {
-				console.log(data);
 				var bodyHtml = "";
 				data.data.forEach(function(obj, idx) {
 					var machineStr = "";

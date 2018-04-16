@@ -6,4 +6,5 @@ package com.zworks.pdsys.common.exception;
  */
 public interface PdsysExceptionCode {
 	static final int ERROR_REQUEST_PARAM = 1;
+	static final int ERROR_PARAM = 2;
 }

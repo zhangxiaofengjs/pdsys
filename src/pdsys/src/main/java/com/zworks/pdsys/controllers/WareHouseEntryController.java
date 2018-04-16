@@ -92,10 +92,10 @@ public class WareHouseEntryController {
 	/**
 	 * 新建入库明细
 	 * */
-	@RequestMapping(value="/add/pn")
+	@RequestMapping(value="/update/pn")
 	@ResponseBody
-    public JSONResponse addEntry(@RequestBody WareHouseEntryPnModel entryPn, Model model) {
-		wareHouseEntryPnService.add(entryPn);
+    public JSONResponse updateEntry(@RequestBody WareHouseEntryPnModel entryPn, Model model) {
+		wareHouseEntryPnService.update(entryPn, true);
 		return JSONResponse.success();
     }
 	

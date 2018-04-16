@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.MachinePartMapper">
+	<resultMap id="supplierResultMap" type="supplierModel" >  
+        <id column="s_id" property="id"/>  
+        <result column="s_name" property="name"/>
+    </resultMap>
+	<resultMap id="unitResultMap" type="unitModel" >  
+        <id column="u_id" property="id"/>  
+        <result column="u_name" property="name"/>
+    </resultMap>
+	<resultMap id="machinePartResultMap" type="machinePartModel" >  
+        <id column="mp_id" property="id"/>  
+        <result column="mp_pn" property="pn"/>  
+        <result column="mp_name" property="name"/>
+        <association property="unit" resultMap="unitResultMap" />
+        <association property="supplier" resultMap="supplierResultMap" />
+    </resultMap>
+    
+	<select id="queryList" resultMap="machinePartResultMap">
+		select
+			mp.c_id as mp_id,
+			mp.c_pn as mp_pn,
+			mp.c_name as mp_name,
+			u.c_id as u_id,
+			u.c_name as u_name,
+			s.c_id as s_id,
+			s.c_name as s_name
+		from machine_part_tbl mp
+		left join unit_tbl as u on mp.c_unit_id = u.c_id
+		left join supplier_tbl as s on mp.c_supplier_id = s.c_id
+		<where>
+			<if test="id > 0">
+				and mp.c_id = #{id}
+			</if>
+			<if test="pn != null">
+				and mp.c_pn = #{pn}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="add" parameterType="machinePartModel" keyProperty="id">
+		insert into machine_part_tbl
+		(
+			c_pn,
+			c_name,
+			c_unit_id,
+			c_supplier_id
+		)
+		values
+		(
+			#{pn},
+			#{name},
+			#{unit.id},
+			#{supplier.id}
+		)
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+	</insert>
+	
+	<update id="update" parameterType="machinePartModel">
+    	update machine_part_tbl
+		set	c_pn = #{pn},
+			c_name = #{name},
+			c_unit_id = #{unit.id},
+			c_supplier_id = #{supplier.id}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
+</mapper>

@@ -4,7 +4,8 @@
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseDeliveryPnMapper">
 	<resultMap id="wareHousePnResultMap" type="wareHousePnModel" >  
         <id column="wh_pn_id" property="id" />  
-        <result column="wh_pn_num" property="num" />
+        <result column="wh_pn_produced_num" property="producedNum" />
+        <result column="wh_pn_semi_produced_num" property="semiProducedNum" />
     </resultMap>
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="user_id" property="id" />  
@@ -18,7 +19,8 @@
     </resultMap>
 	<resultMap id="wareHouseDeliveryPnResultMap" type="wareHouseDeliveryPnModel" >  
         <id column="d_pn_id" property="id" />  
-        <result column="d_pn_num" property="num" />  
+        <result column="d_pn_semi_produced_num" property="semiProducedNum" />  
+        <result column="d_pn_produced_num" property="producedNum" />  
         <association property="wareHouseDelivery" resultMap="wareHouseDeliveryResultMap"/>
         <association property="wareHousePn" resultMap="wareHousePnResultMap"/>
     </resultMap>
@@ -30,7 +32,8 @@
 		       user.c_id as user_id,
 		       user.c_name as user_name,
 		       wh_pn.c_id as wh_pn_id,
-		       wh_pn.c_num as wh_pn_num
+		       wh_pn.c_produced_num as wh_pn_produced_num,
+		       wh_pn.c_semi_produced_num as wh_pn_semi_produced_num
 		from delivery_pn_tbl as d_pn
 		left join delivery_tbl as d on d_pn.c_delivery_id = d.c_id
 		left join user_tbl as user on d.c_user_id = user.c_id
@@ -49,13 +52,13 @@
     	insert into delivery_pn_tbl (
     		c_delivery_id,
     		c_ref_id,
-    		c_type,
-    		c_num) 
+    		c_semi_produced_num,
+    		c_produced_num) 
     	values (
     		#{wareHouseDelivery.id},
     		#{orderPn.id},
-    		#{type},
-    		#{num})
+    		#{semiProducedNum},
+    		#{producedNum})
       	<selectKey keyProperty="id" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
       	</selectKey>

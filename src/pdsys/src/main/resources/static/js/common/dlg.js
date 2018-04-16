@@ -2,7 +2,7 @@ function CommonDlg() {
 	this.option = null;
 };
 
-CommonDlg.ajaxSubmitOption = null;
+CommonDlg.CACHE = {};
 
 //var dlg = new CommonDlg()
 //dlg.showMsgDlg({
@@ -61,11 +61,20 @@ CommonDlg.prototype.showMsgDlg = function(opt) {
 	$("#" + dlgId).modal();
 };
 
+CommonDlg.prototype.id = function() {
+	return this.option.target + "_dlg";
+}
+
+CommonDlg.prototype.formId = function() {
+	return this.option.target + "_dlg_form";
+}
+
 CommonDlg.prototype.showFormDlg = function(opt) {
 	var self = this;
 	this.option = opt;
 	
-	var dlgId = this.option.target + "_dlg";
+//	var dlgId = this.option.target + "_dlg";
+	var dlgId = this.id();
 	
 	var strFormHtml = '<form class="form-horizontal" id="{0}" action="{1}" enctype="application/x-www-form-urlencoded">'.format(this.option.target + "_dlg_form", PdSys.url(this.option.url));
 	this.option.fields.forEach(function(f, idx) {
@@ -80,21 +89,34 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 						   f.label);
 		}
 		
+		if(f.groupButtons) {
+			strFormHtml += '<div class="input-group">';
+		}
+		
 		if(f.ajax) {
-			//如果数据是ajax取得，先追加一个等待图标
-			strFormHtml += '<div id="{0}" class="form-control" style="box-shadow:0 1px 1px rgba(0, 0, 0, 0);border-width:0px;padding-left:0px;"><img src="{1}" height="24px" /><span class="text-muted">加载中...</span></div>'.
-				format(f.name, PdSys.url("/icons/loading.gif"));
+			//如果数据是ajax取得，先追加一个等待图标'
+			strFormHtml += '<div id="{0}" class="form-control" style="box-shadow:0 1px 1px rgba(0, 0, 0, 0);border-width:0px;padding-left:0px;"><img src="{1}" height="24px" /><span class="text-muted">加载中...</span><span name={2} class="text-danger"></span></div>'.
+				format(f.name, PdSys.url("/icons/loading.gif"), f.name + "_err");
 		} else {
 			strFormHtml += self.buildField(f);
 		}
 
+		if(f.groupButtons) {
+			strFormHtml += '<span class="input-group-btn">\
+		        				<button name="{0}" id="{0}" class="btn btn-default" type="button">{1}</button>\
+		        			</span></div>'.format(f.groupButtons[0].name, f.groupButtons[0].text);
+		}
+		
 		if(f.type != "hidden") {
 			strFormHtml += '</div></div>';
 		}
 	});
 	strFormHtml += '</form>';
 	
-	CommonDlg.ajaxSubmitOption = this.option;
+	//保存Form提交用相关对象值
+	CommonDlg.CACHE[dlgId] = {
+		"dlg": self
+	};
 	
 	var strHtml = 
 		'<div id="{0}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">\
@@ -105,70 +127,147 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 			    	<h4 class="modal-title" id="myModalLabel">{1}</h4>\
 			  	</div>\
 				<div class="modal-body">{2}\
+					<div id="{3}"></div>\
 				</div>\
 				<div class="modal-footer">\
 	    			<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">取消</button>\
-	    			<button type="button" class="btn btn-info btn-sm" onclick="CommonDlg.ajaxSubmitForm();">确定</button>\
+	    			<button type="button" class="btn btn-info btn-sm" onclick="CommonDlg.ajaxSubmitForm(\'{0}\');">确定</button>\
 				</div>\
 		    </div>\
 		  </div>\
-		</div>'.format(dlgId, this.option.caption, strFormHtml);
+		</div>'.format(dlgId, this.option.caption, strFormHtml,  this.option.target + "_dlg_msg");
 	
 	var targetDiv = $("#"+this.option.target);
 	targetDiv.children().remove();
 	targetDiv.append(strHtml);
 
 	//取得数据
-	this.option.fields.forEach(function(f, idx) {
+	if(this.option.ajax) {//主FormAjax
+		self.buildAjaxFields();
+	}
+	this.option.fields.forEach(function(f, idx) {//各种Field的ajax
 		if(f.ajax && !f.depend) { //需要ajax并且不依赖其他ajaxDepend的项目之间初始化
 			self.buildAjaxField(f);
 		}
+		
+		if(f.groupButtons) {
+			$("#" + f.groupButtons[0].name).click(function(){
+				if(f.groupButtons[0].hasOwnProperty("click")) {
+					(f.groupButtons[0].click)(self);
+				}
+			});
+		}
 	});
 	
-	$("#" + dlgId).modal();
-}
+	$("#" + this.id()).on('hidden.bs.modal', function(e) {
+		delete CommonDlg.CACHE[dlgId];//关闭时销毁缓存
+	});
+	
+	$("#" + this.id()).modal();
+};
 
 CommonDlg.prototype.hide = function() {
-	var dlgId = this.option.target + "_dlg";
-	$("#" + dlgId).modal('hide');
+	$("#" + this.id()).modal('hide');
+};
+
+CommonDlg.prototype.rebuildField = function(field) {
+	var self = this;
+	
+	if(field.ajax) {
+		self.buildAjaxField(field);
+		return;
+	}
+	var strFieldHtml = self.buildField(field);
+
+	var fieldElm = self.findFieldElem(field);
+	var fieldElmParent = fieldElm.parent();
+	fieldElm.remove();
+	fieldElmParent.prepend(strFieldHtml);
+	
+	if(field.afterBuild) {
+		(field.afterBuild)('ajax');
+	}
+};
+
+CommonDlg.prototype.rebuildFieldWithValue = function(fieldName, val) {
+	var field = this.fieldByName(fieldName)
+	field.value = val;
+	this.rebuildField(field);
+};
+
+CommonDlg.prototype.fieldByName = function(name) {
+	var ff = null;
+	this.option.fields.some(function(f, idx) {
+		if(f.name == name) {
+			ff = f;
+		}
+	});
+	
+	return ff;
 }
 
 CommonDlg.prototype.buildField = function(field) {
 	var strFormHtml = "";
 
 	if(field.type == "select") {
-		if( field.disabled )
-			strFormHtml += '<select class="form-control" name="{0}" id="{0}" disabled="disabled">'.format(field.name);
-		else
-			strFormHtml += '<select class="form-control" name="{0}" id="{0}">'.format(field.name);
+		strFormHtml += '<select class="form-control" name="{0}" id="{0}" onblur=\"CommonDlg.onFieldBlur(\'{1}\', \'{0}\');\" {2}>'.
+			format(field.name, this.id(), field.disabled || '');
 		field.options.forEach(function(fo, idxo) {
-			strFormHtml += '<option value ="{0}" {2}>{1}</option>'.
+			strFormHtml += '<option value ="{0}" data="{3}" {2}>{1}</option>'.
 				format(fo.value || '', 
 					   fo.caption || '',
-				fo.selected?"selected":"");
+				(fo.selected || field.value==fo.value)?"selected":"",
+				fo.data);
 		});
-		strFormHtml += '</select>';
+		strFormHtml += '</select><span name="{0}" class="text-danger"><span>'.format(field.name + "_err");
+	} else if(field.type == "label") {
+		strFormHtml += '<span id={0} name={0} class="form-control" style="box-shadow:0 1px 1px rgba(0, 0, 0, 0);border-width:0px;padding-left:0px;">{1}</span>'.
+			format(field.name, field.value || '');
 	} else {
-		if( field.readonly )
-		{
-			strFormHtml += '<input type="{0}" class="form-control" name="{1}" id="{1}" value="{2}" placeholder="{3}" readonly = "readonly">'.
-				format(field.type,
-					   field.name,
-					   field.value || '',
-					   field.placeholder || "");
+		var strAttrHtml = "";
+		strAttrHtml += ' type="{0}"'.format(field.type);
+		strAttrHtml += ' class="form-control {0}"'.format(field.class || '');
+		strAttrHtml += ' name="{0}"'.format(field.name);
+		strAttrHtml += ' id="{0}"'.format(field.name);
+		strAttrHtml += (field.value ? ' value="{0}"'.format(field.value) : '');
+		strAttrHtml += (field.placeholder ? ' placeholder="{0}"'.format(field.placeholder) : '');
+		strAttrHtml += (field.readonly ? ' readonly' : '');
+		strAttrHtml += (field.required ? ' required' : '');
+		strAttrHtml += ' onblur=\"CommonDlg.onFieldBlur(\'{0}\', \'{1}\');\"'.format(this.id(), field.name);
+		
+		if($.inArray(field.type, ["number", "range", "date", "datetime", "datetime-local", "month", "time", "week"]) >=0 ) {
+			strAttrHtml += (field.min ? ' min="{0}"'.format(field.min) : '');
+			strAttrHtml += (field.max ? ' max="{0}"'.format(field.max) : '');
 		}
-		else
-		{
-			strFormHtml += '<input type="{0}" class="form-control" name="{1}" id="{1}" value="{2}" placeholder="{3}">'.
-			format(field.type,
-				   field.name,
-				   field.value || '',
-				   field.placeholder || "");
-		}
-	}
 
+		strFormHtml += '<input {0}><span name={1} class="text-danger"></span>'.format(strAttrHtml, field.name + "_err");
+	}
+	
 	return strFormHtml;
-}
+};
+
+CommonDlg.prototype.buildAjaxFields = function() {
+	var opt = this.option;
+	
+	$.ajax({
+		url:PdSys.url(opt.ajax.url),
+		async:true,
+		dataType:"json",
+		contentType:"application/json;charset=UTF-8",
+		type:"post",
+		data:JSON.stringify(opt.ajax.data),
+		processData: false,
+        cache: false,
+		success: function(response) {
+			opt.ajax.convertAjaxData(response);
+		},
+		error: function(response) {
+			var msgDiv = $("#" + opt.target + "_dlg_msg");
+			msgDiv.empty();
+			msgDiv.append('<img src="{0}" height="16px" /><span class="text-danger">&nbsp;取得信息失败!!</span>'.format(PdSys.url("/icons/error.png")));
+		}
+	});
+};
 
 //ajax取得field的信息
 CommonDlg.prototype.buildAjaxField = function(field) {
@@ -187,7 +286,7 @@ CommonDlg.prototype.buildAjaxField = function(field) {
 		success: function(response) {
 			field.convertAjaxData(field, response);
 			var strFieldHtml = self.buildField(field);
-			$(this).parent().append(strFieldHtml);
+			$(this).parent().prepend(strFieldHtml);
 			$(this).remove();
 			
 			if(field.afterBuild) {
@@ -202,12 +301,66 @@ CommonDlg.prototype.buildAjaxField = function(field) {
 };
 
 CommonDlg.prototype.fieldElem = function(type, name) {
-	var strId = "#{0}_dlg {1}[name='{2}']".format(
+	var strId = "#{0}_dlg [id='{1}']".format(
 		this.option.target,
-		type != 'select' ? 'input' : 'select',
 		name.safeJqueryId());
 	
 	return $(strId);
+};
+
+CommonDlg.prototype.findFieldElem = function(field) {
+	return this.fieldElem(field.type, field.name);
+};
+
+CommonDlg.prototype.fieldBlur = function(fieldName) {
+	var self = this;
+	
+	var field = this.fieldByName(fieldName);
+	this.doFieldValid(field);
+};
+
+CommonDlg.prototype.doFieldValid = function(field) {
+	var self = this;
+	var fieldElm = self.findFieldElem(field);
+	var val = fieldElm.val();
+	
+	if(field.requried != undefined && !val) {
+		self.setError(field, "这个值不能为空");
+		return false;
+	}
+	if(field.min != undefined && (val == "" || val.compareNumber(field.min) < 0)) {
+		self.setError(field, "这个值必须大于等于" + field.min);
+		return false;
+	}
+	if(field.max != undefined && (val == "" || val.compareNumber(field.max) > 0)) {
+		self.setError(field, "这个值必须小于等于" + field.max);
+		return false;
+	}
+	
+	self.setError(field, "");
+	return true;
+} 
+	
+CommonDlg.prototype.setError = function(field, msg) {
+	var self = this;
+
+	var strId = "#{0} span[name='{1}']".format(
+			this.id(),
+			(field.name + "_err").safeJqueryId());
+	$(strId).html(msg);
+}
+
+CommonDlg.prototype.doValid = function() {
+	var self = this;
+	var isOK = true;
+	
+	self.option.fields.forEach(function(field, idx) {
+		if(!self.doFieldValid(field)) {
+			isOK = false;
+		}
+	});
+	
+	return isOK;
 };
 
 //formJson = {
@@ -217,16 +370,49 @@ CommonDlg.prototype.fieldElem = function(type, name) {
 //	}
 //};
 //将 a.b.c=1的名字转化为{'a':{'b':{'c':1}}}取得b对象,
+//将 a.b[0].c=1的名字转化为{'a':{'b':[{'c':1}]}}取得b对象,
 function getJsonObj(o, strName) {
 	var names = strName.split(".");
 	
 	var ret = o;
 	for(var i = 0; i < names.length -1; i++) {
 		var name = names[i];
-		if (ret[name] == undefined) {
-			ret[name] = {};
+		
+		var isArray = false;
+		var arrIndex = 0;
+		if(name.substring(name.length-1, name.length) == "]") {
+			//如果是数组
+			isArray = true;
+			var is = name.indexOf("[");
+			var ie = name.indexOf("]");
+			arrIndex = parseInt(name.substring(is+1, ie));
+			name = name.substring(0, is);
 		}
+			
+		if (ret[name] == undefined) {
+			if(isArray) {
+				ret[name] = [];
+				
+				var idx = arrIndex;
+				while(idx>-1) {
+					ret[name].push({});//放0到指定位置空对象
+					idx--;
+				}
+			} else {
+				ret[name] = {};
+			}
+		}
+		
+		//取元素
 		ret = ret[name];
+		
+		if(isArray) {
+			while(ret.length <= arrIndex) {
+				ret.push({});//放0到指定位置空对象
+			}
+			
+			ret = ret[arrIndex];
+		}
 	}
 	
 	return ret;
@@ -242,23 +428,36 @@ CommonDlg.encodeFormJson = function(frm) {
 	   var name = names.pop();
 	   
 	   obj[name] = this.value || '';
-	   
-//      if (o[this.name] !== undefined) {
-//         if (!o[this.name].push) {
-//            o[this.name] = [ o[this.name] ];
-//         }
-//         o[this.name].push(this.value || '');
-//      } else {
-//         o[this.name] = this.value || '';
-//      }
    });
    return o;
 };
 
 //静态方法
-CommonDlg.ajaxSubmitForm = function() {
-	var option = CommonDlg.ajaxSubmitOption;
-	var formJson = CommonDlg.encodeFormJson("#"+option.target + "_dlg_form");
+CommonDlg.onFieldBlur = function(dlgId, fieldName) {
+	var args = CommonDlg.CACHE[dlgId];
+	if(args == null) {
+		alert("sys:The dlg is not found!!");
+		return;
+	}
+	
+	var dlg = args.dlg;
+	dlg.fieldBlur(fieldName);
+};
+
+//静态方法
+CommonDlg.ajaxSubmitForm = function(dlgId) {
+	var args = CommonDlg.CACHE[dlgId];
+	if(args == null) {
+		alert("sys:The dlg is not found!!");
+		return;
+	}
+	
+	var dlg = args.dlg;
+	if(!dlg.doValid()) {
+		return;
+	}
+	var option = dlg.option;
+	var formJson = CommonDlg.encodeFormJson("#"+dlg.formId());
 	//	var ff = new FormData();//FormData不好用，暂用json代替
 	
 	var args = {

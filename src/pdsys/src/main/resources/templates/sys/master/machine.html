@@ -1,59 +1,63 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head></head>
+<head th:include="common/header::header">
+</head>
 <body>
-<div th:fragment="content(boms)">
-开发中...
-<!-- 
-	<script th:src="@{/js/warehouse/list/bom.js}"></script> 
+<div th:fragment="content(${list})">
+	<script th:src="@{/js/sys/master/machine.js}"></script> 
+	<script th:src="@{/js/sys/master/unit.js}"></script> 
+	<script th:src="@{/js/sys/master/supplier.js}"></script> 
 	<nav style="border-radius:0px;margin-bottom:-1px;" class="navbar navbar-default">
 		<div class="container-fluid">
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.wareHouseBOM}" th:action="@{main?type=bom}" method="post">
-				 <div class="form-group">
-				   <input type="text" class="form-control" th:field="*{bom.pn}" placeholder="霎灘�･蜩∫分">
-	 			</div>
-	 			<button type="submit" class="btn btn-sm btn-info">譟･隸｢</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="checkout">蜉�蛻ｰ蜃ｺ蠎灘黒</button>
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/sys/master/main/machine}" method="post">
+	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addMachine'>添加</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='editMachine'>修改</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addMachinePart'>添加 / 修改维护零件</button>
 			</form>
 		</div>
 	</nav>
-	<table class="table table-striped table-bordered table-hover table-condensed" >
+
+	<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
 		<thead>
 		    <tr>
-				<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
-				<th>蜩∫分</th>
-				<th>蜷咲ｧｰ</th>
-				<th>遘咲ｱｻ</th>
-				<th>蝨ｨ蠎捺焚驥�</th>
-				<th>蜊穂ｽ�</th>
-				<th>萓帛ｺ泌膚</th>
+		    	<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
+				<th>品番</th>
+				<th>名称</th>
+				<th>单位</th>
+				<th>维护周期(天)</th>
+				<th>供应商</th>
+				<th>维护所需备件</th>
 		    </tr>
 		</thead>
 		<tbody>
-		<tr th:each="wareHouseBom : ${wareHouseBoms}"
-			th:with="bom=${wareHouseBom.bom},
-					 unit=(${wareHouseBom.bom}?${wareHouseBom.bom.unit}:_),
-					 supplier=(${wareHouseBom.bom}?${wareHouseBom.bom.supplier}:_)"
-			th:rowid="${wareHouseBom.id}">
-			<td>
-				<input type="checkbox" name="select" th:rowid="${wareHouseBom.id}">
-			</td>
-			<td th:text="${bom}?${bom.pn}:_"></td>
-			<td th:text="${bom}?${bom.name}:_"></td>
-			<td th:switch="${bom}?${bom.type}:0">
-			  <span th:case="0">蜴滓攝</span>
-			  <span th:case="*">蛹�譚�</span>
-			</td>
-			<td th:text="${wareHouseBom.num}"></td>
-			<td th:text="${unit}?${unit.name}:_"></td>
-			<td th:text="${supplier}?${supplier.name}:_"></td>
-	    </tr>
-	  </tbody>
+			<tr th:each="machine : ${list}"
+				th:rowid="${machine.id}">
+				<td>
+					<input type="checkbox" name="select" th:rowid="${machine.id}">
+				</td>
+				<td th:text="${machine.pn}"></td>
+				<td th:text="${machine.name}"></td>
+				<td th:text="${machine.unit.name}"></td>
+				<td th:text="${machine.maitenacePeriod}"></td>
+				<td th:text="${machine.supplier.name}"></td>
+				<td>
+					<span th:each="machineMachinePartRel,iterStat: ${machine.machineMachinePartRels}"
+						  th:with="machinePart=${machineMachinePartRel.machinePart}">
+						<span th:text="'●' + ${machinePart.pn + ' ' + machinePart.name} + ' 维护消耗:' + ${machineMachinePartRel.maitenacePartNum} + ${machinePart.unit.name}"></span>
+						<br/>
+					</span>
+				</td>
+		    </tr>
+		</tbody>
 	</table>
-	<div id="checkout_dlg_div"></div>
-	<div id="msg_div"></div> -->
+	<div id="dlg_div"></div>
+	<div id="unit_dlg_div"></div>
+	<div id="supplier_dlg_div"></div>
+	<div id="msg_div"></div>
 </div>
 </body>
 </html>

@@ -18,4 +18,6 @@ public interface WareHouseEntryPnMapper {
 	
 	void add(WareHouseEntryPnModel entryPn);
 	void delete(WareHouseEntryPnModel entryPn);
+	void update(WareHouseEntryPnModel entryPn);
+	List<WareHouseEntryPnModel> queryList(WareHouseEntryPnModel entryPn);
 }

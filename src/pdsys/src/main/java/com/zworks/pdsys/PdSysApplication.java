@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class PdSysApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PdSysApplication.class, args);
+		SpringApplication app = new SpringApplication(PdSysApplication.class); 
+        app.run(args);
 	}
 }

@@ -5,8 +5,8 @@
 
 	<resultMap id="wareHousePnResultMap" type="wareHousePnModel" >  
         <id column="wh_pn_id" property="id" />
-        <id column="wh_pn_num" property="num" />  
-        <id column="wh_pn_type" property="type" />  
+        <id column="wh_pn_produced_num" property="producedNum" />  
+        <id column="wh_pn_semi_produced_num" property="semiProducedNum" />  
     </resultMap>
 	<resultMap id="orderResultMap" type="orderModel" >  
         <id column="o_id" property="id" />  
@@ -34,8 +34,8 @@
     </resultMap>
 	<resultMap id="wareHouseDeliveryPnResultMap" type="wareHouseDeliveryPnModel">  
         <id column="d_pn_id" property="id" />  
-        <result column="d_pn_num" property="num" />  
-        <result column="d_pn_type" property="type" />  
+        <result column="d_pn_produced_num" property="producedNum" />  
+        <result column="d_pn_semi_produced_num" property="semiProducedNum" />  
         <association property="orderPn" resultMap="orderPnResultMap" />
         <association property="wareHousePn" resultMap="wareHousePnResultMap" />
     </resultMap>
@@ -68,8 +68,8 @@
 		       upt_user.c_no as upt_user_no,
 		       upt_user.c_name as upt_user_name,
 		       d_pn.c_id as d_pn_id,
-		       d_pn.c_num as d_pn_num,
-		       d_pn.c_type as d_pn_type,
+		       d_pn.c_produced_num as d_pn_produced_num,
+		       d_pn.c_semi_produced_num as d_pn_semi_produced_num,
 		       o_pn.c_id as o_pn_id,
 		       o_pn.c_num as o_pn_num,
 		       pn.c_id as pn_id,
@@ -82,8 +82,8 @@
 		       o.c_id as o_id,
 		       o.c_no as o_no,
 		       wh_pn.c_id as wh_pn_id,
-		       wh_pn.c_num as wh_pn_num,
-		       wh_pn.c_type as wh_pn_type
+		       wh_pn.c_produced_num as wh_pn_produced_num,
+		       wh_pn.c_semi_produced_num as wh_pn_semi_produced_num
 		from delivery_tbl as delivery
 		left join user_tbl as user on delivery.c_user_id = user.c_id
 		left join user_tbl as upt_user on delivery.c_update_user_id = upt_user.c_id
@@ -93,7 +93,7 @@
 		left join unit_tbl as unit on pn.c_unit_id = unit.c_id
 		left join pn_cls_tbl as pn_cls on o_pn.c_pn_cls_id = pn_cls.c_id
 		left join order_tbl as o on o_pn.c_order_id = o.c_id
-		left join warehouse_pn_tbl as wh_pn on d_pn.c_ref_id = wh_pn.c_order_pn_id and d_pn.c_type = wh_pn.c_type
+		left join warehouse_pn_tbl as wh_pn on d_pn.c_ref_id = wh_pn.c_order_pn_id
 		<where>
 			<if test="id >= 0">
 				and delivery.c_id = #{id}

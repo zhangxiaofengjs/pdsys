@@ -13,6 +13,10 @@ import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.services.UserService;
 
+/**
+ * @author: zhangxiaofengjs@163.com
+ * @version: 2018/04/14
+ */
 @Controller
 @RequestMapping("/user")
 public class UserController {
@@ -25,6 +29,16 @@ public class UserController {
 		List<UserModel> list = userService.queryList(user);
         return list;
     }
+	
+	@RequestMapping("/get")
+	@ResponseBody
+	public JSONResponse get(@RequestBody UserModel user, Model model) {
+		UserModel u = userService.queryById(user.getId());
+		if(u == null) {
+			return JSONResponse.error("用户不存在。");
+		}
+		return JSONResponse.success().put("user", u);
+	}
 	
 	@RequestMapping("/list")
 	public String list(UserModel user, Model model) {

@@ -13,7 +13,7 @@ import com.zworks.pdsys.models.PnModel;
 @Mapper
 public interface PnMapper {
 	
-	List<PnModel> queryList();
+	List<PnModel> queryList(PnModel pn);
 	
 	List<PnClsModel> queryClsList( PnModel pn );
 	
@@ -26,4 +26,14 @@ public interface PnMapper {
 	List<OrderPnModel> queryPnByOrderPnId( OrderPnModel orderPn );
 	
 	List<PnClsModel> queryClsByOrderPnId( OrderPnModel orderPn );
+
+	void add(PnModel pn);
+
+	void update(PnModel pn);
+
+	void addPnCls(PnModel pn);
+
+	void addBOM(PnModel pn);
+
+	void updateBOM(PnModel pn);
 }

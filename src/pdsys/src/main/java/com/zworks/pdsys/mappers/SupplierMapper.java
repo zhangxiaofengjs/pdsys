@@ -1,5 +1,7 @@
 package com.zworks.pdsys.mappers;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.zworks.pdsys.models.SupplierModel;
@@ -10,5 +12,7 @@ import com.zworks.pdsys.models.SupplierModel;
 @Mapper
 public interface SupplierMapper {
 	
-	SupplierModel queryObject(int id);
+	List<SupplierModel> queryList(SupplierModel supplier);
+
+	void add(SupplierModel supplier);
 }
