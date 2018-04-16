@@ -11,10 +11,114 @@ $(function () {
 			"data":order,
 			"success": function(data) {
 				var bodyHtml = "";
+				
 				data.orderDetail.forEach(function(orderPn, idx) {
-					
-					//bom数量
 					var bomNum = orderPn.pn.boms.length;
+//					var yuanArr = [];
+//					var baoArr = [];
+//					var bomNum = 0;
+//					orderPn.pn.boms.forEach(function(bom, idx2) {
+//						if( bom.type ==0 ) {
+//							yuanNum+=1;
+//							yuanArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
+//									bom.pn,
+//									orderPn.pn.bomRel.useNum,
+//									bom.unit.name));
+//						}
+//						if( bom.type ==1 ) {
+//							baoNum+=1;
+//							baoArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
+//									bom.pn,
+//									orderPn.pn.bomRel.useNum,
+//									bom.unit.name));
+//						}
+//					});
+//					
+//					if(yuanArr.length<baoArr.length){
+//						bomNum = baoArr.length;
+//					}
+//					else{
+//						bomNum = yuanArr.length;
+//					}
+//					
+//					for (i=0;i<bomNum-1;i++)
+//					{
+//						if(i==0) {
+//							bodyHtml += "<tr><td rowspan='{0}'><input type='checkbox' name='select' rowid='{1}'/></td><td rowspan='{0}'>{2}</td><td rowspan='{0}'>{3}</td><td rowspan='{0}'>{4}</td><td rowspan='{0}'>{5}</td><td rowspan='{0}'>{6}</td>".format(
+//									bomNum, 
+//									orderPn.id, 
+//									orderPn.pn.pn,
+//									orderPn.pn.name,
+//									orderPn.pn.pnCls.name,
+//									orderPn.num,
+//									orderPn.pn.unit.name);
+//						
+//							//原材,包材的追加
+//							if( bom.type ==0 ) {
+//								continue;
+//								bodyHtml += "<td>{0}</td><td>{1}</td><td>{2}</td><td></td><td></td><td></td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
+//										bom.pn,
+//										orderPn.pn.bomRel.useNum,
+//										bom.unit.name,
+//										orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+//										orderPn.whpn ? orderPn.whpn.producedNum : 0, orderPn.rejectRatio);
+//							}else if( bom.type ==1 ) {
+//								bodyHtml += "<td></td><td></td><td></td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
+//										bom.pn, 
+//										orderPn.pn.bomRel.useNum,
+//										bom.unit.name,
+//										orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+//										orderPn.whpn ? orderPn.whpn.producedNum : 0,
+//										orderPn.rejectRatio);
+//							}
+//						}
+//						else {
+//							
+//							if( bom.type ==0 ) {
+//								bodyHtml += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td></td><td></td><td></td><td>{3}</td><td>{4}</td><td>{5}</td></tr>>".format(
+//									bom.pn, 
+//									orderPn.pn.bomRel.useNum, 
+//									bom.unit.name, 
+//									orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+//									orderPn.whpn ? orderPn.whpn.producedNum : 0, 
+//									orderPn.rejectRatio);
+//							}else if( bom.type ==1 ) {
+//								bodyHtml += "<tr><td></td><td></td><td></td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
+//									bom.pn,
+//									orderPn.pn.bomRel.useNum,
+//									bom.unit.name,
+//									orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+//											orderPn.whpn ? orderPn.whpn.producedNum : 0,
+//									orderPn.rejectRatio);
+//							}
+//							
+//						}
+//					}
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+
 					orderPn.pn.boms.forEach(function(bom, idx2) {
 						if(idx2==0) {
 							bodyHtml += "<tr><td rowspan='{0}'><input type='checkbox' name='select' rowid='{1}'/></td><td rowspan='{0}'>{2}</td><td rowspan='{0}'>{3}</td><td rowspan='{0}'>{4}</td><td rowspan='{0}'>{5}</td><td rowspan='{0}'>{6}</td>".format(
@@ -25,6 +129,7 @@ $(function () {
 									orderPn.pn.pnCls.name,
 									orderPn.num,
 									orderPn.pn.unit.name);
+						}
 						
 							//原材,包材的追加
 							if( bom.type ==0 ) {
@@ -43,31 +148,31 @@ $(function () {
 										orderPn.whpn ? orderPn.whpn.producedNum : 0,
 										orderPn.rejectRatio);
 							}
-						}
-						else {
-							
-							if( bom.type ==0 ) {
-								bodyHtml += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td></td><td></td><td></td><td>{3}</td><td>{4}</td><td>{5}</td></tr>>".format(
-									bom.pn, 
-									orderPn.pn.bomRel.useNum, 
-									bom.unit.name, 
-									orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
-									orderPn.whpn ? orderPn.whpn.producedNum : 0, 
-									orderPn.rejectRatio);
-							}else if( bom.type ==1 ) {
-								bodyHtml += "<tr><td></td><td></td><td></td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
-									bom.pn,
-									orderPn.pn.bomRel.useNum,
-									bom.unit.name,
-									orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
-											orderPn.whpn ? orderPn.whpn.producedNum : 0,
-									orderPn.rejectRatio);
-							}
-							
-						}
+						});
+//						else {
+//							
+//							if( bom.type ==0 ) {
+//								bodyHtml += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td></td><td></td><td></td><td>{3}</td><td>{4}</td><td>{5}</td></tr>>".format(
+//									bom.pn, 
+//									orderPn.pn.bomRel.useNum, 
+//									bom.unit.name, 
+//									orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+//									orderPn.whpn ? orderPn.whpn.producedNum : 0, 
+//									orderPn.rejectRatio);
+//							}else if( bom.type ==1 ) {
+//								bodyHtml += "<tr><td></td><td></td><td></td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
+//									bom.pn,
+//									orderPn.pn.bomRel.useNum,
+//									bom.unit.name,
+//									orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+//											orderPn.whpn ? orderPn.whpn.producedNum : 0,
+//									orderPn.rejectRatio);
+//							}
+//							
+//						}
 					});
 					
-				});
+				//});
 				var body = $('#bomInfo');
 				body.children().remove();
 				body.append(bodyHtml);
