@@ -35,7 +35,7 @@
 				<tbody>
 				    <tr th:each="order : ${orders}">
 				      <td><input type="checkbox" name="select" th:rowid="${order.id}"/></td>
-				      <td><a th:text="${order.no}" th:href="@{'/order/detail?id=' +${order.id}}"></a></td>
+				      <td><a th:text="${order.no}" th:href="@{'/order/orderInfo?id=' +${order.id}}"></a></td>
 				      <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}"></td>
 				      <td th:text="${#dates.format(order.shipDeadDate, 'yyyy-MM-dd')}"></td>
 				      <td th:switch="${order.state}">

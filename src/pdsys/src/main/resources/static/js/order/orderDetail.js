@@ -7,7 +7,7 @@ $(function () {
 			"id":$('#order_id').val()
 		};
 		PdSys.ajax({
-			"url":"/order/detail/list",
+			"url":"/orderPn/list",
 			"data":order,
 			"success": function(data) {
 				var bodyHtml = "";
@@ -194,7 +194,7 @@ $(function () {
 			"target":"addOrUpPn_div",
 			"caption":caption,
 			"fields":fields,
-			"url":"/pn/add/pn",
+			"url":"/orderPn/add",
 			"success": function(data) {
 				dlg.hide();
 				var msgDlg = new CommonDlg();
@@ -237,7 +237,7 @@ $(function () {
 			"msg":"确定删除已选品目?",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/pn/delete/pn",
+					"url":"/orderPn/delete",
 					"data":ajaxDatas,
 					"success": function(data) {
 						dlg.hide();
@@ -293,7 +293,7 @@ $(function () {
 					"type":"select",
 					"options":[],
 					"ajax":true,
-					"url":"/pn/showPnInfo?id="+selIds[0],
+					"url":"/orderPn/showPnInfo?id="+selIds[0],
 					"convertAjaxData" : function(field, data) {
 						data.data.forEach(function(op, idx) {
 							field.options.push({
@@ -317,7 +317,7 @@ $(function () {
 					"type":"select",
 					"options":[],
 					"ajax":true,
-					"url":"/pn/showClsInfo?id="+selIds[0],
+					"url":"/orderPn/showClsInfo?id="+selIds[0],
 					"convertAjaxData" : function(field, data) {
 						data.data.forEach(function(cls, idx) {
 							field.options.push({
@@ -340,7 +340,7 @@ $(function () {
 					"readonly":"readonly"
 				}],
 
-	    	"url":"/pn/updateOrderPnInfo",
+	    	"url":"/orderPn/update",
 	        "success":function(data) {
 	        	PdSys.refresh();
 	        },
@@ -352,7 +352,7 @@ $(function () {
 	
 	//当前订单的BOM信息
 	$("#showBomInfo").click(function(){
-		var url = PdSys.url('/pn/bomInfo/list?id=' + $('#order_id').val());
+		var url = PdSys.url('/orderPn/bomInfo/list?id=' + $('#order_id').val());
 		$(location).attr('href', url);
 	});
 

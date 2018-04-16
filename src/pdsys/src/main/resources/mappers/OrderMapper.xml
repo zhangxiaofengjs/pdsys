@@ -26,7 +26,7 @@
 		select * from order_tbl where c_id = #{id}
 	</select>
 	
-	<delete id="delete" parameterType="orderModel">
+	<delete id="updateOrderState" parameterType="orderModel">
 		update order_tbl 
 		<set> 
 			`c_state` = #{state}, 
