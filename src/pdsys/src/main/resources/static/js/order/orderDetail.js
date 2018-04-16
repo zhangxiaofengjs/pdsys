@@ -98,7 +98,6 @@ $(function () {
 		{
 			"name":"pn.id",
 			"label":"品目名",
-			"disabled":false,
 			"type":"select",
 			"options":[],
 			"ajax":true,
@@ -154,7 +153,6 @@ $(function () {
 			"label":"子类",
 			"type":"select",
 			"depend":true,//不立即执行，等订单项目的刷新
-			"disabled":false,
 			"options":[],
 			"ajax":true,
 			"url":"/pn/clsList/json",
@@ -291,7 +289,7 @@ $(function () {
 				{
 					"name":"pn.id",
 					"label":"品目名",
-					"disabled":true,
+					"disabled":"disabled",
 					"type":"select",
 					"options":[],
 					"ajax":true,
@@ -315,7 +313,7 @@ $(function () {
 				{
 					"name":"pn.pnCls.id",
 					"label":"子类",
-					"disabled":true,
+					"disabled":"disabled",
 					"type":"select",
 					"options":[],
 					"ajax":true,

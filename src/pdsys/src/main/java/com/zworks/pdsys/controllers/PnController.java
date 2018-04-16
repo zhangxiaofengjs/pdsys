@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.BOMDetailModel;
 import com.zworks.pdsys.common.utils.JSONResponse;
+<<<<<<< HEAD
+import com.zworks.pdsys.form.beans.BomDetailModel;
+=======
+>>>>>>> 1407871fabed36d86cc8794c73ed86b5ffdba524
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.models.PnClsModel;
