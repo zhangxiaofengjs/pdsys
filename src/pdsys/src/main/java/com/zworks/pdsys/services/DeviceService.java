@@ -8,7 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zworks.pdsys.form.beans.DeviceMaitenaceMachinePartsBean;
+import com.zworks.pdsys.business.beans.DeviceMaitenaceMachinePartsBean;
 import com.zworks.pdsys.mappers.DeviceMapper;
 import com.zworks.pdsys.models.DeviceModel;
 import com.zworks.pdsys.models.MachineMachinePartRelModel;

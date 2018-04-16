@@ -14,10 +14,10 @@ public class PnModel extends BaseModel{
 	private String name;
 	private PnClsModel pnCls;
 	private UnitModel unit;
-	private BOMRelationModel bomRel;
+	private PnBOMRelModel bomRel;
 	private List<BOMModel> boms;
 	private List<PnClsModel> pnClss;//TODO 考虑将成员去除：pnCls，boms，同时bomRel似乎不合理
-	private List<BOMRelationModel> bomRels;
+	private List<PnBOMRelModel> bomRels;
 
 	public PnModel() {
 	}
@@ -62,11 +62,11 @@ public class PnModel extends BaseModel{
 		this.boms = boms;
 	}
 
-	public BOMRelationModel getBomRel() {
+	public PnBOMRelModel getBomRel() {
 		return bomRel;
 	}
 
-	public void setBomRel(BOMRelationModel bomRel) {
+	public void setBomRel(PnBOMRelModel bomRel) {
 		this.bomRel = bomRel;
 	}
 
@@ -78,11 +78,11 @@ public class PnModel extends BaseModel{
 		this.pnClss = pnClss;
 	}
 
-	public List<BOMRelationModel> getBomRels() {
+	public List<PnBOMRelModel> getBomRels() {
 		return bomRels;
 	}
 
-	public void setBomRels(List<BOMRelationModel> bomRels) {
+	public void setBomRels(List<PnBOMRelModel> bomRels) {
 		this.bomRels = bomRels;
 	}
 }

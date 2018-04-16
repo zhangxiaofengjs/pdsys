@@ -10,12 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
-import com.zworks.pdsys.models.DeviceModel;
-import com.zworks.pdsys.models.MachineModel;
 import com.zworks.pdsys.models.MachinePartModel;
-import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.services.MachinePartService;
-import com.zworks.pdsys.services.MachineService;
 
 /**
  * @author: zhangxiaofengjs@163.com

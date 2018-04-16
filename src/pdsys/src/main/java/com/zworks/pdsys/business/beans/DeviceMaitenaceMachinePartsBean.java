@@ -1,12 +1,9 @@
-package com.zworks.pdsys.form.beans;
+package com.zworks.pdsys.business.beans;
 
 import java.util.List;
 
 import com.zworks.pdsys.models.MachineModel;
 import com.zworks.pdsys.models.MachinePartModel;
-import com.zworks.pdsys.models.WareHouseBOMModel;
-import com.zworks.pdsys.models.WareHouseMachinePartModel;
-import com.zworks.pdsys.models.WareHousePnModel;
 
 /**
  * @author: zhangxiaofengjs@163.com

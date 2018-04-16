@@ -5,14 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zworks.pdsys.mappers.MachineMapper;
 import com.zworks.pdsys.mappers.MachinePartMapper;
-import com.zworks.pdsys.mappers.WareHouseMachinePartMapper;
-import com.zworks.pdsys.models.DeviceModel;
-import com.zworks.pdsys.models.MachineModel;
 import com.zworks.pdsys.models.MachinePartModel;
-import com.zworks.pdsys.models.MachinePartModel;
-import com.zworks.pdsys.models.WareHouseMachinePartModel;
 
 /**
  * @author: zhangxiaofengjs@163.com

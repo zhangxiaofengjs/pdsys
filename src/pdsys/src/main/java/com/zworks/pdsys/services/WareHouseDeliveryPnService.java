@@ -6,11 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zworks.pdsys.common.utils.StringUtils;
 import com.zworks.pdsys.mappers.WareHouseDeliveryPnMapper;
-import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
-import com.zworks.pdsys.models.WareHouseDeliveryModel;
 
 /**
  * @author: zhangxiaofengjs@163.com

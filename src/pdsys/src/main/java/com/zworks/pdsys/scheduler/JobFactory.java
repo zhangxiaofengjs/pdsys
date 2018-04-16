@@ -1,4 +1,4 @@
-package com.zworks.pdsys.scheduler.config;
+package com.zworks.pdsys.scheduler;
 
 import org.quartz.spi.TriggerFiredBundle;
 import org.springframework.beans.factory.annotation.Autowired;

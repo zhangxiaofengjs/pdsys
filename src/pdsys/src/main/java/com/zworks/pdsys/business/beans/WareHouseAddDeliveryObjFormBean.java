@@ -1,4 +1,4 @@
-package com.zworks.pdsys.form.beans;
+package com.zworks.pdsys.business.beans;
 
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;

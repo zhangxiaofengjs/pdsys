@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.CustomerModel;
-import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.services.CustomerService;
 
 @Controller

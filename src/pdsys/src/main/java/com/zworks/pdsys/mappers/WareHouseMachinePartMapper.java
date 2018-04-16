@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
-import com.zworks.pdsys.models.WareHousePnModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
