@@ -7,7 +7,7 @@ import org.apache.ibatis.type.Alias;
  * @version: 2018/04/03
  */
 @Alias("BOMRelationModel")
-public class BOMRelationModel {
+public class PnBOMRelModel {
 
 	private int pnId;
 	

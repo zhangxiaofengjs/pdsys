@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.mappers.CustomerMapper;
 import com.zworks.pdsys.models.CustomerModel;
-import com.zworks.pdsys.models.UserModel;
 
 @Service
 public class CustomerService {

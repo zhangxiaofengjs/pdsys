@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.apache.ibatis.type.Alias;
 
-import com.zworks.pdsys.common.enumClass.DeliveryState;
-
 /**
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/04/02

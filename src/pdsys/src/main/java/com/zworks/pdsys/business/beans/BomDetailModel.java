@@ -1,4 +1,4 @@
-package com.zworks.pdsys.form.beans;
+package com.zworks.pdsys.business.beans;
 
 import org.apache.ibatis.type.Alias;
 

@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zworks.pdsys.business.beans.BomDetailModel;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
-import com.zworks.pdsys.form.beans.BomDetailModel;
 import com.zworks.pdsys.mappers.PnMapper;
 import com.zworks.pdsys.models.BOMModel;
-import com.zworks.pdsys.models.BOMRelationModel;
+import com.zworks.pdsys.models.PnBOMRelModel;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.models.PnClsModel;
@@ -102,12 +102,12 @@ public class PnService {
 			throw new PdsysException("品番的ID或者品番未指定！", PdsysExceptionCode.ERROR_PARAM);
 		}
 
-		List<BOMRelationModel> bomRels = pn.getBomRels();
-		List<BOMRelationModel> targetBomRels = p.getBomRels();
-		for(BOMRelationModel bomRel : bomRels) {
+		List<PnBOMRelModel> bomRels = pn.getBomRels();
+		List<PnBOMRelModel> targetBomRels = p.getBomRels();
+		for(PnBOMRelModel bomRel : bomRels) {
 			BOMModel bom = bomRel.getBom();
 			
-			for(BOMRelationModel targetBomRel : targetBomRels) {
+			for(PnBOMRelModel targetBomRel : targetBomRels) {
 				BOMModel targetBom = targetBomRel.getBom();
 				if(bom.getId() == targetBom.getId()) {
 					return true;

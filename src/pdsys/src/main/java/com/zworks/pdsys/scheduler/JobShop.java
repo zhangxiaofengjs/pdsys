@@ -1,4 +1,4 @@
-package com.zworks.pdsys.scheduler.config;
+package com.zworks.pdsys.scheduler;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -11,7 +11,6 @@ import org.quartz.SchedulerException;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.scheduler.jobs.DeviceMaitenaceJob;
