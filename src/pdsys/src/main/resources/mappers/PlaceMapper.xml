@@ -10,4 +10,15 @@
 	<select id="queryList" resultMap="placeResultMap">
 		select * from place_tbl 
 	</select>
+	
+	<insert id="add" parameterType="placeModel">
+    	insert into place_tbl (
+    		c_name)
+    	values (
+    		#{name}
+    	)
+      	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+    </insert>
 </mapper>

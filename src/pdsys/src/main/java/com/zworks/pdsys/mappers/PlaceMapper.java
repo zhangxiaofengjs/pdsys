@@ -14,4 +14,6 @@ import com.zworks.pdsys.models.PlaceModel;
 public interface PlaceMapper {
 	
 	List<PlaceModel> queryList(PlaceModel filterObj);
+
+	void add(PlaceModel place);
 }

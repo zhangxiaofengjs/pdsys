@@ -22,4 +22,8 @@ public class PlaceService {
 		
 		return list;
 	}
+
+	public void add(PlaceModel place) {
+		placeMapper.add(place);
+	}
 }

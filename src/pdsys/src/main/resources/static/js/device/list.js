@@ -78,6 +78,34 @@ $(document).ready(function(){
 					});
 				});
 			},
+			"groupButtons":[{
+				"name":"addPlace",
+				"text":"+",
+				"click": function(dlg) {
+					var dlgPlace = new CommonDlg();
+					dlgPlace.showFormDlg({
+						"target":"place_dlg_div",
+						"caption":"添加地点",
+						"fields":[
+							{
+								"name":"name",
+								"label":"地点",
+								"type":"text",
+								"value":"",
+								"requried":true,
+							}
+						],
+						"url":"/place/add",
+						"success" : function(data) {
+							dlgPlace.hide();
+							dlg.rebuildFieldWithValue("place.id", data.place.id);
+						},
+						"error": function(data) {
+							PdSys.alert(data.msg);
+						}
+					});
+				}
+			}],
 		},
 		{
 			"name":"user.id",

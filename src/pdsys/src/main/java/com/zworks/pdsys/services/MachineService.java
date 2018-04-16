@@ -5,8 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.mappers.MachineMapper;
+import com.zworks.pdsys.models.MachineMachinePartRelModel;
 import com.zworks.pdsys.models.MachineModel;
+import com.zworks.pdsys.models.MachinePartModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -46,17 +49,29 @@ public class MachineService {
 	}
 
 	public boolean existsMachinePart(MachineModel machine) {
-		// TODO Auto-generated method stub
+		MachineModel m = queryOne(machine);
+		if(m == null) {
+			throw new PdsysException("不存在该品番机器");
+		}
+		for(MachineMachinePartRelModel mmRel : machine.getMachineMachinePartRels()) {
+			MachinePartModel mp = mmRel.getMachinePart();
+			
+			for(MachineMachinePartRelModel targetMmRel: m.getMachineMachinePartRels()) {
+				MachinePartModel targetMp = targetMmRel.getMachinePart();
+				
+				if(mp.getId() == targetMp.getId()) {
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
 	public void updateMachinePart(MachineModel machine) {
-		// TODO Auto-generated method stub
-		
+		machineMapper.updateMachinePart(machine);
 	}
 
 	public void addMachinePart(MachineModel machine) {
-		// TODO Auto-generated method stub
-		
+		machineMapper.addMachinePart(machine);
 	}
 }
