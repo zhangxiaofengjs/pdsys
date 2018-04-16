@@ -57,13 +57,14 @@ $(document).ready(function(){
 	//合并单元格
 	function MergeCell(tableId, startRow, isEnd) {
 		var totalNum = 0;
+		var startNum = 0;
         var tb = document.getElementById(tableId);
         if (isEnd) {
             return;
         }
         var endRow = tb.rows.length - 2;
         for (var i = startRow; i < endRow; i++) {
-        	totalNum = parseInt(tb.rows[startRow].cells[8].innerHTML);
+        	startNum = parseInt(tb.rows[startRow].cells[8].innerHTML);
             //程序是自左向右合并
             if (tb.rows[startRow].cells[0].innerHTML == tb.rows[i + 1].cells[0].innerHTML) {
                 //如果相同则删除下一行的第0列单元格
@@ -72,11 +73,10 @@ $(document).ready(function(){
                 //更新rowSpan属性
                 tb.rows[startRow].cells[0].rowSpan = (tb.rows[startRow].cells[0].rowSpan | 0) + 1;
                 tb.rows[startRow].cells[9].rowSpan = tb.rows[startRow].cells[9].rowSpan + 1;
-                
                 totalNum += parseInt(tb.rows[i + 1].cells[8].innerHTML);
 
             } else {
-            	tb.rows[startRow].cells[9].innerHTM = totalNum;
+            	tb.rows[startRow].cells[9].innerHTML = totalNum - startNum;
                 //增加起始行  
                 startRow = i + 1;
             }

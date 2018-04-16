@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.form.beans.BomDetailModel;
-import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.models.PnClsModel;
