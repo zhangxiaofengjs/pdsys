@@ -8,7 +8,7 @@
         <result column="supplier_name" property="name" /> 
     </resultMap>
     
-	<resultMap id="bomDetailMap" type="com.zworks.pdsys.form.beans.BomDetailModel" > 
+	<resultMap id="bomDetailMap" type="BOMDetailModel" > 
         <result column="bom_num" property="bomNum" />  
         <result column="bom_pn_name" property="bomName" />  
         <result column="bom_type" property="bomType" />

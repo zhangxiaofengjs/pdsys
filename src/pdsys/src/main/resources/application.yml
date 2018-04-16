@@ -44,6 +44,6 @@ logging:
 # Mybatis配置
 mybatis:
     mapperLocations: classpath:mappers/*.xml
-    type-aliases-package: com.zworks.pdsys.models
+    type-aliases-package: com.zworks.pdsys.models,com.zworks.pdsys.business.beans,com.zworks.pdsys.mappers
     configuration:
         map-underscore-to-camel-case: true

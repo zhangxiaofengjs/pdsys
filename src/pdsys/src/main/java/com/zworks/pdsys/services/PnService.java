@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zworks.pdsys.business.beans.BomDetailModel;
+import com.zworks.pdsys.business.beans.BOMDetailModel;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.mappers.PnMapper;
@@ -39,7 +39,7 @@ public class PnService {
 		pnMapper.delete(orderPn);
 	}
 	
-	public List<BomDetailModel> queryBomList(OrderModel order) {
+	public List<BOMDetailModel> queryBomList(OrderModel order) {
 		return pnMapper.queryBomList( order );
 	}
 	
