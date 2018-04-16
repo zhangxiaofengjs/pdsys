@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.zworks.pdsys.business.beans.BomDetailModel;
+import com.zworks.pdsys.business.beans.BOMDetailModel;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
@@ -105,7 +105,7 @@ public class OrderPnController {
 		OrderModel order = orderService.queryObject(id);
 		if( order!=null )
 		{
-			List<BomDetailModel> list = orderPnService.queryBomList(order);
+			List<BOMDetailModel> list = orderPnService.queryBomList(order);
 			model.addAttribute("boms", list);
 			model.addAttribute("order", order);
 		}

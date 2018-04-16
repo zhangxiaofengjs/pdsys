@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zworks.pdsys.business.beans.BomDetailModel;
+import com.zworks.pdsys.business.beans.BOMDetailModel;
 import com.zworks.pdsys.mappers.OrderPnMapper;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
@@ -24,7 +24,7 @@ public class OrderPnService {
 		orderPnMapper.delete(orderPn);
 	}
 	
-	public List<BomDetailModel> queryBomList(OrderModel order) {
+	public List<BOMDetailModel> queryBomList(OrderModel order) {
 		return orderPnMapper.queryBomList( order );
 	}
 	

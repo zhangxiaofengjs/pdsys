@@ -7,8 +7,8 @@ import com.zworks.pdsys.models.SupplierModel;
 /**
  * @author: ZHAI
  */
-@Alias("bomDlModel")
-public class BomDetailModel {
+@Alias("BOMDetailModel")
+public class BOMDetailModel {
 	
 	//数量
 	private int bomNum;
