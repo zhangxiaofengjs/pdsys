@@ -25,4 +25,6 @@ public interface OrderPnMapper {
 	List<OrderPnModel> queryPnByOrderPnId( OrderPnModel orderPn );
 	
 	List<PnClsModel> queryClsByOrderPnId( OrderPnModel orderPn );
+	
+	List<OrderPnModel> queryOrderPns(OrderPnModel orderPn);
 }

@@ -212,7 +212,7 @@ $(function () {
 				msgDlg.showMsgDlg({
 					"target":"msg_div",
 					"type":"ok",
-					"msg":"添加品目失败,请联系管理员!"});
+					"msg":data.msg});
 			}
 		});
 	});

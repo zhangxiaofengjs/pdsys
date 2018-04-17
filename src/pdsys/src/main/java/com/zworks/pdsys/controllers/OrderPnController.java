@@ -44,6 +44,12 @@ public class OrderPnController {
 	@RequestMapping(value="/add")
 	@ResponseBody
     public JSONResponse saveOrderDetail(@RequestBody OrderPnModel orderPn) {
+		boolean isExist = orderPnService.existsOrderPn(orderPn);
+		if( isExist )
+		{
+			return JSONResponse.error("该品目已经存在！");
+		}
+
 		orderPnService.save(orderPn);
 		return JSONResponse.success();
     }

@@ -43,5 +43,13 @@ public class OrderPnService {
 	public void updateOrderPn(OrderPnModel orderPnModel) {
 		orderPnMapper.updateOrderPn( orderPnModel );
 	}
+	
+	public boolean existsOrderPn(OrderPnModel orderPn) {
+		List<OrderPnModel> ops = orderPnMapper.queryOrderPns(orderPn);
+		if(ops.size()>0) {
+			return true;
+		}
+		return false;
+	}
 
 }

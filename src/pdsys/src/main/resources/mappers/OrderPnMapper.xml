@@ -120,6 +120,24 @@
 		</where>
 	</select>
 	
+	<select id="queryOrderPns" parameterType="orderPnModel" resultMap="orderDetailMapper">
+		select order_pn.c_id as order_pn_id,
+		       order_pn.c_num as order_pn_num,
+		  	   order_pn.c_reject_ratio as order_pn_reject_ratio 
+		from order_pn_tbl order_pn 
+		<where>
+			<if test="order != null">
+				and order_pn.c_order_id = #{order.id} 
+			</if>
+			<if test="pn != null">
+				and order_pn.c_pn_id = #{pn.id} 
+			</if>
+			<if test="pn.pnCls != null">
+				and order_pn.c_pn_cls_id = #{pn.pnCls.id} 
+			</if>
+		</where>
+	</select>
+	
 	<update id="updateOrderPn" parameterType="orderPnModel">
     	update order_pn_tbl
 		set	c_num = #{num} 
