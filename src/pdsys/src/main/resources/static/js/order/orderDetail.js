@@ -331,7 +331,7 @@ $(function () {
 				},
 				{
 					"name":"num",
-					"type":"text",
+					"type":"number",
 					"label":"数量"
 				},
 				{
@@ -346,7 +346,7 @@ $(function () {
 	        	PdSys.refresh();
 	        },
 	        "error":function(data) {
-	        	PdSys.sysError();
+	        	PdSys.alert(data.msg);
 	        }
 	    });
 	});

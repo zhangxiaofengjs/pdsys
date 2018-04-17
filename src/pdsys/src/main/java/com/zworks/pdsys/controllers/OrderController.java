@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.utils.JSONResponse;
+import com.zworks.pdsys.common.utils.ValidatorUtils;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.services.OrderPnService;
 import com.zworks.pdsys.services.OrderService;
@@ -53,13 +54,13 @@ public class OrderController {
 		{
 			OrderModel order = orderService.queryObject(ids[i]);
 			if(order == null) {
-				return JSONResponse.error("订单不存在。");
+				return JSONResponse.error("已选订单不存在！");
 			}
 
 			order.setState(OrderState.DELETED.ordinal());
 			orderService.updateOrderState(order);
 		}
-		return JSONResponse.success();
+		return JSONResponse.success("删除订单成功！");
 	}
 	
 	/**
@@ -68,6 +69,10 @@ public class OrderController {
 	@RequestMapping("/save")
 	@ResponseBody
 	public JSONResponse saveOrder(@RequestBody OrderModel order) {
+		//验证处理
+		JSONResponse JR = ValidatorUtils.doValidate(order);
+		if( JR!=null )
+			return JR;
 		orderService.save(order);
 		return JSONResponse.success("新增订单成功!");
 	}

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.BOMDetailModel;
 import com.zworks.pdsys.common.utils.JSONResponse;
+import com.zworks.pdsys.common.utils.ValidatorUtils;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.models.PnClsModel;
@@ -44,11 +45,14 @@ public class OrderPnController {
 	@RequestMapping(value="/add")
 	@ResponseBody
     public JSONResponse saveOrderDetail(@RequestBody OrderPnModel orderPn) {
+		//验证处理
+		JSONResponse JR = ValidatorUtils.doValidate(orderPn);
+		if( JR!=null )
+			return JR;
+		
 		boolean isExist = orderPnService.existsOrderPn(orderPn);
 		if( isExist )
-		{
 			return JSONResponse.error("该品目已经存在！");
-		}
 
 		orderPnService.save(orderPn);
 		return JSONResponse.success();
@@ -99,6 +103,10 @@ public class OrderPnController {
 	@RequestMapping("/update")
 	@ResponseBody
 	public JSONResponse updateOrderPnInfo(@RequestBody OrderPnModel orderPn) {
+		//验证处理
+		JSONResponse JR = ValidatorUtils.doValidate(orderPn);
+		if( JR!=null )
+			return JR;
 		orderPnService.updateOrderPn(orderPn);
 		return JSONResponse.success();
 	}

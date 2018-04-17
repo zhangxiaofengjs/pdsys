@@ -65,10 +65,17 @@ $(function () {
 				}],
 			"url":"/order/save",
 			"success": function(data) {
-				document.location.reload();
+				var msgDlg = new CommonDlg();
+				msgDlg.showMsgDlg({
+					"target":"msg_div",
+					"type":"ok",
+					"msg":data.msg,
+					"ok":function(){
+						PdSys.refresh();
+					}});
 			},
 			"error": function(data) {
-				alert(22);
+				PdSys.alert(data.msg);
 			}
 		});
 	});
@@ -82,7 +89,7 @@ $(function () {
 		
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
-			"target":"dlg_div",
+			"target":"msg_div",
 			"caption":"删除订单",
 			"type":"yesno",
 			"msg":"确定删除已选订单?",
@@ -96,7 +103,7 @@ $(function () {
 						msgDlg.showMsgDlg({
 							"target":"msg_div",
 							"type":"ok",
-							"msg":"删除成功!",
+							"msg":data.msg,
 							"ok":function(){
 								PdSys.refresh();
 							}});
@@ -106,7 +113,7 @@ $(function () {
 						msgDlg.showMsgDlg({
 							"target":"msg_div",
 							"type":"ok",
-							"msg":"删除失败,请联系管理员!"});
+							"msg":data.msg});
 					}
 				});
 			}
