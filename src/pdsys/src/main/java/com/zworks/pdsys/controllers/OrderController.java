@@ -87,5 +87,14 @@ public class OrderController {
 
         return "order/detail";
     }
+	
+	/**
+	 * 生产计划
+	 */
+	@RequestMapping("/plan")
+    public String plan(Model model) {
+		
+        return "order/plan";
+    }
 
 }
