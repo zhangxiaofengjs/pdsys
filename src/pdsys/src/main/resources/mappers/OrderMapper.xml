@@ -18,6 +18,9 @@
 			<if test="no != null">
 				and c_no like concat('%',#{no},'%') 
 			</if>
+			<if test="state >-1">
+				and c_state = #{state}
+			</if>
 		</where>
 		order by c_no desc
 	</select>
@@ -42,7 +45,8 @@
 			`c_order_date`, 
 			`c_ship_dead_date`,
 			`c_master_id`,
-			`c_comment`
+			`c_comment`,
+			`c_state`
 			
 		)
 		values
@@ -52,7 +56,8 @@
 			#{orderDate},
 			#{shipDeadDate},
 			#{user.id},
-			#{comment}
+			#{comment},
+			0
 		)
 	</insert>
 </mapper>

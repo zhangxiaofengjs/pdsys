@@ -42,7 +42,7 @@ public class OrderModel extends BaseModel implements Serializable {
 	private Date shipDate;
 	
 	//状态
-	private int state;
+	private int state = -1;
 	
 	//备注
 	private String comment;
