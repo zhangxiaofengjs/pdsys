@@ -56,13 +56,14 @@ $(document).ready(function(){
 	
 	//合并单元格
 	function MergeCell(tableId, startRow, isEnd) {
-		var totalNum = 0;
 		var startNum = 0;
+		var totalNum = 0;
+		var totalSum = 0;
         var tb = document.getElementById(tableId);
         if (isEnd) {
             return;
         }
-        var endRow = tb.rows.length - 2;
+        var endRow = tb.rows.length - 1;
         for (var i = startRow; i < endRow; i++) {
         	startNum = parseInt(tb.rows[startRow].cells[8].innerHTML);
             //程序是自左向右合并
@@ -76,11 +77,16 @@ $(document).ready(function(){
                 totalNum += parseInt(tb.rows[i + 1].cells[8].innerHTML);
 
             } else {
-            	tb.rows[startRow].cells[9].innerHTML = totalNum - startNum;
+            	tb.rows[startRow].cells[9].innerHTML = totalNum + startNum;
+            	totalSum+=totalNum + startNum;
                 //增加起始行  
                 startRow = i + 1;
+                totalNum = 0;
             }
         }
+        
+        //合计
+        tb.rows[endRow].cells[1].innerHTML = totalSum;
     }
 	
 	//表头和列所在行除外

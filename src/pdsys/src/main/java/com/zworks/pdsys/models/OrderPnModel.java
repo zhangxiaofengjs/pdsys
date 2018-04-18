@@ -1,5 +1,7 @@
 package com.zworks.pdsys.models;
 
+import javax.validation.constraints.Min;
+
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -12,6 +14,7 @@ public class OrderPnModel extends BaseModel{
 
 	private PnModel pn;
 	private OrderModel order;
+	@Min(value = 1,message="数量必须是一个数组，其值必须大于0！")
 	private float num;
 	private float rejectRatio;
 	private WareHousePnModel whpn;

@@ -6,14 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zworks.pdsys.business.beans.BOMDetailModel;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.mappers.PnMapper;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.PnBOMRelModel;
-import com.zworks.pdsys.models.OrderModel;
-import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.models.PnClsModel;
 import com.zworks.pdsys.models.PnModel;
 
@@ -28,27 +25,6 @@ public class PnService {
 	
 	public List<PnClsModel> queryClsList(PnModel pn) {
 		return pnMapper.queryClsList( pn );
-	}
-
-	//TODO 为什么有关订单的东西都在PnService??
-	public void save(OrderPnModel orderPn) {
-		pnMapper.save( orderPn );
-	}
-	
-	public void delete(OrderPnModel orderPn) {
-		pnMapper.delete(orderPn);
-	}
-	
-	public List<BOMDetailModel> queryBomList(OrderModel order) {
-		return pnMapper.queryBomList( order );
-	}
-	
-	public List<OrderPnModel> queryPnByOrderPnId( OrderPnModel orderPn ){
-		return pnMapper.queryPnByOrderPnId( orderPn );
-	}
-	
-	public List<PnClsModel> queryClsByOrderPnId( OrderPnModel orderPn ){
-		return pnMapper.queryClsByOrderPnId( orderPn );
 	}
 
 	public void add(PnModel pn) {

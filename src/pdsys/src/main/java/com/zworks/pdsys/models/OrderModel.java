@@ -2,10 +2,13 @@ package com.zworks.pdsys.models;
 
 import java.io.Serializable;
 import java.util.Date;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import javax.validation.constraints.NotEmpty;
 
 import org.apache.ibatis.type.Alias;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zworks.pdsys.common.utils.DateJsonDeserializer;
 import com.zworks.pdsys.common.utils.DateJsonSerializer;
 
@@ -20,6 +23,7 @@ public class OrderModel extends BaseModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	//订单编号
+	@NotEmpty(message="订单编号不能空")
 	private String no;
 	
 	//下单时间
