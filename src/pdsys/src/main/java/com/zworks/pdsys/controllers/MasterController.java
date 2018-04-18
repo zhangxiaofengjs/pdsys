@@ -12,7 +12,6 @@ import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.CustomerModel;
 import com.zworks.pdsys.models.MachineModel;
-import com.zworks.pdsys.models.PlaceModel;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.services.BOMService;
 import com.zworks.pdsys.services.CustomerService;

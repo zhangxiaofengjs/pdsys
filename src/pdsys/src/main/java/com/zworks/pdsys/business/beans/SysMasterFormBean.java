@@ -1,11 +1,7 @@
 package com.zworks.pdsys.business.beans;
 
 import com.zworks.pdsys.models.BOMModel;
-import com.zworks.pdsys.models.CustomerModel;
 import com.zworks.pdsys.models.PnModel;
-import com.zworks.pdsys.models.WareHouseBOMModel;
-import com.zworks.pdsys.models.WareHouseMachinePartModel;
-import com.zworks.pdsys.models.WareHousePnModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
