@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	$("#changeState").click(function(){
 		var self = $(this);
-		var selIds = getSelectedRowId({"checkOne":true});
+		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
 		if(selIds.length != 1) {
 			return;
 		}
@@ -45,7 +45,8 @@ $(document).ready(function(){
 			"name":"no",
 			"label":"编号",
 			"type":"text",
-			"value":''
+			"value":'',
+			"required":"required"
 		},
 		{
 			"name":"machine.id",
@@ -92,7 +93,7 @@ $(document).ready(function(){
 								"label":"地点",
 								"type":"text",
 								"value":"",
-								"requried":true,
+								"required":"required",
 							}
 						],
 						"url":"/place/add",

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.zworks.pdsys.business.beans.SysMasterFormBean;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.models.BOMModel;
@@ -39,11 +41,12 @@ public class MasterController {
 	@RequestMapping(value= {"/main", "/main/{type}", "/main/{type}"})
     public String main(
     		@PathVariable(name="type" ,required=false)String type,
+    		SysMasterFormBean formBean,
     		Model model) {
 
 		if(type == null) {
 			type = "customer";
-		} else if(!(type.equals("customer") || type.equals("place") || type.equals("bom") || 
+		} else if(!(type.equals("customer") || type.equals("bom") || 
 				type.equals("pn") || type.equals("machine"))) {
 			throw new PdsysException("错误参数:/sys/master/main/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
@@ -51,14 +54,22 @@ public class MasterController {
 		if(type.equals("customer")) {
 			model.addAttribute("list", customerService.queryList(new CustomerModel()));
 		} else if(type.equals("bom")) {
-			model.addAttribute("list", bOMService.queryList(new BOMModel()));
+			BOMModel bom = formBean.getBom();
+			if(bom != null) {
+				bom.getFilterCond().put("fuzzyPnSearch", true);
+			}
+			
+			model.addAttribute("list", bOMService.queryList(bom));
 		} else if(type.equals("pn")) {
-			model.addAttribute("list", pnService.queryList(new PnModel()));
+			PnModel pn = formBean.getPn();
+			if(pn != null) {
+				pn.getFilterCond().put("fuzzyPnSearch", true);
+			}
+			model.addAttribute("list", pnService.queryList(pn));
 		} else if(type.equals("machine")) {
 			model.addAttribute("list", machineService.queryList(new MachineModel()));
-		} else {
-			model.addAttribute("list", placeService.queryList(new PlaceModel()));
 		}
+		model.addAttribute("formBean", formBean);
 		model.addAttribute("type", type);
 		return "sys/master/main";
     }

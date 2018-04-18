@@ -25,10 +25,10 @@ public class DeviceController {
 	DeviceService deviceService;
 	
 	@RequestMapping(value= {"/list"})
-    public String list(Model model) {
-		DeviceModel device = new DeviceModel();
+    public String list(DeviceModel device, Model model) {
 		List<DeviceModel> list = deviceService.queryList(device);
 		
+		model.addAttribute("device", device);
 		model.addAttribute("list", list);
 		return "device/list";
     }

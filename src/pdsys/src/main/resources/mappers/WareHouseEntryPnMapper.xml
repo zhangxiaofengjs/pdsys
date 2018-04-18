@@ -48,6 +48,12 @@
 			<if test="id > 0">
 				and c_id=#{id}
 			</if>
+			<if test="wareHouseEntry != null and wareHouseEntry.id > 0">
+				and c_entry_id=#{wareHouseEntry.id}
+			</if>
+			<if test="orderPn != null and orderPn.id > 0">
+				and c_ref_id=#{orderPn.id}
+			</if>
 		</where>
     </insert>
     

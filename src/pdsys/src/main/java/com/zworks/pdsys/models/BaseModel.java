@@ -1,6 +1,7 @@
 package com.zworks.pdsys.models;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import org.apache.ibatis.type.Alias;
 
@@ -14,6 +15,8 @@ public class BaseModel {
 	private UserModel updateUser;
 	private Date createTime;
 	private Date updateTime;
+	private HashMap<String, Object> filterCond = new HashMap<String, Object>();
+	
 	public Date getUpdateTime() {
 		return updateTime;
 	}
@@ -54,5 +57,13 @@ public class BaseModel {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public HashMap<String, Object> getFilterCond() {
+		return filterCond;
+	}
+
+	public void setFilterCond(HashMap<String, Object> filterCond) {
+		this.filterCond = filterCond;
 	}
 }

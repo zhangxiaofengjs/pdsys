@@ -81,31 +81,4 @@ public class WareHouseController {
 		model.addAttribute("type", type);
 		return "warehouse/list/main";
     }
-	
-	/**
-	 * 添加到出库单
-	 * */
-	@RequestMapping(value="/add/delivery/{type}")
-	@ResponseBody
-    public JSONResponse addDelivery(
-    		@PathVariable String type,
-    		@RequestBody WareHouseAddDeliveryObjFormBean wareHouseAddDeliveryObjFormBean,
-    		Model model) {
-		
-		if("bom".equals(type)) {
-			wareHouseDeliveryBOMService.addOrUpdate(wareHouseAddDeliveryObjFormBean.getWareHouseBOMIds(),
-					wareHouseAddDeliveryObjFormBean.getWareHouseDeliveryBOM());
-			return JSONResponse.success();
-		} else if("pn".equals(type)) {
-			wareHouseDeliveryPnService.addOrUpdate(wareHouseAddDeliveryObjFormBean.getWareHousePnIds(),
-					wareHouseAddDeliveryObjFormBean.getWareHouseDeliveryPn());
-			return JSONResponse.success();
-		} else if("machinepart".equals(type)) {
-			wareHouseDeliveryMachinePartService.addOrUpdate(wareHouseAddDeliveryObjFormBean.getWareHouseMachinePartIds(),
-					wareHouseAddDeliveryObjFormBean.getWareHouseDeliveryMachinePart());
-			return JSONResponse.success();
-		} else {
-			throw new PdsysException(PdsysExceptionCode.ERROR_REQUEST_PARAM);
-		}
-    }
 }

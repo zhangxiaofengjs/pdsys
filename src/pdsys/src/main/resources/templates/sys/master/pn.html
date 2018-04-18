@@ -11,7 +11,10 @@
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/sys/master/main/pn}" method="post">
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.pn}" th:action="@{/sys/master/main/pn}" method="post">
+	 			<div class="form-group">
+				   <input type="text" class="form-control" id="pn" name="pn" th:field="*{pn}" placeholder="品目">
+	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='addPn'>添加品番</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='editPn'>修改品番</button>
@@ -53,14 +56,14 @@
 					<span th:each="bomRel,iterStat: ${bomRels}"
 						  th:with="bom=${bomRel.bom},
 						  		   index=1">
-						<span th:if="${bom.type} == 0" th:text="'●' + ${bomRel.bom.name} + ' 品番单位消耗:' + ${bomRel.useNum} + ${bom.unit.name}"></span>
+						<span th:if="${bom.type} == 0" th:text="'●' + ${bomRel.bom.pn} + ' ' + ${bomRel.bom.name} + ' 品番单位消耗:' + ${bomRel.useNum} + ${bom.unit.name}"></span>
 						<br th:if="${bom.type} == 0"/>
 					</span>
 				</td>
 				<td>
 					<span th:each="bomRel,iterStat: ${bomRels}"
 						  th:with="bom=${bomRel.bom}">
-						<span th:if="${bom.type} == 1" th:text="'●' + ${bomRel.bom.name} + ' 品番单位消耗:' + ${bomRel.useNum} + ${bom.unit.name}"></span>
+						<span th:if="${bom.type} == 1" th:text="'●' + ${bomRel.bom.pn} + ' ' + ${bomRel.bom.name} + ' 品番单位消耗:' + ${bomRel.useNum} + ${bom.unit.name}"></span>
 						<br th:if="${bom.type} == 1"/>
 					</span>
 				</td>

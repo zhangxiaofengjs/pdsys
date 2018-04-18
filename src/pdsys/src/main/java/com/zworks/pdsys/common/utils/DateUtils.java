@@ -1,6 +1,7 @@
 package com.zworks.pdsys.common.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -28,5 +29,16 @@ public class DateUtils {
             return df.format(date);
         }
         return null;
+    }
+    
+    public static Date addDay(Date date, int days) {
+    	if(date == null) {
+    		return null;
+    	}
+    	Calendar ca = Calendar.getInstance();
+    	ca.setTime(date);
+    	ca.add(Calendar.DATE, days);
+    	
+    	return ca.getTime();
     }
 }

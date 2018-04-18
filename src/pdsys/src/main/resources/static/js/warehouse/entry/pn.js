@@ -1,8 +1,4 @@
 $(document).ready(function(){
-	$("button[name='refresh']").click(function(){
-		PdSys.refresh();
-	});
-	
 	//新建入库单
 	$("button[name='addEntry']").click(function(){
 		var self = $(this);
@@ -35,7 +31,7 @@ $(document).ready(function(){
 	        success : function(data) {
 	        	if(data.success)
 	        	{
-	        		$(location).attr('href', PdSys.url('/warehouse/entry/main/pn/' + data.id));
+	        		$(location).attr('href', PdSys.url('/warehouse/entry/main/pn?id=' + data.id));
 	        	}
 	        	else
 	        	{
@@ -185,6 +181,15 @@ $(document).ready(function(){
 			"caption":"添加到入库单",
 			"fields":fields,
 			"url":"/warehouse/entry/update/pn",
+			"valid":function() {
+				if(dlg.fieldVal("semiProducedNum") == 0 &&
+				   dlg.fieldVal("producedNum") == 0	) {
+					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
+					dlg.setError("producedNum", "半成品/成品数量都未输入");
+					return false;
+				}
+				return true;
+			},
 			"success": function(data) {
 				dlg.hide();
 				var msgDlg = new CommonDlg();

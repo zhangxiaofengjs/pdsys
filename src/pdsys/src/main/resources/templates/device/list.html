@@ -10,7 +10,10 @@
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/device/list}" method="post">
-	 			<button type="submit" class="btn btn-sm btn-info">刷新</button>
+	 			<div class="form-group">
+				   <input type="text" class="form-control" name="no" id="no" th:value="${device != null ? device.no :_}" placeholder="编号">
+	 			</div>
+	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='addDevice'>添加新设备</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='changeState'>更新状态</button>
 			</form>
@@ -50,8 +53,8 @@
 						</td>
 						<td th:text="${place}?${place.name}:_"></td>
 						<td th:text="${machine}?${machine.maitenacePeriod}:_"></td>
-						<td th:text="${device}?${#dates.format(device.maitenacedDate, 'yyyy-MM-dd')}:_"></td>
-						<td th:text="${machine}?${machine.maitenacePeriod}:_"></td>
+						<td th:text="${#dates.format(device.maitenacedDate, 'yyyy-MM-dd')}"></td>
+						<td th:text="${#dates.format(device.nextMaitenaceDate, 'yyyy-MM-dd')}"></td>
 						<td th:switch="${device.state}">
 		    				<span class="label label-success" th:case="0">运行中</span>
 				  			<span class="label label-warning" th:case="1">维护中</span>

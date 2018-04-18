@@ -19,7 +19,7 @@
 				and c_no like concat('%',#{no},'%') 
 			</if>
 		</where>
-		order by c_no desc
+		order by c_order_date desc
 	</select>
 	
 	<select id="queryObject" resultMap="orderResultMap">
