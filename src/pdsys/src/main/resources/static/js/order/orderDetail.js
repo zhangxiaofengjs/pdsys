@@ -67,6 +67,31 @@ $(function () {
 							orderPn.whpn ? orderPn.whpn.producedNum : 0,
 							orderPn.rejectRatio);
 					}
+					
+					//bom信息没有的情况下
+					if(bomNum==0)
+					{
+						bodyHtml += "<tr><td><input type='checkbox' name='select' rowid='{0}'/></td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>".format(
+								orderPn.id, 
+								orderPn.pn.pn,
+								orderPn.pn.name,
+								orderPn.pn.pnCls.name,
+								orderPn.num,
+								orderPn.pn.unit.name);
+						
+						//原材
+						bodyHtml += "<td></td><td></td><td></td>";
+						//包材
+						bodyHtml += "<td></td><td></td><td></td>";
+						
+						//生产状态
+						bodyHtml += "<td>{0}</td><td>{1}</td><td>{2}</td></tr>".format(
+							orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+							orderPn.whpn ? orderPn.whpn.producedNum : 0,
+							orderPn.rejectRatio);
+					}
+					
+					
 				});
 
 				var body = $('#bomInfo');
