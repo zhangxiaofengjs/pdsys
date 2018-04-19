@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.exception.PdsysException;
@@ -30,10 +31,10 @@ public class WareHouseEntryController {
 	@Autowired
 	WareHouseEntryService wareHouseEntryService;
 	
-	@RequestMapping(value= {"/main", "/main/{type}", "/main/{type}/{id}"})
+	@RequestMapping(value= {"/main", "/main/{type}"})
     public String entryMain(
     		@PathVariable(name="type" ,required=false)String type,
-    		@PathVariable(name="id", required=false)Integer id,
+    		@RequestParam(name="id", required=false)Integer id,
     		Model model) {
 
 		if(type == null) {
@@ -73,7 +74,11 @@ public class WareHouseEntryController {
 	@RequestMapping(value="/update/pn")
 	@ResponseBody
     public JSONResponse updateEntry(@RequestBody WareHouseEntryPnModel entryPn, Model model) {
-		wareHouseEntryPnService.update(entryPn, true);
+		if(wareHouseEntryPnService.exist(entryPn)) {
+			wareHouseEntryPnService.update(entryPn);
+		} else {
+			wareHouseEntryPnService.add(entryPn);
+		}
 		return JSONResponse.success();
     }
 	

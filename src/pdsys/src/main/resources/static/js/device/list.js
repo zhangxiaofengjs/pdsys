@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	$("#changeState").click(function(){
 		var self = $(this);
-		var selIds = getSelectedRowId({"checkOne":true});
+		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
 		if(selIds.length != 1) {
 			return;
 		}
@@ -45,7 +45,8 @@ $(document).ready(function(){
 			"name":"no",
 			"label":"编号",
 			"type":"text",
-			"value":''
+			"value":'',
+			"required":"required"
 		},
 		{
 			"name":"machine.id",
@@ -78,6 +79,34 @@ $(document).ready(function(){
 					});
 				});
 			},
+			"groupButtons":[{
+				"name":"addPlace",
+				"text":"+",
+				"click": function(dlg) {
+					var dlgPlace = new CommonDlg();
+					dlgPlace.showFormDlg({
+						"target":"place_dlg_div",
+						"caption":"添加地点",
+						"fields":[
+							{
+								"name":"name",
+								"label":"地点",
+								"type":"text",
+								"value":"",
+								"required":"required",
+							}
+						],
+						"url":"/place/add",
+						"success" : function(data) {
+							dlgPlace.hide();
+							dlg.rebuildFieldWithValue("place.id", data.place.id);
+						},
+						"error": function(data) {
+							PdSys.alert(data.msg);
+						}
+					});
+				}
+			}],
 		},
 		{
 			"name":"user.id",

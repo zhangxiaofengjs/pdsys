@@ -18,4 +18,8 @@ public interface MachineMapper {
 	void add(MachineModel machine);
 
 	void update(MachineModel machine);
+
+	void updateMachinePart(MachineModel machine);
+
+	void addMachinePart(MachineModel machine);
 }

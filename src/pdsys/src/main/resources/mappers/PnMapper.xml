@@ -60,9 +60,16 @@
 			<if test="id > 0">
 				and pn.c_id = #{id} 
 		    </if>
-			<if test="pn != null">
-				and pn.c_pn = #{pn} 
-		    </if>
+		    <if test="pn != null">
+			    <choose>
+	                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+	                   	and pn.c_pn like '%${pn}%'
+	                </when>
+	                <otherwise>
+						and pn.c_pn = #{pn} 
+	                </otherwise>
+	            </choose>
+	        </if>
 		</where>
 	    order by pn.c_pn asc
 	</select>

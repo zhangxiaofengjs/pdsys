@@ -85,6 +85,23 @@
       	</selectKey>
 	</insert>
 	
+	<insert id="addMachinePart" parameterType="machineModel" keyProperty="id">
+		insert into machine_part_relation_tbl
+		(
+			c_machine_id,
+			c_machine_part_id,
+			c_maitenace_part_num
+		)
+		values
+		<foreach collection ="machineMachinePartRels" item="machineMachinePartRel" index= "index" separator =",">
+        (
+			#{id},
+			#{machineMachinePartRel.machinePart.id},
+			#{machineMachinePartRel.maitenacePartNum}
+		)
+        </foreach >
+	</insert>
+	
 	<update id="update" parameterType="machineModel">
     	update machine_tbl
 		set	c_pn = #{pn},
@@ -95,5 +112,17 @@
     	<where>
 			c_id = #{id}
 		</where>
+    </update>
+    
+    <update id="updateMachinePart" parameterType="machineModel">
+   		<foreach collection ="machineMachinePartRels" item="machineMachinePartRel" index= "index" separator =";">
+	    	update machine_part_relation_tbl
+			<set>
+				c_maitenace_part_num = #{machineMachinePartRel.maitenacePartNum}
+			</set>
+	    	<where>
+				c_machine_id = #{id} and c_machine_part_id = #{machineMachinePartRel.machinePart.id}
+			</where>
+		</foreach>
     </update>
 </mapper>

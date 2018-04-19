@@ -93,8 +93,8 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 			strFormHtml += '<div class="input-group">';
 		}
 		
-		if(f.ajax) {
-			//如果数据是ajax取得，先追加一个等待图标'
+		if(f.ajax || f.depend) {
+			//如果数据是ajax/depend（依赖后面重新做成）取得，先追加一个等待图标'
 			strFormHtml += '<div id="{0}" class="form-control" style="box-shadow:0 1px 1px rgba(0, 0, 0, 0);border-width:0px;padding-left:0px;"><img src="{1}" height="24px" /><span class="text-muted">加载中...</span><span name={2} class="text-danger"></span></div>'.
 				format(f.name, PdSys.url("/icons/loading.gif"), f.name + "_err");
 		} else {
@@ -308,8 +308,18 @@ CommonDlg.prototype.fieldElem = function(type, name) {
 	return $(strId);
 };
 
-CommonDlg.prototype.findFieldElem = function(field) {
+CommonDlg.prototype.findFieldElem = function(fieldOrName) {
+	var field = fieldOrName;
+	if(typeof(field)=="string"){
+		field = this.fieldByName(field);
+	}
 	return this.fieldElem(field.type, field.name);
+};
+
+CommonDlg.prototype.fieldVal = function(fieldOrName) {
+	var fieldElm = this.findFieldElem(fieldOrName);
+	
+	return fieldElm.val();
 };
 
 CommonDlg.prototype.fieldBlur = function(fieldName) {
@@ -324,7 +334,7 @@ CommonDlg.prototype.doFieldValid = function(field) {
 	var fieldElm = self.findFieldElem(field);
 	var val = fieldElm.val();
 	
-	if(field.requried != undefined && !val) {
+	if(field.required != undefined && !val) {
 		self.setError(field, "这个值不能为空");
 		return false;
 	}
@@ -341,9 +351,13 @@ CommonDlg.prototype.doFieldValid = function(field) {
 	return true;
 } 
 	
-CommonDlg.prototype.setError = function(field, msg) {
+CommonDlg.prototype.setError = function(fieldOrName, msg) {
 	var self = this;
 
+	var field = fieldOrName;
+	if(typeof(fieldOrName) == "string") {
+		field = self.fieldByName(fieldOrName);
+	}
 	var strId = "#{0} span[name='{1}']".format(
 			this.id(),
 			(field.name + "_err").safeJqueryId());
@@ -360,6 +374,11 @@ CommonDlg.prototype.doValid = function() {
 		}
 	});
 	
+	if(isOK) {
+		if(self.option.hasOwnProperty("valid")) {
+			isOK = (self.option.valid)();
+		}
+	}
 	return isOK;
 };
 

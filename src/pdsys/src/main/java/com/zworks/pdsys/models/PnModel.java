@@ -18,6 +18,7 @@ public class PnModel extends BaseModel{
 	private List<BOMModel> boms;
 	private List<PnClsModel> pnClss;//TODO 考虑将成员去除：pnCls，boms，同时bomRel似乎不合理
 	private List<PnBOMRelModel> bomRels;
+	private List<PnMachineModel> machineRels;
 
 	public PnModel() {
 	}
@@ -84,5 +85,13 @@ public class PnModel extends BaseModel{
 
 	public void setBomRels(List<PnBOMRelModel> bomRels) {
 		this.bomRels = bomRels;
+	}
+
+	public List<PnMachineModel> getMachineRels() {
+		return machineRels;
+	}
+
+	public void setMachineRels(List<PnMachineModel> machineRels) {
+		this.machineRels = machineRels;
 	}
 }

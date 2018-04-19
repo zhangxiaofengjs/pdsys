@@ -248,7 +248,7 @@ $(document).ready(function(){
 					data.forEach(function(mp, idx) {
 						thisField.options.push({
 							"value": mp.id,
-							"caption":mp.name,
+							"caption":mp.pn + " " + mp.name,
 							"data":mp.unit.name
 						});
 					});
@@ -264,6 +264,14 @@ $(document).ready(function(){
 					
 					fieldElm.trigger("change");
 				},
+				"groupButtons": createMachinePartGroupButtons({
+					"target":"mp_dlg_div",
+					"success": function(action, data) {
+						if(action == "add") {
+							dlg.rebuildFieldWithValue("machineMachinePartRels[0].machinePart.id", data.machinepart.id);
+						}
+					}
+				}),
 			},
 			{
 				"name":"machineMachinePartRels[0].maitenacePartNum",

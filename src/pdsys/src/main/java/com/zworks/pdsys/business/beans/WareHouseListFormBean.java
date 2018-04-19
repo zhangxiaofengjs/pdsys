@@ -14,8 +14,6 @@ public class WareHouseListFormBean {
 	private WareHouseMachinePartModel wareHouseMachinePart;
 	
 	public WareHouseListFormBean() {
-		wareHouseBOM = new WareHouseBOMModel();
-		wareHousePn = new WareHousePnModel();
 	}
 	
 	public WareHouseBOMModel getWareHouseBOM() {

@@ -38,7 +38,7 @@ public class MachinePartController {
 			return JSONResponse.error("该品番零件已经存在");
 		}
 		machinePartService.add(machinePart);
-		return JSONResponse.success();
+		return JSONResponse.success().put("machinepart", machinePart);
 	}
 	
 	@RequestMapping(value="/update")

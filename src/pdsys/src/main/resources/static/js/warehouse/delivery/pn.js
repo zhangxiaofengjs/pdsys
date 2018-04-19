@@ -1,8 +1,4 @@
 $(document).ready(function(){
-	$("button[name='refresh']").click(function(){
-		PdSys.refresh();
-	});
-	
 	//新建出库单
 	$("button[name='addDelivery']").click(function(){
 		var self = $(this);
@@ -35,7 +31,7 @@ $(document).ready(function(){
 	        success : function(data) {
 	        	if(data.success)
 	        	{
-	        		$(location).attr('href', PdSys.url('/warehouse/delivery/main/pn/' + data.id));
+	        		$(location).attr('href', PdSys.url('/warehouse/delivery/main/pn?id=' + data.id));
 	        	}
 	        	else
 	        	{
@@ -70,6 +66,7 @@ $(document).ready(function(){
 			"label":"订单",
 			"type":"select",
 			"options":[],
+			"min":1,
 			"ajax":true,
 			"url":"/order/list/json",
 			"convertAjaxData" : function(thisField, data) {
@@ -102,9 +99,7 @@ $(document).ready(function(){
 					
 					var orderPnField = fields[2];
 					orderPnField.ajaxData = {
-						"order":{
 							"id": val
-						}
 					};
 					
 					dlg.buildAjaxField(orderPnField);
@@ -116,13 +111,12 @@ $(document).ready(function(){
 			"label":"品目",
 			"type":"select",
 			"options":[],
+			"min":1,
 			"ajax":true,
 			"depend":true,//不立即执行，等订单项目的刷新
-			"url":"/order/pn/list/json",
+			"url":"/orderPn/list/json",
 			"ajaxData":{
-				"order":{
-					"id": -1
-				}
+				"id": -1
 			},
 			"convertAjaxData" : function(thisField, data) {
 				//将返回的值转化为Field规格数据,以供重新渲染
@@ -132,7 +126,7 @@ $(document).ready(function(){
 					"value": -1,
 					"caption":"请选择品目...",
 				});
-				data.forEach(function(orderPn, idx) {
+				data.orderPns.forEach(function(orderPn, idx) {
 					thisField.options.push({
 						"value": orderPn.id,
 						"caption": "{0} {1} / {2}".format(orderPn.pn.pn, orderPn.pn.name, orderPn.pn.pnCls.name)
@@ -158,6 +152,15 @@ $(document).ready(function(){
 			"target":"dlg_div",
 			"caption":"添加到出库单",
 			"fields":fields,
+			"valid":function() {
+				if(dlg.fieldVal("semiProducedNum") == 0 &&
+				   dlg.fieldVal("producedNum") == 0	) {
+					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
+					dlg.setError("producedNum", "半成品/成品数量都未输入");
+					return false;
+				}
+				return true;
+			},
 			"url":"/warehouse/delivery/add/pn",
 			"success": function(data) {
 				dlg.hide();

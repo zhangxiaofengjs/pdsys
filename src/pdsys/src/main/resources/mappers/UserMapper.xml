@@ -2,23 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.UserMapper">
+	<resultMap id="userRoleResultMap" type="userRoleModel" >  
+        <result column="c_role" property="role"/>  
+    </resultMap>
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="c_id" property="id"/>  
-        <id column="c_no" property="no"/>  
-        <id column="c_name" property="name"/>  
-        <id column="c_phone" property="phone"/>  
-        <id column="c_address" property="address"/>  
+        <result column="c_no" property="no"/>  
+        <result column="c_name" property="name"/>  
+        <result column="c_phone" property="phone"/>  
+        <result column="c_address" property="address"/>
+        <result column="c_password" property="password"/>
+        <collection property="roles" ofType="userRoleModel" resultMap="userRoleResultMap" />  
     </resultMap>
     
 	<select id="queryList" resultMap="userResultMap">
-		select * from user_tbl as u
+		select c_id,
+			   c_no,
+			   c_name,
+			   c_phone,
+			   c_address,
+			   c_password,
+			   ur.c_role
+		from user_tbl as u
+		left join user_role_tbl ur on c_id = ur.c_user_id 
 		<where>
 			<if test="id > 0">
 				and u.c_id = #{id}
 			</if>
 			<if test="no != null">
-				and u.c_no = #{no}
-			</if>
+				<choose>
+	                <when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
+	                   	and u.c_no like '%${no}%'
+	                </when>
+	                <otherwise>
+	                	
+	                    and u.c_no=#{no}
+	                </otherwise>
+	            </choose>
+	        </if>
 			<if test="name != null">
 				and u.c_name = #{name}
 			</if>

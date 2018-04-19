@@ -7,12 +7,12 @@ $(function () {
 			"id":$('#order_id').val()
 		};
 		PdSys.ajax({
-			"url":"/orderPn/list",
+			"url":"/orderPn/list/json",
 			"data":order,
 			"success": function(data) {
 				var bodyHtml = "";
 				
-				data.orderDetail.forEach(function(orderPn, idx) {
+				data.orderPns.forEach(function(orderPn, idx) {
 					var bomNum = orderPn.pn.boms.length;
 					var yuanArr = [];
 					var baoArr = [];

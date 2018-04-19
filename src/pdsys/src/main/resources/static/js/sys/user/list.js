@@ -7,11 +7,13 @@ $(document).ready(function(){
 				"name":"no",
 				"label":"工号",
 				"type":"text",
+				"required":"required",
 			},
 			{
 				"name":"name",
 				"label":"姓名",
 				"type":"text",
+				"required":"required",
 			},
 			{
 				"name":"phone",
@@ -40,14 +42,14 @@ $(document).ready(function(){
 				});
 			},
 			"error": function(data) {
-				PdSys.sysError();
+				PdSys.alert(data.msg);
 			}
 		});
 	});
 
 	$("#editUser").click(function(){
 		var self = $(this);
-		var selIds = getSelectedRowId({"checkOne":true});
+		var selIds = getSelectedRowId({"checkOne":true, "showMsg":true});
 		if(selIds.length != 1) {
 			return;
 		}
@@ -62,8 +64,10 @@ $(document).ready(function(){
 			{
 				"name":"no",
 				"label":"工号",
-				"type":"text",
+				"type":"label",
 				"value": "",
+				"required":"required",
+				"readonly":"readonly",
 				"depend": true
 			},
 			{
@@ -71,6 +75,7 @@ $(document).ready(function(){
 				"label":"姓名",
 				"type":"text",
 				"value":"",
+				"required":"required",
 				"depend": true
 			},
 			{

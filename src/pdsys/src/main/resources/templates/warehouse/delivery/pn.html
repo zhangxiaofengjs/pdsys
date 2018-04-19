@@ -10,14 +10,14 @@
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/delivery/main/pn}" method="post">
 	 			<div class="form-group">
-				   <input type="text" class="form-control" placeholder="出库单号">
+				   <input type="text" class="form-control" name="id" id="id" th:value="${delivery.id != 0 ? delivery.id:_}" placeholder="出库单号">
 	 			</div>
-	 			<button type="button" class="btn btn-sm btn-info" name="refresh">查询</button>
+	 			<button type="submit" class="btn btn-sm btn-info" name="refresh">查询</button>
 	 			<button type="button" class="btn btn-sm btn-info" name="addDelivery">新建出库单</button>
-	 			<div style="display:inline-block;" th:if="${delivery.state == 0}">
+	 			<div style="display:inline-block;" th:if="${delivery.id >0 } and ${delivery.state == 0}">
 		 			<button type="button" class="btn btn-sm btn-info" name="addDeliveryPn">增加出库项目</button>
 		 			<button type="button" class="btn btn-sm btn-info" name="deleteDeliveryPn">删除出库项目</button>
-		 			<button type="button" class="btn btn-sm btn-info" name="doDelivery">出库</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="doDelivery" th:if="${!#lists.isEmpty(delivery.wareHouseDeliveryPns)}">出库</button>
 	 			</div>
 			</form>
 		</div>
@@ -61,23 +61,23 @@
 		</thead>
 		<tbody>
 			<tr th:each="wareHouseDeliveryPn : ${delivery.wareHouseDeliveryPns}"
-				th:with="orderPn=(${wareHouseDeliveryPn.orderPn}?${wareHouseDeliveryPn.orderPn}:_),
-						 pn=(${orderPn.pn}?${orderPn.pn}:_),
-						 unit=(${pn.unit}?${pn.unit}:_),
-						 pnCls=(${pn.pnCls}?${pn.pnCls}:_),
- 						 order=(${orderPn.order}?${orderPn.order}:_),
+				th:with="orderPn=(${wareHouseDeliveryPn.orderPn}),
+						 pn=(${orderPn !=null}?${orderPn.pn}:null),
+						 unit=(${pn != null}?${pn.unit}:null),
+						 pnCls=(${pn != null}?${pn.pnCls}:null),
+ 						 order=(${orderPn != null}?${orderPn.order}:null),
  						 wareHousePn=(${wareHouseDeliveryPn.wareHousePn}),
- 						 wareHousesSemiNum=(${wareHousePn}?${wareHousePn.semiProducedNum}:0),
- 						 wareHouseNum=(${wareHousePn}?${wareHousePn.producedNum}:0)"
+ 						 wareHousesSemiNum=(${wareHousePn != null}?${wareHousePn.semiProducedNum}:0),
+ 						 wareHouseNum=(${wareHousePn != null}?${wareHousePn.producedNum}:0)"
 						 th:rowid="${wareHouseDeliveryPn.id}">
 				<td>
 					<input type="checkbox" name="select" th:rowid="${wareHouseDeliveryPn.id}">
 				</td>
-				<td th:text="${order}?${order.no}:_"></td>
-				<td th:text="${pn}?${pn.pn}:_"></td>
-				<td th:text="${pn}?${pn.name}:_"></td>
-				<td th:text="${pnCls}?${pnCls.name}:_"></td>
-				<td th:text="${unit}?${unit.name}:_"></td>
+				<td th:text="${order != null}?${order.no}:_"></td>
+				<td th:text="${pn!= null}?${pn.pn}:_"></td>
+				<td th:text="${pn!= null}?${pn.name}:_"></td>
+				<td th:text="${pnCls!= null}?${pnCls.name}:_"></td>
+				<td th:text="${unit!= null}?${unit.name}:_"></td>
 				<td th:text="${wareHousesSemiNum}"></td>
 				<td th:text="${wareHouseNum}"></td>
 				<td th:text="${wareHouseDeliveryPn.semiProducedNum}" 

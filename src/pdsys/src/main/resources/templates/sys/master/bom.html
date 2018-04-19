@@ -12,8 +12,11 @@
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/sys/master/main/bom}" method="post">
-	 			<button type="submit" class="btn btn-sm btn-info">刷新</button>
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.bom}" th:action="@{/sys/master/main/bom}" method="post">
+	 			<div class="form-group">
+				   <input type="text" class="form-control" id="pn" name="pn" th:field="*{pn}" placeholder="品目">
+	 			</div>
+	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='addBOM'>添加</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='editBOM'>修改</button>
 			</form>

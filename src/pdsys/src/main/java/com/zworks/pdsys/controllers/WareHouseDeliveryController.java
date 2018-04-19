@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.exception.PdsysException;
@@ -30,10 +31,10 @@ public class WareHouseDeliveryController {
 	@Autowired
 	WareHouseDeliveryService wareHouseDeliveryService;
 	
-	@RequestMapping(value= {"/main", "/main/{type}", "/main/{type}/{id}"})
+	@RequestMapping(value= {"/main", "/main/{type}"})
     public String main(
     		@PathVariable(name="type" ,required=false)String type,
-    		@PathVariable(name="id", required=false)Integer id,
+    		@RequestParam(name="id", required=false)Integer id,
     		Model model) {
 
 		if(type == null) {
@@ -73,8 +74,12 @@ public class WareHouseDeliveryController {
 	@RequestMapping(value="/add/pn")
 	@ResponseBody
     public JSONResponse addDeliveryPn(@RequestBody WareHouseDeliveryPnModel deliveryPn, Model model) {
-		wareHouseDeliveryPnService.add(deliveryPn);
-		//@todo 同种的东西需要更新 entry那边也是
+		if(wareHouseDeliveryPnService.exists(deliveryPn)) {
+			//已经存在，做更新
+			wareHouseDeliveryPnService.update(deliveryPn);
+		} else {
+			wareHouseDeliveryPnService.add(deliveryPn);
+		}
 		return JSONResponse.success();
     }
 	

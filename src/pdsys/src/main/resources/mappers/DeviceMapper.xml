@@ -63,7 +63,11 @@
 			<if test="id > 0">
 				and d.c_id=#{id}
 			</if>
+			<if test="no != null">
+				and d.c_no like '%${no}%'
+			</if>
 		</where>
+		order by p.c_name asc, d.c_no asc
 	</select>
 	
 	<insert id="add" parameterType="deviceModel">

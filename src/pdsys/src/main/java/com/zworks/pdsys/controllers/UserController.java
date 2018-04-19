@@ -42,7 +42,11 @@ public class UserController {
 	
 	@RequestMapping("/list")
 	public String list(UserModel user, Model model) {
+		//启用模糊查询
+		user.getFilterCond().put("fuzzyNoSearch", true);
+		
 		List<UserModel> list = userService.queryList(user);
+		model.addAttribute("user", user);
 		model.addAttribute("list", list);
 		return "/sys/user/list";
 	}

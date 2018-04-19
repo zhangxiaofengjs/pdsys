@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.apache.ibatis.type.Alias;
 
+import com.zworks.pdsys.common.utils.DateUtils;
+
 /**
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/04/07
@@ -45,6 +47,14 @@ public class DeviceModel extends BaseModel {
 	}
 	public void setMaitenacedDate(Date maitenacedDate) {
 		this.maitenacedDate = maitenacedDate;
+	}
+	
+	//TODO 这个方法很不好，破坏了Model的单纯性！但是html那边不知道怎么对应天数的相加，先引以为戒。
+	public Date getNextMaitenaceDate() {
+		if(machine == null) {
+			return null;
+		}
+		return DateUtils.addDay(this.maitenacedDate, (int)machine.getMaitenacePeriod());
 	}
 	public int getState() {
 		return state;
