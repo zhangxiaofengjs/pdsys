@@ -119,10 +119,25 @@ public class OrderPnController {
 		OrderModel order = orderService.queryObject(id);
 		if( order!=null )
 		{
+			boolean isExist = true;
 			List<BOMDetailModel> list = orderPnService.queryBomList(order);
-			model.addAttribute("boms", list);
+			for(int i =0;i<list.size();i++)
+			{
+				BOMDetailModel bom = list.get(i);
+				if( bom ==null)
+				{
+					isExist = false;
+					break;
+				}
+			}
+			
+			if( isExist )
+				model.addAttribute("boms", list);
+			
 			model.addAttribute("order", order);
 		}
+		
+
 		
         return "order/bomDetail";
     }
