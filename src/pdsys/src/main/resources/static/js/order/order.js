@@ -7,7 +7,6 @@ $(function () {
 			"caption":"新增订单",
 			"fields":[
 				{
-					
 					"name":"no",
 					"type":"text",
 					"label":"订单编号"
@@ -65,6 +64,7 @@ $(function () {
 				}],
 			"url":"/order/save",
 			"success": function(data) {
+				dlg.hide();
 				var msgDlg = new CommonDlg();
 				msgDlg.showMsgDlg({
 					"target":"msg_div",
@@ -109,6 +109,7 @@ $(function () {
 							}});
 					},
 					"error": function(data) {
+						dlg.hide();
 						var msgDlg = new CommonDlg();
 						msgDlg.showMsgDlg({
 							"target":"msg_div",
