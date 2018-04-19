@@ -32,11 +32,11 @@ public class OrderPnController {
 	/**
 	 * 订单详细
 	 */
-	@RequestMapping("/list")
+	@RequestMapping("/list/json")
 	@ResponseBody
-	public JSONResponse showOrderDetail(@RequestBody OrderModel order) {
+	public JSONResponse listOrderPnJson(@RequestBody OrderModel order) {
 		List<OrderPnModel> list = orderPnService.queryOrderPnList(order);
-		return JSONResponse.success().put("orderDetail", list);
+		return JSONResponse.success().put("orderPns", list);
     }
 	
 	/**

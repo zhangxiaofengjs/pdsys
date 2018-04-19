@@ -99,9 +99,7 @@ $(document).ready(function(){
 					
 					var orderPnField = fields[2];
 					orderPnField.ajaxData = {
-						"order":{
 							"id": val
-						}
 					};
 					
 					dlg.buildAjaxField(orderPnField);
@@ -116,11 +114,9 @@ $(document).ready(function(){
 			"min":1,
 			"ajax":true,
 			"depend":true,//不立即执行，等订单项目的刷新
-			"url":"/order/pn/list/json",
+			"url":"/orderPn/list/json",
 			"ajaxData":{
-				"order":{
-					"id": -1
-				}
+				"id": -1
 			},
 			"convertAjaxData" : function(thisField, data) {
 				//将返回的值转化为Field规格数据,以供重新渲染
@@ -130,7 +126,7 @@ $(document).ready(function(){
 					"value": -1,
 					"caption":"请选择品目...",
 				});
-				data.forEach(function(orderPn, idx) {
+				data.orderPns.forEach(function(orderPn, idx) {
 					thisField.options.push({
 						"value": orderPn.id,
 						"caption": "{0} {1} / {2}".format(orderPn.pn.pn, orderPn.pn.name, orderPn.pn.pnCls.name)
