@@ -1,5 +1,7 @@
 package com.zworks.pdsys.models;
 
+import java.util.List;
+
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -13,6 +15,8 @@ public class UserModel extends BaseModel {
 	private String name;
 	private String phone;
 	private String address;
+	private String password;
+	private List<UserRoleModel> roles;
 
 	public String getName() {
 		return name;
@@ -44,5 +48,21 @@ public class UserModel extends BaseModel {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public List<UserRoleModel> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<UserRoleModel> roles) {
+		this.roles = roles;
 	}
 }

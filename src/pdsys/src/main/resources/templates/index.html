@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 	<meta th:include="common/header::header">
 	<link rel="stylesheet" href="css/font-awesome.min.css">
@@ -10,10 +11,15 @@
 	<script src="js/index.js"></script>
 	<div class="page-header" id='headerdiv' style="color:#fff;background-color:#3c8dbc;margin:0px;padding-bottom:0px;'">
 		<div class="pull-right" style="height:100px;">
-			<span style="font-size:12pt;vertical-align:bottom;margin-bottom:5px;">登录：用户A &nbsp;&nbsp;</span>
+			<span style="color:#fff;font-size:12pt;vertical-align:bottom;margin-bottom:5px;">当前登录：</span>
+			<span style="color:#fff;font-size:12pt;vertical-align:bottom;margin-bottom:5px;" sec:authentication="name"></span>
+			<a th:href="@{/logout}">
+				<span style="color:#fff;font-size:12pt;vertical-align:bottom;margin-bottom:5px;">
+				退出&nbsp;&nbsp;</span>
+			</a>
 	  	</div>
 	  	<h1 style="margin-top:0px;margin-bottom:0px;">
-	  	  <a href='#'><img alt="" height=100px src="icons/logo.png"></a>
+	  	  <img alt="" height=100px src="icons/logo.png">
 	  	  <span style="font-size:12pt;vertical-align:bottom;margin-bottom:5px;">r2018.05.01</span>
 		  <!--<marquee direction=left behavior=scroll scrollamount=3 scrolldelay=10 width=50% onmouseover=this.stop() onmouseout=this.start()>
 		  	 <span style="font-size:12pt;color:white">有一条滚动新闻消息....</span> 
@@ -88,24 +94,24 @@
             	</ul>  
        		</li>
        		<li>  
-                 <a href="#msgmgr" class="nav-header collapsed" data-toggle="collapse">
-                 	 <i class="glyphicon glyphicon-bell"></i>
-				     <span style="margin-left:5px;">
-				     	<b>通知消息</b>
-				     	<span style="margin-left:5px;" class="badge label-danger">5</span>
-				     </span> 
-                     <span class="pull-right glyphicon glyphicon-chevron-down"></span>  
-                 </a>  
-                 <ul id="msgmgr" class="nav nav-list collapse secondmenu" style="height: 0px;">  
+                <a href="#msgmgr" class="nav-header collapsed" data-toggle="collapse">
+                	 <i class="glyphicon glyphicon-bell"></i>
+			     <span style="margin-left:5px;">
+			     	<b>通知消息</b>
+			     	<span style="margin-left:5px;" class="badge label-danger">5</span>
+			     </span> 
+                    <span class="pull-right glyphicon glyphicon-chevron-down"></span>  
+                </a>  
+	            <ul id="msgmgr" class="nav nav-list collapse secondmenu" style="height: 0px;">  
 	                <li>
 	                	<a href="#" th:refURL="'notice/list'" th:displayText="'通知管理/通知一览'">
 	                		<i style="padding-left:20px;" class="glyphicon glyphicon-star"></i>
 	                		<span style="margin-left:5px;"><b>通知管理</b></span>
 	                	</a>
 	                </li>  
-            	</ul>  
+	           	</ul>  
        		</li>
-       		<li>  
+       		<li sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN)}">
                  <a href="#sysmgr" class="nav-header collapsed" data-toggle="collapse">
                  	 <i class="glyphicon glyphicon-cog"></i>
 				     <span style="margin-left:5px;">

@@ -36,4 +36,12 @@ public class UserService {
 		}
 		return null;
 	}
+	public UserModel queryOne(UserModel user) {
+		List<UserModel> us = queryList(user);
+		
+		if(us.size() ==1) {
+			return us.get(0);
+		}
+		return null;
+	}
 }

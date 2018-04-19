@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/header::header">
+</head>
+<body>
+	<div class="container">
+		<div class="row" style="margin-top:20px">
+			<div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+			    <h2>请登录</h2>
+			    <div th:if="${param.error}">
+                    <div class="alert alert-danger">
+                       	 不合法的用户名或者密码
+                    </div>
+                </div>
+                <div th:if="${param.logout}">
+                   <div class="alert alert-info">
+                        	已退出登录
+                   </div>
+                </div>
+			    <form role="form" name="form" th:action="@{/login}" method="post">
+			        <div class="form-group">
+			            <label for="username">账号</label>
+			            <input type="text" class="form-control" name="no" value="" placeholder="工号"/>
+			        </div>
+			        <div class="form-group">
+			            <label for="password">密码</label>
+			            <input type="password" class="form-control" name="password" placeholder="密码"/>
+			        </div>
+			        <input type="submit" id="login" value="Login" class="btn btn-primary"/>
+			    </form>
+			</div>
+		</div>
+	</div>
+	<div th:replace="common/footer::copyright"></div>
+</body>
+</html>
