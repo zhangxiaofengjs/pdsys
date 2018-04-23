@@ -4,26 +4,36 @@
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseEntryMapper">
 	<resultMap id="wareHousePnResultMap" type="wareHousePnModel" >  
         <id column="wh_pn_id" property="id" />
-        <id column="wh_pn_produced_num" property="producedNum" />  
-        <id column="wh_pn_semi_produced_num" property="semiProducedNum" />  
+        <result column="wh_pn_produced_num" property="producedNum" />  
+        <result column="wh_pn_semi_produced_num" property="semiProducedNum" />  
+    </resultMap>
+	<resultMap id="wareHouseBOMResultMap" type="wareHouseBOMModel" >  
+        <id column="wh_bom_id" property="id" />
+        <result column="wh_bom_num" property="num" />  
     </resultMap>
     <resultMap id="orderResultMap" type="orderModel" >  
         <id column="o_id" property="id" />  
-        <id column="o_no" property="no" />  
+        <result column="o_no" property="no" />  
     </resultMap>
 	<resultMap id="pnClsResultMap" type="pnClsModel" >  
         <id column="pn_cls_id" property="id" />  
-        <id column="pn_cls_name" property="name" />  
+        <result column="pn_cls_name" property="name" />  
     </resultMap>
 	<resultMap id="unitResultMap" type="unitModel" >  
         <id column="unit_id" property="id" />  
-        <id column="unit_name" property="name" />  
+        <result column="unit_name" property="name" />  
     </resultMap>
 	<resultMap id="pnResultMap" type="pnModel" >  
         <id column="pn_id" property="id" />  
-        <id column="pn_pn" property="pn" />  
-        <id column="pn_name" property="name" />  
+        <result column="pn_pn" property="pn" />  
+        <result column="pn_name" property="name" />  
         <association property="pnCls" resultMap="pnClsResultMap"/>
+        <association property="unit" resultMap="unitResultMap"/>
+    </resultMap>
+	<resultMap id="BOMResultMap" type="BOMModel" >  
+        <id column="bom_id" property="id" />  
+        <result column="bom_pn" property="pn" />  
+        <result column="bom_name" property="name" />  
         <association property="unit" resultMap="unitResultMap"/>
     </resultMap>
 	<resultMap id="orderPnResultMap" type="orderPnModel" >  
@@ -38,6 +48,12 @@
         <association property="orderPn" resultMap="orderPnResultMap" />
         <association property="wareHousePn" resultMap="wareHousePnResultMap" />
     </resultMap>
+    <resultMap id="wareHouseEntryBOMResultMap" type="wareHouseEntryBOMModel">  
+        <id column="e_bom_id" property="id" />  
+        <result column="e_bom_num" property="num" />  
+        <association property="bom" resultMap="BOMResultMap" />
+        <association property="wareHouseBOM" resultMap="wareHouseBOMResultMap" />
+    </resultMap>
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="user_id" property="id" />  
         <result column="user_no" property="no" />  
@@ -47,11 +63,14 @@
         <id column="e_id" property="id" />  
         <result column="e_entry_time" property="entryTime" />  
         <result column="e_state" property="state" />  
+        <result column="e_type" property="type" />  
+        <result column="e_comment" property="comment" />  
         <result column="e_create_time" property="createTime" />  
         <result column="e_update_time" property="updateTime" />  
         <association property="user" resultMap="userResultMap"/>
         <association property="updateUser" resultMap="userResultMap" columnPrefix="upt_"/>
         <collection property="wareHouseEntryPns" ofType="wareHouseEntryPnModel" resultMap="wareHouseEntryPnResultMap" />
+        <collection property="wareHouseEntryBOMs" ofType="wareHouseEntryBOMModel" resultMap="wareHouseEntryBOMResultMap" />
     </resultMap>
 
 	<select id="queryList" parameterType="wareHouseEntryModel" resultMap="wareHouseEntryResultMap">
@@ -60,6 +79,32 @@
 			   entry.c_update_time as e_update_time,
 			   entry.c_create_time as e_create_time,
 			   entry.c_state as e_state,
+			   entry.c_type as e_type,
+			   entry.c_comment as e_comment,
+		       user.c_id as user_id,
+		       user.c_no as user_no,
+		       user.c_name as user_name,
+		       upt_user.c_id as upt_user_id,
+		       upt_user.c_no as upt_user_no,
+		       upt_user.c_name as upt_user_name
+		from entry_tbl as entry
+		left join user_tbl as user on entry.c_user_id = user.c_id
+		left join user_tbl as upt_user on entry.c_update_user_id = upt_user.c_id
+		<where>
+			<if test="id >= 0">
+				and entry.c_id=#{id}
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryListWithPn" parameterType="wareHouseEntryModel" resultMap="wareHouseEntryResultMap">
+		select entry.c_id as e_id,
+			   entry.c_entry_time as e_entry_time,
+			   entry.c_update_time as e_update_time,
+			   entry.c_create_time as e_create_time,
+			   entry.c_state as e_state,
+			   entry.c_type as e_type,
+			   entry.c_comment as e_comment,
 		       user.c_id as user_id,
 		       user.c_no as user_no,
 		       user.c_name as user_name,
@@ -94,6 +139,46 @@
 		left join order_tbl as o on o_pn.c_order_id = o.c_id
 		left join warehouse_pn_tbl as wh_pn on e_pn.c_ref_id = wh_pn.c_order_pn_id
 		<where>
+			entry.c_type=0
+			<if test="id >= 0">
+				and entry.c_id=#{id}
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryListWithBOM" parameterType="wareHouseEntryModel" resultMap="wareHouseEntryResultMap">
+		select entry.c_id as e_id,
+			   entry.c_entry_time as e_entry_time,
+			   entry.c_update_time as e_update_time,
+			   entry.c_create_time as e_create_time,
+			   entry.c_state as e_state,
+			   entry.c_type as e_type,
+			   entry.c_comment as e_comment,
+		       user.c_id as user_id,
+		       user.c_no as user_no,
+		       user.c_name as user_name,
+		       upt_user.c_id as upt_user_id,
+		       upt_user.c_no as upt_user_no,
+		       upt_user.c_name as upt_user_name,
+		       e_bom.c_id as e_bom_id,
+		       e_bom.c_num as e_bom_num,
+		       bom.c_id as bom_id,
+		       bom.c_pn as bom_pn,
+		       bom.c_name as bom_name,
+		       bom.c_type as bom_type,
+		       unit.c_id as unit_id,
+		       unit.c_name as unit_name,
+		       wh_bom.c_id as wh_bom_id,
+		       wh_bom.c_num as wh_bom_num
+		from entry_tbl as entry
+		left join user_tbl as user on entry.c_user_id = user.c_id
+		left join user_tbl as upt_user on entry.c_update_user_id = upt_user.c_id
+		left join entry_bom_tbl as e_bom on entry.c_id = e_bom.c_entry_id
+		left join bom_tbl as bom on e_bom.c_ref_id = bom.c_id
+		left join unit_tbl as unit on bom.c_unit_id = unit.c_id
+		left join warehouse_bom_tbl as wh_bom on e_bom.c_ref_id = wh_bom.c_bom_id
+		<where>
+			entry.c_type=1
 			<if test="id >= 0">
 				and entry.c_id=#{id}
 			</if>
@@ -101,7 +186,15 @@
 	</select>
 	
 	<insert id="add" parameterType="wareHouseEntryModel">
-    	insert into entry_tbl (c_user_id) values (#{user.id})
+    	insert into entry_tbl (
+    		c_user_id,
+    		c_type,
+    		c_comment)
+    	values (
+    		#{user.id},
+    		#{type},
+    		#{comment}
+    		)
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
       	</selectKey>

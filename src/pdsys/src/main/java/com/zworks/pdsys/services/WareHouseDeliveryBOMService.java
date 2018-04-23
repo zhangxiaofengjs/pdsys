@@ -6,11 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zworks.pdsys.common.utils.StringUtils;
 import com.zworks.pdsys.mappers.WareHouseDeliveryBOMMapper;
-import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
-import com.zworks.pdsys.models.WareHouseDeliveryModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -28,34 +25,23 @@ public class WareHouseDeliveryBOMService {
 		return wareHouseDeliveryBOMMapper.queryList(obj);
 	}
 
+	public void add(WareHouseDeliveryBOMModel deliveryBOM) {
+		wareHouseDeliveryBOMMapper.add(deliveryBOM);
+	}
+
 	@Transactional
-	public void addOrUpdate(String strIds, WareHouseDeliveryBOMModel wareHouseDeliveryBOM) {
-		List<Integer> whBomIds = StringUtils.split(strIds);
-		
-		for(int whBomId : whBomIds) {
-			WareHouseBOMModel wareHouseBOM = wareHouseDeliveryBOM.getWareHouseBOM();
-			wareHouseBOM.setId(whBomId);
-			
-			WareHouseDeliveryModel wareHouseDelivery =  wareHouseDeliveryBOM.getWareHouseDelivery();
-			
-			List<WareHouseDeliveryModel> deliverys = wareHouseDeliveryService.queryList(wareHouseDelivery);
-			if(deliverys == null || deliverys.size() == 0) {
-				//该领收人还未创建输出单的话，先创建
-				wareHouseDeliveryService.add(wareHouseDelivery);
-			} else {
-				WareHouseDeliveryModel wareHouseDeliveryExist = deliverys.get(0);
-				wareHouseDelivery.setId(wareHouseDeliveryExist.getId());
-			}
-			
-			List<WareHouseDeliveryBOMModel> whDeliveryBoms = wareHouseDeliveryBOMMapper.queryList(wareHouseDeliveryBOM);
-			if(whDeliveryBoms == null || whDeliveryBoms.size() == 0) {
-				//该领收人还未创建输出单的话，先创建
-				wareHouseDeliveryBOMMapper.add(wareHouseDeliveryBOM);
-			} else {
-				WareHouseDeliveryBOMModel wareHouseDeliveryBOMExist = whDeliveryBoms.get(0);
-				wareHouseDeliveryBOM.setId(wareHouseDeliveryBOMExist.getId());
-				wareHouseDeliveryBOMMapper.update(wareHouseDeliveryBOM);
-			}
+	public void delete(List<WareHouseDeliveryBOMModel> deliveryBOMs) {
+		for(WareHouseDeliveryBOMModel deliveryBOM : deliveryBOMs) {
+			wareHouseDeliveryBOMMapper.delete(deliveryBOM);
 		}
+	}
+
+	public boolean exists(WareHouseDeliveryBOMModel deliveryBOM) {
+		List<WareHouseDeliveryBOMModel> list = queryList(deliveryBOM);
+		return list.size() != 0;
+	}
+
+	public void update(WareHouseDeliveryBOMModel deliveryBOM) {
+		wareHouseDeliveryBOMMapper.update(deliveryBOM);
 	}
 }

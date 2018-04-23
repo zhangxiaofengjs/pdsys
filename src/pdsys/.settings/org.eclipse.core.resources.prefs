@@ -17,6 +17,7 @@ encoding//src/main/resources/templates/sys/master/place.html=UTF-8
 encoding//src/main/resources/templates/sys/master/pn.html=UTF-8
 encoding//src/main/resources/templates/sys/user/list.html=UTF-8
 encoding//src/main/resources/templates/warehouse/delivery/pn.html=UTF-8
+encoding//src/main/resources/templates/warehouse/entry/bom.html=UTF-8
 encoding//src/main/resources/templates/warehouse/entry/pn.html=UTF-8
 encoding//src/main/resources/templates/warehouse/list/bom.html=UTF-8
 encoding//src/main/resources/templates/warehouse/list/machinepart.html=UTF-8

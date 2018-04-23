@@ -36,11 +36,11 @@
 		left join user_tbl as user on d.c_user_id = user.c_id
 		left join warehouse_bom_tbl as wh_bom on d_bom.c_ref_id = wh_bom.c_id
 		<where>
-			<if test="wareHouseDelivery.user != null and wareHouseDelivery.user.id >= 0">
-				and user.c_id = #{wareHouseDelivery.user.id}
+			<if test="wareHouseDelivery != null and wareHouseDelivery.id > 0">
+				and d_bom.c_delivery_id = #{wareHouseDelivery.id}
 			</if>
-			<if test="wareHouseBOM != null and wareHouseBOM.id >= 0">
-				and wh_bom.c_id = #{wareHouseBOM.id}
+			<if test="bom != null and bom.id > 0">
+				and d_bom.c_ref_id = #{bom.id}
 			</if>
 		</where>
 	</select>
@@ -52,7 +52,7 @@
     		c_num) 
     	values (
     		#{wareHouseDelivery.id},
-    		#{wareHouseBOM.id},
+    		#{bom.id},
     		#{num})
       	<selectKey keyProperty="id" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
@@ -63,7 +63,22 @@
     	update delivery_bom_tbl
 		set	c_num = #{num}
     	<where>
-			c_id = #{id}
+			<if test="id > 0">
+				and c_id = #{id}
+			</if>
+			<if test="wareHouseDelivery != null and wareHouseDelivery.id > 0">
+				and c_delivery_id = #{wareHouseDelivery.id}
+			</if>
+			<if test="bom != null and bom.id > 0">
+				and c_ref_id = #{bom.id}
+			</if>
 		</where>
     </update>
+    
+    <delete id="delete"  parameterType="wareHouseDeliveryBOMModel">
+    	delete from delivery_bom_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
 </mapper>

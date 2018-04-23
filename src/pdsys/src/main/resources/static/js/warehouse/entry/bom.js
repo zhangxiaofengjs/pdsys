@@ -11,7 +11,7 @@ $(document).ready(function(){
 				{
 					"name":"type",
 					"type":"hidden",
-					"value":"0"
+					"value":"1"
 				},
 				{
 					"name":"user.id",
@@ -42,7 +42,7 @@ $(document).ready(function(){
 	        success : function(data) {
 	        	if(data.success)
 	        	{
-	        		$(location).attr('href', PdSys.url('/warehouse/entry/main/pn?id=' + data.id));
+	        		$(location).attr('href', PdSys.url('/warehouse/entry/main/bom?id=' + data.id));
 	        	}
 	        	else
 	        	{
@@ -63,7 +63,7 @@ $(document).ready(function(){
 	    });
 	});
 	
-	$("button[name='addEntryPn']").click(function(){
+	$("button[name='addEntryBOM']").click(function(){
 		var self = $(this);
 
 		var fields = [
@@ -73,58 +73,13 @@ $(document).ready(function(){
 			"value":$('#entry_id').val()
 		},
 		{
-			"name":"orderPn.order.id",
-			"label":"订单",
+			"name":"bom.id",
+			"label":"品番",
 			"type":"select",
 			"options":[],
 			"min":1,
 			"ajax":true,
-			"url":"/order/list/json",
-			"convertAjaxData" : function(thisField, data) {
-				//将返回的值转化为Field规格数据,以供重新渲染
-				//做成选择分支
-				thisField.options.push({
-					"value": -1,
-					"caption":"请选择订单...",
-				});
-				data.forEach(function(order, idx) {
-					thisField.options.push({
-						"value": order.id,
-						"caption":order.no,
-					});
-				});
-			},
-			"afterBuild": function() {
-				var self = this;
-				
-				var thisElem = dlg.fieldElem(self.type, self.name);
-				
-				//select选择以后刷新品目
-				thisElem.change(function() {
-					var selIndex = thisElem[0].selectedIndex;
-					var val = -1;
-					if(selIndex != 0) {
-						//第一项是[请选择]，无视
-						val = self.options[selIndex].value;
-					}
-					var orderPnField = fields[2];
-					orderPnField.ajaxData = {
-						"id": val
-					};
-					
-					dlg.buildAjaxField(orderPnField);
-				});
-			}
-		},
-		{
-			"name":"orderPn.id",
-			"label":"品目",
-			"type":"select",
-			"options":[],
-			"min":1,
-			"ajax":true,
-			"depend":true,//不立即执行，等订单项目的刷新
-			"url":"/orderPn/list/json",
+			"url":"/bom/list/json",
 			"ajaxData":{
 				"id": -1
 			},
@@ -134,13 +89,13 @@ $(document).ready(function(){
 				thisField.options = [];
 				thisField.options.push({
 					"value": -1,
-					"caption":"请选择品目...",
+					"caption":"请选择品番...",
 				});
-				data.orderPns.forEach(function(orderPn, idx) {
+				data.boms.forEach(function(bom, idx) {
 					thisField.options.push({
-						"value": orderPn.id,
-						"caption": "{0} {1} / {2}".format(orderPn.pn.pn, orderPn.pn.name, orderPn.pn.pnCls.name),
-						"data":orderPn.pn.unit.name
+						"value": bom.id,
+						"caption": "{0} {1}".format(bom.pn, bom.name),
+						"data":bom.unit.name
 					});
 				});
 			},
@@ -162,18 +117,11 @@ $(document).ready(function(){
 			},
 		},
 		{
-			"name":"semiProducedNum",
-			"label":"半成品数",
+			"name":"num",
+			"label":"数量",
 			"type":"number",
-			"value":"0",
-			"min":"0",
-		},
-		{
-			"name":"producedNum",
-			"label":"成品数",
-			"type":"number",
-			"value":"0",
-			"min":"0",
+			"value":"",
+			"min":"1",
 		},
 		{
 			"name":"unit.name",
@@ -187,14 +135,8 @@ $(document).ready(function(){
 			"target":"dlg_div",
 			"caption":"添加到入库单",
 			"fields":fields,
-			"url":"/warehouse/entry/update/pn",
+			"url":"/warehouse/entry/update/bom",
 			"valid":function() {
-				if(dlg.fieldVal("semiProducedNum") == 0 &&
-				   dlg.fieldVal("producedNum") == 0	) {
-					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
-					dlg.setError("producedNum", "半成品/成品数量都未输入");
-					return false;
-				}
 				return true;
 			},
 			"success": function(data) {
@@ -218,7 +160,7 @@ $(document).ready(function(){
 		});
 	});
 	
-	$("button[name='deleteEntryPn']").click(function(){
+	$("button[name='deleteEntryBOM']").click(function(){
 		var self = $(this);
 		var selIds = getSelectedRowId();
 		if(selIds.length == 0) {
@@ -238,7 +180,7 @@ $(document).ready(function(){
 			"msg":"确定删除选择的入库项目?",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/warehouse/entry/delete/pn",
+					"url":"/warehouse/entry/delete/bom",
 					"data":ajaxDatas,
 					"success": function(data) {
 						dlg.hide();

@@ -42,6 +42,13 @@
 					<i class="pull-right" th:text="'更新:' + ${entry.updateUser!=null?entry.updateUser.name:''} + '&nbsp;' + (${entry.updateTime!=null}?${#dates.format(entry.updateTime, 'yyyy-MM-dd')}:'')"></i>
 				</th>
 			</tr>
+			<tr>
+				<th style="text-align:center;" th:colspan="1">
+					备注
+				</th>
+				<td style="" th:colspan="8" th:text="${entry.comment}">
+				</td>
+			</tr>
 		    <tr>
 		    	<th rowspan="2" style="width:20px;"><input type="checkbox" name="selectAll"></th>
 				<th rowspan="2" >关联订单</th>

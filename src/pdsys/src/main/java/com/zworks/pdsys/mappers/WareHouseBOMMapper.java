@@ -14,4 +14,8 @@ import com.zworks.pdsys.models.WareHouseBOMModel;
 public interface WareHouseBOMMapper {
 	
 	List<WareHouseBOMModel> queryList(WareHouseBOMModel filterObj);
+
+	void add(WareHouseBOMModel wareHouseBOM);
+
+	void update(WareHouseBOMModel wareHouseBOM);
 }

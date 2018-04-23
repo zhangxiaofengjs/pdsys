@@ -9,6 +9,11 @@ $(document).ready(function(){
 			"caption":"选择出库领收人",
 			"fields":[
 				{
+					"name":"type",
+					"type":"hidden",
+					"value":"0",
+				},
+				{
 					"name":"user.id",
 					"label":"领收人",
 					"type":"select",
@@ -25,7 +30,13 @@ $(document).ready(function(){
 							});
 						});
 					}
-				}
+				},
+				{
+					"name":"comment",
+					"label":"备注",
+					"type":"text",
+					"value":"",
+				},
 			],
 	    	url : "/warehouse/delivery/add/delivery",
 	        success : function(data) {

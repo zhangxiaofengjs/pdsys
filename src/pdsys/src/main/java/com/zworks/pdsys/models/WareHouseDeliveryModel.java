@@ -13,8 +13,11 @@ import org.apache.ibatis.type.Alias;
 public class WareHouseDeliveryModel extends BaseModel{
 	private UserModel user;
 	private Date deliveryTime;
-	private List<WareHouseDeliveryPnModel> wareHouseDeliveryPns;
 	private int state;
+	private int type;
+	private String comment;
+	private List<WareHouseDeliveryPnModel> wareHouseDeliveryPns;
+	private List<WareHouseDeliveryBOMModel> wareHouseDeliveryBOMs;
 	
 	public WareHouseDeliveryModel() {
 	}
@@ -49,5 +52,29 @@ public class WareHouseDeliveryModel extends BaseModel{
 
 	public void setState(int state) {
 		this.state = state;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public List<WareHouseDeliveryBOMModel> getWareHouseDeliveryBOMs() {
+		return wareHouseDeliveryBOMs;
+	}
+
+	public void setWareHouseDeliveryBOMs(List<WareHouseDeliveryBOMModel> wareHouseDeliveryBOMs) {
+		this.wareHouseDeliveryBOMs = wareHouseDeliveryBOMs;
 	}
 }

@@ -260,10 +260,10 @@ $(document).ready(function(){
 				"url":"/bom/list/json",
 				"convertAjaxData" : function(thisField, data) {
 					thisField.options = [];
-					data.forEach(function(bom, idx) {
+					data.boms.forEach(function(bom, idx) {
 						thisField.options.push({
 							"value": bom.id,
-							"caption":bom.name,
+							"caption":bom.pn + " " + bom.name,
 							"data":bom.unit.name
 						});
 					});

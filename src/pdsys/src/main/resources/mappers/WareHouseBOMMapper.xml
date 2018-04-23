@@ -44,5 +44,27 @@
 				and bom.c_pn like '%${bom.pn}%'
 			</if>
 		</where>
+		order by bom.c_type asc, bom.c_pn asc
 	</select>
+	
+	<insert id="add" parameterType="wareHouseBOMModel">
+    	insert into warehouse_bom_tbl (
+    		c_bom_id,
+    		c_num)
+    	values (
+    		#{bom.id},
+    		#{num}
+    	)
+      	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+    </insert>
+    
+	<update id="update"  parameterType="wareHouseBOMModel">
+    	update warehouse_bom_tbl
+		set	c_num=#{num}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
 </mapper>

@@ -22,4 +22,12 @@ public class WareHouseBOMService {
 		
 		return list;
 	}
+
+	public void add(WareHouseBOMModel wareHouseBOM) {
+		wareHouseMapper.add(wareHouseBOM);
+	}
+
+	public void update(WareHouseBOMModel wareHouseBOM) {
+		wareHouseMapper.update(wareHouseBOM);
+	}
 }

@@ -18,4 +18,6 @@ public interface WareHouseDeliveryBOMMapper {
 	List<WareHouseDeliveryBOMModel> queryList(WareHouseDeliveryBOMModel wareHouseDeliveryBOM);
 
 	void update(WareHouseDeliveryBOMModel wareHouseDeliveryBOM);
+
+	void delete(WareHouseDeliveryBOMModel deliveryBOM);
 }

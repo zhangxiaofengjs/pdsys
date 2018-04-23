@@ -1,21 +1,21 @@
 $(document).ready(function(){
-	//新建入库单
-	$("button[name='addEntry']").click(function(){
+	//新建出库单
+	$("button[name='addDelivery']").click(function(){
 		var self = $(this);
 		
 		var dlg = new CommonDlg();
 		dlg.showFormDlg({
 			"target":"dlg_div",
-			"caption":"选择入库提交人",
+			"caption":"选择出库领收人",
 			"fields":[
 				{
 					"name":"type",
 					"type":"hidden",
-					"value":"0"
+					"value":"1",
 				},
 				{
 					"name":"user.id",
-					"label":"提交人",
+					"label":"领收人",
 					"type":"select",
 					"options":[],
 					"ajax":true,
@@ -35,14 +35,14 @@ $(document).ready(function(){
 					"name":"comment",
 					"label":"备注",
 					"type":"text",
-					"value":""
-				}
+					"value":"",
+				},
 			],
-	    	url : "/warehouse/entry/add/entry",
+	    	url : "/warehouse/delivery/add/delivery",
 	        success : function(data) {
 	        	if(data.success)
 	        	{
-	        		$(location).attr('href', PdSys.url('/warehouse/entry/main/pn?id=' + data.id));
+	        		$(location).attr('href', PdSys.url('/warehouse/delivery/main/bom?id=' + data.id));
 	        	}
 	        	else
 	        	{
@@ -50,7 +50,7 @@ $(document).ready(function(){
 	    			dlg.showMsgDlg({
 	    				"target":"msg_div",
 	    				"type":"ok",
-	    				"msg":"新建入库单号发生错误。"});
+	    				"msg":"新建出库单号发生错误。"});
 	        	}
 	        },
 	        error: function(data) {
@@ -63,68 +63,23 @@ $(document).ready(function(){
 	    });
 	});
 	
-	$("button[name='addEntryPn']").click(function(){
+	$("button[name='addDeliveryBOM']").click(function(){
 		var self = $(this);
 
 		var fields = [
 		{
-			"name":"wareHouseEntry.id",
+			"name":"wareHouseDelivery.id",
 			"type":"hidden",
-			"value":$('#entry_id').val()
+			"value":$('#delivery_id').val()
 		},
 		{
-			"name":"orderPn.order.id",
-			"label":"订单",
+			"name":"bom.id",
+			"label":"品番",
 			"type":"select",
 			"options":[],
 			"min":1,
 			"ajax":true,
-			"url":"/order/list/json",
-			"convertAjaxData" : function(thisField, data) {
-				//将返回的值转化为Field规格数据,以供重新渲染
-				//做成选择分支
-				thisField.options.push({
-					"value": -1,
-					"caption":"请选择订单...",
-				});
-				data.forEach(function(order, idx) {
-					thisField.options.push({
-						"value": order.id,
-						"caption":order.no,
-					});
-				});
-			},
-			"afterBuild": function() {
-				var self = this;
-				
-				var thisElem = dlg.fieldElem(self.type, self.name);
-				
-				//select选择以后刷新品目
-				thisElem.change(function() {
-					var selIndex = thisElem[0].selectedIndex;
-					var val = -1;
-					if(selIndex != 0) {
-						//第一项是[请选择]，无视
-						val = self.options[selIndex].value;
-					}
-					var orderPnField = fields[2];
-					orderPnField.ajaxData = {
-						"id": val
-					};
-					
-					dlg.buildAjaxField(orderPnField);
-				});
-			}
-		},
-		{
-			"name":"orderPn.id",
-			"label":"品目",
-			"type":"select",
-			"options":[],
-			"min":1,
-			"ajax":true,
-			"depend":true,//不立即执行，等订单项目的刷新
-			"url":"/orderPn/list/json",
+			"url":"/bom/list/json",
 			"ajaxData":{
 				"id": -1
 			},
@@ -134,77 +89,41 @@ $(document).ready(function(){
 				thisField.options = [];
 				thisField.options.push({
 					"value": -1,
-					"caption":"请选择品目...",
+					"caption":"请选择品番...",
 				});
-				data.orderPns.forEach(function(orderPn, idx) {
+				data.boms.forEach(function(bom, idx) {
 					thisField.options.push({
-						"value": orderPn.id,
-						"caption": "{0} {1} / {2}".format(orderPn.pn.pn, orderPn.pn.name, orderPn.pn.pnCls.name),
-						"data":orderPn.pn.unit.name
+						"value": bom.id,
+						"caption": "{0} {1}".format(bom.pn, bom.name)
 					});
 				});
 			},
-			"afterBuild": function() {
-				var self = this;
-				
-				var thisElem = dlg.findFieldElem(self);
-				
-				//select选择以后刷新品目单位
-				thisElem.change(function() {
-					var selIndex = thisElem[0].selectedIndex;
-					var val = "";
-					if(selIndex != 0) {
-						//第一项是[请选择]，无视
-						val = self.options[selIndex].data;
-					}
-					dlg.rebuildFieldWithValue("unit.name", val);
-				});
-			},
 		},
 		{
-			"name":"semiProducedNum",
-			"label":"半成品数",
+			"name":"num",
+			"label":"数量",
 			"type":"number",
-			"value":"0",
-			"min":"0",
-		},
-		{
-			"name":"producedNum",
-			"label":"成品数",
-			"type":"number",
-			"value":"0",
-			"min":"0",
-		},
-		{
-			"name":"unit.name",
-			"label":"单位",
-			"type":"label",
+			"min":1,
 			"value":"",
 		}];
 		
 		var dlg = new CommonDlg();
 		dlg.showFormDlg({
 			"target":"dlg_div",
-			"caption":"添加到入库单",
+			"caption":"添加到出库单",
 			"fields":fields,
-			"url":"/warehouse/entry/update/pn",
 			"valid":function() {
-				if(dlg.fieldVal("semiProducedNum") == 0 &&
-				   dlg.fieldVal("producedNum") == 0	) {
-					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
-					dlg.setError("producedNum", "半成品/成品数量都未输入");
-					return false;
-				}
 				return true;
 			},
+			"url":"/warehouse/delivery/add/bom",
 			"success": function(data) {
 				dlg.hide();
 				var msgDlg = new CommonDlg();
 				msgDlg.showMsgDlg({
 					"target":"msg_div",
 					"type":"ok",
-					"msg":"成功添加到入库单!",
-					"ok":function(){
+					"msg":"成功添加到出库单!",
+					"ok": function() {
 						PdSys.refresh();
 					}});
 			},
@@ -213,12 +132,12 @@ $(document).ready(function(){
 				msgDlg.showMsgDlg({
 					"target":"msg_div",
 					"type":"ok",
-					"msg":"添加到入库单失败,请联系管理员!"});
+					"msg":"添加到出库单失败,请联系管理员!"});
 			}
 		});
 	});
 	
-	$("button[name='deleteEntryPn']").click(function(){
+	$("button[name='deleteDeliveryBOM']").click(function(){
 		var self = $(this);
 		var selIds = getSelectedRowId();
 		if(selIds.length == 0) {
@@ -233,12 +152,12 @@ $(document).ready(function(){
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
 			"target":"dlg_div",
-			"caption":"删除入库单",
+			"caption":"删除出库单",
 			"type":"yesno",
-			"msg":"确定删除选择的入库项目?",
+			"msg":"确定删除选择的出库项目?",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/warehouse/entry/delete/pn",
+					"url":"/warehouse/delivery/delete/bom",
 					"data":ajaxDatas,
 					"success": function(data) {
 						dlg.hide();
@@ -247,9 +166,10 @@ $(document).ready(function(){
 							"target":"msg_div",
 							"type":"ok",
 							"msg":"删除成功!",
-							"ok":function(){
+							"ok": function() {
 								PdSys.refresh();
 							}});
+						
 					},
 					"error": function(data) {
 						var msgDlg = new CommonDlg();
@@ -263,18 +183,18 @@ $(document).ready(function(){
 		});
 	});
 	
-	$("button[name='doEntry']").click(function(){
+	$("button[name='doDelivery']").click(function(){
 		var self = $(this);
 		
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
 			"target":"dlg_div",
-			"caption":"确定入库单",
+			"caption":"确定出库单",
 			"type":"yesno",
-			"msg":"确定执行入库?",
+			"msg":"确定执行出库?",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/warehouse/entry/entry/" + $("#entry_id").val(),
+					"url":"/warehouse/delivery/delivery/" + $("#delivery_id").val(),
 					"success": function(data) {
 						dlg.hide();
 						
@@ -283,7 +203,7 @@ $(document).ready(function(){
 							msgDlg.showMsgDlg({
 								"target":"msg_div",
 								"type":"ok",
-								"msg":"入库成功!",
+								"msg":"出库成功!",
 								"ok": function(){
 									PdSys.refresh();
 								}});
@@ -300,32 +220,32 @@ $(document).ready(function(){
 						msgDlg.showMsgDlg({
 							"target":"msg_div",
 							"type":"ok",
-							"msg":"发生错误,请联系管理员!"});
+							"msg":"出库失败,请联系管理员!"});
 					}
 				});
 			}
 		});
 	});
 	
-	$("#deleteEntry").click(function(){
+	$("#deleteDelivery").click(function(){
 		var self = $(this);
 		
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
 			"target":"dlg_div",
-			"caption":"删除入库单",
+			"caption":"删除出库单",
 			"type":"yesno",
-			"msg":"确定删除入库单?",
+			"msg":"确定删除出库单?",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/warehouse/entry/delete/entry/" + $("#entry_id").val(),
+					"url":"/warehouse/delivery/delete/delivery/" + $("#delivery_id").val(),
 					"success": function(data) {
 						dlg.hide();
 						var msgDlg = new CommonDlg();
 						msgDlg.showMsgDlg({
 							"target":"msg_div",
 							"type":"ok",
-							"msg":"入库单已删除!",
+							"msg":"出库单已删除!",
 							"ok": function(){
 								PdSys.refresh();
 							}});

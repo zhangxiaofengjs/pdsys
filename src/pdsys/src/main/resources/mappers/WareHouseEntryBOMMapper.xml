@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.WareHouseEntryBOMMapper">
+	<resultMap id="wareHouseEntryBOMResultMap" type="wareHouseEntryBOMModel" >  
+        <id column="e_bom_id" property="id" />  
+        <result column="e_bom_num" property="num" />  
+    </resultMap>
+
+	<select id="queryList" parameterType="wareHouseEntryBOMModel" resultMap="wareHouseEntryBOMResultMap">
+		select e_bom.c_id as e_bom_id,
+		       e_bom.c_entry_id as e_bom_entry_id,
+		       e_bom.c_num as e_bom_num
+		from entry_bom_tbl as e_bom
+		<where>
+			<if test="wareHouseEntry.id > 0">
+				and e_bom.c_entry_id=#{wareHouseEntry.id}
+			</if>
+			<if test="bom.id > 0">
+				and e_bom.c_ref_id=#{bom.id}
+			</if>
+		</where>
+	</select>
+	<insert id="add" parameterType="wareHouseEntryBOMModel">
+    	insert into entry_bom_tbl (
+    		c_entry_id,
+    		c_ref_id,
+    		c_num)
+    	values (
+    		#{wareHouseEntry.id},
+    		#{bom.id},
+    		#{num}
+    	)
+      	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+    </insert>
+    
+    <insert id="update" parameterType="wareHouseEntryBOMModel">
+    	update entry_bom_tbl
+    	set c_num=#{num}
+    	<where>
+			<if test="id > 0">
+				and c_id=#{id}
+			</if>
+			<if test="wareHouseEntry != null and wareHouseEntry.id > 0">
+				and c_entry_id=#{wareHouseEntry.id}
+			</if>
+			<if test="bom != null and bom.id > 0">
+				and c_ref_id=#{bom.id}
+			</if>
+		</where>
+    </insert>
+    
+    <delete id="delete" parameterType="wareHouseEntryBOMModel">
+    	delete from entry_bom_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
+</mapper>

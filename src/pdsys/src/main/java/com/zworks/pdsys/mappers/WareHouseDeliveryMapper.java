@@ -16,6 +16,8 @@ public interface WareHouseDeliveryMapper {
 	void add(WareHouseDeliveryModel obj);
 
 	List<WareHouseDeliveryModel> queryList(WareHouseDeliveryModel obj);
+	List<WareHouseDeliveryModel> queryListWithPn(WareHouseDeliveryModel obj);
+	List<WareHouseDeliveryModel> queryListWithBOM(WareHouseDeliveryModel obj);
 
 	void update(WareHouseDeliveryModel delivery);
 

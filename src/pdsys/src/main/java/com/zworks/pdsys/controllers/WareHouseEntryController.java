@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
+import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.models.WareHouseEntryPnModel;
+import com.zworks.pdsys.services.WareHouseEntryBOMService;
 import com.zworks.pdsys.services.WareHouseEntryPnService;
 import com.zworks.pdsys.services.WareHouseEntryService;
 
@@ -27,10 +29,12 @@ import com.zworks.pdsys.services.WareHouseEntryService;
 @RequestMapping("/warehouse/entry")
 public class WareHouseEntryController {
 	@Autowired
+	WareHouseEntryService wareHouseEntryService;
+	@Autowired
 	WareHouseEntryPnService wareHouseEntryPnService;
 	@Autowired
-	WareHouseEntryService wareHouseEntryService;
-	
+	WareHouseEntryBOMService wareHouseEntryBOMService;
+
 	@RequestMapping(value= {"/main", "/main/{type}"})
     public String entryMain(
     		@PathVariable(name="type" ,required=false)String type,
@@ -39,13 +43,26 @@ public class WareHouseEntryController {
 
 		if(type == null) {
 			type = "pn";
-		} else if(!(type.equals("bom") || type.equals("pn") || type.equals("machinepart"))) {
+		}
+		else if(!(type.equals("bom") || type.equals("pn") || type.equals("machinepart"))) {
 			throw new PdsysException("错误参数:/entry/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
 		
-		WareHouseEntryModel entry;
+		WareHouseEntryModel entry = null;
 		if(id != null) {
-			entry = wareHouseEntryService.queryOne(id);
+			entry = new WareHouseEntryModel();
+			entry.setId(id);
+			
+			if(type.equals("bom")) {
+				entry = wareHouseEntryService.queryOneWithBOM(entry);
+			} else if(type.equals("pn")) {
+				entry = wareHouseEntryService.queryOneWithPn(entry);
+			} else if(type.equals("machinepart")) {
+				entry = wareHouseEntryService.queryOneWithMachinePart(entry);
+			} else {
+				entry = null;
+			}
+			
 			if(entry == null) {
 				throw new PdsysException("错误参数:/entry/type/id=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 			}
@@ -73,7 +90,7 @@ public class WareHouseEntryController {
 	 * */
 	@RequestMapping(value="/update/pn")
 	@ResponseBody
-    public JSONResponse updateEntry(@RequestBody WareHouseEntryPnModel entryPn, Model model) {
+    public JSONResponse updateEntryPn(@RequestBody WareHouseEntryPnModel entryPn, Model model) {
 		if(wareHouseEntryPnService.exist(entryPn)) {
 			wareHouseEntryPnService.update(entryPn);
 		} else {
@@ -83,14 +100,52 @@ public class WareHouseEntryController {
     }
 	
 	/**
+	 * 新建入库明细
+	 * */
+	@RequestMapping(value="/update/bom")
+	@ResponseBody
+    public JSONResponse updateEntryBOM(@RequestBody WareHouseEntryBOMModel entryBOM, Model model) {
+		if(wareHouseEntryBOMService.exist(entryBOM)) {
+			wareHouseEntryBOMService.update(entryBOM);
+		} else {
+			wareHouseEntryBOMService.add(entryBOM);
+		}
+		return JSONResponse.success();
+    }
+	
+	/**
+	 * 新建入库明细
+	 * */
+//	@RequestMapping(value="/update/machinepart")
+//	@ResponseBody
+//    public JSONResponse updateEntryBOM(@RequestBody WareHouseEntryMachinePartModel entryMp, Model model) {
+//		if(wareHouseEntryPnService.exist(entryMp)) {
+//			wareHouseEntryPnService.update(entryMp);
+//		} else {
+//			wareHouseEntryPnService.add(entryMp);
+//		}
+//		return JSONResponse.success();
+//    }
+	
+	/**
 	 * 删除入库明细
 	 * */
 	@RequestMapping(value="/delete/pn")
 	@ResponseBody
-    public JSONResponse addEntryPn(@RequestBody List<WareHouseEntryPnModel> entryPns, Model model) {
+    public JSONResponse deleteEntryPns(@RequestBody List<WareHouseEntryPnModel> entryPns, Model model) {
 		wareHouseEntryPnService.delete(entryPns);
 		return JSONResponse.success();
     }
+	
+	/**
+	 * 删除入库明细
+	 * */
+	@RequestMapping(value="/delete/bom")
+	@ResponseBody
+	public JSONResponse deleteEntryBOMs(@RequestBody List<WareHouseEntryBOMModel> entryBOMs, Model model) {
+		wareHouseEntryBOMService.delete(entryBOMs);
+		return JSONResponse.success();
+	}
 	
 	/**
 	 * 删除入库单
