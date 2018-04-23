@@ -176,6 +176,13 @@ $(document).ready(function(){
 			"min":"0",
 		},
 		{
+			"name":"defectiveNum",
+			"label":"成品数",
+			"type":"number",
+			"value":"0",
+			"min":"0",
+		},
+		{
 			"name":"unit.name",
 			"label":"单位",
 			"type":"label",
@@ -190,9 +197,11 @@ $(document).ready(function(){
 			"url":"/warehouse/entry/update/pn",
 			"valid":function() {
 				if(dlg.fieldVal("semiProducedNum") == 0 &&
-				   dlg.fieldVal("producedNum") == 0	) {
-					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
-					dlg.setError("producedNum", "半成品/成品数量都未输入");
+				   dlg.fieldVal("producedNum") == 0 &&
+				   dlg.fieldVal("defectiveNum") == 0) {
+					dlg.setError("semiProducedNum", "半成品/成品/不良品数量都未输入");
+					dlg.setError("producedNum", "半成品/成品/不良品数量都未输入");
+					dlg.setError("defectiveNum", "半成品/成品/不良品数量都未输入");
 					return false;
 				}
 				return true;

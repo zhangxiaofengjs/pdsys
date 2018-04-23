@@ -45,6 +45,7 @@
         <id column="e_pn_id" property="id" />  
         <result column="e_pn_produced_num" property="producedNum" />  
         <result column="e_pn_semi_produced_num" property="semiProducedNum" />  
+        <result column="e_pn_defective_num" property="defectiveNum" />  
         <association property="orderPn" resultMap="orderPnResultMap" />
         <association property="wareHousePn" resultMap="wareHousePnResultMap" />
     </resultMap>
@@ -114,6 +115,7 @@
 		       e_pn.c_id as e_pn_id,
 		       e_pn.c_produced_num as e_pn_produced_num,
 		       e_pn.c_semi_produced_num as e_pn_semi_produced_num,
+		       e_pn.c_defective_num as e_pn_defective_num,
 		       o_pn.c_id as o_pn_id,
 		       o_pn.c_num as o_pn_num,
 		       pn.c_id as pn_id,
@@ -127,7 +129,8 @@
 		       o.c_no as o_no,
 		       wh_pn.c_id as wh_pn_id,
 		       wh_pn.c_produced_num as wh_pn_produced_num,
-		       wh_pn.c_semi_produced_num as wh_pn_semi_produced_num
+		       wh_pn.c_semi_produced_num as wh_pn_semi_produced_num,
+		       wh_pn.c_defective_num as wh_pn_defective_num
 		from entry_tbl as entry
 		left join user_tbl as user on entry.c_user_id = user.c_id
 		left join user_tbl as upt_user on entry.c_update_user_id = upt_user.c_id

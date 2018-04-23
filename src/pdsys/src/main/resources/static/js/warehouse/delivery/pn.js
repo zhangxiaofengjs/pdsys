@@ -156,6 +156,12 @@ $(document).ready(function(){
 			"label":"成品数",
 			"type":"number",
 			"value":"0",
+		},
+		{
+			"name":"defectiveNum",
+			"label":"不良品数",
+			"type":"number",
+			"value":"0",
 		}];
 		
 		var dlg = new CommonDlg();
@@ -165,9 +171,11 @@ $(document).ready(function(){
 			"fields":fields,
 			"valid":function() {
 				if(dlg.fieldVal("semiProducedNum") == 0 &&
-				   dlg.fieldVal("producedNum") == 0	) {
-					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
-					dlg.setError("producedNum", "半成品/成品数量都未输入");
+				   dlg.fieldVal("producedNum") == 0 &&
+				   dlg.fieldVal("defectiveNum") == 0) {
+					dlg.setError("semiProducedNum", "半成品/成品/不良品数量都未输入");
+					dlg.setError("producedNum", "半成品/成品/不良品数量都未输入");
+					dlg.setError("defectiveNum", "半成品/成品/不良品数量都未输入");
 					return false;
 				}
 				return true;

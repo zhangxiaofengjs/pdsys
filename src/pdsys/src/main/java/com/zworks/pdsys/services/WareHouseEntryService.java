@@ -105,6 +105,7 @@ public class WareHouseEntryService {
 					wareHousePn.setOrderPn(entryPn.getOrderPn());
 					wareHousePn.setProducedNum(entryPn.getProducedNum());
 					wareHousePn.setSemiProducedNum(entryPn.getSemiProducedNum());
+					wareHousePn.setDefectiveNum(entryPn.getDefectiveNum());
 					wareHousePnService.add(wareHousePn);
 				} else {
 					float semiNum = wareHousePn.getSemiProducedNum() + entryPn.getSemiProducedNum();
@@ -112,6 +113,9 @@ public class WareHouseEntryService {
 					
 					float num = wareHousePn.getProducedNum() + entryPn.getProducedNum();
 					wareHousePn.setProducedNum(num);
+					
+					float defNum = wareHousePn.getDefectiveNum() + entryPn.getDefectiveNum();
+					wareHousePn.setDefectiveNum(defNum);
 					wareHousePnService.update(wareHousePn);
 				}
 			}

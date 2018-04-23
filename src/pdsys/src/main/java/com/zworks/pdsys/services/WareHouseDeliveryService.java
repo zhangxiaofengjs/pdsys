@@ -85,22 +85,23 @@ public class WareHouseDeliveryService {
 	public boolean delivery(WareHouseDeliveryModel delivery) {
 		if(delivery.getType() == (int)DeliveryType.PN.ordinal()) {
 			delivery = this.queryOneWithPn(delivery);
-			for(WareHouseDeliveryPnModel deliveryBOM : delivery.getWareHouseDeliveryPns()) {
-				WareHousePnModel wareHousePn = deliveryBOM.getWareHousePn();
+			for(WareHouseDeliveryPnModel deliveryPn : delivery.getWareHouseDeliveryPns()) {
+				WareHousePnModel wareHousePn = deliveryPn.getWareHousePn();
 				
-				float semiNum = -1, num = -1;
+				float semiNum = -1, num = -1, defectiveNum = -1;
 				if(wareHousePn != null) {
-					semiNum = wareHousePn.getSemiProducedNum() - deliveryBOM.getSemiProducedNum();
-					num = wareHousePn.getProducedNum() - deliveryBOM.getProducedNum();
+					semiNum = wareHousePn.getSemiProducedNum() - deliveryPn.getSemiProducedNum();
+					num = wareHousePn.getProducedNum() - deliveryPn.getProducedNum();
+					defectiveNum = wareHousePn.getDefectiveNum() - deliveryPn.getDefectiveNum();
 				}
 				
-				if(num < 0 || semiNum < 0) {
+				if(num < 0 || semiNum < 0 || defectiveNum < 0) {
 					//库存不足
 					return false;
 				}
 				wareHousePn.setProducedNum(num);
 				wareHousePn.setSemiProducedNum(num);
-				
+				wareHousePn.setDefectiveNum(defectiveNum);
 				wareHousePnService.update(wareHousePn);
 			}
 		} else if(delivery.getType() == (int)DeliveryType.BOM.ordinal()) {

@@ -7,6 +7,7 @@
         <id column="wh_pn_id" property="id" />
         <id column="wh_pn_produced_num" property="producedNum" />  
         <id column="wh_pn_semi_produced_num" property="semiProducedNum" />  
+        <id column="wh_pn_defective_num" property="defectiveNum" />  
     </resultMap>
     <resultMap id="wareHouseBOMResultMap" type="wareHouseBOMModel" >  
         <id column="wh_bom_id" property="id" />
@@ -46,6 +47,7 @@
         <id column="d_pn_id" property="id" />  
         <result column="d_pn_produced_num" property="producedNum" />  
         <result column="d_pn_semi_produced_num" property="semiProducedNum" />  
+        <result column="d_pn_defective_num" property="defectiveNum" />  
         <association property="orderPn" resultMap="orderPnResultMap" />
         <association property="wareHousePn" resultMap="wareHousePnResultMap" />
     </resultMap>
@@ -114,6 +116,7 @@
 		       d_pn.c_id as d_pn_id,
 		       d_pn.c_produced_num as d_pn_produced_num,
 		       d_pn.c_semi_produced_num as d_pn_semi_produced_num,
+		       d_pn.c_defective_num as d_pn_defective_num,
 		       o_pn.c_id as o_pn_id,
 		       o_pn.c_num as o_pn_num,
 		       pn.c_id as pn_id,
@@ -127,7 +130,8 @@
 		       o.c_no as o_no,
 		       wh_pn.c_id as wh_pn_id,
 		       wh_pn.c_produced_num as wh_pn_produced_num,
-		       wh_pn.c_semi_produced_num as wh_pn_semi_produced_num
+		       wh_pn.c_semi_produced_num as wh_pn_semi_produced_num,
+		       wh_pn.c_defective_num as wh_pn_defective_num
 		from delivery_tbl as delivery
 		left join user_tbl as user on delivery.c_user_id = user.c_id
 		left join user_tbl as upt_user on delivery.c_update_user_id = upt_user.c_id

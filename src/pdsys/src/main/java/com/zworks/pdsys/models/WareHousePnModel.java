@@ -13,6 +13,7 @@ public class WareHousePnModel extends BaseModel{
 	private OrderPnModel orderPn;
 	private float producedNum;
 	private float semiProducedNum;
+	private float defectiveNum;
 	
 	public WareHousePnModel() {
 		orderPn = OrderPnModel.Empty;
@@ -40,5 +41,13 @@ public class WareHousePnModel extends BaseModel{
 
 	public void setSemiProducedNum(float semiProducedNum) {
 		this.semiProducedNum = semiProducedNum;
+	}
+
+	public float getDefectiveNum() {
+		return defectiveNum;
+	}
+
+	public void setDefectiveNum(float defectiveNum) {
+		this.defectiveNum = defectiveNum;
 	}
 }

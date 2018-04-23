@@ -37,7 +37,7 @@
 					<a th:if="${entry.state == 0 and entry.id > 0}" href="javascript:void(0);" class="glyphicon glyphicon-trash" id="deleteEntry"></a>
 				</th>
 				<th th:colspan="1">入库日期:&nbsp;<b th:text="((${entry.entryTime} != null) ? ${#dates.format(entry.entryTime, 'yyyy-MM-dd')} : '')"></b></th>
-				<th th:colspan="5">提交人:&nbsp;
+				<th th:colspan="6">提交人:&nbsp;
 					<a href="javascript:void(0);" th:text="${entry.user!=null?entry.user.name:''}"></a>
 					<i class="pull-right" th:text="'更新:' + ${entry.updateUser!=null?entry.updateUser.name:''} + '&nbsp;' + (${entry.updateTime!=null}?${#dates.format(entry.updateTime, 'yyyy-MM-dd')}:'')"></i>
 				</th>
@@ -46,7 +46,7 @@
 				<th style="text-align:center;" th:colspan="1">
 					备注
 				</th>
-				<td style="" th:colspan="8" th:text="${entry.comment}">
+				<td style="" th:colspan="9" th:text="${entry.comment}">
 				</td>
 			</tr>
 		    <tr>
@@ -56,11 +56,12 @@
 				<th rowspan="2" >名称</th>
 				<th rowspan="2" >子类</th>
 				<th rowspan="2" >单位</th>
-				<th colspan="2">入库数量</th>
+				<th colspan="3">入库数量</th>
 		    </tr>
 		    <tr>
 				<th>半成品</th>
 				<th>成品</th>
+				<th>不良品</th>
 		    </tr>
 		</thead>
 		<tbody>
@@ -81,6 +82,7 @@
 				<td th:text="${unit}?${unit.name}:_"></td>
 				<td th:text="${wareHouseEntryPn.semiProducedNum}"></td>
 				<td th:text="${wareHouseEntryPn.producedNum}"></td>
+				<td th:text="${wareHouseEntryPn.defectiveNum}"></td>
 		    </tr>
 		</tbody>
 	</table>
