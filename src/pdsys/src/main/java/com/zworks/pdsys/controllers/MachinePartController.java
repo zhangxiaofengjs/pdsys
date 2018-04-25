@@ -25,10 +25,10 @@ public class MachinePartController {
 	
 	@RequestMapping(value= {"/list/json"})
 	@ResponseBody
-    public List<MachinePartModel> list(MachinePartModel machinePart, Model model) {
+    public JSONResponse list(MachinePartModel machinePart, Model model) {
 		List<MachinePartModel> list = machinePartService.queryList(machinePart);
 		
-		return list;
+		return JSONResponse.success().put("machineparts", list);
     }
 	
 	@RequestMapping(value= {"/add"})

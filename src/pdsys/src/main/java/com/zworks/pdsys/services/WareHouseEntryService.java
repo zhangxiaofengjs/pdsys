@@ -11,8 +11,10 @@ import com.zworks.pdsys.common.enumClass.EntryType;
 import com.zworks.pdsys.mappers.WareHouseEntryMapper;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
+import com.zworks.pdsys.models.WareHouseEntryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.models.WareHouseEntryPnModel;
+import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 
 /**
@@ -27,6 +29,8 @@ public class WareHouseEntryService {
 	private WareHousePnService wareHousePnService;
 	@Autowired
 	private WareHouseBOMService wareHouseBOMService;
+	@Autowired
+	private WareHouseMachinePartService wareHouseMachinePartService;
 	
 	public List<WareHouseEntryModel> queryList(WareHouseEntryModel obj) {
 		return wareHouseEntryMapper.queryList(obj);
@@ -136,6 +140,25 @@ public class WareHouseEntryService {
 					wareHouseBOM.setNum(num);
 					
 					wareHouseBOMService.update(wareHouseBOM);
+				}
+			}
+		} else if(entry.getType() == EntryType.MACHINEPART.ordinal()) {
+			entry = queryOneWithMachinePart(entry);
+			
+			for(WareHouseEntryMachinePartModel entryMachinePart : entry.getWareHouseEntryMachineParts()) {
+				WareHouseMachinePartModel wareHouseMachinePart = entryMachinePart.getWareHouseMachinePart();
+				
+				if(wareHouseMachinePart == null) {
+					//还没入库过，新建
+					wareHouseMachinePart = new WareHouseMachinePartModel();
+					wareHouseMachinePart.setMachinePart(entryMachinePart.getMachinePart());
+					wareHouseMachinePart.setNum(entryMachinePart.getNum());
+					wareHouseMachinePartService.add(wareHouseMachinePart);
+				} else {
+					float num = wareHouseMachinePart.getNum() + entryMachinePart.getNum();
+					wareHouseMachinePart.setNum(num);
+					
+					wareHouseMachinePartService.update(wareHouseMachinePart);
 				}
 			}
 		} else {

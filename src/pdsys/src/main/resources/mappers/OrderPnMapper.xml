@@ -192,7 +192,7 @@
 				and order_pn.c_order_id = #{id}
 			</if>
 		</where>
-		 group by bom_pn_name
+		 group by bom_pn_name, bom_type, bom_ut_name, wh_bom_num, supplier_id, supplier_name
 	</select>
 	
 	<select id="queryPnByOrderPnId" resultMap="orderPnMapper">

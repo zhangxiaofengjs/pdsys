@@ -1,10 +1,78 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<div th:fragment="content(wareHousePn)">
-	<script th:src="@{/js/warehouse/entry/pn.js}"></script> 
-	building
-	<div id="checkin_dlg_div"></div>
+<div th:fragment="content(entry)">
+	<script th:src="@{/js/warehouse/entry/machinepart.js}"></script>
+	<nav style="border-radius:0px;margin-bottom:10px;" class="navbar navbar-default">
+		<div class="container-fluid">
+	  		<div class="navbar-header">
+	  			<span class="navbar-brand glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+	  		</div>
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/entry/main/machinepart}" method="post">
+	 			<div class="form-group">
+				   <input type="text" class="form-control" name="id" id="id" th:value="${entry.id != 0 ? entry.id:_}" placeholder="入库单号">
+	 			</div>
+	 			<button type="submit" class="btn btn-sm btn-info" name="refresh">查询</button>
+	 			<button type="button" class="btn btn-sm btn-info" name="addEntry">新建入库单</button>
+	 			<div style="display:inline-block;" th:if="${entry.id >0 }  and ${entry.state == 0}">
+	 				<button type="button" class="btn btn-sm btn-info" name="addEntryMachinePart">增加入库项目</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntryMachinePart" >删除入库项目</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="doEntry" th:if="${!#lists.isEmpty(entry.wareHouseEntryMachineParts)}">入库</button>
+		 		</div>
+			</form>
+		</div>
+	</nav>
+	<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
+		<thead>
+			<tr>
+				<th style="text-align:center;" th:colspan="9">
+					<h4><b>入库单明细表</b></h4>
+				</th>
+			</tr>
+			<tr>
+				<th th:colspan="2">入库单号:&nbsp;
+					<a th:style="${entry.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="((${entry.createTime} != null) ? ${#dates.format(entry.createTime, 'yyyyMMddHHmmss')} : '00000000000000') + '#' + ${entry.id}"></a>
+					<i th:if="${entry.state == 2}" th:text="已删除" class="text-muted"></i>
+					<input type="hidden" id="entry_id" name="entry_id" th:value="${entry.id}">
+					<a th:if="${entry.state == 0 and entry.id > 0}" href="javascript:void(0);" class="glyphicon glyphicon-trash" id="deleteEntry"></a>
+				</th>
+				<th th:colspan="1">入库日期:&nbsp;<b th:text="((${entry.entryTime} != null) ? ${#dates.format(entry.entryTime, 'yyyy-MM-dd')} : '')"></b></th>
+				<th th:colspan="5">提交人:&nbsp;
+					<a href="javascript:void(0);" th:text="${entry.user!=null?entry.user.name:''}"></a>
+					<i class="pull-right" th:text="'更新:' + ${entry.updateUser!=null?entry.updateUser.name:''} + '&nbsp;' + (${entry.updateTime!=null}?${#dates.format(entry.updateTime, 'yyyy-MM-dd')}:'')"></i>
+				</th>
+			</tr>
+			<tr>
+				<th style="text-align:center;" th:colspan="1">
+					备注
+				</th>
+				<td style="" th:colspan="4" th:text="${entry.comment}">
+				</td>
+			</tr>
+		    <tr>
+		    	<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
+				<th>品番</th>
+				<th>名称</th>
+				<th>单位</th>
+				<th>入库数量</th>
+		    </tr>
+		</thead>
+		<tbody>
+			<tr th:each="wareHouseEntryMachinePart : ${entry.wareHouseEntryMachineParts}"
+				th:with="machinePart=(${wareHouseEntryMachinePart.machinePart}),
+						 unit=(${machinePart != null}?${machinePart.unit}:null)"
+						 th:rowid="${wareHouseEntryMachinePart.id}">
+				<td>
+					<input type="checkbox" name="select" th:rowid="${wareHouseEntryMachinePart.id}">
+				</td>
+				<td th:text="${machinePart}?${machinePart.pn}:_"></td>
+				<td th:text="${machinePart}?${machinePart.name}:_"></td>
+				<td th:text="${unit}?${unit.name}:_"></td>
+				<td th:text="${wareHouseEntryMachinePart.num}"></td>
+		    </tr>
+		</tbody>
+	</table>
+	<div id="dlg_div"></div>
 	<div id="msg_div"></div>
 </div>
 </body>

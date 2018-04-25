@@ -18,7 +18,8 @@ public class WareHouseEntryModel extends BaseModel{
 	private String comment;
 	private List<WareHouseEntryPnModel> wareHouseEntryPns;
 	private List<WareHouseEntryBOMModel> wareHouseEntryBOMs;
-	
+	private List<WareHouseEntryMachinePartModel> wareHouseEntryMachineParts;
+
 	public WareHouseEntryModel() {
 	}
 	
@@ -76,5 +77,13 @@ public class WareHouseEntryModel extends BaseModel{
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public List<WareHouseEntryMachinePartModel> getWareHouseEntryMachineParts() {
+		return wareHouseEntryMachineParts;
+	}
+
+	public void setWareHouseEntryMachineParts(List<WareHouseEntryMachinePartModel> wareHouseEntryMachineParts) {
+		this.wareHouseEntryMachineParts = wareHouseEntryMachineParts;
 	}
 }

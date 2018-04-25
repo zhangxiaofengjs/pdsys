@@ -11,6 +11,10 @@
         <id column="wh_bom_id" property="id" />
         <result column="wh_bom_num" property="num" />  
     </resultMap>
+	<resultMap id="wareHouseMachinePartResultMap" type="wareHouseMachinePartModel" >  
+        <id column="wh_mp_id" property="id" />
+        <result column="wh_mp_num" property="num" />  
+    </resultMap>
     <resultMap id="orderResultMap" type="orderModel" >  
         <id column="o_id" property="id" />  
         <result column="o_no" property="no" />  
@@ -28,6 +32,12 @@
         <result column="pn_pn" property="pn" />  
         <result column="pn_name" property="name" />  
         <association property="pnCls" resultMap="pnClsResultMap"/>
+        <association property="unit" resultMap="unitResultMap"/>
+    </resultMap>
+	<resultMap id="machinePartResultMap" type="MachinePartModel" >  
+        <id column="mp_id" property="id" />  
+        <result column="mp_pn" property="pn" />  
+        <result column="mp_name" property="name" />  
         <association property="unit" resultMap="unitResultMap"/>
     </resultMap>
 	<resultMap id="BOMResultMap" type="BOMModel" >  
@@ -55,6 +65,13 @@
         <association property="bom" resultMap="BOMResultMap" />
         <association property="wareHouseBOM" resultMap="wareHouseBOMResultMap" />
     </resultMap>
+    <resultMap id="wareHouseEntryMachinePartResultMap" type="wareHouseEntryMachinePartModel">  
+        <id column="e_mp_id" property="id" />  
+        <result column="e_mp_num" property="num" />  
+        <association property="machinePart" resultMap="machinePartResultMap" />
+        <association property="wareHouseMachinePart" resultMap="wareHouseMachinePartResultMap" />
+    </resultMap>
+    
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="user_id" property="id" />  
         <result column="user_no" property="no" />  
@@ -72,6 +89,7 @@
         <association property="updateUser" resultMap="userResultMap" columnPrefix="upt_"/>
         <collection property="wareHouseEntryPns" ofType="wareHouseEntryPnModel" resultMap="wareHouseEntryPnResultMap" />
         <collection property="wareHouseEntryBOMs" ofType="wareHouseEntryBOMModel" resultMap="wareHouseEntryBOMResultMap" />
+        <collection property="wareHouseEntryMachineParts" ofType="wareHouseEntryMachinePartModel" resultMap="wareHouseEntryMachinePartResultMap" />
     </resultMap>
 
 	<select id="queryList" parameterType="wareHouseEntryModel" resultMap="wareHouseEntryResultMap">
@@ -182,6 +200,44 @@
 		left join warehouse_bom_tbl as wh_bom on e_bom.c_ref_id = wh_bom.c_bom_id
 		<where>
 			entry.c_type=1
+			<if test="id >= 0">
+				and entry.c_id=#{id}
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryListWithMachinePart" parameterType="wareHouseEntryModel" resultMap="wareHouseEntryResultMap">
+		select entry.c_id as e_id,
+			   entry.c_entry_time as e_entry_time,
+			   entry.c_update_time as e_update_time,
+			   entry.c_create_time as e_create_time,
+			   entry.c_state as e_state,
+			   entry.c_type as e_type,
+			   entry.c_comment as e_comment,
+		       user.c_id as user_id,
+		       user.c_no as user_no,
+		       user.c_name as user_name,
+		       upt_user.c_id as upt_user_id,
+		       upt_user.c_no as upt_user_no,
+		       upt_user.c_name as upt_user_name,
+		       e_mp.c_id as e_mp_id,
+		       e_mp.c_num as e_mp_num,
+		       mp.c_id as mp_id,
+		       mp.c_pn as mp_pn,
+		       mp.c_name as mp_name,
+		       unit.c_id as unit_id,
+		       unit.c_name as unit_name,
+		       wh_mp.c_id as wh_mp_id,
+		       wh_mp.c_num as wh_mp_num
+		from entry_tbl as entry
+		left join user_tbl as user on entry.c_user_id = user.c_id
+		left join user_tbl as upt_user on entry.c_update_user_id = upt_user.c_id
+		left join entry_machine_part_tbl as e_mp on entry.c_id = e_mp.c_entry_id
+		left join machine_part_tbl as mp on e_mp.c_ref_id = mp.c_id
+		left join unit_tbl as unit on mp.c_unit_id = unit.c_id
+		left join warehouse_machine_part_tbl as wh_mp on e_mp.c_ref_id = wh_mp.c_machine_part_id
+		<where>
+			entry.c_type=2
 			<if test="id >= 0">
 				and entry.c_id=#{id}
 			</if>

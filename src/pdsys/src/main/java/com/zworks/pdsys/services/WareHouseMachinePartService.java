@@ -41,4 +41,12 @@ public class WareHouseMachinePartService {
 		
 		return queryOne(whPart);
 	}
+
+	public void add(WareHouseMachinePartModel wareHouseMachinePart) {
+		wareHouseMapper.add(wareHouseMachinePart);
+	}
+
+	public void update(WareHouseMachinePartModel wareHouseMachinePart) {
+		wareHouseMapper.update(wareHouseMachinePart);
+	}
 }
