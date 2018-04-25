@@ -11,7 +11,7 @@ import com.zworks.pdsys.models.SupplierModel;
 public class BOMDetailModel {
 	
 	//数量
-	private int bomNum;
+	private float bomNum;
 	
 	//品名
 	private String bomName;
@@ -36,11 +36,11 @@ public class BOMDetailModel {
 		this.whbomNum = whbomNum;
 	}
 
-	public int getBomNum() {
+	public float getBomNum() {
 		return bomNum;
 	}
 
-	public void setBomNum(int bomNum) {
+	public void setBomNum(float bomNum) {
 		this.bomNum = bomNum;
 	}
 
