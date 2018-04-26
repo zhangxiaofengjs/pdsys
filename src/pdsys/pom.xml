@@ -94,7 +94,7 @@
 		  <artifactId>spring-context-support</artifactId>
 		</dependency>
 		
-		<!-- security
+		<!-- security-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -102,7 +102,7 @@
 		<dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity4</artifactId>
-        </dependency>-->
+        </dependency>
         
         <!-- 支持 @ConfigurationProperties 注解 -->  
 		<dependency>  

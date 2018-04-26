@@ -51,6 +51,9 @@ mybatis:
 
 #pdsys其余设定
 pdsys:
+    admin:
+        username: admin
+        password: $2a$10$qhZeMeQNJRuZ6bPCRvUOxecqqSMQ81Zs91n/fmyxCiCI6yalyMI2m #pdsys111 $2a$10$GVtgC68Z8s88s24JsqfRNuMAfLgAcPfFDKLNIIweXmI6QFICy5f2i
     backup: #备份设定
         database:
             enable: true

@@ -14,10 +14,6 @@ import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.services.WareHouseBOMService;
-import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
-import com.zworks.pdsys.services.WareHouseDeliveryMachinePartService;
-import com.zworks.pdsys.services.WareHouseDeliveryPnService;
-import com.zworks.pdsys.services.WareHouseDeliveryService;
 import com.zworks.pdsys.services.WareHouseMachinePartService;
 import com.zworks.pdsys.services.WareHousePnService;
 
@@ -34,14 +30,6 @@ public class WareHouseController {
 	WareHousePnService wareHousePnService;
 	@Autowired
 	WareHouseMachinePartService wareHouseMachinePartService;
-	@Autowired
-	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
-	@Autowired
-	WareHouseDeliveryMachinePartService wareHouseDeliveryMachinePartService;
-	@Autowired
-	WareHouseDeliveryPnService wareHouseDeliveryPnService;
-	@Autowired
-	WareHouseDeliveryService wareHouseDeliveryService;
 	
 	@RequestMapping("/list/main")
     public String listMain(@RequestParam(name="type",required = false, defaultValue="pn")String type, 

@@ -2,6 +2,7 @@ eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
 encoding//src/main/resources=UTF-8
 encoding//src/main/resources/static/js/sys/user/list.js=UTF-8
+encoding//src/main/resources/templates/common/exception.html=UTF-8
 encoding//src/main/resources/templates/common/footer.html=UTF-8
 encoding//src/main/resources/templates/device/list.html=UTF-8
 encoding//src/main/resources/templates/index.html=UTF-8
