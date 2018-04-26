@@ -18,7 +18,8 @@ public class WareHouseDeliveryModel extends BaseModel{
 	private String comment;
 	private List<WareHouseDeliveryPnModel> wareHouseDeliveryPns;
 	private List<WareHouseDeliveryBOMModel> wareHouseDeliveryBOMs;
-	
+	private List<WareHouseDeliveryMachinePartModel> wareHouseDeliveryMachineParts;
+
 	public WareHouseDeliveryModel() {
 	}
 	
@@ -76,5 +77,13 @@ public class WareHouseDeliveryModel extends BaseModel{
 
 	public void setWareHouseDeliveryBOMs(List<WareHouseDeliveryBOMModel> wareHouseDeliveryBOMs) {
 		this.wareHouseDeliveryBOMs = wareHouseDeliveryBOMs;
+	}
+
+	public List<WareHouseDeliveryMachinePartModel> getWareHouseDeliveryMachineParts() {
+		return wareHouseDeliveryMachineParts;
+	}
+
+	public void setWareHouseDeliveryMachineParts(List<WareHouseDeliveryMachinePartModel> wareHouseDeliveryMachineParts) {
+		this.wareHouseDeliveryMachineParts = wareHouseDeliveryMachineParts;
 	}
 }

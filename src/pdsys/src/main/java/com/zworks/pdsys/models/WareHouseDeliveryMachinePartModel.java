@@ -11,6 +11,7 @@ public class WareHouseDeliveryMachinePartModel extends BaseModel{
 	
 	private WareHouseDeliveryModel wareHouseDelivery;
 	private WareHouseMachinePartModel wareHouseMachinePart;
+	private MachinePartModel machinePart;
 	private float num;
 	
 	public WareHouseDeliveryMachinePartModel() {
@@ -38,5 +39,13 @@ public class WareHouseDeliveryMachinePartModel extends BaseModel{
 
 	public void setWareHouseMachinePart(WareHouseMachinePartModel wareHouseMachinePartModel) {
 		this.wareHouseMachinePart = wareHouseMachinePartModel;
+	}
+
+	public MachinePartModel getMachinePart() {
+		return machinePart;
+	}
+
+	public void setMachinePart(MachinePartModel machinePart) {
+		this.machinePart = machinePart;
 	}
 }

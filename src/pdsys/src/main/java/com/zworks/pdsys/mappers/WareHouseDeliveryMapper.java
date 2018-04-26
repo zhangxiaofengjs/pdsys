@@ -12,14 +12,15 @@ import com.zworks.pdsys.models.WareHouseDeliveryModel;
  */
 @Mapper
 public interface WareHouseDeliveryMapper {
-	
-	void add(WareHouseDeliveryModel obj);
+	List<WareHouseDeliveryModel> queryList(WareHouseDeliveryModel delivery);
+	List<WareHouseDeliveryModel> queryListWithPn(WareHouseDeliveryModel delivery);
+	List<WareHouseDeliveryModel> queryListWithBOM(WareHouseDeliveryModel delivery);
+	List<WareHouseDeliveryModel> queryListWithMachinePart(WareHouseDeliveryModel delivery);
 
-	List<WareHouseDeliveryModel> queryList(WareHouseDeliveryModel obj);
-	List<WareHouseDeliveryModel> queryListWithPn(WareHouseDeliveryModel obj);
-	List<WareHouseDeliveryModel> queryListWithBOM(WareHouseDeliveryModel obj);
+	void add(WareHouseDeliveryModel obj);
 
 	void update(WareHouseDeliveryModel delivery);
 
 	void delete(WareHouseDeliveryModel delivery);
+
 }

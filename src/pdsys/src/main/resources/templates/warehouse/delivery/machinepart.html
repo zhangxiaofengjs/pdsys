@@ -1,10 +1,82 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<div th:fragment="content(wareHousePn)">
-	<script th:src="@{/js/warehouse/entry/pn.js}"></script> 
-	building
-	<div id="checkin_dlg_div"></div>
+<div th:fragment="content(delivery)">
+	<script th:src="@{/js/warehouse/delivery/machinepart.js}"></script>
+	<nav style="border-radius:0px;margin-bottom:10px;" class="navbar navbar-default">
+		<div class="container-fluid">
+	  		<div class="navbar-header">
+	  			<span class="navbar-brand glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+	  		</div>
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/delivery/main/machinepart}" method="post">
+	 			<div class="form-group">
+				   <input type="text" class="form-control" name="id" id="id" th:value="${delivery.id != 0 ? delivery.id:_}" placeholder="出库单号">
+	 			</div>
+	 			<button type="submit" class="btn btn-sm btn-info" name="refresh">查询</button>
+	 			<button type="button" class="btn btn-sm btn-info" name="addDelivery">新建出库单</button>
+	 			<div style="display:inline-block;" th:if="${delivery.id >0 } and ${delivery.state == 0}">
+		 			<button type="button" class="btn btn-sm btn-info" name="addDeliveryMachinePart">增加出库项目</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="deleteDeliveryMachinePart">删除出库项目</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="doDelivery" th:if="${!#lists.isEmpty(delivery.wareHouseDeliveryMachineParts)}">出库</button>
+	 			</div>
+			</form>
+		</div>
+	</nav>
+	<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
+		<thead>
+			<tr>
+				<th style="text-align:center;" th:colspan="10">
+					<h4><b>设备备件出库单明细表</b></h4>
+				</th>
+			</tr>
+			<tr>
+				<th th:colspan="2">出库单号:&nbsp;
+					<a th:style="${delivery.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="((${delivery.createTime} != null) ? ${#dates.format(delivery.createTime, 'yyyyMMddHHmmss')} : '00000000000000') + '#' + ${delivery.id}"></a>
+					<i th:if="${delivery.state == 2}" th:text="已删除" class="text-muted"></i>
+					<input type="hidden" id="delivery_id" name="delivery_id" th:value="${delivery.id}">
+					<a th:if="${delivery.state == 0}" href="javascript:void(0);" class="glyphicon glyphicon-trash" id="deleteDelivery"></a>
+				</th>
+				<th th:colspan="1">出库日期:&nbsp;<b th:text="((${delivery.deliveryTime} != null) ? ${#dates.format(delivery.deliveryTime, 'yyyy-MM-dd')} : '')"></b></th>
+				<th th:colspan="7">提交人:&nbsp;
+					<a href="javascript:void(0);" th:text="${delivery.user!=null?delivery.user.name:''}"></a>
+					<i class="pull-right" th:text="'更新:' + ${delivery.updateUser!=null?delivery.updateUser.name:''} + '&nbsp;' + (${delivery.updateTime!=null}?${#dates.format(delivery.updateTime, 'yyyy-MM-dd')}:'')"></i>
+				</th>
+			</tr>
+			<tr>
+				<th style="text-align:center;" th:colspan="1">
+					备注
+				</th>
+				<td style="" th:colspan="8" th:text="${delivery.comment}">
+				</td>
+			</tr>
+		    <tr>
+		    	<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
+				<th>品番</th>
+				<th>名称</th>
+				<th>单位</th>
+				<th>在库数量</th>
+				<th>出库数量</th>
+		    </tr>
+		</thead>
+		<tbody>
+			<tr th:each="wareHouseDeliveryMachinePart : ${delivery.wareHouseDeliveryMachineParts}"
+				th:with="machinePart=(${wareHouseDeliveryMachinePart.machinePart}),
+						 unit=(${machinePart != null}?${machinePart.unit}:null),
+						 wareHouseMachinePart=(${wareHouseDeliveryMachinePart.wareHouseMachinePart}),
+						 wareHouseNum=(${wareHouseMachinePart}?${wareHouseMachinePart.num}:0)"
+						 th:rowid="${wareHouseDeliveryMachinePart.id}">
+				<td>
+					<input type="checkbox" name="select" th:rowid="${wareHouseDeliveryMachinePart.id}">
+				</td>
+				<td th:text="${machinePart}?${machinePart.pn}:_"></td>
+				<td th:text="${machinePart}?${machinePart.name}:_"></td>
+				<td th:text="${unit}?${unit.name}:_"></td>
+				<td th:text="${wareHouseNum}"></td>
+				<td th:text="${wareHouseDeliveryMachinePart.num}" th:class="${wareHouseNum < wareHouseDeliveryMachinePart.num}?'text-danger':''"></td>
+		    </tr>
+		</tbody>
+	</table>
+	<div id="dlg_div"></div>
 	<div id="msg_div"></div>
 </div>
 </body>

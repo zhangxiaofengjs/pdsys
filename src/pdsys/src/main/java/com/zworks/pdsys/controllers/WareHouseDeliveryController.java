@@ -15,9 +15,11 @@ import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
+import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
+import com.zworks.pdsys.services.WareHouseDeliveryMachinePartService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
 import com.zworks.pdsys.services.WareHouseDeliveryService;
 
@@ -34,6 +36,8 @@ public class WareHouseDeliveryController {
 	WareHouseDeliveryPnService wareHouseDeliveryPnService;
 	@Autowired
 	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
+	@Autowired
+	WareHouseDeliveryMachinePartService wareHouseDeliveryMachinePartService;
 	
 	@RequestMapping(value= {"/main", "/main/{type}"})
     public String main(
@@ -56,6 +60,8 @@ public class WareHouseDeliveryController {
 				delivery = wareHouseDeliveryService.queryOneWithPn(delivery);
 			} else if(type.equals("bom")) {
 				delivery = wareHouseDeliveryService.queryOneWithBOM(delivery);
+			} else if(type.equals("machinepart")) {
+				delivery = wareHouseDeliveryService.queryOneWithMachinePart(delivery);
 			} else {
 				delivery = null;
 			}
@@ -109,6 +115,20 @@ public class WareHouseDeliveryController {
 		}
 		return JSONResponse.success();
 	}
+	/**
+	 * 新建出库明细
+	 * */
+	@RequestMapping(value="/add/machinepart")
+	@ResponseBody
+	public JSONResponse addDeliveryMachinePart(@RequestBody WareHouseDeliveryMachinePartModel deliveryMachinePart, Model model) {
+		if(wareHouseDeliveryMachinePartService.exists(deliveryMachinePart)) {
+			//已经存在，做更新
+			wareHouseDeliveryMachinePartService.update(deliveryMachinePart);
+		} else {
+			wareHouseDeliveryMachinePartService.add(deliveryMachinePart);
+		}
+		return JSONResponse.success();
+	}
 	
 	/**
 	 * 删除出库单
@@ -143,6 +163,16 @@ public class WareHouseDeliveryController {
 	@ResponseBody
 	public JSONResponse deleteDeliveryBOM(@RequestBody List<WareHouseDeliveryBOMModel> deliveryBOMs, Model model) {
 		wareHouseDeliveryBOMService.delete(deliveryBOMs);
+		return JSONResponse.success();
+	}
+	
+	/**
+	 * 删除出库明细
+	 * */
+	@RequestMapping(value="/delete/machinepart")
+	@ResponseBody
+	public JSONResponse deleteDeliveryMachinePart(@RequestBody List<WareHouseDeliveryMachinePartModel> deliveryMachineParts, Model model) {
+		wareHouseDeliveryMachinePartService.delete(deliveryMachineParts);
 		return JSONResponse.success();
 	}
 	
