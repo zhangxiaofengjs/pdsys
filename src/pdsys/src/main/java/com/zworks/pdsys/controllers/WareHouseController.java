@@ -47,7 +47,6 @@ public class WareHouseController {
     public String listMain(@RequestParam(name="type",required = false, defaultValue="pn")String type, 
     		WareHouseListFormBean formBean,
     		Model model) {
-
 		if(formBean == null) {
 			formBean = new WareHouseListFormBean();
 		}

@@ -13,6 +13,7 @@ import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zworks.pdsys.scheduler.jobs.DataBaseBackupJob;
 import com.zworks.pdsys.scheduler.jobs.DeviceMaitenaceJob;
 
 /**
@@ -25,8 +26,16 @@ public class JobShop {
 	 private Scheduler scheduler;
 	
 	public void initialize() {
+		//备份数据库
+		createJob(DataBaseBackupJob.class,
+				  "pdsys",
+				  "0 0 1 * * ?",//每天1:00执行
+				  "数据库备份计划Job",
+				  "数据库备份计划JobTrigger");
+		
+		//设备维护提醒
 		createJob(DeviceMaitenaceJob.class,
-				  "PDSYS",
+				  "pdsys",
 				  "0 0 23 1/1 * ? *",//每天23:00执行
 				  "设备维护计划Job",
 				  "设备维护计划JobTrigger");

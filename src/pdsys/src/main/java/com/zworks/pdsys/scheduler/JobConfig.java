@@ -48,7 +48,7 @@ public class JobConfig {
     @Bean
     public Properties quartzProperties() throws IOException {
         PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
-        propertiesFactoryBean.setLocation(new ClassPathResource("pdsys.quartz.properties"));
+        propertiesFactoryBean.setLocation(new ClassPathResource("pdsys.quartz.properties"));//考虑统一移动到application.yml
         propertiesFactoryBean.afterPropertiesSet();
         return propertiesFactoryBean.getObject();
     }
