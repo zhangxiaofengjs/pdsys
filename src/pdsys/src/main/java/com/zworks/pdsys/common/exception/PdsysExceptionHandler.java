@@ -1,5 +1,8 @@
 package com.zworks.pdsys.common.exception;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -40,10 +43,12 @@ public class PdsysExceptionHandler {
 //	}
 
 	@ExceptionHandler(Exception.class)
-	public String handleException(Exception e, Model model) {
-		logger.error(e.getMessage(), e);
+	public String handleException(HttpServletRequest request, HttpServletResponse response, Exception e, Model model) {
+		String msg = makeErrorMessage(request, response, e);
+
+		logger.error(msg, e);
 		
-		JSONResponse res = JSONResponse.error(e.getMessage()).put("code", 0);
+		JSONResponse res = JSONResponse.error(msg).put("code", PdsysExceptionCode.ERROR_SERVER_INTERNAL_ERROR);
 		model.addAttribute("error", res);
 		
 		return "/common/exception";
@@ -58,4 +63,12 @@ public class PdsysExceptionHandler {
 		model.addAttribute("error", res);
 		return "/common/exception";
     }
+	
+	private String makeErrorMessage(HttpServletRequest request, HttpServletResponse response, Exception e) {
+		return String.format("URL:%s\n PARAMETERS:%s\n CODE:%s EXCEPTION:%s", 
+				request != null ? request.getRequestURL() : "",
+				request != null ? request.getQueryString() : "",
+				request != null ? request.getAttribute("javax.servlet.error.status_code") : 0,
+				e.getMessage());
+	}
 }
