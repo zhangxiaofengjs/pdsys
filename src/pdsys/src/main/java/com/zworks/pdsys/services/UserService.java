@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zworks.pdsys.common.security.PdSysPasswordEncoder;
 import com.zworks.pdsys.mappers.UserMapper;
 import com.zworks.pdsys.models.UserModel;
 
@@ -16,6 +17,8 @@ import com.zworks.pdsys.models.UserModel;
 public class UserService {
 	@Autowired
     private UserMapper userMapper;
+	@Autowired
+	PdSysPasswordEncoder encoder;
 	
 	public List<UserModel> queryList(UserModel filterObj) {
 		return userMapper.queryList(filterObj);
@@ -36,6 +39,12 @@ public class UserService {
 		}
 		return null;
 	}
+	
+	public UserModel queryOneWithPassword(UserModel user) {
+		user.getFilterCond().put("pwd", true);
+		return queryOne(user);
+	}
+	
 	public UserModel queryOne(UserModel user) {
 		List<UserModel> us = queryList(user);
 		
@@ -43,5 +52,14 @@ public class UserService {
 			return us.get(0);
 		}
 		return null;
+	}
+	public void changePassword(UserModel user) {
+		UserModel u=new UserModel();
+		u.setId(user.getId());
+		u.setPassword(encoder.encode(user.getPassword()));
+		userMapper.changePassword(u);
+	}
+	public boolean isPasswordMatch(String p1, String p2) {
+		return encoder.matches(p1, p2);
 	}
 }

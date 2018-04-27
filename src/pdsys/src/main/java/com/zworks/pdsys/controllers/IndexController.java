@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 //import org.springframework.security.core.Authentication;
 //import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +14,8 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.zworks.pdsys.common.security.PdSysLoginUser;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -23,6 +26,11 @@ public class IndexController {
 	
 	@RequestMapping(value= {"/", "/index"})
     public String index(Model model) {
+		PdSysLoginUser loginUser = (PdSysLoginUser) SecurityContextHolder.getContext()
+			    .getAuthentication()
+			    .getPrincipal();
+		model.addAttribute("loginUser", loginUser);
+		
         return "index";
     }
 	

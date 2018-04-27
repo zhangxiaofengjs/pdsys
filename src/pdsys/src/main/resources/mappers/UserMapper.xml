@@ -22,7 +22,9 @@
 			   u.c_name as u_name,
 			   u.c_phone as u_phone,
 			   u.c_address as u_addr,
-			   u.c_password as u_pass,
+			   <if test="filterCond.pwd != null and filterCond.pwd">
+			   		u.c_password as u_pass,
+			   </if>
 			   r.c_id as r_id,
 			   r.c_role as r_role
 		from user_tbl as u
@@ -70,6 +72,13 @@
 			c_name = #{name},
 			c_phone = #{phone},
 			c_address = #{address}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
+	<update id="changePassword">
+    	update user_tbl
+		set	c_password = #{password}
     	<where>
 			c_id = #{id}
 		</where>

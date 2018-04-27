@@ -123,4 +123,27 @@ $(document).ready(function(){
 			}
 		});
 	});
+	
+	$("#initPwd").click(function(){
+		var self = $(this);
+		var selIds = getSelectedRowId({"checkOne":true, "showMsg":true});
+		if(selIds.length != 1) {
+			return;
+		}
+		
+		var id = selIds[0];
+		
+		PdSys.ajax({
+			"url":"/user/initpwd",
+			"data": {
+				"id": id
+			},
+			"success": function() {
+				PdSys.alert("重置为[123]成功，请用户及时修改密码确保安全。");
+			},
+			"error": function() {
+				PdSys.alert("重置密码失败");
+			}
+		});
+	});
 });
