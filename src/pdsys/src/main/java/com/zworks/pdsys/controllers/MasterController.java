@@ -46,7 +46,7 @@ public class MasterController {
 		if(type == null) {
 			type = "customer";
 		} else if(!(type.equals("customer") || type.equals("bom") || 
-				type.equals("pn") || type.equals("machine"))) {
+				type.equals("pn") || type.equals("machine")|| type.equals("fileinput"))) {
 			throw new PdsysException("错误参数:/sys/master/main/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
 		

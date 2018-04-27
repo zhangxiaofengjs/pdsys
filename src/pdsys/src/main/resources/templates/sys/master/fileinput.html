@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/header::header">
+</head>
+
+<body>
+	<div th:fragment="content(${list})">
+		<script th:src="@{/js/fileinput/upload.js}"></script>
+		
+		<form id="imageForm" method="post" enctype="multipart/form-data">
+			<input id="uploadfile" name="uploadfile" type="file" multiple="multiple" class="fileloading">
+			<input id = "btn_add" class="btn btn-primary radius" type="button" value="&nbsp;&nbsp;提交&nbsp;&nbsp;"/>
+		</form>
+	</div>
+
+</body>
+</html>

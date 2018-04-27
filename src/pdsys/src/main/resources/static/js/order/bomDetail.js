@@ -1,6 +1,11 @@
 $(document).ready(function(){
 	
 	//返回上一页
+	$("#reback").click(function(){
+		history.go(-1);
+	});
+
+	//BOM详细
 	$("a[name='showBomDetail']").click(function(){
 		var self = $(this);
 		var supplier = {
