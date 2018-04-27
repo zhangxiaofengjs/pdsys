@@ -15,8 +15,15 @@
 	<select id="queryList" resultMap="orderResultMap">
 		select * from order_tbl 
 		<where>
-			<if test="no != null">
-				and c_no like concat('%',#{no},'%') 
+			<if test="no != null and no != ''">
+				<choose>
+					<when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
+						and c_no like concat('%',#{no},'%') 
+					</when>
+	                <otherwise>
+						and c_no = #{no}
+	                </otherwise>
+	            </choose>
 			</if>
 			<if test="state >-1">
 				and c_state = #{state}

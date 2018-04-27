@@ -41,17 +41,26 @@ public class WareHouseController {
 		
 		if(type.equals("bom")) {
 			WareHouseBOMModel whBom = formBean.getWareHouseBOM();
+			if(whBom != null) {
+				whBom.getFilterCond().put("fuzzyPnSearch", true);
+			}
 			List<?> list = wareHouseBOMService.queryList(whBom);
 			model.addAttribute("list", list);
 		}
 		else if(type.equals("pn")) {
 			WareHousePnModel whPn = formBean.getWareHousePn();
+			if(whPn != null) {
+				whPn.getFilterCond().put("fuzzyPnSearch", true);
+			}
 			List<?> list = wareHousePnService.queryList(whPn);
 			model.addAttribute("list", list);
 		}
 		else if(type.equals("machinepart")) {
-			WareHouseMachinePartModel whPn = formBean.getWareHouseMachinePart();
-			List<?> list = wareHouseMachinePartService.queryList(whPn);
+			WareHouseMachinePartModel whMp = formBean.getWareHouseMachinePart();
+			if(whMp != null) {
+				whMp.getFilterCond().put("fuzzyPnSearch", true);
+			}
+			List<?> list = wareHouseMachinePartService.queryList(whMp);
 			model.addAttribute("list", list);
 		}
 		else {

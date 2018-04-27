@@ -38,11 +38,18 @@
 		left join unit_tbl as unit on mp.c_unit_id = unit.c_id
 		left join supplier_tbl as supplier on mp.c_supplier_id = supplier.c_id
 		<where>
-			<if test="machinePart != null and machinePart.pn != null">
-				and machine_part.c_pn like '%${machinePart.pn}%'
+			<if test="machinePart != null and machinePart.pn != null and machinePart.pn != ''">
+				<choose>
+	                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+						and mp.c_pn like '%${machinePart.pn}%'
+					</when>
+					 <otherwise>
+	                    and mp.c_pn=#{machinePart.pn}
+	                </otherwise>
+				</choose>
 			</if>
 			<if test="machinePart != null and machinePart.id > 0">
-				and machine_part.c_id=#{machinePart.id}
+				and mp.c_id=#{machinePart.id}
 			</if>
 		</where>
 	</select>

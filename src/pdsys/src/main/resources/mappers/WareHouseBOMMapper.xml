@@ -40,8 +40,15 @@
 		left join unit_tbl as unit on bom.c_unit_id = unit.c_id
 		left join supplier_tbl as supplier on bom.c_supplier_id = supplier.c_id
 		<where>
-			<if test="bom != null">
-				and bom.c_pn like '%${bom.pn}%'
+			<if test="bom != null and bom.pn != null and bom.pn !=''">
+				<choose>
+	                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+						and bom.c_pn like '%${bom.pn}%'
+					</when>
+					 <otherwise>
+	                    and bom.c_pn=#{bom.pn}
+	                </otherwise>
+				</choose>
 			</if>
 		</where>
 		order by bom.c_type asc, bom.c_pn asc

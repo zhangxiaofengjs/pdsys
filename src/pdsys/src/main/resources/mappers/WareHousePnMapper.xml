@@ -59,8 +59,15 @@
 		left join unit_tbl AS unit on pn.c_unit_id = unit.c_id
 		left join order_tbl AS od on od_pn.c_order_id = od.c_id
 		<where>
-			<if test="orderPn != null and orderPn.pn != null">
-				and pn.c_pn like '%${orderPn.pn.pn}%'
+			<if test="orderPn != null and orderPn.pn != null and orderPn.pn.pn != null and orderPn.pn.pn != ''">
+				<choose>
+	                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+						and pn.c_pn like '%${orderPn.pn.pn}%'
+					</when>
+					 <otherwise>
+	                    and pn.c_pn=#{orderPn.pn.pn}
+	                </otherwise>
+				</choose>
 			</if>
 		</where>
 	</select>

@@ -31,6 +31,8 @@ public class OrderController {
     public String showOrderlist(OrderModel order, Model model) {
 		
 		//订单一览加载
+		order.getFilterCond().put("fuzzyNoSearch", true);
+		
 		List<OrderModel> list = orderService.queryList(order);
 		model.addAttribute("orders", list);
 		model.addAttribute("order", order);

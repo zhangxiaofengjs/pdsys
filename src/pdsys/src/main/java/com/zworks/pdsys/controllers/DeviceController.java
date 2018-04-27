@@ -26,6 +26,7 @@ public class DeviceController {
 	
 	@RequestMapping(value= {"/list"})
     public String list(DeviceModel device, Model model) {
+		device.getFilterCond().put("fuzzyNoSearch", true);
 		List<DeviceModel> list = deviceService.queryList(device);
 		
 		model.addAttribute("device", device);
