@@ -3,8 +3,8 @@
 
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseDeliveryMachinePartMapper">
 	<resultMap id="wareHouseMachinePartResultMap" type="wareHouseMachinePartModel" >  
-        <id column="wh_machine_part_id" property="id" />  
-        <result column="wh_machine_part_num" property="num" />
+        <id column="wh_mp_id" property="id" />  
+        <result column="wh_mp_num" property="num" />
     </resultMap>
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="user_id" property="id" />  
@@ -17,30 +17,33 @@
         <association property="user" resultMap="userResultMap"/>
     </resultMap>
 	<resultMap id="wareHouseDeliveryMachinePartResultMap" type="wareHouseDeliveryMachinePartModel" >  
-        <id column="d_machine_part_id" property="id" />  
-        <result column="d_machine_part_num" property="num" />  
+        <id column="d_mp_id" property="id" />  
+        <result column="d_mp_num" property="num" />  
         <association property="wareHouseDelivery" resultMap="wareHouseDeliveryResultMap"/>
         <association property="wareHouseMachinePart" resultMap="wareHouseMachinePartResultMap"/>
     </resultMap>
 
 	<select id="queryList" parameterType="wareHouseDeliveryMachinePartModel" resultMap="wareHouseDeliveryMachinePartResultMap">
-		select d_machine_part.c_id as d_machine_part_id,
-			   d_machine_part.c_num as d_machine_part_num,
+		select d_mp.c_id as d_mp_id,
+			   d_mp.c_num as d_mp_num,
 		       d.c_id as d_id,
 		       user.c_id as user_id,
 		       user.c_name as user_name,
-		       wh_machine_part.c_id as wh_machine_part_id,
-		       wh_machine_part.c_num as wh_machine_part_num
-		from delivery_machine_part_tbl as d_machine_part
-		left join delivery_tbl as d on d_machine_part.c_delivery_id = d.c_id
+		       wh_mp.c_id as wh_mp_id,
+		       wh_mp.c_num as wh_mp_num
+		from delivery_machine_part_tbl as d_mp
+		left join delivery_tbl as d on d_mp.c_delivery_id = d.c_id
 		left join user_tbl as user on d.c_user_id = user.c_id
-		left join warehouse_machine_part_tbl as wh_machine_part on d_machine_part.c_ref_id = wh_machine_part.c_id
+		left join warehouse_machine_part_tbl as wh_mp on d_mp.c_ref_id = wh_mp.c_id
 		<where>
-			<if test="wareHouseDelivery.user != null and wareHouseDelivery.user.id >= 0">
-				and user.c_id = #{wareHouseDelivery.user.id}
+			<if test="id > 0">
+				and d_mp.c_id = #{id}
 			</if>
-			<if test="wareHouseMachinePart != null and wareHouseMachinePart.id >= 0">
-				and wh_machine_part.c_id = #{wareHouseMachinePart.id}
+			<if test="wareHouseDelivery != null and wareHouseDelivery.id > 0">
+				and d_mp.c_delivery_id = #{wareHouseDelivery.id}
+			</if>
+			<if test="machinePart != null and machinePart.id > 0">
+				and d_mp.c_ref_id = #{machinePart.id}
 			</if>
 		</where>
 	</select>
@@ -52,7 +55,7 @@
     		c_num) 
     	values (
     		#{wareHouseDelivery.id},
-    		#{wareHouseMachinePart.id},
+    		#{machinePart.id},
     		#{num})
       	<selectKey keyProperty="id" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
@@ -63,7 +66,22 @@
     	update delivery_machine_part_tbl
 		set	c_num = #{num}
     	<where>
-			c_id = #{id}
+			<if test="id > 0">
+				and c_id = #{id}
+			</if>
+			<if test="wareHouseDelivery != null and wareHouseDelivery.id > 0">
+				and c_delivery_id = #{wareHouseDelivery.id}
+			</if>
+			<if test="machinePart != null and machinePart.id > 0">
+				and c_ref_id = #{machinePart.id}
+			</if>
 		</where>
     </update>
+    
+    <delete id="delete"  parameterType="wareHouseDeliveryMachinePartModel">
+    	delete from delivery_machine_part_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
 </mapper>

@@ -12,10 +12,11 @@ import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
  */
 @Mapper
 public interface WareHouseDeliveryMachinePartMapper {
-	
-	int add(WareHouseDeliveryMachinePartModel wareHouseDeliveryMachinePart);
-
 	List<WareHouseDeliveryMachinePartModel> queryList(WareHouseDeliveryMachinePartModel wareHouseDeliveryMachinePart);
 
+	int add(WareHouseDeliveryMachinePartModel wareHouseDeliveryMachinePart);
+
 	void update(WareHouseDeliveryMachinePartModel wareHouseDeliveryMachinePart);
+
+	void delete(WareHouseDeliveryMachinePartModel deliveryMachinePart);
 }

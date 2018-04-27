@@ -15,9 +15,11 @@ import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
+import com.zworks.pdsys.models.WareHouseEntryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.models.WareHouseEntryPnModel;
 import com.zworks.pdsys.services.WareHouseEntryBOMService;
+import com.zworks.pdsys.services.WareHouseEntryMachinePartService;
 import com.zworks.pdsys.services.WareHouseEntryPnService;
 import com.zworks.pdsys.services.WareHouseEntryService;
 
@@ -34,6 +36,8 @@ public class WareHouseEntryController {
 	WareHouseEntryPnService wareHouseEntryPnService;
 	@Autowired
 	WareHouseEntryBOMService wareHouseEntryBOMService;
+	@Autowired
+	WareHouseEntryMachinePartService wareHouseEntryMachinePartService;
 
 	@RequestMapping(value= {"/main", "/main/{type}"})
     public String entryMain(
@@ -116,16 +120,16 @@ public class WareHouseEntryController {
 	/**
 	 * 新建入库明细
 	 * */
-//	@RequestMapping(value="/update/machinepart")
-//	@ResponseBody
-//    public JSONResponse updateEntryBOM(@RequestBody WareHouseEntryMachinePartModel entryMp, Model model) {
-//		if(wareHouseEntryPnService.exist(entryMp)) {
-//			wareHouseEntryPnService.update(entryMp);
-//		} else {
-//			wareHouseEntryPnService.add(entryMp);
-//		}
-//		return JSONResponse.success();
-//    }
+	@RequestMapping(value="/update/machinepart")
+	@ResponseBody
+    public JSONResponse updateEntryBOM(@RequestBody WareHouseEntryMachinePartModel entryMp, Model model) {
+		if(wareHouseEntryMachinePartService.exist(entryMp)) {
+			wareHouseEntryMachinePartService.update(entryMp);
+		} else {
+			wareHouseEntryMachinePartService.add(entryMp);
+		}
+		return JSONResponse.success();
+    }
 	
 	/**
 	 * 删除入库明细
@@ -144,6 +148,16 @@ public class WareHouseEntryController {
 	@ResponseBody
 	public JSONResponse deleteEntryBOMs(@RequestBody List<WareHouseEntryBOMModel> entryBOMs, Model model) {
 		wareHouseEntryBOMService.delete(entryBOMs);
+		return JSONResponse.success();
+	}
+	
+	/**
+	 * 删除入库明细
+	 * */
+	@RequestMapping(value="/delete/machinepart")
+	@ResponseBody
+	public JSONResponse deleteEntryMachineParts(@RequestBody List<WareHouseEntryMachinePartModel> entryMachineParts, Model model) {
+		wareHouseEntryMachinePartService.delete(entryMachineParts);
 		return JSONResponse.success();
 	}
 	

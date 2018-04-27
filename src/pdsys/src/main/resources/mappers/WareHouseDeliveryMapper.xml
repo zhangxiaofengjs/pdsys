@@ -13,6 +13,10 @@
         <id column="wh_bom_id" property="id" />
         <result column="wh_bom_num" property="num" />  
     </resultMap>
+    <resultMap id="wareHouseMachinePartResultMap" type="wareHouseMachinePartModel" >  
+        <id column="wh_mp_id" property="id" />
+        <result column="wh_mp_num" property="num" />  
+    </resultMap>
 	<resultMap id="orderResultMap" type="orderModel" >  
         <id column="o_id" property="id" />  
         <id column="o_no" property="no" />  
@@ -38,6 +42,12 @@
         <result column="bom_name" property="name" />  
         <association property="unit" resultMap="unitResultMap"/>
     </resultMap>
+    <resultMap id="machinePartResultMap" type="machinePartModel" >  
+        <id column="mp_id" property="id" />  
+        <result column="mp_pn" property="pn" />  
+        <result column="mp_name" property="name" />  
+        <association property="unit" resultMap="unitResultMap"/>
+    </resultMap>
 	<resultMap id="orderPnResultMap" type="orderPnModel" >  
         <id column="o_pn_id" property="id" />  
         <association property="pn" resultMap="pnResultMap" />
@@ -57,6 +67,12 @@
         <association property="bom" resultMap="bomResultMap" />
         <association property="wareHouseBOM" resultMap="wareHouseBOMResultMap" />
     </resultMap>
+	<resultMap id="wareHouseDeliveryMachinePartResultMap" type="wareHouseDeliveryMachinePartModel">  
+        <id column="d_mp_id" property="id" />  
+        <result column="d_mp_num" property="num" />  
+        <association property="machinePart" resultMap="machinePartResultMap" />
+        <association property="wareHouseMachinePart" resultMap="wareHouseMachinePartResultMap" />
+    </resultMap>
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="user_id" property="id" />  
         <result column="user_no" property="no" />  
@@ -74,6 +90,7 @@
         <association property="updateUser" resultMap="userResultMap" columnPrefix="upt_"/>
         <collection property="wareHouseDeliveryPns" ofType="wareHouseDeliveryPnModel" resultMap="wareHouseDeliveryPnResultMap" />
         <collection property="wareHouseDeliveryBOMs" ofType="wareHouseDeliveryBOMModel" resultMap="wareHouseDeliveryBOMResultMap" />
+        <collection property="wareHouseDeliveryMachineParts" ofType="wareHouseDeliveryMachinePartModel" resultMap="wareHouseDeliveryMachinePartResultMap" />
     </resultMap>
 
 	<select id="queryList" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
@@ -178,6 +195,42 @@
 		left join bom_tbl as bom on d_bom.c_ref_id = bom.c_id
 		left join unit_tbl as unit on bom.c_unit_id = unit.c_id
 		left join warehouse_bom_tbl as wh_bom on bom.c_id = wh_bom.c_bom_id
+		<where>
+			<if test="id >= 0">
+				and delivery.c_id = #{id}
+			</if>
+		</where>
+	</select>
+	<select id="queryListWithMachinePart" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
+		select delivery.c_id as d_id,
+			   delivery.c_delivery_time as d_delivery_time,
+			   delivery.c_create_time as d_create_time,
+			   delivery.c_update_time as d_update_time,
+			   delivery.c_state as d_state,
+			   delivery.c_type as d_type,
+			   delivery.c_comment as d_comment,
+		       user.c_id as user_id,
+		       user.c_no as user_no,
+		       user.c_name as user_name,
+		       upt_user.c_id as upt_user_id,
+		       upt_user.c_no as upt_user_no,
+		       upt_user.c_name as upt_user_name,
+		       d_mp.c_id as d_mp_id,
+		       d_mp.c_num as d_mp_num,
+		       mp.c_id as mp_id,
+		       mp.c_pn as mp_pn,
+		       mp.c_name as mp_name,
+		       unit.c_id as unit_id,
+		       unit.c_name as unit_name,
+		       wh_mp.c_id as wh_mp_id,
+		       wh_mp.c_num as wh_mp_num
+		from delivery_tbl as delivery
+		left join user_tbl as user on delivery.c_user_id = user.c_id
+		left join user_tbl as upt_user on delivery.c_update_user_id = upt_user.c_id
+		left join delivery_machine_part_tbl as d_mp on delivery.c_id = d_mp.c_delivery_id
+		left join machine_part_tbl as mp on d_mp.c_ref_id = mp.c_id
+		left join unit_tbl as unit on mp.c_unit_id = unit.c_id
+		left join warehouse_machine_part_tbl as wh_mp on mp.c_id = wh_mp.c_machine_part_id
 		<where>
 			<if test="id >= 0">
 				and delivery.c_id = #{id}

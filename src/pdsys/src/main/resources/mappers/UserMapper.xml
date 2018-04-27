@@ -3,28 +3,30 @@
 
 <mapper namespace="com.zworks.pdsys.mappers.UserMapper">
 	<resultMap id="userRoleResultMap" type="userRoleModel" >  
-        <result column="c_role" property="role"/>  
+        <id column="r_id" property="id"/>  
+        <result column="r_role" property="role"/>  
     </resultMap>
 	<resultMap id="userResultMap" type="userModel" >  
-        <id column="c_id" property="id"/>  
-        <result column="c_no" property="no"/>  
-        <result column="c_name" property="name"/>  
-        <result column="c_phone" property="phone"/>  
-        <result column="c_address" property="address"/>
-        <result column="c_password" property="password"/>
+        <id column="u_id" property="id"/>  
+        <result column="u_no" property="no"/>  
+        <result column="u_name" property="name"/>  
+        <result column="u_phone" property="phone"/>  
+        <result column="u_addr" property="address"/>
+        <result column="u_pass" property="password"/>
         <collection property="roles" ofType="userRoleModel" resultMap="userRoleResultMap" />  
     </resultMap>
     
 	<select id="queryList" resultMap="userResultMap">
-		select c_id,
-			   c_no,
-			   c_name,
-			   c_phone,
-			   c_address,
-			   c_password,
-			   ur.c_role
+		select u.c_id as u_id,
+			   u.c_no as u_no,
+			   u.c_name as u_name,
+			   u.c_phone as u_phone,
+			   u.c_address as u_addr,
+			   u.c_password as u_pass,
+			   r.c_id as r_id,
+			   r.c_role as r_role
 		from user_tbl as u
-		left join user_role_tbl ur on c_id = ur.c_user_id 
+		left join user_role_tbl r on u.c_id = r.c_user_id 
 		<where>
 			<if test="id > 0">
 				and u.c_id = #{id}

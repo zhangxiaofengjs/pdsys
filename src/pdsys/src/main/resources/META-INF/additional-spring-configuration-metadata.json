@@ -1,0 +1,52 @@
+{"properties": [
+  {
+    "name": "pdsys.backup.database.location",
+    "type": "java.lang.String",
+    "description": "A description for 'pdsys.backup.database.location'"
+  },
+  {
+    "name": "pdsys.backup.database-location",
+    "type": "java.lang.String",
+    "description": "A description for 'pdsys.backup.database-location'"
+  },
+  {
+    "name": "pdsys.backup.database.name",
+    "type": "java.lang.String",
+    "description": "A description for 'pdsys.backup.database.name'"
+  },
+  {
+    "name": "pdsys.backup.database.username",
+    "type": "java.lang.String",
+    "description": "A description for 'pdsys.backup.database.username'"
+  },
+  {
+    "name": "pdsys.backup.database.password",
+    "type": "java.lang.String",
+    "description": "A description for 'pdsys.backup.database.password'"
+  },
+  {
+    "name": "pdsys.backup.database.backup-dir",
+    "type": "java.lang.String",
+    "description": "A description for 'pdsys.backup.database.backup-dir'"
+  },
+  {
+    "name": "pdsys.backup.database.host",
+    "type": "java.lang.String",
+    "description": "A description for 'pdsys.backup.database.host'"
+  },
+  {
+    "name": "pdsys.backup.database.enable",
+    "type": "java.lang.String",
+    "description": "A description for 'pdsys.backup.database.enable'"
+  },
+  {
+    "name": "pdsys.admin.username",
+    "type": "java.lang.String",
+    "description": "A description for 'pdsys.admin.username'"
+  },
+  {
+    "name": "pdsys.admin.password",
+    "type": "java.lang.String",
+    "description": "A description for 'pdsys.admin.password'"
+  }
+]}

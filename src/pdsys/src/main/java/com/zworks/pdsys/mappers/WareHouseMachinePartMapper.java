@@ -14,4 +14,8 @@ import com.zworks.pdsys.models.WareHouseMachinePartModel;
 public interface WareHouseMachinePartMapper {
 	
 	List<WareHouseMachinePartModel> queryList(WareHouseMachinePartModel filterObj);
+
+	void add(WareHouseMachinePartModel wareHouseMachinePart);
+
+	void update(WareHouseMachinePartModel wareHouseMachinePart);
 }

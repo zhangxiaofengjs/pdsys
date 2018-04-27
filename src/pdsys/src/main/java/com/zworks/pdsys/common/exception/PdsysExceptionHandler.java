@@ -15,7 +15,6 @@ import com.zworks.pdsys.common.utils.JSONResponse;
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/04/05
  */
-@Controller
 @ControllerAdvice
 public class PdsysExceptionHandler {
 
@@ -41,10 +40,13 @@ public class PdsysExceptionHandler {
 //	}
 
 	@ExceptionHandler(Exception.class)
-	public JSONResponse handleException(Exception e) {
+	public String handleException(Exception e, Model model) {
 		logger.error(e.getMessage(), e);
 		
-		return JSONResponse.error(e.getMessage());
+		JSONResponse res = JSONResponse.error(e.getMessage()).put("code", 0);
+		model.addAttribute("error", res);
+		
+		return "/common/exception";
 	}
 	
 	@ExceptionHandler(Throwable.class)
@@ -52,7 +54,8 @@ public class PdsysExceptionHandler {
     public String exception(final Throwable throwable, final Model model) {
         logger.error("Exception during execution of SpringSecurity application", throwable);
         String errorMessage = (throwable != null ? throwable.getMessage() : "Unknown error");
-        model.addAttribute("errorMessage", errorMessage);
-        return "error";
+        JSONResponse res = JSONResponse.error(errorMessage).put("code", 0);
+		model.addAttribute("error", res);
+		return "/common/exception";
     }
 }

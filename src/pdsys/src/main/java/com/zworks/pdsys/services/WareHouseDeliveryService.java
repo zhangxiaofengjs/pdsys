@@ -11,8 +11,10 @@ import com.zworks.pdsys.common.enumClass.DeliveryType;
 import com.zworks.pdsys.mappers.WareHouseDeliveryMapper;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
+import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
+import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 
 /**
@@ -28,7 +30,7 @@ public class WareHouseDeliveryService {
 	@Autowired
 	private WareHouseBOMService wareHouseBOMService;
 	@Autowired
-	private WareHouseDeliveryPnService wareHouseDeliveryPnService;
+	private WareHouseMachinePartService wareHouseMachinePartService;
 	
 	public List<WareHouseDeliveryModel> queryList(WareHouseDeliveryModel obj) {
 		return wareHouseDeliveryMapper.queryList(obj);
@@ -40,6 +42,10 @@ public class WareHouseDeliveryService {
 	
 	public List<WareHouseDeliveryModel> queryListWithBOM(WareHouseDeliveryModel delivery) {
 		return wareHouseDeliveryMapper.queryListWithBOM(delivery);
+	}
+	
+	public List<WareHouseDeliveryModel> queryListWithMachinePart(WareHouseDeliveryModel delivery) {
+		return wareHouseDeliveryMapper.queryListWithMachinePart(delivery);
 	}
 	
 	public WareHouseDeliveryModel queryOne(WareHouseDeliveryModel obj) {
@@ -67,18 +73,22 @@ public class WareHouseDeliveryService {
 		return null;
 	}
 	
+
+	public WareHouseDeliveryModel queryOneWithMachinePart(WareHouseDeliveryModel delivery) {
+		List<WareHouseDeliveryModel> list = wareHouseDeliveryMapper.queryListWithMachinePart(delivery);
+		
+		if(list.size() != 0) {
+			return list.get(0);
+		}
+		return null;
+	}
+	
 	public void add(WareHouseDeliveryModel obj) {
 		wareHouseDeliveryMapper.add(obj);
 	}
 	public void delete(WareHouseDeliveryModel delivery) {
 		delivery.setState(DeliveryState.DELETE.ordinal());
 		wareHouseDeliveryMapper.update(delivery);
-	}
-	
-	@Transactional
-	public void deleteForever(WareHouseDeliveryModel delivery) {
-		wareHouseDeliveryPnService.delete(delivery.getWareHouseDeliveryPns());
-		wareHouseDeliveryMapper.delete(delivery);
 	}
 	
 	@Transactional
@@ -121,6 +131,24 @@ public class WareHouseDeliveryService {
 				wareHouseBOM.setNum(num);
 				
 				wareHouseBOMService.update(wareHouseBOM);
+			}
+		} else if(delivery.getType() == (int)DeliveryType.MACHINEPART.ordinal()) {
+			delivery = this.queryOneWithMachinePart(delivery);
+			for(WareHouseDeliveryMachinePartModel deliveryMp : delivery.getWareHouseDeliveryMachineParts()) {
+				WareHouseMachinePartModel wareHouseMP = deliveryMp.getWareHouseMachinePart();
+				
+				float num = -1;
+				if(wareHouseMP != null) {
+					num = wareHouseMP.getNum() - deliveryMp.getNum();
+				}
+				
+				if(num < 0) {
+					//库存不足
+					return false;
+				}
+				wareHouseMP.setNum(num);
+				
+				wareHouseMachinePartService.update(wareHouseMP);
 			}
 		} else {
 			return false;

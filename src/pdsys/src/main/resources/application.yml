@@ -1,3 +1,4 @@
+
 # Tomcat
 server:
     tomcat:
@@ -47,3 +48,19 @@ mybatis:
     type-aliases-package: com.zworks.pdsys.models,com.zworks.pdsys.business.beans,com.zworks.pdsys.mappers
     configuration:
         map-underscore-to-camel-case: true
+
+#pdsys其余设定
+pdsys:
+    admin:
+        username: admin
+        password: $2a$10$qhZeMeQNJRuZ6bPCRvUOxecqqSMQ81Zs91n/fmyxCiCI6yalyMI2m #pdsys111 $2a$10$GVtgC68Z8s88s24JsqfRNuMAfLgAcPfFDKLNIIweXmI6QFICy5f2i
+    backup: #备份设定
+        database:
+            enable: true
+            location: D:\dev\pdsys\env\mysql-5.7.21-winx64\bin\ #mysql安装bin路径
+            backupDir: D:\
+            host: localhost
+            name: pdsys
+            username: root
+            password: root
+  

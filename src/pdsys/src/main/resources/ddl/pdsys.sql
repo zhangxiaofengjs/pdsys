@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `delivery_bom_tbl` (
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='出库单表';
 
--- テーブル pdsys.delivery_bom_tbl: ~0 rows (約) のデータをダンプしています
+-- テーブル pdsys.delivery_bom_tbl: ~2 rows (約) のデータをダンプしています
 DELETE FROM `delivery_bom_tbl`;
 /*!40000 ALTER TABLE `delivery_bom_tbl` DISABLE KEYS */;
 INSERT INTO `delivery_bom_tbl` (`c_id`, `c_delivery_id`, `c_ref_id`, `c_num`) VALUES
@@ -94,16 +94,18 @@ CREATE TABLE IF NOT EXISTS `delivery_pn_tbl` (
   `c_ref_id` int(11) NOT NULL COMMENT '出库品目ID order_pn_tbl::c_id',
   `c_semi_produced_num` float NOT NULL DEFAULT '0' COMMENT '半成品数量',
   `c_produced_num` float NOT NULL DEFAULT '0' COMMENT '成品数量',
+  `c_defective_num` float NOT NULL DEFAULT '0' COMMENT '不良品',
   PRIMARY KEY (`c_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='出库单表PN';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='出库单表PN';
 
--- テーブル pdsys.delivery_pn_tbl: ~2 rows (約) のデータをダンプしています
+-- テーブル pdsys.delivery_pn_tbl: ~3 rows (約) のデータをダンプしています
 DELETE FROM `delivery_pn_tbl`;
 /*!40000 ALTER TABLE `delivery_pn_tbl` DISABLE KEYS */;
-INSERT INTO `delivery_pn_tbl` (`c_id`, `c_delivery_id`, `c_ref_id`, `c_semi_produced_num`, `c_produced_num`) VALUES
-	(1, 1, 2, 200, 200),
-	(2, 1, 3, 0, 200),
-	(3, 4, 1, 1, 2);
+INSERT INTO `delivery_pn_tbl` (`c_id`, `c_delivery_id`, `c_ref_id`, `c_semi_produced_num`, `c_produced_num`, `c_defective_num`) VALUES
+	(1, 1, 2, 200, 200, 0),
+	(2, 1, 3, 0, 200, 0),
+	(3, 4, 1, 1, 2, 0),
+	(4, 6, 1, 0, 0, 1);
 /*!40000 ALTER TABLE `delivery_pn_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.delivery_tbl の構造をダンプしています
@@ -119,9 +121,9 @@ CREATE TABLE IF NOT EXISTS `delivery_tbl` (
   `c_create_time` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`c_id`),
   KEY `c_id` (`c_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='出库单表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='出库单表';
 
--- テーブル pdsys.delivery_tbl: ~1 rows (約) のデータをダンプしています
+-- テーブル pdsys.delivery_tbl: ~5 rows (約) のデータをダンプしています
 DELETE FROM `delivery_tbl`;
 /*!40000 ALTER TABLE `delivery_tbl` DISABLE KEYS */;
 INSERT INTO `delivery_tbl` (`c_id`, `c_user_id`, `c_delivery_time`, `c_state`, `c_type`, `c_comment`, `c_update_time`, `c_update_user_id`, `c_create_time`) VALUES
@@ -129,7 +131,8 @@ INSERT INTO `delivery_tbl` (`c_id`, `c_user_id`, `c_delivery_time`, `c_state`, `
 	(2, 2, NULL, 0, 0, '123', '2018-04-23 14:29:37', NULL, '2018-04-23 14:29:37'),
 	(3, 2, NULL, 0, 0, '1223', '2018-04-23 14:31:27', NULL, '2018-04-23 14:31:27'),
 	(4, 1, '2018-04-23 14:04:54', 1, 0, '12333', '2018-04-23 15:04:54', NULL, '2018-04-23 14:58:21'),
-	(5, 2, '2018-04-23 14:44:35', 1, 1, '666', '2018-04-23 15:44:34', NULL, '2018-04-23 15:13:33');
+	(5, 2, '2018-04-23 14:44:35', 1, 1, '666', '2018-04-23 15:44:34', NULL, '2018-04-23 15:13:33'),
+	(6, 1, '2018-04-23 17:59:21', 1, 0, '', '2018-04-23 18:59:21', NULL, '2018-04-23 18:53:19');
 /*!40000 ALTER TABLE `delivery_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.device_tbl の構造をダンプしています
@@ -194,17 +197,20 @@ CREATE TABLE IF NOT EXISTS `entry_pn_tbl` (
   `c_ref_id` int(11) NOT NULL COMMENT '入库品目ID',
   `c_semi_produced_num` float NOT NULL DEFAULT '0' COMMENT '半成品数量',
   `c_produced_num` float NOT NULL DEFAULT '0' COMMENT '成品数量',
+  `c_defective_num` float NOT NULL DEFAULT '0' COMMENT '不良品',
   PRIMARY KEY (`c_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='入库单表PN';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='入库单表PN';
 
--- テーブル pdsys.entry_pn_tbl: ~3 rows (約) のデータをダンプしています
+-- テーブル pdsys.entry_pn_tbl: ~5 rows (約) のデータをダンプしています
 DELETE FROM `entry_pn_tbl`;
 /*!40000 ALTER TABLE `entry_pn_tbl` DISABLE KEYS */;
-INSERT INTO `entry_pn_tbl` (`c_id`, `c_entry_id`, `c_ref_id`, `c_semi_produced_num`, `c_produced_num`) VALUES
-	(1, 1, 1, 200, 300),
-	(2, 1, 2, 0, 500),
-	(3, 1, 3, 600, 0),
-	(4, 4, 1, 1, 1);
+INSERT INTO `entry_pn_tbl` (`c_id`, `c_entry_id`, `c_ref_id`, `c_semi_produced_num`, `c_produced_num`, `c_defective_num`) VALUES
+	(1, 1, 1, 200, 300, 0),
+	(2, 1, 2, 0, 500, 0),
+	(3, 1, 3, 600, 0, 0),
+	(4, 4, 1, 1, 1, 0),
+	(5, 8, 4, 1, 2, 0),
+	(6, 9, 1, 1, 2, 3);
 /*!40000 ALTER TABLE `entry_pn_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.entry_tbl の構造をダンプしています
@@ -220,9 +226,9 @@ CREATE TABLE IF NOT EXISTS `entry_tbl` (
   `c_update_user_id` int(11) DEFAULT NULL COMMENT '更新者用户ID',
   PRIMARY KEY (`c_id`),
   KEY `c_id` (`c_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='出库单表';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='出库单表';
 
--- テーブル pdsys.entry_tbl: ~6 rows (約) のデータをダンプしています
+-- テーブル pdsys.entry_tbl: ~8 rows (約) のデータをダンプしています
 DELETE FROM `entry_tbl`;
 /*!40000 ALTER TABLE `entry_tbl` DISABLE KEYS */;
 INSERT INTO `entry_tbl` (`c_id`, `c_user_id`, `c_entry_time`, `c_state`, `c_create_time`, `c_type`, `c_comment`, `c_update_time`, `c_update_user_id`) VALUES
@@ -232,7 +238,9 @@ INSERT INTO `entry_tbl` (`c_id`, `c_user_id`, `c_entry_time`, `c_state`, `c_crea
 	(4, 1, '2018-04-23 11:28:55', 1, '2018-04-23 12:25:05', 0, '0', '2018-04-23 12:28:55', NULL),
 	(5, 1, NULL, 0, '2018-04-23 12:28:17', 0, '23234', '2018-04-23 12:28:17', NULL),
 	(6, 2, '2018-04-23 13:05:37', 1, '2018-04-23 12:33:32', 1, '234', '2018-04-23 14:05:36', NULL),
-	(7, 1, NULL, 0, '2018-04-23 15:07:59', 1, '', '2018-04-23 15:07:59', NULL);
+	(7, 1, NULL, 0, '2018-04-23 15:07:59', 1, '', '2018-04-23 15:07:59', NULL),
+	(8, 1, '2018-04-23 17:07:15', 1, '2018-04-23 18:06:54', 0, '333', '2018-04-23 18:07:14', NULL),
+	(9, 1, '2018-04-23 17:52:58', 1, '2018-04-23 18:41:55', 0, '', '2018-04-23 18:52:58', NULL);
 /*!40000 ALTER TABLE `entry_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.machine_part_relation_tbl の構造をダンプしています
@@ -306,7 +314,7 @@ CREATE TABLE IF NOT EXISTS `order_pn_tbl` (
   `c_num` float DEFAULT NULL COMMENT '数量',
   `c_reject_ratio` float DEFAULT '0' COMMENT '不良率 0-1',
   PRIMARY KEY (`c_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='订单条目表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='订单条目表';
 
 -- テーブル pdsys.order_pn_tbl: ~2 rows (約) のデータをダンプしています
 DELETE FROM `order_pn_tbl`;
@@ -314,7 +322,8 @@ DELETE FROM `order_pn_tbl`;
 INSERT INTO `order_pn_tbl` (`c_id`, `c_order_id`, `c_pn_id`, `c_pn_cls_id`, `c_num`, `c_reject_ratio`) VALUES
 	(1, 1, 1, 1, 10000, 0),
 	(2, 1, 2, 3, 66, 0),
-	(3, 1, 2, 4, 2000, 0);
+	(3, 1, 2, 4, 2000, 0),
+	(4, 2, 1, 1, 2000, 0);
 /*!40000 ALTER TABLE `order_pn_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.order_tbl の構造をダンプしています
@@ -553,16 +562,18 @@ CREATE TABLE IF NOT EXISTS `warehouse_pn_tbl` (
   `c_order_pn_id` int(11) DEFAULT NULL COMMENT '订单条目ID',
   `c_semi_produced_num` float NOT NULL DEFAULT '0' COMMENT '半成品数量',
   `c_produced_num` float NOT NULL DEFAULT '0' COMMENT '成品数量',
+  `c_defective_num` float NOT NULL DEFAULT '0' COMMENT '不良品',
   PRIMARY KEY (`c_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='订单条目仓库表 		\r\n';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='订单条目仓库表 		\r\n';
 
--- テーブル pdsys.warehouse_pn_tbl: ~2 rows (約) のデータをダンプしています
+-- テーブル pdsys.warehouse_pn_tbl: ~4 rows (約) のデータをダンプしています
 DELETE FROM `warehouse_pn_tbl`;
 /*!40000 ALTER TABLE `warehouse_pn_tbl` DISABLE KEYS */;
-INSERT INTO `warehouse_pn_tbl` (`c_id`, `c_order_pn_id`, `c_semi_produced_num`, `c_produced_num`) VALUES
-	(1, 1, 299, 299),
-	(2, 2, 0, 500),
-	(3, 3, 600, 0);
+INSERT INTO `warehouse_pn_tbl` (`c_id`, `c_order_pn_id`, `c_semi_produced_num`, `c_produced_num`, `c_defective_num`) VALUES
+	(1, 1, 305, 305, 2),
+	(2, 2, 0, 500, 0),
+	(3, 3, 600, 0, 0),
+	(4, 4, 1, 2, 0);
 /*!40000 ALTER TABLE `warehouse_pn_tbl` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

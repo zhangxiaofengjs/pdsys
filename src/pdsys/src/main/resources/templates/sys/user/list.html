@@ -41,7 +41,12 @@
 				<td th:text="${user.name}"></td>
 				<td th:text="${user.phone}"></td>
 				<td th:text="${user.address}"></td>
-				<td th:text="'开发中...'"></td>
+				<td >
+					<span th:if="${#lists.isEmpty(user.roles)}" th:text="'无'"></span>
+					<th:block th:each="role : ${user.roles}">
+						<span th:text="${role.role}"></span>
+					</th:block>
+				</td>
 		    </tr>
 		</tbody>
 	</table>
