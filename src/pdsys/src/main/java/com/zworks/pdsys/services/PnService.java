@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.zworks.pdsys.form.beans.BomDetailModel;
+import com.zworks.pdsys.common.exception.PdsysException;
+import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.mappers.PnMapper;
-import com.zworks.pdsys.models.OrderModel;
-import com.zworks.pdsys.models.OrderPnModel;
+import com.zworks.pdsys.models.BOMModel;
+import com.zworks.pdsys.models.PnBOMRelModel;
 import com.zworks.pdsys.models.PnClsModel;
 import com.zworks.pdsys.models.PnModel;
 
@@ -25,26 +27,77 @@ public class PnService {
 		return pnMapper.queryClsList( pn );
 	}
 
-	//TODO 为什么有关订单的东西都在PnService??
-	public void save(OrderPnModel orderPn) {
-		pnMapper.save( orderPn );
+	public void add(PnModel pn) {
+		pnMapper.add(pn);
 	}
-	
-	public void delete(OrderPnModel orderPn) {
-		pnMapper.delete(orderPn);
+
+	public void update(PnModel pn) {
+		pnMapper.update(pn);
 	}
-	
-	public List<BomDetailModel> queryBomList(OrderModel order) {
-		return pnMapper.queryBomList( order );
+
+	public PnModel queryOne(PnModel pn) {
+		List<PnModel> pns = queryList(pn);
+		if(pns.size()==1) {
+			return pns.get(0);
+		}
+		return null;
 	}
-	
-	public List<OrderPnModel> queryPnByOrderPnId( OrderPnModel orderPn ){
-		return pnMapper.queryPnByOrderPnId( orderPn );
+
+	@Transactional
+	public void addPnCls(PnModel pn) {
+		pnMapper.addPnCls(pn);
 	}
-	
-	public List<PnClsModel> queryClsByOrderPnId( OrderPnModel orderPn ){
-		return pnMapper.queryClsByOrderPnId( orderPn );
+
+	public boolean existsPnCls(PnModel pn) {
+		PnModel p = new PnModel();
+		p.setId(pn.getId());
+		p = queryOne(pn);
+		
+		if(p == null) {
+			throw new PdsysException("品番的ID或者品番未指定！", PdsysExceptionCode.ERROR_PARAM);
+		}
+
+		List<PnClsModel> clss = pn.getPnClss();
+		List<PnClsModel> targetClss = p.getPnClss();
+		for(PnClsModel pnCls : clss) {
+			for(PnClsModel targetPnCls : targetClss) {
+				if(pnCls.getId() == targetPnCls.getId()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
-	
-	
+
+	public boolean existsBOM(PnModel pn) {
+		PnModel p = new PnModel();
+		p.setId(pn.getId());
+		p = queryOne(pn);
+		
+		if(p == null) {
+			throw new PdsysException("品番的ID或者品番未指定！", PdsysExceptionCode.ERROR_PARAM);
+		}
+
+		List<PnBOMRelModel> bomRels = pn.getBomRels();
+		List<PnBOMRelModel> targetBomRels = p.getBomRels();
+		for(PnBOMRelModel bomRel : bomRels) {
+			BOMModel bom = bomRel.getBom();
+			
+			for(PnBOMRelModel targetBomRel : targetBomRels) {
+				BOMModel targetBom = targetBomRel.getBom();
+				if(bom.getId() == targetBom.getId()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public void addBOM(PnModel pn) {
+		pnMapper.addBOM(pn);
+	}
+
+	public void updateBOM(PnModel pn) {
+		pnMapper.updateBOM(pn);
+	}
 }

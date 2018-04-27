@@ -8,13 +8,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
+import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
+import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
+import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
+import com.zworks.pdsys.services.WareHouseDeliveryMachinePartService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
 import com.zworks.pdsys.services.WareHouseDeliveryService;
 
@@ -26,14 +31,18 @@ import com.zworks.pdsys.services.WareHouseDeliveryService;
 @RequestMapping("/warehouse/delivery")
 public class WareHouseDeliveryController {
 	@Autowired
+	WareHouseDeliveryService wareHouseDeliveryService;
+	@Autowired
 	WareHouseDeliveryPnService wareHouseDeliveryPnService;
 	@Autowired
-	WareHouseDeliveryService wareHouseDeliveryService;
+	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
+	@Autowired
+	WareHouseDeliveryMachinePartService wareHouseDeliveryMachinePartService;
 	
-	@RequestMapping(value= {"/main", "/main/{type}", "/main/{type}/{id}"})
+	@RequestMapping(value= {"/main", "/main/{type}"})
     public String main(
     		@PathVariable(name="type" ,required=false)String type,
-    		@PathVariable(name="id", required=false)Integer id,
+    		@RequestParam(name="id", required=false)Integer id,
     		Model model) {
 
 		if(type == null) {
@@ -44,7 +53,18 @@ public class WareHouseDeliveryController {
 		
 		WareHouseDeliveryModel delivery;
 		if(id != null) {
-			delivery = wareHouseDeliveryService.queryOne(id);
+			delivery = new WareHouseDeliveryModel();
+			delivery.setId(id);
+			
+			if(type.equals("pn")) {
+				delivery = wareHouseDeliveryService.queryOneWithPn(delivery);
+			} else if(type.equals("bom")) {
+				delivery = wareHouseDeliveryService.queryOneWithBOM(delivery);
+			} else if(type.equals("machinepart")) {
+				delivery = wareHouseDeliveryService.queryOneWithMachinePart(delivery);
+			} else {
+				delivery = null;
+			}
 			if(delivery == null) {
 				throw new PdsysException("错误参数:/delivery/main/" + type + "/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 			}
@@ -73,10 +93,42 @@ public class WareHouseDeliveryController {
 	@RequestMapping(value="/add/pn")
 	@ResponseBody
     public JSONResponse addDeliveryPn(@RequestBody WareHouseDeliveryPnModel deliveryPn, Model model) {
-		wareHouseDeliveryPnService.add(deliveryPn);
-		//@todo 同种的东西需要更新 entry那边也是
+		if(wareHouseDeliveryPnService.exists(deliveryPn)) {
+			//已经存在，做更新
+			wareHouseDeliveryPnService.update(deliveryPn);
+		} else {
+			wareHouseDeliveryPnService.add(deliveryPn);
+		}
 		return JSONResponse.success();
     }
+	/**
+	 * 新建出库明细
+	 * */
+	@RequestMapping(value="/add/bom")
+	@ResponseBody
+	public JSONResponse addDeliveryBOM(@RequestBody WareHouseDeliveryBOMModel deliveryBOM, Model model) {
+		if(wareHouseDeliveryBOMService.exists(deliveryBOM)) {
+			//已经存在，做更新
+			wareHouseDeliveryBOMService.update(deliveryBOM);
+		} else {
+			wareHouseDeliveryBOMService.add(deliveryBOM);
+		}
+		return JSONResponse.success();
+	}
+	/**
+	 * 新建出库明细
+	 * */
+	@RequestMapping(value="/add/machinepart")
+	@ResponseBody
+	public JSONResponse addDeliveryMachinePart(@RequestBody WareHouseDeliveryMachinePartModel deliveryMachinePart, Model model) {
+		if(wareHouseDeliveryMachinePartService.exists(deliveryMachinePart)) {
+			//已经存在，做更新
+			wareHouseDeliveryMachinePartService.update(deliveryMachinePart);
+		} else {
+			wareHouseDeliveryMachinePartService.add(deliveryMachinePart);
+		}
+		return JSONResponse.success();
+	}
 	
 	/**
 	 * 删除出库单
@@ -84,7 +136,9 @@ public class WareHouseDeliveryController {
 	@RequestMapping(value="/delete/delivery/{id}")
 	@ResponseBody
 	public JSONResponse deleteDelivery(@PathVariable(name="id", required=false)Integer id, Model model) {
-		WareHouseDeliveryModel delivery = wareHouseDeliveryService.queryOne(id);
+		WareHouseDeliveryModel delivery = new WareHouseDeliveryModel();
+		delivery.setId(id);
+		delivery = wareHouseDeliveryService.queryOne(delivery);
 		if(delivery == null) {
 			throw new PdsysException("错误参数:/delivery/delete/delivery/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM); 
 		}
@@ -103,12 +157,34 @@ public class WareHouseDeliveryController {
     }
 	
 	/**
+	 * 删除出库明细
+	 * */
+	@RequestMapping(value="/delete/bom")
+	@ResponseBody
+	public JSONResponse deleteDeliveryBOM(@RequestBody List<WareHouseDeliveryBOMModel> deliveryBOMs, Model model) {
+		wareHouseDeliveryBOMService.delete(deliveryBOMs);
+		return JSONResponse.success();
+	}
+	
+	/**
+	 * 删除出库明细
+	 * */
+	@RequestMapping(value="/delete/machinepart")
+	@ResponseBody
+	public JSONResponse deleteDeliveryMachinePart(@RequestBody List<WareHouseDeliveryMachinePartModel> deliveryMachineParts, Model model) {
+		wareHouseDeliveryMachinePartService.delete(deliveryMachineParts);
+		return JSONResponse.success();
+	}
+	
+	/**
 	 * 出库
 	 * */
 	@RequestMapping(value="/delivery/{id}")
 	@ResponseBody
     public JSONResponse delivery(@PathVariable(name="id", required=false)Integer id, Model model) {
-		WareHouseDeliveryModel delivery = wareHouseDeliveryService.queryOne(id);
+		WareHouseDeliveryModel delivery = new WareHouseDeliveryModel();
+		delivery.setId(id);
+		delivery = wareHouseDeliveryService.queryOne(delivery);
 		if(delivery == null) {
 			throw new PdsysException("错误参数:/delivery/delivery/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM); 
 		}

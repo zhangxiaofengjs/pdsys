@@ -5,15 +5,22 @@
 <body>
 <div th:fragment="content(${list})">
 	<script th:src="@{/js/sys/master/pn.js}"></script> 
+	<script th:src="@{/js/sys/master/unit.js}"></script> 
 	<nav style="border-radius:0px;margin-bottom:-1px;" class="navbar navbar-default">
 		<div class="container-fluid">
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/sys/master/main/pn}" method="post">
-	 			<button type="submit" class="btn btn-sm btn-info">刷新</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addPn'>添加</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='editPn'>修改</button>
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.pn}" th:action="@{/sys/master/main/pn}" method="post">
+	 			<div class="form-group">
+				   <input type="text" class="form-control" id="pn" name="pn" th:field="*{pn}" placeholder="品目">
+	 			</div>
+	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addPn'>添加品番</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='editPn'>修改品番</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addPnCls'>添加子类</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addBOM0'>添加 / 修改原材</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addBOM1'>添加 / 修改包材</button>
 			</form>
 		</div>
 	</nav>
@@ -32,6 +39,7 @@
 		</thead>
 		<tbody>
 			<tr th:each="pn : ${list}"
+				th:with="bomRels=${pn.bomRels}"
 				th:rowid="${pn.id}">
 				<td>
 					<input type="checkbox" name="select" th:rowid="${pn.id}">
@@ -40,18 +48,31 @@
 				<td th:text="${pn.name}"></td>
 				<td>
 					<span th:each="pnCls,iterStat: ${pn.pnClss}">
-						<span th:text="${iterStat.index + 1} + '. ' + ${pnCls.name}"></span><br/>
+						<span th:text="'●'  + ${pnCls.name}"></span><br/>
 					</span>
 				</td>
 				<td th:text="${pn.unit.name}"></td>
-				<td th:text="'纸张，每1吨纸张使用销账值'"></td>
-				<td th:text="${pn.unit.name}"></td>
+				<td>
+					<span th:each="bomRel,iterStat: ${bomRels}"
+						  th:with="bom=${bomRel.bom},
+						  		   index=1">
+						<span th:if="${bom.type} == 0" th:text="'●' + ${bomRel.bom.pn} + ' ' + ${bomRel.bom.name} + ' 品番单位消耗:' + ${bomRel.useNum} + ${bom.unit.name}"></span>
+						<br th:if="${bom.type} == 0"/>
+					</span>
+				</td>
+				<td>
+					<span th:each="bomRel,iterStat: ${bomRels}"
+						  th:with="bom=${bomRel.bom}">
+						<span th:if="${bom.type} == 1" th:text="'●' + ${bomRel.bom.pn} + ' ' + ${bomRel.bom.name} + ' 品番单位消耗:' + ${bomRel.useNum} + ${bom.unit.name}"></span>
+						<br th:if="${bom.type} == 1"/>
+					</span>
+				</td>
 		    </tr>
 		</tbody>
 	</table>
 	<div id="dlg_div"></div>
 	<div id="unit_dlg_div"></div>
-	<div id="supplier_dlg_div"></div>
+	<div id="pncls_dlg_div"></div>
 	<div id="msg_div"></div>
 </div>
 </body>

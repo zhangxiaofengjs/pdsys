@@ -63,7 +63,18 @@
 			<if test="id > 0">
 				and d.c_id=#{id}
 			</if>
+			<if test="no != null and no != ''">
+				<choose>
+	                <when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
+	                   	and d.c_no like '%${no}%'
+	                </when>
+	                <otherwise>
+						and d.c_no = #{no}
+	                </otherwise>
+	            </choose>
+			</if>
 		</where>
+		order by p.c_name asc, d.c_no asc
 	</select>
 	
 	<insert id="add" parameterType="deviceModel">

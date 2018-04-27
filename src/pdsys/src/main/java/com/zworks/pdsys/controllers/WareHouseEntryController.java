@@ -1,10 +1,6 @@
 package com.zworks.pdsys.controllers;
 
-import static org.assertj.core.api.Assertions.useDefaultDateFormatsOnly;
-
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,27 +14,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
-import com.zworks.pdsys.common.utils.StringUtils;
-import com.zworks.pdsys.form.beans.WareHouseAddDeliveryObjFormBean;
-import com.zworks.pdsys.form.beans.WareHouseEntryFormBean;
-import com.zworks.pdsys.form.beans.WareHouseListFormBean;
-import com.zworks.pdsys.models.UserModel;
-import com.zworks.pdsys.models.WareHouseBOMModel;
-import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
-import com.zworks.pdsys.models.WareHouseDeliveryModel;
+import com.zworks.pdsys.models.WareHouseEntryBOMModel;
+import com.zworks.pdsys.models.WareHouseEntryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.models.WareHouseEntryPnModel;
-import com.zworks.pdsys.models.WareHouseMachinePartModel;
-import com.zworks.pdsys.models.WareHousePnModel;
-import com.zworks.pdsys.services.WareHouseBOMService;
-import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
-import com.zworks.pdsys.services.WareHouseDeliveryMachinePartService;
-import com.zworks.pdsys.services.WareHouseDeliveryPnService;
-import com.zworks.pdsys.services.WareHouseDeliveryService;
+import com.zworks.pdsys.services.WareHouseEntryBOMService;
+import com.zworks.pdsys.services.WareHouseEntryMachinePartService;
 import com.zworks.pdsys.services.WareHouseEntryPnService;
 import com.zworks.pdsys.services.WareHouseEntryService;
-import com.zworks.pdsys.services.WareHouseMachinePartService;
-import com.zworks.pdsys.services.WareHousePnService;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -48,25 +31,42 @@ import com.zworks.pdsys.services.WareHousePnService;
 @RequestMapping("/warehouse/entry")
 public class WareHouseEntryController {
 	@Autowired
+	WareHouseEntryService wareHouseEntryService;
+	@Autowired
 	WareHouseEntryPnService wareHouseEntryPnService;
 	@Autowired
-	WareHouseEntryService wareHouseEntryService;
-	
-	@RequestMapping(value= {"/main", "/main/{type}", "/main/{type}/{id}"})
+	WareHouseEntryBOMService wareHouseEntryBOMService;
+	@Autowired
+	WareHouseEntryMachinePartService wareHouseEntryMachinePartService;
+
+	@RequestMapping(value= {"/main", "/main/{type}"})
     public String entryMain(
     		@PathVariable(name="type" ,required=false)String type,
-    		@PathVariable(name="id", required=false)Integer id,
+    		@RequestParam(name="id", required=false)Integer id,
     		Model model) {
 
 		if(type == null) {
 			type = "pn";
-		} else if(!(type.equals("bom") || type.equals("pn") || type.equals("machinepart"))) {
+		}
+		else if(!(type.equals("bom") || type.equals("pn") || type.equals("machinepart"))) {
 			throw new PdsysException("错误参数:/entry/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
 		
-		WareHouseEntryModel entry;
+		WareHouseEntryModel entry = null;
 		if(id != null) {
-			entry = wareHouseEntryService.queryOne(id);
+			entry = new WareHouseEntryModel();
+			entry.setId(id);
+			
+			if(type.equals("bom")) {
+				entry = wareHouseEntryService.queryOneWithBOM(entry);
+			} else if(type.equals("pn")) {
+				entry = wareHouseEntryService.queryOneWithPn(entry);
+			} else if(type.equals("machinepart")) {
+				entry = wareHouseEntryService.queryOneWithMachinePart(entry);
+			} else {
+				entry = null;
+			}
+			
 			if(entry == null) {
 				throw new PdsysException("错误参数:/entry/type/id=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 			}
@@ -94,8 +94,40 @@ public class WareHouseEntryController {
 	 * */
 	@RequestMapping(value="/update/pn")
 	@ResponseBody
-    public JSONResponse updateEntry(@RequestBody WareHouseEntryPnModel entryPn, Model model) {
-		wareHouseEntryPnService.update(entryPn, true);
+    public JSONResponse updateEntryPn(@RequestBody WareHouseEntryPnModel entryPn, Model model) {
+		if(wareHouseEntryPnService.exist(entryPn)) {
+			wareHouseEntryPnService.update(entryPn);
+		} else {
+			wareHouseEntryPnService.add(entryPn);
+		}
+		return JSONResponse.success();
+    }
+	
+	/**
+	 * 新建入库明细
+	 * */
+	@RequestMapping(value="/update/bom")
+	@ResponseBody
+    public JSONResponse updateEntryBOM(@RequestBody WareHouseEntryBOMModel entryBOM, Model model) {
+		if(wareHouseEntryBOMService.exist(entryBOM)) {
+			wareHouseEntryBOMService.update(entryBOM);
+		} else {
+			wareHouseEntryBOMService.add(entryBOM);
+		}
+		return JSONResponse.success();
+    }
+	
+	/**
+	 * 新建入库明细
+	 * */
+	@RequestMapping(value="/update/machinepart")
+	@ResponseBody
+    public JSONResponse updateEntryBOM(@RequestBody WareHouseEntryMachinePartModel entryMp, Model model) {
+		if(wareHouseEntryMachinePartService.exist(entryMp)) {
+			wareHouseEntryMachinePartService.update(entryMp);
+		} else {
+			wareHouseEntryMachinePartService.add(entryMp);
+		}
 		return JSONResponse.success();
     }
 	
@@ -104,10 +136,30 @@ public class WareHouseEntryController {
 	 * */
 	@RequestMapping(value="/delete/pn")
 	@ResponseBody
-    public JSONResponse addEntryPn(@RequestBody List<WareHouseEntryPnModel> entryPns, Model model) {
+    public JSONResponse deleteEntryPns(@RequestBody List<WareHouseEntryPnModel> entryPns, Model model) {
 		wareHouseEntryPnService.delete(entryPns);
 		return JSONResponse.success();
     }
+	
+	/**
+	 * 删除入库明细
+	 * */
+	@RequestMapping(value="/delete/bom")
+	@ResponseBody
+	public JSONResponse deleteEntryBOMs(@RequestBody List<WareHouseEntryBOMModel> entryBOMs, Model model) {
+		wareHouseEntryBOMService.delete(entryBOMs);
+		return JSONResponse.success();
+	}
+	
+	/**
+	 * 删除入库明细
+	 * */
+	@RequestMapping(value="/delete/machinepart")
+	@ResponseBody
+	public JSONResponse deleteEntryMachineParts(@RequestBody List<WareHouseEntryMachinePartModel> entryMachineParts, Model model) {
+		wareHouseEntryMachinePartService.delete(entryMachineParts);
+		return JSONResponse.success();
+	}
 	
 	/**
 	 * 删除入库单

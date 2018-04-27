@@ -10,14 +10,14 @@
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/delivery/main/pn}" method="post">
 	 			<div class="form-group">
-				   <input type="text" class="form-control" placeholder="出库单号">
+				   <input type="text" class="form-control" name="id" id="id" th:value="${delivery.id != 0 ? delivery.id:_}" placeholder="出库单号">
 	 			</div>
-	 			<button type="button" class="btn btn-sm btn-info" name="refresh">查询</button>
+	 			<button type="submit" class="btn btn-sm btn-info" name="refresh">查询</button>
 	 			<button type="button" class="btn btn-sm btn-info" name="addDelivery">新建出库单</button>
-	 			<div style="display:inline-block;" th:if="${delivery.state == 0}">
+	 			<div style="display:inline-block;" th:if="${delivery.id >0 } and ${delivery.state == 0}">
 		 			<button type="button" class="btn btn-sm btn-info" name="addDeliveryPn">增加出库项目</button>
 		 			<button type="button" class="btn btn-sm btn-info" name="deleteDeliveryPn">删除出库项目</button>
-		 			<button type="button" class="btn btn-sm btn-info" name="doDelivery">出库</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="doDelivery" th:if="${!#lists.isEmpty(delivery.wareHouseDeliveryPns)}">出库</button>
 	 			</div>
 			</form>
 		</div>
@@ -26,7 +26,7 @@
 		<thead>
 			<tr>
 				<th style="text-align:center;" th:colspan="10">
-					<h4><b>出库单明细表</b></h4>
+					<h4><b>产品出库单明细表</b></h4>
 				</th>
 			</tr>
 			<tr>
@@ -37,10 +37,17 @@
 					<a th:if="${delivery.state == 0}" href="javascript:void(0);" class="glyphicon glyphicon-trash" id="deleteDelivery"></a>
 				</th>
 				<th th:colspan="1">出库日期:&nbsp;<b th:text="((${delivery.deliveryTime} != null) ? ${#dates.format(delivery.deliveryTime, 'yyyy-MM-dd')} : '')"></b></th>
-				<th th:colspan="7">提交人:&nbsp;
+				<th th:colspan="9">提交人:&nbsp;
 					<a href="javascript:void(0);" th:text="${delivery.user!=null?delivery.user.name:''}"></a>
 					<i class="pull-right" th:text="'更新:' + ${delivery.updateUser!=null?delivery.updateUser.name:''} + '&nbsp;' + (${delivery.updateTime!=null}?${#dates.format(delivery.updateTime, 'yyyy-MM-dd')}:'')"></i>
 				</th>
+			</tr>
+			<tr>
+				<th style="text-align:center;" th:colspan="1">
+					备注
+				</th>
+				<td style="" th:colspan="10" th:text="${delivery.comment}">
+				</td>
 			</tr>
 		    <tr>
 		    	<th rowspan="2" style="width:20px;"><input type="checkbox" name="selectAll"></th>
@@ -49,41 +56,47 @@
 				<th rowspan="2">名称</th>
 				<th rowspan="2">子类</th>
 				<th rowspan="2">单位</th>
-				<th colspan="2">在库数量</th>
-				<th colspan="2">出库数量</th>
+				<th colspan="3">在库数量</th>
+				<th colspan="3">出库数量</th>
 		    </tr>
 		    <tr>
 				<th>半成品</th>
 				<th>成品</th>
+				<th>不良品</th>
 				<th>半成品</th>
 				<th>成品</th>
+				<th>不良品</th>
 		    </tr>
 		</thead>
 		<tbody>
 			<tr th:each="wareHouseDeliveryPn : ${delivery.wareHouseDeliveryPns}"
-				th:with="orderPn=(${wareHouseDeliveryPn.orderPn}?${wareHouseDeliveryPn.orderPn}:_),
-						 pn=(${orderPn.pn}?${orderPn.pn}:_),
-						 unit=(${pn.unit}?${pn.unit}:_),
-						 pnCls=(${pn.pnCls}?${pn.pnCls}:_),
- 						 order=(${orderPn.order}?${orderPn.order}:_),
+				th:with="orderPn=(${wareHouseDeliveryPn.orderPn}),
+						 pn=(${orderPn !=null}?${orderPn.pn}:null),
+						 unit=(${pn != null}?${pn.unit}:null),
+						 pnCls=(${pn != null}?${pn.pnCls}:null),
+ 						 order=(${orderPn != null}?${orderPn.order}:null),
  						 wareHousePn=(${wareHouseDeliveryPn.wareHousePn}),
- 						 wareHousesSemiNum=(${wareHousePn}?${wareHousePn.semiProducedNum}:0),
- 						 wareHouseNum=(${wareHousePn}?${wareHousePn.producedNum}:0)"
+ 						 wareHousesSemiNum=(${wareHousePn != null}?${wareHousePn.semiProducedNum}:0),
+ 						 wareHouseNum=(${wareHousePn != null}?${wareHousePn.producedNum}:0),
+ 						 wareHouseDefectiveNum=(${wareHousePn != null}?${wareHousePn.defectiveNum}:0)"
 						 th:rowid="${wareHouseDeliveryPn.id}">
 				<td>
 					<input type="checkbox" name="select" th:rowid="${wareHouseDeliveryPn.id}">
 				</td>
-				<td th:text="${order}?${order.no}:_"></td>
-				<td th:text="${pn}?${pn.pn}:_"></td>
-				<td th:text="${pn}?${pn.name}:_"></td>
-				<td th:text="${pnCls}?${pnCls.name}:_"></td>
-				<td th:text="${unit}?${unit.name}:_"></td>
+				<td th:text="${order != null}?${order.no}:_"></td>
+				<td th:text="${pn!= null}?${pn.pn}:_"></td>
+				<td th:text="${pn!= null}?${pn.name}:_"></td>
+				<td th:text="${pnCls!= null}?${pnCls.name}:_"></td>
+				<td th:text="${unit!= null}?${unit.name}:_"></td>
 				<td th:text="${wareHousesSemiNum}"></td>
 				<td th:text="${wareHouseNum}"></td>
+				<td th:text="${wareHouseDefectiveNum}"></td>
 				<td th:text="${wareHouseDeliveryPn.semiProducedNum}" 
 					th:class="${wareHousesSemiNum < wareHouseDeliveryPn.semiProducedNum}?'text-danger':''"></td>
 				<td th:text="${wareHouseDeliveryPn.producedNum}" 
 					th:class="${wareHouseNum < wareHouseDeliveryPn.producedNum}?'text-danger':''"></td>
+				<td th:text="${wareHouseDeliveryPn.defectiveNum}" 
+					th:class="${wareHouseDefectiveNum < wareHouseDeliveryPn.defectiveNum}?'text-danger':''"></td>
 		    </tr>
 		</tbody>
 	</table>

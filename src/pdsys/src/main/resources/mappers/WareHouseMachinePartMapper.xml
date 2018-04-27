@@ -11,39 +11,75 @@
         <result column="supplier_name" property="name"/>  
     </resultMap>
     <resultMap id="machinePartResultMap" type="machinePartModel" >  
-        <id column="machine_part_id" property="id" />  
-        <result column="machine_part_pn" property="pn"/>  
-        <result column="machine_part_name" property="name"/>  
+        <id column="mp_id" property="id" />  
+        <result column="mp_pn" property="pn"/>  
+        <result column="mp_name" property="name"/>  
         <association property="unit" resultMap="unitResultMap"/>
         <association property="supplier" resultMap="supplierResultMap"/>
     </resultMap>
 	<resultMap id="wareHouseMachinePartResultMap" type="wareHouseMachinePartModel" >  
-        <id column="wh_id" property="id" />  
-        <result column="wh_num" property="num" />  
+        <id column="wh_mp_id" property="id" />  
+        <result column="wh_mp_num" property="num" />  
         <association property="machinePart" resultMap="machinePartResultMap"/>
     </resultMap>
     
 	<select id="queryList" parameterType="wareHouseMachinePartModel" resultMap="wareHouseMachinePartResultMap">
-		select wh_machine_part.c_id as wh_id,
-		       wh_machine_part.c_num as wh_num,
-		       machine_part.c_id as machine_part_id,
-		       machine_part.c_pn as machine_part_pn,
-		       machine_part.c_name as machine_part_name,
+		select wh_mp.c_id as wh_mp_id,
+			   wh_mp.c_num as wh_mp_num,
+			   mp.c_id as mp_id,
+		       mp.c_pn as mp_pn,
+		       mp.c_name as mp_name,
 		       unit.c_id as unit_id,
 		       unit.c_name as unit_name,
 		       supplier.c_id as supplier_id,
 		       supplier.c_name as supplier_name
-		from warehouse_machine_part_tbl as wh_machine_part
-		left join machine_part_tbl as machine_part on wh_machine_part.c_machine_part_id = machine_part.c_id
-		left join unit_tbl as unit on machine_part.c_unit_id = unit.c_id
-		left join supplier_tbl as supplier on machine_part.c_supplier_id = supplier.c_id
+		from warehouse_machine_part_tbl as wh_mp
+		left join machine_part_tbl as mp on wh_mp.c_machine_part_id = mp.c_id
+		left join unit_tbl as unit on mp.c_unit_id = unit.c_id
+		left join supplier_tbl as supplier on mp.c_supplier_id = supplier.c_id
 		<where>
-			<if test="machinePart != null and machinePart.pn != null">
-				and machine_part.c_pn like '%${machinePart.pn}%'
+			<if test="machinePart != null and machinePart.pn != null and machinePart.pn != ''">
+				<choose>
+	                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+						and mp.c_pn like '%${machinePart.pn}%'
+					</when>
+					 <otherwise>
+	                    and mp.c_pn=#{machinePart.pn}
+	                </otherwise>
+				</choose>
 			</if>
 			<if test="machinePart != null and machinePart.id > 0">
-				and machine_part.c_id like '%${machinePart.id}%'
+				and mp.c_id=#{machinePart.id}
 			</if>
 		</where>
 	</select>
+	<insert id="add" parameterType="wareHouseMachinePartModel">
+    	insert into warehouse_machine_part_tbl (
+    		c_machine_part_id,
+    		c_num)
+    	values (
+    		#{machinePart.id},
+    		#{num}
+    	)
+      	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+    </insert>
+    
+    <update id="update" parameterType="wareHouseMachinePartModel">
+    	update warehouse_machine_part_tbl
+    	set c_num=#{num}
+    	<where>
+			<if test="id > 0">
+				and c_id=#{id}
+			</if>
+		</where>
+    </update>
+    
+    <delete id="delete" parameterType="wareHouseMachinePartModel">
+    	delete from warehouse_machine_part_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
 </mapper>

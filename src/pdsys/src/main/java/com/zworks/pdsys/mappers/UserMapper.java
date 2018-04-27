@@ -18,4 +18,6 @@ public interface UserMapper {
 	void add(UserModel filterObj);
 
 	void update(UserModel filterObj);
+
+	void changePassword(UserModel user);
 }

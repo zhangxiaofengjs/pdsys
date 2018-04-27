@@ -1,9 +1,12 @@
 $(document).ready(function(){
 	
 	//返回上一页
+	$("#reback").click(function(){
+		history.go(-1);
+	});
+
+	//BOM详细
 	$("a[name='showBomDetail']").click(function(){
-		//var url = PdSys.url('/pn/bomInfo/list?id=' + $('#supplierId').val());
-		//$(location).attr('href', url);
 		var self = $(this);
 		var supplier = {
 			"id":self.attr('supplierId')
@@ -57,34 +60,40 @@ $(document).ready(function(){
 	CellSort('table1');
 	
 	//合并单元格
-	function MergeCell(tableId, startRow, endRow, col) {  
-        var tb = document.getElementById(tableId);  
-        if (col >= tb.rows[0].cells.length) {  
-            return;  
-        }  
-        //当检查第0列时检查所有行  
-        if (col == 0 || endRow == 0) {  
-            endRow = tb.rows.length - 1;  
-        }  
-        for (var i = startRow; i < endRow; i++) {  
-            //程序是自左向右合并  
-            if (tb.rows[startRow].cells[col].innerHTML == tb.rows[i + 1].cells[col].innerHTML) {  
-                //如果相同则删除下一行的第0列单元格  
-                tb.rows[i + 1].cells[col].style.display='none';  
-                //更新rowSpan属性  
-                tb.rows[startRow].cells[col].rowSpan = (tb.rows[startRow].cells[col].rowSpan | 0) + 1;  
-                tb.rows[startRow].cells[9].rowSpan = tb.rows[startRow].cells[9].rowSpan + 1; 
-                //当循环到终止行前一行并且起始行和终止行不相同时递归 
-                if (i == endRow - 1 && startRow != endRow) {  
-                    MergeCell(tableId, startRow, endRow, col + 1);  
-                }  
-            } else {  
-                //起始行，终止行不变，检查下一列  
-                MergeCell(tableId, startRow, i, col + 1);  
+	function MergeCell(tableId, startRow, isEnd) {
+		var startNum = 0;
+		var totalNum = 0;
+		var totalSum = 0;
+        var tb = document.getElementById(tableId);
+        if (isEnd) {
+            return;
+        }
+        var endRow = tb.rows.length - 1;
+        for (var i = startRow; i < endRow; i++) {
+        	startNum = parseInt(tb.rows[startRow].cells[8].innerHTML);
+            //程序是自左向右合并
+            if (tb.rows[startRow].cells[0].innerHTML == tb.rows[i + 1].cells[0].innerHTML) {
+                //如果相同则删除下一行的第0列单元格
+                tb.rows[i + 1].cells[0].style.display='none';
+                tb.rows[i + 1].cells[9].style.display='none';
+                //更新rowSpan属性
+                tb.rows[startRow].cells[0].rowSpan = (tb.rows[startRow].cells[0].rowSpan | 0) + 1;
+                tb.rows[startRow].cells[9].rowSpan = tb.rows[startRow].cells[9].rowSpan + 1;
+                totalNum += parseInt(tb.rows[i + 1].cells[8].innerHTML);
+
+            } else {
+            	tb.rows[startRow].cells[9].innerHTML = totalNum + startNum;
+            	totalSum+=totalNum + startNum;
                 //增加起始行  
-                startRow = i + 1;  
-            }  
-        }  
-    }  
-    MergeCell('table1', 0, 0, 0);
+                startRow = i + 1;
+                totalNum = 0;
+            }
+        }
+        
+        //合计
+        tb.rows[endRow].cells[1].innerHTML = totalSum;
+    }
+	
+	//表头和列所在行除外
+    MergeCell('table1', 3, false);
 });

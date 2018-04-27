@@ -15,18 +15,28 @@
 	<select id="queryList" resultMap="orderResultMap">
 		select * from order_tbl 
 		<where>
-			<if test="no != null">
-				and c_no like concat('%',#{no},'%') 
+			<if test="no != null and no != ''">
+				<choose>
+					<when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
+						and c_no like concat('%',#{no},'%') 
+					</when>
+	                <otherwise>
+						and c_no = #{no}
+	                </otherwise>
+	            </choose>
+			</if>
+			<if test="state >-1">
+				and c_state = #{state}
 			</if>
 		</where>
-		order by c_no desc
+		order by c_order_date desc
 	</select>
 	
 	<select id="queryObject" resultMap="orderResultMap">
 		select * from order_tbl where c_id = #{id}
 	</select>
 	
-	<delete id="delete" parameterType="orderModel">
+	<delete id="updateOrderState" parameterType="orderModel">
 		update order_tbl 
 		<set> 
 			`c_state` = #{state}, 
@@ -42,7 +52,8 @@
 			`c_order_date`, 
 			`c_ship_dead_date`,
 			`c_master_id`,
-			`c_comment`
+			`c_comment`,
+			`c_state`
 			
 		)
 		values
@@ -52,7 +63,8 @@
 			#{orderDate},
 			#{shipDeadDate},
 			#{user.id},
-			#{comment}
+			#{comment},
+			0
 		)
 	</insert>
 </mapper>

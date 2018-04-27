@@ -7,16 +7,46 @@ $(function () {
 			"id":$('#order_id').val()
 		};
 		PdSys.ajax({
-			"url":"/order/detail/list",
+			"url":"/orderPn/list/json",
 			"data":order,
 			"success": function(data) {
 				var bodyHtml = "";
-				data.orderDetail.forEach(function(orderPn, idx) {
-					
-					//bom数量
+				
+				data.orderPns.forEach(function(orderPn, idx) {
 					var bomNum = orderPn.pn.boms.length;
+					var yuanArr = [];
+					var baoArr = [];
+					var bomNum = 0;
 					orderPn.pn.boms.forEach(function(bom, idx2) {
-						if(idx2==0) {
+						if( bom.type ==0 ) {
+							yuanArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
+									bom.pn,
+									orderPn.pn.bomRel.useNum,
+									bom.unit.name));
+						}
+						if( bom.type ==1 ) {
+							baoArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
+									bom.pn,
+									orderPn.pn.bomRel.useNum,
+									bom.unit.name));
+						}
+					});
+					
+					if(yuanArr.length<baoArr.length){
+						bomNum = baoArr.length;
+						yuanArr.push("<td></td><td></td><td></td>");
+					}
+					else{
+						bomNum = yuanArr.length;
+						if(yuanArr.length>baoArr.length){
+							baoArr.push("<td></td><td></td><td></td>");
+						}
+					}
+					
+					for (i=0;i<bomNum;i++)
+					{
+						if(i==0)
+						{
 							bodyHtml += "<tr><td rowspan='{0}'><input type='checkbox' name='select' rowid='{1}'/></td><td rowspan='{0}'>{2}</td><td rowspan='{0}'>{3}</td><td rowspan='{0}'>{4}</td><td rowspan='{0}'>{5}</td><td rowspan='{0}'>{6}</td>".format(
 									bomNum, 
 									orderPn.id, 
@@ -25,49 +55,45 @@ $(function () {
 									orderPn.pn.pnCls.name,
 									orderPn.num,
 									orderPn.pn.unit.name);
+						}
 						
-							//原材,包材的追加
-							if( bom.type ==0 ) {
-								bodyHtml += "<td>{0}</td><td>{1}</td><td>{2}</td><td></td><td></td><td></td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
-										bom.pn,
-										orderPn.pn.bomRel.useNum,
-										bom.unit.name,
-										orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
-										orderPn.whpn ? orderPn.whpn.producedNum : 0, orderPn.rejectRatio);
-							}else if( bom.type ==1 ) {
-								bodyHtml += "<td></td><td></td><td></td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
-										bom.pn, 
-										orderPn.pn.bomRel.useNum,
-										bom.unit.name,
-										orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
-										orderPn.whpn ? orderPn.whpn.producedNum : 0,
-										orderPn.rejectRatio);
-							}
-						}
-						else {
-							
-							if( bom.type ==0 ) {
-								bodyHtml += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td></td><td></td><td></td><td>{3}</td><td>{4}</td><td>{5}</td></tr>>".format(
-									bom.pn, 
-									orderPn.pn.bomRel.useNum, 
-									bom.unit.name, 
-									orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
-									orderPn.whpn ? orderPn.whpn.producedNum : 0, 
-									orderPn.rejectRatio);
-							}else if( bom.type ==1 ) {
-								bodyHtml += "<tr><td></td><td></td><td></td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
-									bom.pn,
-									orderPn.pn.bomRel.useNum,
-									bom.unit.name,
-									orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
-											orderPn.whpn ? orderPn.whpn.producedNum : 0,
-									orderPn.rejectRatio);
-							}
-							
-						}
-					});
+						//原材
+						bodyHtml += yuanArr[i];
+						//包材
+						bodyHtml += baoArr[i];
+						//生产状态
+						bodyHtml += "<td>{0}</td><td>{1}</td><td>{2}</td></tr>".format(
+							orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+							orderPn.whpn ? orderPn.whpn.producedNum : 0,
+							orderPn.rejectRatio);
+					}
+					
+					//bom信息没有的情况下
+					if(bomNum==0)
+					{
+						bodyHtml += "<tr><td><input type='checkbox' name='select' rowid='{0}'/></td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>".format(
+								orderPn.id, 
+								orderPn.pn.pn,
+								orderPn.pn.name,
+								orderPn.pn.pnCls.name,
+								orderPn.num,
+								orderPn.pn.unit.name);
+						
+						//原材
+						bodyHtml += "<td></td><td></td><td></td>";
+						//包材
+						bodyHtml += "<td></td><td></td><td></td>";
+						
+						//生产状态
+						bodyHtml += "<td>{0}</td><td>{1}</td><td>{2}</td></tr>".format(
+							orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+							orderPn.whpn ? orderPn.whpn.producedNum : 0,
+							orderPn.rejectRatio);
+					}
+					
 					
 				});
+
 				var body = $('#bomInfo');
 				body.children().remove();
 				body.append(bodyHtml);
@@ -98,7 +124,6 @@ $(function () {
 		{
 			"name":"pn.id",
 			"label":"品目名",
-			"disabled":false,
 			"type":"select",
 			"options":[],
 			"ajax":true,
@@ -154,7 +179,6 @@ $(function () {
 			"label":"子类",
 			"type":"select",
 			"depend":true,//不立即执行，等订单项目的刷新
-			"disabled":false,
 			"options":[],
 			"ajax":true,
 			"url":"/pn/clsList/json",
@@ -196,7 +220,7 @@ $(function () {
 			"target":"addOrUpPn_div",
 			"caption":caption,
 			"fields":fields,
-			"url":"/pn/add/pn",
+			"url":"/orderPn/add",
 			"success": function(data) {
 				dlg.hide();
 				var msgDlg = new CommonDlg();
@@ -213,7 +237,7 @@ $(function () {
 				msgDlg.showMsgDlg({
 					"target":"msg_div",
 					"type":"ok",
-					"msg":"添加品目失败,请联系管理员!"});
+					"msg":data.msg});
 			}
 		});
 	});
@@ -239,7 +263,7 @@ $(function () {
 			"msg":"确定删除已选品目?",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/pn/delete/pn",
+					"url":"/orderPn/delete",
 					"data":ajaxDatas,
 					"success": function(data) {
 						dlg.hide();
@@ -291,11 +315,11 @@ $(function () {
 				{
 					"name":"pn.id",
 					"label":"品目名",
-					"disabled":true,
+					"disabled":"disabled",
 					"type":"select",
 					"options":[],
 					"ajax":true,
-					"url":"/pn/showPnInfo?id="+selIds[0],
+					"url":"/orderPn/showPnInfo?id="+selIds[0],
 					"convertAjaxData" : function(field, data) {
 						data.data.forEach(function(op, idx) {
 							field.options.push({
@@ -315,11 +339,11 @@ $(function () {
 				{
 					"name":"pn.pnCls.id",
 					"label":"子类",
-					"disabled":true,
+					"disabled":"disabled",
 					"type":"select",
 					"options":[],
 					"ajax":true,
-					"url":"/pn/showClsInfo?id="+selIds[0],
+					"url":"/orderPn/showClsInfo?id="+selIds[0],
 					"convertAjaxData" : function(field, data) {
 						data.data.forEach(function(cls, idx) {
 							field.options.push({
@@ -332,7 +356,7 @@ $(function () {
 				},
 				{
 					"name":"num",
-					"type":"text",
+					"type":"number",
 					"label":"数量"
 				},
 				{
@@ -342,19 +366,19 @@ $(function () {
 					"readonly":"readonly"
 				}],
 
-	    	"url":"/pn/updateOrderPnInfo",
+	    	"url":"/orderPn/update",
 	        "success":function(data) {
 	        	PdSys.refresh();
 	        },
 	        "error":function(data) {
-	        	PdSys.sysError();
+	        	PdSys.alert(data.msg);
 	        }
 	    });
 	});
 	
 	//当前订单的BOM信息
 	$("#showBomInfo").click(function(){
-		var url = PdSys.url('/pn/bomInfo/list?id=' + $('#order_id').val());
+		var url = PdSys.url('/orderPn/bomInfo/list?id=' + $('#order_id').val());
 		$(location).attr('href', url);
 	});
 

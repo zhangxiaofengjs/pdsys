@@ -1,94 +1,9 @@
 $(document).ready(function(){
-	function createUnitGroupButton() {
-		return {
-			"name":"addUnit",
-			"text":"+",
-			"click": function(dlg) {
-				var dlgUnit = new CommonDlg();
-				dlgUnit.showFormDlg({
-					"target":"unit_dlg_div",
-					"caption":"添加单位",
-					"fields":[
-						{
-							"name":"name",
-							"label":"单位",
-							"type":"text",
-							"value":"",
-						}
-					],
-					"url":"/unit/add",
-					"success" : function(data) {
-						dlgUnit.hide();
-						dlg.rebuildFieldWithValue("unit.id", data.unit.id);
-					},
-					"error": function(data) {
-						PdSys.alert(data.msg);
-					}
-				});
-			}
-		}
-	}
-
-	function createSupplierGroupButton() {
-		return {
-			"name":"addSupplier",
-			"text":"+",
-			"click": function(dlg) {
-				var dlgSupplier = new CommonDlg();
-				dlgSupplier.showFormDlg({
-					"target":"supplier_dlg_div",
-					"caption":"添加供应商",
-					"fields":[
-						{
-							"name":"name",
-							"label":"供应商名",
-							"type":"text",
-							"value":"",
-						},
-						{
-							"name":"phone",
-							"label":"电话",
-							"type":"text",
-							"value":"",
-						},
-						{
-							"name":"address",
-							"label":"地址",
-							"type":"text",
-							"value":"",
-						}
-					],
-					"url":"/supplier/add",
-					"success" : function(data) {
-						dlgSupplier.hide();
-						dlg.rebuildFieldWithValue("supplier.id", data.unit.id);
-					},
-					"error": function(data) {
-						PdSys.alert(data.msg);
-					}
-				});
-			}
-		}
-	}
-	
-	$("#addBOM").click(function(){
+	$("#addPn").click(function(){
 		var self = $(this);
-
 		var dlg = new CommonDlg();
+		
 		var fields = [
-			{
-				"name":"type",
-				"label":"种类",
-				"type":"select",
-				"options":[{
-					"caption":"原材",
-					"value":"0",
-					},
-					{
-						"caption":"包材",
-						"value":"1",
-					}],
-			},
 			{
 				"name":"pn",
 				"label":"品番",
@@ -105,7 +20,14 @@ $(document).ready(function(){
 				"name":"unit.id",
 				"label":"单位",
 				"type":"select",
-				"groupButton": createUnitGroupButton(dlg),
+				"groupButtons": createUnitGroupButtons({
+					"target":"unit_dlg_div",
+					"success": function(action, data) {
+						if(action == "add") {
+							dlg.rebuildFieldWithValue("unit.id", data.unit.id);
+						}
+					}
+				}),
 				"ajax":true,
 				"url":"/unit/list/json",
 				"convertAjaxData" : function(thisField, data) {
@@ -118,30 +40,13 @@ $(document).ready(function(){
 					});
 				}
 			},
-			{
-				"name":"supplier.id",
-				"label":"供应商",
-				"type":"select",
-				"groupButton": createSupplierGroupButton(dlg),
-				"ajax":true,
-				"url":"/supplier/list/json",
-				"convertAjaxData" : function(thisField, data) {
-					thisField.options = [];
-					data.forEach(function(supplier, idx) {
-						thisField.options.push({
-							"value": supplier.id,
-							"caption":supplier.name,
-						});
-					});
-				}
-			},
 		];
 		
 		dlg.showFormDlg({
 			"target":"dlg_div",
-			"caption":"添加原包材",
+			"caption":"添加品番",
 			"fields":fields,
-			"url":"/bom/add",
+			"url":"/pn/add",
 			"success": function(data) {
 				dlg.hide();
 				PdSys.success({
@@ -156,7 +61,7 @@ $(document).ready(function(){
 		});
 	});
 
-	$("#editBOM").click(function(){
+	$("#editPn").click(function(){
 		var self = $(this);
 		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
 		if(selIds.length != 1) {
@@ -172,22 +77,6 @@ $(document).ready(function(){
 				"value":selIds[0]
 			},
 			{
-				"name":"type",
-				"label":"种类",
-				"type":"select",
-				"value":"",
-				"disabled":"disabled",
-				"depend":true,
-				"options":[{
-					"caption":"原材",
-					"value":"0",
-					},
-					{
-						"caption":"包材",
-						"value":"1",
-					}],
-			},
-			{
 				"name":"pn",
 				"label":"品番",
 				"type":"text",
@@ -208,7 +97,14 @@ $(document).ready(function(){
 				"label":"单位",
 				"type":"select",
 				"value":"",
-				"groupButton": createUnitGroupButton(dlg),
+				"groupButtons": createUnitGroupButtons({
+					"target":"unit_dlg_div",
+					"success": function(action, data) {
+						if(action == "add") {
+							dlg.rebuildFieldWithValue("unit.id", data.unit.id);
+						}
+					}
+				}),
 				"ajax": true,
 				"depend":true,
 				"url":"/unit/list/json",
@@ -221,46 +117,188 @@ $(document).ready(function(){
 						});
 					});
 				}
+			}
+		];
+		
+		dlg.showFormDlg({
+			"target":"dlg_div",
+			"caption":"编辑品番",
+			"fields":fields,
+			"ajax": {
+				"url":"/pn/get",
+				"data":{
+					"id":id
+				},
+				"convertAjaxData":function(data) {
+					dlg.rebuildFieldWithValue("pn", data.pn.pn);
+					dlg.rebuildFieldWithValue("name", data.pn.name);
+					dlg.rebuildFieldWithValue("unit.id", data.pn.unit.id);
+				}
+			},
+			"url":"/pn/update",
+			"success": function(data) {
+				dlg.hide();
+				PdSys.success({
+					"ok" : function() {
+						PdSys.refresh();
+					}
+				});
+			},
+			"error": function(data) {
+				PdSys.alert(data.msg);
+			}
+		});
+	});
+	
+	$("#addPnCls").click(function(){
+		var self = $(this);
+		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
+		if(selIds.length != 1) {
+			return;
+		}
+		
+		var dlg = new CommonDlg();
+		var id = selIds[0];
+		var fields = [
+			{
+				"name":"id",
+				"type":"hidden",
+				"value":selIds[0]
 			},
 			{
-				"name":"supplier.id",
-				"label":"供应商",
+				"name":"pnClss[0].id",
+				"label":"子类",
 				"type":"select",
-				"groupButton": createSupplierGroupButton(dlg),
 				"value":"",
 				"ajax": true,
-				"depend":true,
-				"url":"/supplier/list/json",
+				"url":"/pncls/list/json",
 				"convertAjaxData" : function(thisField, data) {
 					thisField.options = [];
-					data.forEach(function(supplier, idx) {
+					data.forEach(function(pnCls, idx) {
 						thisField.options.push({
-							"value": supplier.id,
-							"caption":supplier.name,
+							"value": pnCls.id,
+							"caption":pnCls.name,
 						});
 					});
-				}
+				},
+				"groupButtons": [{
+					"name":"addNewPnCls",
+					"text":"+",
+					"click": function(dlg) {
+						var dlgPnCls = new CommonDlg();
+						dlgPnCls.showFormDlg({
+							"target":"pncls_dlg_div",
+							"caption":"添加子类",
+							"fields":[
+								{
+									"name":"name",
+									"label":"子类名",
+									"type":"text",
+									"value":"",
+								}
+							],
+							"url":"/pncls/add",
+							"success" : function(data) {
+								dlgPnCls.hide();
+								dlg.rebuildFieldWithValue("pnClss[0].id", data.pnCls.id);
+							},
+							"error": function(data) {
+								PdSys.alert(data.msg);
+							}
+						});
+					}
+				}],
+			}
+		];
+		
+		dlg.showFormDlg({
+			"target":"dlg_div",
+			"caption":"追加子类",
+			"fields":fields,
+			"url":"/pn/addPnCls",
+			"success": function(data) {
+				dlg.hide();
+				PdSys.success({
+					"ok" : function() {
+						PdSys.refresh();
+					}
+				});
+			},
+			"error": function(data) {
+				PdSys.alert(data.msg);
+			}
+		});
+	});
+	
+	$("button[id^='addBOM'").click(function(){
+		var self = $(this);
+		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
+		if(selIds.length != 1) {
+			return;
+		}
+		
+		var type = 0;
+		if(self.attr("id") == "addBOM1") {
+			type = 1;
+		}
+		
+		var dlg = new CommonDlg();
+		var id = selIds[0];
+		var fields = [
+			{
+				"name":"id",
+				"type":"hidden",
+				"value":selIds[0]
+			},
+			{
+				"name":"bomRels[0].bom.id",
+				"label": type == 0 ? "使用原材":"使用包材",
+				"type":"select",
+				"value":"",
+				"ajax": true,
+				"ajaxData":{"type":type},
+				"url":"/bom/list/json",
+				"convertAjaxData" : function(thisField, data) {
+					thisField.options = [];
+					data.boms.forEach(function(bom, idx) {
+						thisField.options.push({
+							"value": bom.id,
+							"caption":bom.pn + " " + bom.name,
+							"data":bom.unit.name
+						});
+					});
+				},
+				"afterBuild":function() {
+					var self = this;
+					var fieldElm = dlg.findFieldElem(self);
+					fieldElm.change(function() {
+						var selIndex = fieldElm[0].selectedIndex;
+						var val = self.options[selIndex].data;
+						dlg.rebuildFieldWithValue("bomRels[0].bom.unit.name", val);
+					});
+					
+					fieldElm.trigger("change");
+				},
+			},
+			{
+				"name":"bomRels[0].useNum",
+				"label":"品番消耗",
+				"type":"number",
+				"value":"0"
+			},
+			{
+				"name":"bomRels[0].bom.unit.name",
+				"label":"单位",
+				"type":"label",
+				"value":""
 			},
 		];
 		
 		dlg.showFormDlg({
 			"target":"dlg_div",
-			"caption":"编辑原包材",
+			"caption":"添加使用原包材",
 			"fields":fields,
-			"ajax": {
-				"url":"/bom/get",
-				"data":{
-					"id":id
-				},
-				"convertAjaxData":function(data) {
-					dlg.rebuildFieldWithValue("type", data.bom.type);
-					dlg.rebuildFieldWithValue("pn", data.bom.pn);
-					dlg.rebuildFieldWithValue("name", data.bom.name);
-					dlg.rebuildFieldWithValue("unit.id", data.bom.unit.id);
-					dlg.rebuildFieldWithValue("supplier.id", data.bom.supplier.id);
-				}
-			},
-			"url":"/bom/update",
+			"url":"/pn/addBOM",
 			"success": function(data) {
 				dlg.hide();
 				PdSys.success({

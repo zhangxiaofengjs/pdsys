@@ -1,29 +1,26 @@
 package com.zworks.pdsys.services;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zworks.pdsys.mappers.OrderPnMapper;
 import com.zworks.pdsys.mappers.OrderMapper;
 import com.zworks.pdsys.models.OrderModel;
-import com.zworks.pdsys.models.OrderPnModel;
 
 @Service
 public class OrderService {
 	@Autowired
     private OrderMapper orderMapper;
 	
-	@Autowired
-    private OrderPnMapper orderPnMapper;
-	
 	public List<OrderModel> queryList( OrderModel orderModel ) {
 		return orderMapper.queryList( orderModel );
 	}
 	
-	public void delete(OrderModel orderModel) {
-		orderMapper.delete( orderModel );
+	public void updateOrderState(OrderModel orderModel) {
+		orderMapper.updateOrderState( orderModel );
 	}
 	
 	public OrderModel queryObject(int id) {
@@ -34,12 +31,22 @@ public class OrderService {
 		orderMapper.save( orderModel );
 	}
 	
-	public List<OrderPnModel> queryOrderPnList( OrderPnModel orderPnModel ) {
-		return orderPnMapper.queryList( orderPnModel );
+	//去除重复的状态
+	public int[] removeDuplicate(List<OrderModel> list) {
+        Set<Integer> set=new TreeSet<Integer>();
+        for (int i = 0; i < list.size(); i++) {
+        	OrderModel o=list.get(i);
+        	set.add(o.getState());
+        }
+        
+        Integer[] arr2=set.toArray(new Integer[0]);
+        int[] result=new int[arr2.length];
+        
+        for (int i = 0; i < result.length; i++) {
+            result[i]=arr2[i];
+        }
+        return result;
+
 	}
 	
-	public void updateOrderPn(OrderPnModel orderPnModel) {
-		orderPnMapper.updateOrderPn( orderPnModel );
-	}
-
 }

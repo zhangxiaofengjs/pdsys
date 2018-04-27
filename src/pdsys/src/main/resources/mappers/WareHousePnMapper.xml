@@ -31,6 +31,7 @@
         <id column="wh_id" property="id" />  
         <result column="wh_produced_num" property="producedNum" />  
         <result column="wh_semi_produced_num" property="semiProducedNum" />  
+        <result column="wh_defective_num" property="defectiveNum" />  
         <association property="orderPn" resultMap="orderPnResultMap"/>
     </resultMap>
     
@@ -39,6 +40,7 @@
 			wh_pn.c_id AS wh_id, 
 			wh_pn.c_produced_num AS wh_produced_num, 
 			wh_pn.c_semi_produced_num AS wh_semi_produced_num, 
+			wh_pn.c_defective_num AS wh_defective_num, 
 			pn.c_id AS pn_id, 
 			pn.c_pn AS pn_pn, 
 			pn.c_name AS pn_name, 
@@ -57,8 +59,15 @@
 		left join unit_tbl AS unit on pn.c_unit_id = unit.c_id
 		left join order_tbl AS od on od_pn.c_order_id = od.c_id
 		<where>
-			<if test="orderPn != null and orderPn.pn != null">
-				and pn.c_pn like '%${orderPn.pn.pn}%'
+			<if test="orderPn != null and orderPn.pn != null and orderPn.pn.pn != null and orderPn.pn.pn != ''">
+				<choose>
+	                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+						and pn.c_pn like '%${orderPn.pn.pn}%'
+					</when>
+					 <otherwise>
+	                    and pn.c_pn=#{orderPn.pn.pn}
+	                </otherwise>
+				</choose>
 			</if>
 		</where>
 	</select>
@@ -67,11 +76,13 @@
     	insert into warehouse_pn_tbl (
     		c_order_pn_id,
     		c_produced_num,
-    		c_semi_produced_num)
+    		c_semi_produced_num,
+    		c_defective_num)
     	values (
     		#{orderPn.id},
     		#{producedNum},
-    		#{semiProducedNum}
+    		#{semiProducedNum},
+    		#{defectiveNum}
     	)
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
@@ -81,7 +92,8 @@
 	<update id="update"  parameterType="wareHousePnModel">
     	update warehouse_pn_tbl
 		set	c_produced_num=#{producedNum},
-		    c_semi_produced_num=#{semiProducedNum}
+		    c_semi_produced_num=#{semiProducedNum},
+		    c_defective_num=#{defectiveNum}
     	<where>
 			c_id = #{id}
 		</where>

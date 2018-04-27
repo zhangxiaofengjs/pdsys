@@ -1,76 +1,4 @@
 $(document).ready(function(){
-	function createUnitGroupButton() {
-		return {
-			"name":"addUnit",
-			"text":"+",
-			"click": function(dlg) {
-				var dlgUnit = new CommonDlg();
-				dlgUnit.showFormDlg({
-					"target":"unit_dlg_div",
-					"caption":"添加单位",
-					"fields":[
-						{
-							"name":"name",
-							"label":"单位",
-							"type":"text",
-							"value":"",
-						}
-					],
-					"url":"/unit/add",
-					"success" : function(data) {
-						dlgUnit.hide();
-						dlg.rebuildFieldWithValue("unit.id", data.unit.id);
-					},
-					"error": function(data) {
-						PdSys.alert(data.msg);
-					}
-				});
-			}
-		}
-	}
-
-	function createSupplierGroupButton() {
-		return {
-			"name":"addSupplier",
-			"text":"+",
-			"click": function(dlg) {
-				var dlgSupplier = new CommonDlg();
-				dlgSupplier.showFormDlg({
-					"target":"supplier_dlg_div",
-					"caption":"添加供应商",
-					"fields":[
-						{
-							"name":"name",
-							"label":"供应商名",
-							"type":"text",
-							"value":"",
-						},
-						{
-							"name":"phone",
-							"label":"电话",
-							"type":"text",
-							"value":"",
-						},
-						{
-							"name":"address",
-							"label":"地址",
-							"type":"text",
-							"value":"",
-						}
-					],
-					"url":"/supplier/add",
-					"success" : function(data) {
-						dlgSupplier.hide();
-						dlg.rebuildFieldWithValue("supplier.id", data.unit.id);
-					},
-					"error": function(data) {
-						PdSys.alert(data.msg);
-					}
-				});
-			}
-		}
-	}
-	
 	$("#addBOM").click(function(){
 		var self = $(this);
 
@@ -105,7 +33,16 @@ $(document).ready(function(){
 				"name":"unit.id",
 				"label":"单位",
 				"type":"select",
-				"groupButton": createUnitGroupButton(dlg),
+				"groupButtons": createUnitGroupButtons({
+					"target":"unit_dlg_div",
+					"success" :function(action, data){
+						if(action == "add") {
+							dlg.rebuildFieldWithValue("unit.id", data.unit.id);
+						} else if(action == "delete") {
+							dlg.rebuildFieldWithValue("unit.id", -1);
+						}
+					}
+				}),
 				"ajax":true,
 				"url":"/unit/list/json",
 				"convertAjaxData" : function(thisField, data) {
@@ -122,7 +59,14 @@ $(document).ready(function(){
 				"name":"supplier.id",
 				"label":"供应商",
 				"type":"select",
-				"groupButton": createSupplierGroupButton(dlg),
+				"groupButtons": createSupplierGroupButtons({
+					"target": "supplier_dlg_div",
+					"success": function(action, data) {
+						if(action == "add") {
+							dlg.rebuildFieldWithValue("supplier.id", data.supplier.id);
+						}
+					}
+				}),
 				"ajax":true,
 				"url":"/supplier/list/json",
 				"convertAjaxData" : function(thisField, data) {
@@ -208,7 +152,16 @@ $(document).ready(function(){
 				"label":"单位",
 				"type":"select",
 				"value":"",
-				"groupButton": createUnitGroupButton(dlg),
+				"groupButtons": createUnitGroupButtons({
+					"target":"unit_dlg_div",
+					"success" :function(action, data){
+						if(action == "add") {
+							dlg.rebuildFieldWithValue("unit.id", data.unit.id);
+						} else if(action == "delete") {
+							dlg.rebuildFieldWithValue("unit.id", -1);
+						}
+					}
+				}),
 				"ajax": true,
 				"depend":true,
 				"url":"/unit/list/json",
@@ -226,7 +179,14 @@ $(document).ready(function(){
 				"name":"supplier.id",
 				"label":"供应商",
 				"type":"select",
-				"groupButton": createSupplierGroupButton(dlg),
+				"groupButtons": createSupplierGroupButtons({
+					"target": "supplier_dlg_div",
+					"success": function(action, data) {
+						if(action == "add") {
+							dlg.rebuildFieldWithValue("supplier.id", data.supplier.id);
+						}
+					}
+				}),
 				"value":"",
 				"ajax": true,
 				"depend":true,

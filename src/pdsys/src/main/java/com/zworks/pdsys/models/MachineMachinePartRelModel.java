@@ -8,7 +8,7 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("machineMachinePartRelModel")
 public class MachineMachinePartRelModel extends BaseModel {
-	private int maitenacePartNum;
+	private float maitenacePartNum;
 	private MachinePartModel machinePart;
 
 	public MachinePartModel getMachinePart() {
@@ -19,11 +19,11 @@ public class MachineMachinePartRelModel extends BaseModel {
 		this.machinePart = machinePart;
 	}
 
-	public int getMaitenacePartNum() {
+	public float getMaitenacePartNum() {
 		return maitenacePartNum;
 	}
 
-	public void setMaitenacePartNum(int maitenacePartNum) {
+	public void setMaitenacePartNum(float maitenacePartNum) {
 		this.maitenacePartNum = maitenacePartNum;
 	}
 }

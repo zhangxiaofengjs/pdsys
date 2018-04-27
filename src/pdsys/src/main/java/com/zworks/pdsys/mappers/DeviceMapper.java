@@ -5,8 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.zworks.pdsys.models.DeviceModel;
-import com.zworks.pdsys.models.MachineModel;
-import com.zworks.pdsys.models.UserModel;
 
 /**
  * @author: zhangxiaofengjs@163.com

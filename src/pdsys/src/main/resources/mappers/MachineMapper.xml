@@ -57,6 +57,72 @@
 			<if test="id > 0">
 				and m.c_id = #{id}
 			</if>
+			<if test="pn != null">
+				and m.c_pn = #{pn}
+			</if>
 		</where>
 	</select>
+	
+	<insert id="add" parameterType="machineModel" keyProperty="id">
+		insert into machine_tbl
+		(
+			c_pn,
+			c_name,
+			c_unit_id,
+			c_maitenace_period,
+			c_supplier_id
+		)
+		values
+		(
+			#{pn},
+			#{name},
+			#{unit.id},
+			#{maitenacePeriod},
+			#{supplier.id}
+		)
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+	</insert>
+	
+	<insert id="addMachinePart" parameterType="machineModel" keyProperty="id">
+		insert into machine_part_relation_tbl
+		(
+			c_machine_id,
+			c_machine_part_id,
+			c_maitenace_part_num
+		)
+		values
+		<foreach collection ="machineMachinePartRels" item="machineMachinePartRel" index= "index" separator =",">
+        (
+			#{id},
+			#{machineMachinePartRel.machinePart.id},
+			#{machineMachinePartRel.maitenacePartNum}
+		)
+        </foreach >
+	</insert>
+	
+	<update id="update" parameterType="machineModel">
+    	update machine_tbl
+		set	c_pn = #{pn},
+			c_name = #{name},
+			c_unit_id = #{unit.id},
+			c_maitenace_period = #{maitenacePeriod},
+			c_supplier_id = #{supplier.id}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
+    
+    <update id="updateMachinePart" parameterType="machineModel">
+   		<foreach collection ="machineMachinePartRels" item="machineMachinePartRel" index= "index" separator =";">
+	    	update machine_part_relation_tbl
+			<set>
+				c_maitenace_part_num = #{machineMachinePartRel.maitenacePartNum}
+			</set>
+	    	<where>
+				c_machine_id = #{id} and c_machine_part_id = #{machineMachinePartRel.machinePart.id}
+			</where>
+		</foreach>
+    </update>
 </mapper>

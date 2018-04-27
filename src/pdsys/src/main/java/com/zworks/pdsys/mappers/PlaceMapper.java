@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.zworks.pdsys.models.PlaceModel;
-import com.zworks.pdsys.models.UserModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -15,4 +14,6 @@ import com.zworks.pdsys.models.UserModel;
 public interface PlaceMapper {
 	
 	List<PlaceModel> queryList(PlaceModel filterObj);
+
+	void add(PlaceModel place);
 }

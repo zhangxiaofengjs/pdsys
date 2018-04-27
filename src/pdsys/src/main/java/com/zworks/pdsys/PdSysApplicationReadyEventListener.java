@@ -5,9 +5,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import com.zworks.pdsys.mappers.DeviceMapper;
-import com.zworks.pdsys.scheduler.config.JobShop;
-import com.zworks.pdsys.services.CustomerService;
+import com.zworks.pdsys.scheduler.JobShop;
 
 @Component
 public class PdSysApplicationReadyEventListener implements ApplicationListener<ApplicationReadyEvent> {

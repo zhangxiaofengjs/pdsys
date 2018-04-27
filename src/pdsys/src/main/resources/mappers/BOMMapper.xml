@@ -37,7 +37,17 @@
 				and b.c_id = #{id}
 			</if>
 			<if test="pn != null">
-				and b.c_pn = #{pn}
+				<choose>
+	                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+	                   	and b.c_pn like '%${pn}%'
+	                </when>
+	                <otherwise>
+						and b.c_pn = #{pn}
+	                </otherwise>
+	            </choose>
+			</if>
+			<if test="type != null and type >= 0">
+				and b.c_type = #{type}
 			</if>
 		</where>
 		order by b.c_type

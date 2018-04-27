@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mysql.jdbc.StringUtils;
+import com.zworks.pdsys.business.beans.UserChangePwdFormBean;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.services.UserService;
@@ -42,7 +44,11 @@ public class UserController {
 	
 	@RequestMapping("/list")
 	public String list(UserModel user, Model model) {
+		//启用模糊查询
+		user.getFilterCond().put("fuzzyNoSearch", true);
+		
 		List<UserModel> list = userService.queryList(user);
+		model.addAttribute("user", user);
 		model.addAttribute("list", list);
 		return "/sys/user/list";
 	}
@@ -66,6 +72,43 @@ public class UserController {
 			return JSONResponse.error("该工号姓名用户不存在。");
 		}
 		userService.update(user);
+		return JSONResponse.success();
+	}
+	
+	@RequestMapping("/changepwd")
+	@ResponseBody
+	public JSONResponse changePwd(@RequestBody UserChangePwdFormBean formBean, Model model) {
+		if(StringUtils.isNullOrEmpty(formBean.getPassword()) || 
+			StringUtils.isNullOrEmpty(formBean.getPassword2()) ||
+			StringUtils.isNullOrEmpty(formBean.getPassword3())) {
+			return JSONResponse.error("密码不能为空");
+		}
+		
+		if(!formBean.getPassword2().equals(formBean.getPassword3())) {
+			return JSONResponse.error("新密码不一致");
+		}
+		
+		UserModel u = new UserModel();
+		u.setId(formBean.getId());
+		u = userService.queryOneWithPassword(u);
+		if(u == null) {
+			return JSONResponse.error("该工号用户不存在。");
+		}
+		
+		if(!userService.isPasswordMatch(formBean.getPassword(), u.getPassword())) {
+			return JSONResponse.error("旧密码不对");
+		}
+		
+		u.setPassword(formBean.getPassword2());
+		userService.changePassword(u);
+		return JSONResponse.success();
+	}
+	
+	@RequestMapping("/initpwd")
+	@ResponseBody
+	public JSONResponse initPwd(@RequestBody UserModel user, Model model) {
+		user.setPassword("123");
+		userService.changePassword(user);
 		return JSONResponse.success();
 	}
 }

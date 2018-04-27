@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.mappers.PlaceMapper;
-import com.zworks.pdsys.models.DeviceModel;
 import com.zworks.pdsys.models.PlaceModel;
 
 /**
@@ -22,5 +21,9 @@ public class PlaceService {
 		List<PlaceModel> list = placeMapper.queryList(filterObj);
 		
 		return list;
+	}
+
+	public void add(PlaceModel place) {
+		placeMapper.add(place);
 	}
 }

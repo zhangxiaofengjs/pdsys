@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.PlaceModel;
 import com.zworks.pdsys.services.PlaceService;
 
@@ -27,5 +29,12 @@ public class PlaceController {
 		List<PlaceModel> list = placeService.queryList(place);
 		
 		return list;
+    }
+	
+	@RequestMapping(value= {"/add"})
+	@ResponseBody
+    public JSONResponse add(@RequestBody PlaceModel place, Model model) {
+		placeService.add(place);
+		return JSONResponse.success().put("place", place);
     }
 }

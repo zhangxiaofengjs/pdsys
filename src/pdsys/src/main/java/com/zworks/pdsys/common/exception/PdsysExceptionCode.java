@@ -5,5 +5,7 @@ package com.zworks.pdsys.common.exception;
  * @version: 2018/04/05
  */
 public interface PdsysExceptionCode {
+	static final int ERROR_SERVER_INTERNAL_ERROR = 9999;
 	static final int ERROR_REQUEST_PARAM = 1;
+	static final int ERROR_PARAM = 2;
 }

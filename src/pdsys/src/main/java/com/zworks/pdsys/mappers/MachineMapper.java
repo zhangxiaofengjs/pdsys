@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.zworks.pdsys.models.MachineModel;
-import com.zworks.pdsys.models.UserModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -15,4 +14,12 @@ import com.zworks.pdsys.models.UserModel;
 public interface MachineMapper {
 	
 	List<MachineModel> queryList(MachineModel filterObj);
+
+	void add(MachineModel machine);
+
+	void update(MachineModel machine);
+
+	void updateMachinePart(MachineModel machine);
+
+	void addMachinePart(MachineModel machine);
 }

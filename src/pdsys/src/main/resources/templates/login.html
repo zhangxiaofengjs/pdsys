@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta th:include="common/header::header">
+	<style type="text/css">  
+       *{  
+           margin: 0;  
+           padding: 0;  
+       }  
+       html,body{  
+           height: 100%;  
+           width: 100%;  
+           background-color:#3c8dbc;
+       }  
+       .mainDiv{  
+           height: 100%;  
+           width: 100%;  
+           color:#fff;
+       }  
+   </style>  
+</head>
+<body>
+	<div class="container mainDiv">
+		<div style="width:50%;height:50%;float:left;margin-left:0px;margin-top:10%;padding-left:0px;">
+			<img class="pull-right" style="padding-right:50px;padding-top:50px;" src="icons/logo.png">
+		</div>
+		<div style="width:50%;margin-top:10%;margin-left:50%;">
+			<div class="row">
+				<div class="col-xs-6 col-sm-6 col-md-6">
+				    <h2>请登录</h2>
+	                <div th:if="${param.error}" class="alert alert-danger">不合法的用户名或者密码</div>
+	                <div th:if="${param.logout}" class="alert alert-info">已退出登录</div>
+				    <form role="form" name="form" th:action="@{/login}" method="post">
+				        <div class="form-group">
+				            <label for="no">账号</label>
+				            <input type="text" class="form-control" name="no" value="" placeholder="账号"/>
+				        </div>
+				        <div class="form-group">
+				            <label for="password">密码</label>
+				            <input type="password" class="form-control" name="password" placeholder="密码"/>
+				        </div>
+				        <input type="submit" id="login" value="登录" class="btn btn-success"/>
+				    </form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

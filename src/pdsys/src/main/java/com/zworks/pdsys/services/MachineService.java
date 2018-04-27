@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.mappers.MachineMapper;
-import com.zworks.pdsys.mappers.WareHouseMachinePartMapper;
-import com.zworks.pdsys.models.DeviceModel;
+import com.zworks.pdsys.models.MachineMachinePartRelModel;
 import com.zworks.pdsys.models.MachineModel;
-import com.zworks.pdsys.models.WareHouseMachinePartModel;
+import com.zworks.pdsys.models.MachinePartModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -32,5 +32,46 @@ public class MachineService {
 			return list.get(0);
 		}
 		return null;
+	}
+
+	public boolean exists(MachineModel machine) {
+		MachineModel m = new MachineModel();
+		m.setPn(machine.getPn());
+		return queryOne(m) != null;
+	}
+
+	public void add(MachineModel machine) {
+		machineMapper.add(machine);
+	}
+
+	public void update(MachineModel machine) {
+		machineMapper.update(machine);
+	}
+
+	public boolean existsMachinePart(MachineModel machine) {
+		MachineModel m = queryOne(machine);
+		if(m == null) {
+			throw new PdsysException("不存在该品番机器");
+		}
+		for(MachineMachinePartRelModel mmRel : machine.getMachineMachinePartRels()) {
+			MachinePartModel mp = mmRel.getMachinePart();
+			
+			for(MachineMachinePartRelModel targetMmRel: m.getMachineMachinePartRels()) {
+				MachinePartModel targetMp = targetMmRel.getMachinePart();
+				
+				if(mp.getId() == targetMp.getId()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public void updateMachinePart(MachineModel machine) {
+		machineMapper.updateMachinePart(machine);
+	}
+
+	public void addMachinePart(MachineModel machine) {
+		machineMapper.addMachinePart(machine);
 	}
 }

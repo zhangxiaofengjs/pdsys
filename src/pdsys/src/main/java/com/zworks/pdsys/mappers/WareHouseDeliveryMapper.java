@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 
 /**
@@ -13,12 +12,15 @@ import com.zworks.pdsys.models.WareHouseDeliveryModel;
  */
 @Mapper
 public interface WareHouseDeliveryMapper {
-	
-	void add(WareHouseDeliveryModel obj);
+	List<WareHouseDeliveryModel> queryList(WareHouseDeliveryModel delivery);
+	List<WareHouseDeliveryModel> queryListWithPn(WareHouseDeliveryModel delivery);
+	List<WareHouseDeliveryModel> queryListWithBOM(WareHouseDeliveryModel delivery);
+	List<WareHouseDeliveryModel> queryListWithMachinePart(WareHouseDeliveryModel delivery);
 
-	List<WareHouseDeliveryModel> queryList(WareHouseDeliveryModel obj);
+	void add(WareHouseDeliveryModel obj);
 
 	void update(WareHouseDeliveryModel delivery);
 
 	void delete(WareHouseDeliveryModel delivery);
+
 }

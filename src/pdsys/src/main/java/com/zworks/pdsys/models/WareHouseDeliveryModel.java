@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.apache.ibatis.type.Alias;
 
-import com.zworks.pdsys.common.enumClass.DeliveryState;
-
 /**
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/04/02
@@ -15,9 +13,13 @@ import com.zworks.pdsys.common.enumClass.DeliveryState;
 public class WareHouseDeliveryModel extends BaseModel{
 	private UserModel user;
 	private Date deliveryTime;
-	private List<WareHouseDeliveryPnModel> wareHouseDeliveryPns;
 	private int state;
-	
+	private int type;
+	private String comment;
+	private List<WareHouseDeliveryPnModel> wareHouseDeliveryPns;
+	private List<WareHouseDeliveryBOMModel> wareHouseDeliveryBOMs;
+	private List<WareHouseDeliveryMachinePartModel> wareHouseDeliveryMachineParts;
+
 	public WareHouseDeliveryModel() {
 	}
 	
@@ -51,5 +53,37 @@ public class WareHouseDeliveryModel extends BaseModel{
 
 	public void setState(int state) {
 		this.state = state;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public List<WareHouseDeliveryBOMModel> getWareHouseDeliveryBOMs() {
+		return wareHouseDeliveryBOMs;
+	}
+
+	public void setWareHouseDeliveryBOMs(List<WareHouseDeliveryBOMModel> wareHouseDeliveryBOMs) {
+		this.wareHouseDeliveryBOMs = wareHouseDeliveryBOMs;
+	}
+
+	public List<WareHouseDeliveryMachinePartModel> getWareHouseDeliveryMachineParts() {
+		return wareHouseDeliveryMachineParts;
+	}
+
+	public void setWareHouseDeliveryMachineParts(List<WareHouseDeliveryMachinePartModel> wareHouseDeliveryMachineParts) {
+		this.wareHouseDeliveryMachineParts = wareHouseDeliveryMachineParts;
 	}
 }

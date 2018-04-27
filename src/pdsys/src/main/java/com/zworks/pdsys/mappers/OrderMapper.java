@@ -11,7 +11,7 @@ public interface OrderMapper {
 	
 	List<OrderModel> queryList( OrderModel orderModel );
 	
-	void delete(OrderModel orderModel);
+	void updateOrderState(OrderModel orderModel);
 	
 	OrderModel queryObject(int id);
 	

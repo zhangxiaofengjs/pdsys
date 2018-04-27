@@ -13,6 +13,7 @@ public class WareHouseEntryPnModel extends BaseModel{
 	private WareHouseEntryModel wareHouseEntry;
 	private float producedNum;
 	private float semiProducedNum;
+	private float defectiveNum;
 	
 	public WareHouseEntryPnModel() {
 	}
@@ -55,5 +56,13 @@ public class WareHouseEntryPnModel extends BaseModel{
 
 	public void setSmiProducedNum(float semiProducedNum) {
 		this.semiProducedNum = semiProducedNum;
+	}
+
+	public float getDefectiveNum() {
+		return defectiveNum;
+	}
+
+	public void setDefectiveNum(float defectiveNum) {
+		this.defectiveNum = defectiveNum;
 	}
 }

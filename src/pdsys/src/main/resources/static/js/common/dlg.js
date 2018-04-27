@@ -89,22 +89,22 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 						   f.label);
 		}
 		
-		if(f.groupButton) {
+		if(f.groupButtons) {
 			strFormHtml += '<div class="input-group">';
 		}
 		
-		if(f.ajax) {
-			//如果数据是ajax取得，先追加一个等待图标'
+		if(f.ajax || f.depend) {
+			//如果数据是ajax/depend（依赖后面重新做成）取得，先追加一个等待图标'
 			strFormHtml += '<div id="{0}" class="form-control" style="box-shadow:0 1px 1px rgba(0, 0, 0, 0);border-width:0px;padding-left:0px;"><img src="{1}" height="24px" /><span class="text-muted">加载中...</span><span name={2} class="text-danger"></span></div>'.
 				format(f.name, PdSys.url("/icons/loading.gif"), f.name + "_err");
 		} else {
 			strFormHtml += self.buildField(f);
 		}
 
-		if(f.groupButton) {
+		if(f.groupButtons) {
 			strFormHtml += '<span class="input-group-btn">\
 		        				<button name="{0}" id="{0}" class="btn btn-default" type="button">{1}</button>\
-		        			</span></div>'.format(f.groupButton.name, f.groupButton.text);
+		        			</span></div>'.format(f.groupButtons[0].name, f.groupButtons[0].text);
 		}
 		
 		if(f.type != "hidden") {
@@ -150,9 +150,11 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 			self.buildAjaxField(f);
 		}
 		
-		if(f.groupButton) {
-			$("#" + f.groupButton.name).click(function(){
-				(f.groupButton.click)(self);
+		if(f.groupButtons) {
+			$("#" + f.groupButtons[0].name).click(function(){
+				if(f.groupButtons[0].hasOwnProperty("click")) {
+					(f.groupButtons[0].click)(self);
+				}
 			});
 		}
 	});
@@ -179,8 +181,8 @@ CommonDlg.prototype.rebuildField = function(field) {
 
 	var fieldElm = self.findFieldElem(field);
 	var fieldElmParent = fieldElm.parent();
-	fieldElmParent.empty();
-	fieldElmParent.append(strFieldHtml);
+	fieldElm.remove();
+	fieldElmParent.prepend(strFieldHtml);
 	
 	if(field.afterBuild) {
 		(field.afterBuild)('ajax');
@@ -306,8 +308,18 @@ CommonDlg.prototype.fieldElem = function(type, name) {
 	return $(strId);
 };
 
-CommonDlg.prototype.findFieldElem = function(field) {
+CommonDlg.prototype.findFieldElem = function(fieldOrName) {
+	var field = fieldOrName;
+	if(typeof(field)=="string"){
+		field = this.fieldByName(field);
+	}
 	return this.fieldElem(field.type, field.name);
+};
+
+CommonDlg.prototype.fieldVal = function(fieldOrName) {
+	var fieldElm = this.findFieldElem(fieldOrName);
+	
+	return fieldElm.val();
 };
 
 CommonDlg.prototype.fieldBlur = function(fieldName) {
@@ -322,7 +334,7 @@ CommonDlg.prototype.doFieldValid = function(field) {
 	var fieldElm = self.findFieldElem(field);
 	var val = fieldElm.val();
 	
-	if(field.requried != undefined && !val) {
+	if(field.required != undefined && !val) {
 		self.setError(field, "这个值不能为空");
 		return false;
 	}
@@ -339,9 +351,13 @@ CommonDlg.prototype.doFieldValid = function(field) {
 	return true;
 } 
 	
-CommonDlg.prototype.setError = function(field, msg) {
+CommonDlg.prototype.setError = function(fieldOrName, msg) {
 	var self = this;
 
+	var field = fieldOrName;
+	if(typeof(fieldOrName) == "string") {
+		field = self.fieldByName(fieldOrName);
+	}
 	var strId = "#{0} span[name='{1}']".format(
 			this.id(),
 			(field.name + "_err").safeJqueryId());
@@ -358,6 +374,11 @@ CommonDlg.prototype.doValid = function() {
 		}
 	});
 	
+	if(isOK) {
+		if(self.option.hasOwnProperty("valid")) {
+			isOK = (self.option.valid)();
+		}
+	}
 	return isOK;
 };
 
@@ -368,16 +389,49 @@ CommonDlg.prototype.doValid = function() {
 //	}
 //};
 //将 a.b.c=1的名字转化为{'a':{'b':{'c':1}}}取得b对象,
+//将 a.b[0].c=1的名字转化为{'a':{'b':[{'c':1}]}}取得b对象,
 function getJsonObj(o, strName) {
 	var names = strName.split(".");
 	
 	var ret = o;
 	for(var i = 0; i < names.length -1; i++) {
 		var name = names[i];
-		if (ret[name] == undefined) {
-			ret[name] = {};
+		
+		var isArray = false;
+		var arrIndex = 0;
+		if(name.substring(name.length-1, name.length) == "]") {
+			//如果是数组
+			isArray = true;
+			var is = name.indexOf("[");
+			var ie = name.indexOf("]");
+			arrIndex = parseInt(name.substring(is+1, ie));
+			name = name.substring(0, is);
 		}
+			
+		if (ret[name] == undefined) {
+			if(isArray) {
+				ret[name] = [];
+				
+				var idx = arrIndex;
+				while(idx>-1) {
+					ret[name].push({});//放0到指定位置空对象
+					idx--;
+				}
+			} else {
+				ret[name] = {};
+			}
+		}
+		
+		//取元素
 		ret = ret[name];
+		
+		if(isArray) {
+			while(ret.length <= arrIndex) {
+				ret.push({});//放0到指定位置空对象
+			}
+			
+			ret = ret[arrIndex];
+		}
 	}
 	
 	return ret;

@@ -11,13 +11,15 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("wareHouseEntryModel")
 public class WareHouseEntryModel extends BaseModel{
-	public static final WareHouseEntryModel Empty = new WareHouseEntryModel();
-	
 	private UserModel user;
 	private Date entryTime;
 	private int state;
+	private int type;
+	private String comment;
 	private List<WareHouseEntryPnModel> wareHouseEntryPns;
-	
+	private List<WareHouseEntryBOMModel> wareHouseEntryBOMs;
+	private List<WareHouseEntryMachinePartModel> wareHouseEntryMachineParts;
+
 	public WareHouseEntryModel() {
 	}
 	
@@ -51,5 +53,37 @@ public class WareHouseEntryModel extends BaseModel{
 
 	public void setState(int state) {
 		this.state = state;
+	}
+
+	public List<WareHouseEntryBOMModel> getWareHouseEntryBOMs() {
+		return wareHouseEntryBOMs;
+	}
+
+	public void setWareHouseEntryBOMs(List<WareHouseEntryBOMModel> wareHouseEntryBOMs) {
+		this.wareHouseEntryBOMs = wareHouseEntryBOMs;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public List<WareHouseEntryMachinePartModel> getWareHouseEntryMachineParts() {
+		return wareHouseEntryMachineParts;
+	}
+
+	public void setWareHouseEntryMachineParts(List<WareHouseEntryMachinePartModel> wareHouseEntryMachineParts) {
+		this.wareHouseEntryMachineParts = wareHouseEntryMachineParts;
 	}
 }

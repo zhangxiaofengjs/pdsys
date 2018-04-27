@@ -1,22 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 	<meta th:include="common/header::header">
 	<link rel="stylesheet" href="css/font-awesome.min.css">
 	<link rel="stylesheet" href="css/AdminLTE.min.css">
 	<link rel="stylesheet" href="css/index.css">
+	<style type="text/css">  
+       *{  
+           margin: 0;  
+           padding: 0;  
+       }
+       html {
+       }
+       html,body{  
+           height: 100%;  
+           width: 100%;  
+       }  
+       .mainDiv{  
+           height: 100%;  
+           width: 100%;  
+           color:#fff;
+       }  
+   </style>
 </head>
 <body >
 	<script src="js/index.js"></script>
-	<div class="page-header" id='headerdiv' style="color:#fff;background-color:#3c8dbc;margin:0px">
-	  <div class="pull-right">
-	  	asdasda
-	  </div>
-	  <h1 style="margin-top:0px;"><a href='index.php'><img alt="" width=48px src="icons/logo.png"></a>XXXX<small><span style="font-size: 10pt;">ver2018.03.27 </span></small>
-		  <marquee direction=left behavior=scroll scrollamount=3 scrolldelay=10 width=50% onmouseover=this.stop() onmouseout=this.start()>
-		  	<span style="color:#fff"><small>有一条滚动新闻消息....</small></span>
-		  </marquee>
-	  </h1>
+	<div class="page-header" id='headerdiv' style="color:#fff;background-color:#3c8dbc;margin:0px;padding-bottom:0px;'">
+		<div class="pull-right" style="height:100px;color:#fff;font-size:9pt;padding-top:10px;padding-right:10px;">
+				[<a href="javascript:void(0);" id="changePwd" style="color:#fff;"><b sec:authentication="name"></b></a>] 登录中
+				<input type="hidden" id="userid" name="userid" th:value="${loginUser != null ? loginUser.user.id :_}">
+				<a th:href="@{/logout}" style="text-decoration:underline;color:#fff;">退出</a>
+	  	</div>
+	  	<h1 style="margin-top:0px;margin-bottom:0px;">
+	  	  <img alt="" height=100px src="icons/logo.png">
+	  	  <span style="font-size:9pt;vertical-align:bottom;margin-bottom:5px;">r2018.05.01</span>
+		</h1>
 	</div>
 	<div style="background-color:#ddd;float:left;height:100%;width:250px;">  
 		<ul id="main-nav" class="nav nav-tabs nav-stacked">  
@@ -32,7 +51,7 @@
 				    		<i style="padding-left:20px;" class="glyphicon glyphicon-list-alt"></i>
 				    		<span style="margin-left:5px;"><b>订单管理</b></span>
 				    	</a>
-				    </li>  
+				    </li>
 				    <li>
 				    	<a href="#" th:refURL="'order/plan'" th:displayText="'生产管理/生产计划'">
 				    		<i style="padding-left:20px;" class="glyphicon glyphicon-calendar"></i>
@@ -86,24 +105,24 @@
             	</ul>  
        		</li>
        		<li>  
-                 <a href="#msgmgr" class="nav-header collapsed" data-toggle="collapse">
-                 	 <i class="glyphicon glyphicon-bell"></i>
-				     <span style="margin-left:5px;">
-				     	<b>通知消息</b>
-				     	<span style="margin-left:5px;" class="badge label-danger">5</span>
-				     </span> 
-                     <span class="pull-right glyphicon glyphicon-chevron-down"></span>  
-                 </a>  
-                 <ul id="msgmgr" class="nav nav-list collapse secondmenu" style="height: 0px;">  
+                <a href="#msgmgr" class="nav-header collapsed" data-toggle="collapse">
+                	 <i class="glyphicon glyphicon-bell"></i>
+			     <span style="margin-left:5px;">
+			     	<b>通知消息</b>
+			     	<span style="margin-left:5px;" class="badge label-danger">5</span>
+			     </span> 
+                    <span class="pull-right glyphicon glyphicon-chevron-down"></span>  
+                </a>  
+	            <ul id="msgmgr" class="nav nav-list collapse secondmenu" style="height: 0px;">  
 	                <li>
 	                	<a href="#" th:refURL="'notice/list'" th:displayText="'通知管理/通知一览'">
 	                		<i style="padding-left:20px;" class="glyphicon glyphicon-star"></i>
 	                		<span style="margin-left:5px;"><b>通知管理</b></span>
 	                	</a>
 	                </li>  
-            	</ul>  
+	           	</ul>  
        		</li>
-       		<li>  
+       		<li sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN)}">
                  <a href="#sysmgr" class="nav-header collapsed" data-toggle="collapse">
                  	 <i class="glyphicon glyphicon-cog"></i>
 				     <span style="margin-left:5px;">
@@ -140,6 +159,8 @@
 	    <section class="content" style="background:#fff;height:100%;">
 	      <iframe id="frame_content" scrolling="yes" frameborder="0" style="height:100%;width:100%;min-height:200px;overflow:visible;background:#fff;" src="main.html"></iframe>
 	    </section>
-	</div>  
+	</div>
+	<div id="msg_div"></div>
+	<div id="chg_pwd_dlg_div"></div>
 </body>
 </html>
