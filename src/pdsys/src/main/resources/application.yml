@@ -26,7 +26,7 @@ spring:
     datasource: # 数据库配置
         url: jdbc:mysql://localhost:3306/pdsys?useSSL=false&useUnicode=true&characterEncoding=utf-8
         username: root
-        password: 123456
+        password: root
         driverClassName: com.mysql.jdbc.Driver
     thymeleaf: #thymeleaf
         prefix: classpath:/templates/
