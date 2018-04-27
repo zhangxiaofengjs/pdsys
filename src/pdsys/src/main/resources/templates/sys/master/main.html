@@ -21,6 +21,9 @@
 		<li role="presentation" th:class="(${type}=='machine'? 'active' : '')">
 			<a th:href="@{/sys/master/main/machine}">设备定义</a>
 		</li>
+		<li role="presentation" th:class="(${type}=='fileinput'? 'active' : '')">
+			<a th:href="@{/sys/master/main/fileinput}">图片上传</a>
+		</li>
 	</ul>
 	
 <div th:replace="/sys/master/__${type}__::content(${list})"></div>
