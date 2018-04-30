@@ -25,8 +25,8 @@ public class UnitController {
 	
 	@RequestMapping("/list/json")
 	@ResponseBody
-	public List<UnitModel> listJson(UnitModel unit, Model model) {
-		return unitService.queryList(unit);
+	public JSONResponse listJson(UnitModel unit, Model model) {
+		return JSONResponse.success().put("units", unitService.queryList(unit));
 	}
 	
 	@RequestMapping("/add")

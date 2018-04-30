@@ -12,17 +12,9 @@ import org.apache.ibatis.type.Alias;
 public class PnModel extends BaseModel{
 	private String pn;
 	private String name;
-	private PnClsModel pnCls;
 	private UnitModel unit;
-	private PnBOMRelModel bomRel;
-	private List<BOMModel> boms;
-	private List<PnClsModel> pnClss;//TODO 考虑将成员去除：pnCls，boms，同时bomRel似乎不合理
-	private List<PnBOMRelModel> bomRels;
-	private List<PnMachineModel> machineRels;
+	private List<PnPnClsRelModel> pnClsRels;
 
-	public PnModel() {
-	}
-	
 	public String getPn() {
 		return pn;
 	}
@@ -47,51 +39,11 @@ public class PnModel extends BaseModel{
 		this.name = name;
 	}
 
-	public PnClsModel getPnCls() {
-		return pnCls;
+	public List<PnPnClsRelModel> getPnClsRels() {
+		return pnClsRels;
 	}
 
-	public void setPnCls(PnClsModel pnCls) {
-		this.pnCls = pnCls;
-	}
-
-	public List<BOMModel> getBoms() {
-		return boms;
-	}
-
-	public void setBoms(List<BOMModel> boms) {
-		this.boms = boms;
-	}
-
-	public PnBOMRelModel getBomRel() {
-		return bomRel;
-	}
-
-	public void setBomRel(PnBOMRelModel bomRel) {
-		this.bomRel = bomRel;
-	}
-
-	public List<PnClsModel> getPnClss() {
-		return pnClss;
-	}
-
-	public void setPnClss(List<PnClsModel> pnClss) {
-		this.pnClss = pnClss;
-	}
-
-	public List<PnBOMRelModel> getBomRels() {
-		return bomRels;
-	}
-
-	public void setBomRels(List<PnBOMRelModel> bomRels) {
-		this.bomRels = bomRels;
-	}
-
-	public List<PnMachineModel> getMachineRels() {
-		return machineRels;
-	}
-
-	public void setMachineRels(List<PnMachineModel> machineRels) {
-		this.machineRels = machineRels;
+	public void setPnClsRels(List<PnPnClsRelModel> pnClsRels) {
+		this.pnClsRels = pnClsRels;
 	}
 }

@@ -10,7 +10,7 @@ import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.mappers.PnMapper;
 import com.zworks.pdsys.models.BOMModel;
-import com.zworks.pdsys.models.PnBOMRelModel;
+import com.zworks.pdsys.models.PnClsBOMRelModel;
 import com.zworks.pdsys.models.PnClsModel;
 import com.zworks.pdsys.models.PnModel;
 
@@ -57,15 +57,15 @@ public class PnService {
 			throw new PdsysException("品番的ID或者品番未指定！", PdsysExceptionCode.ERROR_PARAM);
 		}
 
-		List<PnClsModel> clss = pn.getPnClss();
-		List<PnClsModel> targetClss = p.getPnClss();
-		for(PnClsModel pnCls : clss) {
-			for(PnClsModel targetPnCls : targetClss) {
-				if(pnCls.getId() == targetPnCls.getId()) {
-					return true;
-				}
-			}
-		}
+//		List<PnClsModel> clss = pn.getPnClss();
+//		List<PnClsModel> targetClss = p.getPnClss();
+//		for(PnClsModel pnCls : clss) {
+//			for(PnClsModel targetPnCls : targetClss) {
+//				if(pnCls.getId() == targetPnCls.getId()) {
+//					return true;
+//				}
+//			}
+//		}
 		return false;
 	}
 
@@ -77,20 +77,20 @@ public class PnService {
 		if(p == null) {
 			throw new PdsysException("品番的ID或者品番未指定！", PdsysExceptionCode.ERROR_PARAM);
 		}
-
-		List<PnBOMRelModel> bomRels = pn.getBomRels();
-		List<PnBOMRelModel> targetBomRels = p.getBomRels();
-		for(PnBOMRelModel bomRel : bomRels) {
-			BOMModel bom = bomRel.getBom();
-			
-			for(PnBOMRelModel targetBomRel : targetBomRels) {
-				BOMModel targetBom = targetBomRel.getBom();
-				if(bom.getId() == targetBom.getId()) {
-					return true;
-				}
-			}
-		}
-		return false;
+return true;
+//		List<PnClsBOMRelModel> bomRels = pn.getBomRels();
+//		List<PnClsBOMRelModel> targetBomRels = p.getBomRels();
+//		for(PnClsBOMRelModel bomRel : bomRels) {
+//			BOMModel bom = bomRel.getBom();
+//			
+//			for(PnClsBOMRelModel targetBomRel : targetBomRels) {
+//				BOMModel targetBom = targetBomRel.getBom();
+//				if(bom.getId() == targetBom.getId()) {
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
 	}
 
 	public void addBOM(PnModel pn) {

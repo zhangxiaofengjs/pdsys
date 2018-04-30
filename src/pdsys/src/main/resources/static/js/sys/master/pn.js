@@ -6,7 +6,7 @@ $(document).ready(function(){
 		var fields = [
 			{
 				"name":"pn",
-				"label":"品番",
+				"label":"品目",
 				"type":"text",
 				"requried":"requried",
 			},
@@ -32,10 +32,10 @@ $(document).ready(function(){
 				"url":"/unit/list/json",
 				"convertAjaxData" : function(thisField, data) {
 					thisField.options = [];
-					data.forEach(function(unit, idx) {
+					data.units.forEach(function(unit, idx) {
 						thisField.options.push({
 							"value": unit.id,
-							"caption":unit.name,
+							"caption":"{0}({1}{2})".format(unit.name, unit.ratio, unit.subName),
 						});
 					});
 				}
@@ -113,7 +113,7 @@ $(document).ready(function(){
 					data.forEach(function(unit, idx) {
 						thisField.options.push({
 							"value": unit.id,
-							"caption":unit.name,
+							"caption":"{0}({1}{2})".format(unit.name, unit.ratio, unit.subName),
 						});
 					});
 				}

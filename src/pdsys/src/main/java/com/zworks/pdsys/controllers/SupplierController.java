@@ -28,8 +28,8 @@ public class SupplierController {
 	 */
 	@RequestMapping("/list/json")
 	@ResponseBody
-	public List<SupplierModel> listJson(SupplierModel supplier, Model model) {
-		return supplierService.queryList(supplier);
+	public JSONResponse listJson(SupplierModel supplier, Model model) {
+		return JSONResponse.success().put("suppliers", supplierService.queryList(supplier));
 	}
 	
 	/**

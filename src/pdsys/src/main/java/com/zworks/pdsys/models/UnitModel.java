@@ -11,19 +11,11 @@ public class UnitModel extends BaseModel{
 	public static final UnitModel Empty = new UnitModel();
 	
 	private String name;
-	private UnitModel subUnit;
+	private String subName;
 	private float ratio;
 
 	public String getName() {
 		return name;
-	}
-
-	public UnitModel getSubUnit() {
-		return subUnit;
-	}
-
-	public void setSubUnit(UnitModel subUnit) {
-		this.subUnit = subUnit;
 	}
 
 	public float getRatio() {
@@ -36,5 +28,13 @@ public class UnitModel extends BaseModel{
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getSubName() {
+		return subName;
+	}
+
+	public void setSubName(String subName) {
+		this.subName = subName;
 	}
 }

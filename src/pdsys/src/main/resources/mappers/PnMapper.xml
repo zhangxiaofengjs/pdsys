@@ -8,9 +8,12 @@
         <result column="bom_pn" property="pn" />  
         <result column="bom_name" property="name" />  
         <result column="bom_type" property="type" />  
+        <result column="bom_price" property="price" />  
         <association property="unit" resultMap="utResultMap" columnPrefix="bom_"/>
     </resultMap>
-	<resultMap id="BOMRelationResultMap" type="pnBOMRelModel" > 
+    
+	<resultMap id="pnClsBOMRelationResultMap" type="pnClsBOMRelModel" >
+		<id column="pn_bom_rel_id" property="id" />
         <result column="pn_bom_rel_use_num" property="useNum" />  
         <association property="bom" resultMap="bomResultMap"/>
     </resultMap>
@@ -18,6 +21,20 @@
 	<resultMap id="utResultMap" type="unitModel" >  
         <id column="ut_id" property="id"/> 
         <result column="ut_name" property="name"/>  
+        <result column="ut_sub_name" property="subName"/>  
+        <result column="ut_ratio" property="ratio"/>  
+    </resultMap>
+    
+   	<resultMap id="pnClsResultMap" type="pnClsModel" >
+        <id column="pn_cls_id" property="id" />  
+        <result column="pn_cls_name" property="name" />
+        <collection property="pnClsBOMRels" ofType="pnClsBOMRelModel" resultMap="pnClsBOMRelationResultMap" />      
+    </resultMap>
+    
+   	<resultMap id="pnPnClsRelationResultMap" type="pnPnClsRelModel" >
+        <id column="pn_cls_id" property="id" />
+        <result column="c_num" property="num" />    
+        <association property="pnCls" resultMap="pnClsResultMap"/>
     </resultMap>
     
 	<resultMap id="pnResultMap" type="pnModel" >
@@ -25,14 +42,9 @@
         <result column="pn_pn" property="pn" />  
         <result column="pn_name" property="name" />
         <association property="unit" resultMap="utResultMap"/>    
-        <collection property="pnClss" ofType="pnClsModel" resultMap="pnClsResultMap" />  
-        <collection property="bomRels" ofType="pnBOMRelModel" resultMap="BOMRelationResultMap" />  
+        <collection property="pnClsRels" ofType="pnPnClsRelModel" resultMap="pnPnClsRelationResultMap" />  
     </resultMap>
     
-   	<resultMap id="pnClsResultMap" type="pnClsModel" >
-        <id column="pn_cls_id" property="id" />  
-        <result column="pn_cls_name" property="name" />    
-    </resultMap>
     
 	<select id="queryList" parameterType="pnModel" resultMap="pnResultMap">
 		select pn.c_id as pn_id,
@@ -40,20 +52,26 @@
 			   pn.c_name as pn_name,
 			   ut.c_id as ut_id,
 			   ut.c_name as ut_name,
+			   ut.c_sub_name as ut_sub_name,
+			   ut.c_ratio as ut_ratio,
 			   pn_cls.c_id as pn_cls_id,
 			   pn_cls.c_name as pn_cls_name,
+			   pn_bom_rel.c_id as pn_bom_rel_id,
 			   pn_bom_rel.c_use_num as pn_bom_rel_use_num,
+			   pn_bom_rel.c_price as pn_bom_rel_price,
 			   bom.c_id as bom_id,
 			   bom.c_pn as bom_pn,
 			   bom.c_name as bom_name,
 			   bom.c_type as bom_type,
 			   bom_unit.c_id as bom_ut_id,
-			   bom_unit.c_name as bom_ut_name
+			   bom_unit.c_name as bom_ut_name,
+			   bom_unit.c_sub_name as bom_ut_sub_name,
+			   bom_unit.c_ratio as bom_ut_ratio
 		from pn_tbl as pn 
 	    left join unit_tbl as ut on pn.c_unit_id = ut.c_id
 	    left join pn_cls_relation_tbl as pn_pn_cls on pn.c_id = pn_pn_cls.c_pn_id
 	    left join pn_cls_tbl as pn_cls on pn_pn_cls.c_cls_id = pn_cls.c_id
-	    left join pn_bom_relation_tbl as pn_bom_rel on pn.c_id = pn_bom_rel.c_pn_id
+	    left join pn_bom_relation_tbl as pn_bom_rel on pn.c_id = pn_bom_rel.c_pn_id and pn_pn_cls.c_cls_id = pn_bom_rel.c_cls_id
 	    left join bom_tbl as bom on pn_bom_rel.c_bom_id = bom.c_id
 	    left join unit_tbl as bom_unit on bom.c_unit_id = bom_unit.c_id
 	    <where>
@@ -73,8 +91,6 @@
 		</where>
 	    order by pn.c_pn asc
 	</select>
-	
-	
 	
 	<select id="queryClsList" parameterType="pnModel" resultMap="pnClsResultMap">
 		select pn_cls.c_id as pn_cls_id,

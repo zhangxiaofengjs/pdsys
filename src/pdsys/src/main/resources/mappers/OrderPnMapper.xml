@@ -49,18 +49,19 @@
         <id column="bom_ut_id" property="id"/>
         <result column="bom_ut_name" property="name"/>  
     </resultMap>
+    <!-- 
     <resultMap id="bomRelResultMap" type="pnBOMRelModel" >  
         <result column="bom_rel_pn_id" property="pnId"/>
         <result column="bom_rel_bom_id" property="bomId"/> 
         <result column="bom_rel_use_num" property="useNum"/> 
-    </resultMap>
+    </resultMap> -->
     <resultMap id="pnResultMap" type="pnModel" >  
         <id column="od_pn_id" property="id" />  
         <result column="od_pn_pn" property="pn"/>  
         <result column="od_pn_name" property="name"/>  
         <association property="unit" resultMap="pnUnitResultMap"/>
         <association property="pnCls" resultMap="pnClsResultMap"/>
-        <association property="bomRel" resultMap="bomRelResultMap"/>
+        <!-- <association property="bomRel" resultMap="bomRelResultMap"/>-->
         <collection property="boms" ofType="BOMModel" javaType="list"> 
 	        <id column="bom_id" property="id" />
 	        <result column="bom_pn" property="pn" />

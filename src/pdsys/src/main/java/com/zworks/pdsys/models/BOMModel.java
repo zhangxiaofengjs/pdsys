@@ -1,5 +1,7 @@
 package com.zworks.pdsys.models;
 
+import java.util.List;
+
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -8,12 +10,12 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("BOMModel")
 public class BOMModel extends BaseModel {
-	public static final BOMModel Empty = new BOMModel();
 	private String pn;
 	private String name;
 	private int type = -1;
+	private float price;
 	private UnitModel unit;
-	private SupplierModel supplier;
+	private List<SupplierModel> suppliers;
 	private WareHouseBOMModel whbom;
 
 	public String getPn() {
@@ -40,14 +42,6 @@ public class BOMModel extends BaseModel {
 		this.unit = unit;
 	}
 
-	public SupplierModel getSupplier() {
-		return supplier;
-	}
-
-	public void setSupplier(SupplierModel supplier) {
-		this.supplier = supplier;
-	}
-
 	public int getType() {
 		return type;
 	}
@@ -62,5 +56,21 @@ public class BOMModel extends BaseModel {
 
 	public void setWhbom(WareHouseBOMModel whbom) {
 		this.whbom = whbom;
+	}
+
+	public List<SupplierModel> getSuppliers() {
+		return suppliers;
+	}
+
+	public void setSuppliers(List<SupplierModel> suppliers) {
+		this.suppliers = suppliers;
+	}
+
+	public float getPrice() {
+		return price;
+	}
+
+	public void setPrice(float price) {
+		this.price = price;
 	}
 }
