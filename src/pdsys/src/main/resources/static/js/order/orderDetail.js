@@ -62,10 +62,14 @@ $(function () {
 						//包材
 						bodyHtml += baoArr[i];
 						//生产状态
-						bodyHtml += "<td>{0}</td><td>{1}</td><td>{2}</td></tr>".format(
-							orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
-							orderPn.whpn ? orderPn.whpn.producedNum : 0,
-							orderPn.rejectRatio);
+						if(i==0)
+						{
+							bodyHtml += "<td rowspan='{0}'>{1}</td><td rowspan='{0}'>{2}</td><td rowspan='{0}'>{3}</td></tr>".format(
+								bomNum,
+								orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
+								orderPn.whpn ? orderPn.whpn.producedNum : 0,
+								orderPn.rejectRatio);
+						}
 					}
 					
 					//bom信息没有的情况下
@@ -85,7 +89,8 @@ $(function () {
 						bodyHtml += "<td></td><td></td><td></td>";
 						
 						//生产状态
-						bodyHtml += "<td>{0}</td><td>{1}</td><td>{2}</td></tr>".format(
+						bodyHtml += "<td rowspan='{0}'>{1}</td><td rowspan='{0}'>{2}</td><td rowspan='{0}'>{3}</td></tr>".format(
+							bomNum,
 							orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
 							orderPn.whpn ? orderPn.whpn.producedNum : 0,
 							orderPn.rejectRatio);
