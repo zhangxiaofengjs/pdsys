@@ -1,165 +1,5 @@
 $(function () {
 	
-	//表格动态加载
-	function tableLoad()
-	{
-		var order= {
-			"id":$('#order_id').val()
-		};
-		PdSys.ajax({
-			"url":"/orderPn/list/json",
-			"data":order,
-			"success": function(data) {
-				var bodyHtml = "";
-				data.orderPns.forEach(function(orderPn, idx) {
-					var rowspanNum = 0;
-					orderPn.pn.pnClsRels.forEach(function(pnClsRel, idx3) {
-						var PnClsModel = pnClsRel.pnCls;
-						var yuanArr = [];
-						var baoArr = [];
-						var bomNum = 0;
-						PnClsModel.pnClsBOMRels.forEach(function(pnClsBOMRel, idx2) {
-							var bom = pnClsBOMRel.bom
-							if( bom.type ==0 ) {
-								yuanArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
-										bom.pn +"/"+bom.name,
-										pnClsBOMRel.useNum,
-										bom.unit.name));
-							}
-							if( bom.type ==1 ) {
-								baoArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
-										bom.pn +"/"+bom.name,
-										pnClsBOMRel.useNum,
-										bom.unit.name));
-							}
-						});
-						
-						if(yuanArr.length<baoArr.length){
-							bomNum = baoArr.length;
-							yuanArr.push("<td></td><td></td><td></td>");
-						}
-						else{
-							bomNum = yuanArr.length;
-							if(yuanArr.length>baoArr.length){
-								baoArr.push("<td></td><td></td><td></td>");
-							}
-						}
-						
-						if( bomNum==0 )
-						{
-							rowspanNum+=1;
-						}
-						else
-						{
-							rowspanNum+=bomNum;
-						}
-						
-					});
-						
-					orderPn.pn.pnClsRels.forEach(function(pnClsRel, idx3) {
-						var PnClsModel = pnClsRel.pnCls;
-						var yuanArr = [];
-						var baoArr = [];
-						var bomNum = 0;
-						PnClsModel.pnClsBOMRels.forEach(function(pnClsBOMRel, idx2) {
-							var bom = pnClsBOMRel.bom
-							if( bom.type ==0 ) {
-								yuanArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
-										bom.pn +"/"+bom.name,
-										pnClsBOMRel.useNum,
-										bom.unit.name));
-							}
-							if( bom.type ==1 ) {
-								baoArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
-										bom.pn +"/"+bom.name,
-										pnClsBOMRel.useNum,
-										bom.unit.name));
-							}
-						});
-						
-						if(yuanArr.length<baoArr.length){
-							bomNum = baoArr.length;
-							yuanArr.push("<td></td><td></td><td></td>");
-						}
-						else{
-							bomNum = yuanArr.length;
-							if(yuanArr.length>baoArr.length){
-								baoArr.push("<td></td><td></td><td></td>");
-							}
-						}
-						
-						//品目信息
-						if( idx3 == 0 )
-						{
-							bodyHtml += "<tr><td rowspan='{0}'><input type='checkbox' name='select' rowid='{1}'/></td><td rowspan='{0}'>{2}</td><td rowspan='{0}'>{3}</td>".format(
-									rowspanNum, 
-									orderPn.id, 
-									orderPn.pn.pn,
-									orderPn.pn.name);
-						}
-						
-						bodyHtml += "<td>{0}</td>".format(PnClsModel.name);
-						
-						if( idx3 == 0 )
-						{
-							bodyHtml += "<td rowspan='{0}'>{1}</td><td rowspan='{0}'>{2}</td>".format(
-									rowspanNum, 
-									orderPn.num,
-									orderPn.pn.unit.name);
-						}
-						
-						//原材、包材
-						for (i=0;i<bomNum;i++)
-						{
-							//原材
-							bodyHtml += yuanArr[i];
-							//包材
-							bodyHtml += baoArr[i];
-							
-						}
-						//bom信息没有的情况下
-						if(bomNum==0)
-						{
-							//原材
-							bodyHtml += "<td></td><td></td><td></td>";
-							//包材
-							bodyHtml += "<td></td><td></td><td></td>";
-						}
-						
-						bodyHtml += "</tr>";
-
-					});
-					
-					if(rowspanNum==0)
-					{
-						bodyHtml += "<tr><td><input type='checkbox' name='select' rowid='{0}'/></td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>".format(
-								orderPn.id, 
-								orderPn.pn.pn,
-								orderPn.pn.name,
-								'',
-								orderPn.num,
-								orderPn.pn.unit.name);
-						
-						//原材
-						bodyHtml += "<td></td><td></td><td></td>";
-						//包材
-						bodyHtml += "<td></td><td></td><td></td>";
-						bodyHtml += "</tr>";
-					}
-
-				});
-
-				var body = $('#bomInfo');
-				body.children().remove();
-				body.append(bodyHtml);
-			},
-			"error": function(data) {
-				PdSys.alert("error");
-			}
-		});
-	}
-	tableLoad();
-	
 	//返回上一页
 	$("#reback").click(function(){
 		history.go(-1);
@@ -205,63 +45,25 @@ $(function () {
 				//select选择以后刷新品目
 				thisElem.change(function() {
 					var selIndex = thisElem[0].selectedIndex;
-					var pnField = fields[2];
 					if(selIndex == 0) {
 						//第一项是[请选择]，其它控件清空处理
-						var clsElem = dlg.fieldElem("select", "pn.pnCls.id");
-						clsElem[0].selectedIndex = 0;
 						dlg.fieldElem("type", "pn.unit.name").val("");
 						dlg.fieldElem("number", "num").val("");
 						return;
 					}
 
-					var val = self.options[selIndex].value;
-					pnField.ajaxData = {
-						"id": val
-					};
-					
-					dlg.buildAjaxField(pnField);
-					
 					//单位
-					var utField = fields[4];
+					var utField = fields[3];
 					dlg.fieldElem("type", "pn.unit.name").val(unitArr[selIndex-1]);
 					utField.readonly = false;
 				});
 			}
 		},
 		{
-			"name":"pn.pnCls.id",
-			"label":"子类",
-			"type":"select",
-			"depend":true,//不立即执行，等订单项目的刷新
-			"options":[],
-			"ajax":true,
-			"url":"/pn/clsList/json",
-			"ajaxData":{
-				"id": -1
-			},
-			"convertAjaxData" : function(thisField, data) {
-				//将返回的值转化为Field规格数据,以供重新渲染
-				//做成选择分支
-				thisField.options = [];
-				thisField.options.push({
-					"value": -1,
-					"caption":"请选择子类...",
-				});
-				data.forEach(function(clsPn, idx) {
-					thisField.options.push({
-						"value": clsPn.id,
-						"caption": clsPn.name
-					});
-				});
-			},
-		},
-		{
 			"name":"num",
 			"label":"数量",
 			"type":"number"
-		}
-		,
+		},
 		{
 			"name":"pn.unit.name",
 			"label":"单位",
@@ -389,24 +191,6 @@ $(function () {
 						dlg.fieldElem("type", "num").val(numArr[0]);
 						dlg.fieldElem("type", "unitName").val(unitArr[0]);
 						dlg.fieldElem("type", "unitName").attr("readonly","readonly");
-					}
-				},
-				{
-					"name":"pn.pnCls.id",
-					"label":"子类",
-					"disabled":"disabled",
-					"type":"select",
-					"options":[],
-					"ajax":true,
-					"url":"/orderPn/showClsInfo?id="+selIds[0],
-					"convertAjaxData" : function(field, data) {
-						data.data.forEach(function(cls, idx) {
-							field.options.push({
-							"value": cls.id,
-							"caption": cls.name
-
-						    });
-						});
 					}
 				},
 				{

@@ -55,6 +55,7 @@
         <result column="bom_pn" property="pn"/>
         <result column="bom_name" property="name"/> 
         <result column="bom_type" property="type"/>
+        <result column="bom_price" property="price"/>
         <association property="unit" resultMap="bomUnitResultMap"/>
         <collection property="suppliers" ofType="supplierModel" javaType="list"> 
             <id column="supplier_id" property="id" />
@@ -114,6 +115,7 @@
 		       bom.c_pn as bom_pn,
 		       bom.c_name as bom_name,
 		       bom.c_type as bom_type,
+		       bom.c_price as bom_price,
 		       pn_cls_bom_relation.c_id as bom_rel_id,
 		       pn_cls_bom_relation.c_cls_id as bom_rel_cls_id,
 		       pn_cls_bom_relation.c_bom_id as bom_rel_bom_id,
@@ -150,8 +152,7 @@
 	
 	<select id="queryOrderPns" parameterType="orderPnModel" resultMap="orderDetailMapper">
 		select order_pn.c_id as order_pn_id,
-		       order_pn.c_num as order_pn_num,
-		  	   order_pn.c_reject_ratio as order_pn_reject_ratio 
+		       order_pn.c_num as order_pn_num 
 		from order_pn_tbl order_pn 
 		<where>
 			<if test="order != null">
@@ -159,9 +160,6 @@
 			</if>
 			<if test="pn != null">
 				and order_pn.c_pn_id = #{pn.id} 
-			</if>
-			<if test="pn.pnCls != null">
-				and order_pn.c_pn_cls_id = #{pn.pnCls.id} 
 			</if>
 		</where>
 	</select>
@@ -178,8 +176,7 @@
 		insert into order_pn_tbl
 		(
 			`c_order_id`,
-			`c_pn_id`, 
-			`c_pn_cls_id`,
+			`c_pn_id`,
 			`c_num`
 			
 		)
@@ -187,7 +184,6 @@
 		(
 			#{order.id},
 			#{pn.id},
-			#{pn.pnCls.id},
 			#{num}
 		)
 	</insert>
@@ -241,20 +237,6 @@
 		</where>
 	    
 	    order by pn_id desc
-	</select>
-	
-   <select id="queryClsByOrderPnId" resultMap="pnClsResultMap">
-		select pn_cls.c_id as od_pn_cls_id,
-			   pn_cls.c_name as od_pn_cls_name from order_pn_tbl as order_pn 
-			   
-	    left join pn_cls_tbl as pn_cls on order_pn.c_pn_cls_id = pn_cls.c_id 
-	    <where>
-			<if test="id != null">
-				and order_pn.c_id = #{id} 
-		    </if>
-		</where>
-	    
-	    order by od_pn_cls_id desc
 	</select>
 
 </mapper>

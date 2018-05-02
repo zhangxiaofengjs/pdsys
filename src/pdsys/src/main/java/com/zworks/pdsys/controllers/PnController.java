@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
-import com.zworks.pdsys.models.PnClsModel;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.services.OrderService;
 import com.zworks.pdsys.services.PnService;
