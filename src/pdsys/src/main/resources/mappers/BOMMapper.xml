@@ -16,7 +16,9 @@
         <id column="b_id" property="id"/>  
         <result column="b_pn" property="pn"/>  
         <result column="b_name" property="name"/>  
+        <result column="b_price" property="price"/>
         <result column="b_type" property="type"/>
+        <result column="b_comment" property="comment"/>
         <association property="unit" resultMap="unitResultMap"/>
         <collection property="suppliers" ofType="supplierModel" resultMap="supplierResultMap" />
     </resultMap>
@@ -26,7 +28,9 @@
 			b.c_id as b_id,
 			b.c_pn as b_pn,
 			b.c_name as b_name,
+			b.c_price as b_price,
 			b.c_type as b_type,
+			b.c_comment as b_comment,
 			u.c_id as u_id,
 			u.c_name as u_name,
 			u.c_sub_name as u_sub_name,
@@ -55,7 +59,7 @@
 				and b.c_type = #{type}
 			</if>
 		</where>
-		order by b.c_type
+		order by b.c_type, b.c_pn
 	</select>
 	
 	<insert id="add" parameterType="bomModel">
@@ -63,12 +67,16 @@
     		c_pn,
     		c_name,
     		c_type,
-    		c_unit_id)
+    		c_price,
+    		c_unit_id,
+    		c_comment)
     	values (
     		#{pn},
     		#{name},
     		#{type},
-    		#{unit.id}
+    		#{price},
+    		#{unit.id},
+    		#{comment}
     	)
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
@@ -79,7 +87,9 @@
     	update bom_tbl
 		set	c_pn = #{pn},
 			c_name = #{name},
-			c_unit_id = #{unit.id}
+			c_unit_id = #{unit.id},
+			c_price=#{price},
+			c_comment=#{comment}
     	<where>
 			c_id = #{id}
 		</where>

@@ -19,13 +19,15 @@
 	 			<button type="button" class="btn btn-sm btn-info" id='addPn'>添加品目</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='editPn'>修改品目</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='addPnCls'>添加子类</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addBOM0'>添加 / 修改原材</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addBOM1'>添加 / 修改包材</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='deletePnCls'>删除子类</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addBOM'>添加原材</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addBOM1'>添加包材</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='deleteBOM'>删除原包材</button>
 			</form>
 		</div>
 	</nav>
 
-	<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
+	<table class="table table-bordered table-hover table-condensed" contenteditable="false">
 		<thead>
 		    <tr>
 		    	<th rowspan="2" style="width:20px;"><input type="checkbox" name="selectAll"></th>
@@ -45,28 +47,70 @@
 		</thead>
 		<tbody>
 			<th:block th:each="pn, iterStat1: ${list}"
-				th:with="bomRels=${pn.bomRels}">
-				
-				<th:block th:each="bomRel, iterStat2 : ${bomRels}"
-						th:with="pnCls=${bomRel.pnCls},
-								bom=${bomRel.bom}">
-					<tr	th:rowid="${pn.id} + '_' + ${pnCls.id}">
+				th:with="pnClsRels=${pn.pnClsRels},
+						pnRowSize=${T(com.zworks.pdsys.common.utils.ModelUtils).pnRowSize(pn)},
+						rowId=${pn.id}">
+				<!-- 未设定子类时,直接输出品目即可 -->
+				<th:block th:if="${#lists.isEmpty(pnClsRels)}">
+					<tr	th:rowid="${rowId}">
 						<td>
-							<input type="checkbox" name="select" th:rowid="${pn.id} + '_' + ${pnCls.id}">
+							<input type="checkbox" name="select" th:rowid="${rowId}">
 						</td>
-						<td rowspan="2" th:if="${iterStat2.index == 0}" th:text="${pn.pn}"></td>
-						<td rowspan="2" th:if="${iterStat2.index == 0}" th:text="${pn.name}"></td>
-						<td rowspan="2" th:if="${iterStat2.index == 0}" th:text="${pn.unit.name}"></td>
-						<td th:text="${pnCls.name}"></td>
-						<td th:switch="${bom != null ? bom.type : ''}">
-		    				<span th:case="0">原材</span>
-				  			<span th:case="1">包材</span>
-						</td>
-						<td th:text="${bom != null} ? ${bom.pn + ' ' + bom.name} : ''"></td>
-						<td th:text="${bom != null} ? ${bom.unit.name + (bom.unit.subName != null?'(' + bom.unit.ratio + bom.unit.subName + ')' : '')} : ''"></td>
-						<td th:text="${bomRel.useNum}"></td>
-						<td th:text="${bomRel.price}"></td>
+						<td th:text="${pn.pn}"></td>
+						<td th:text="${pn.name}"></td>
+						<td th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pn.unit)}"></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
 					</tr>
+				</th:block>
+				<th:block th:each="pnClsRel, iterStat2 : ${pnClsRels}"
+						th:with="pnCls=${pnClsRel.pnCls},
+								pnClsSize=${#lists.size(pnClsRels)},
+								pnClsBOMRels=${pnCls.pnClsBOMRels}">
+					<!-- 未设定原包材时，直接输出子类即可 -->
+					<th:block th:if="${#lists.isEmpty(pnClsBOMRels)}"
+							th:with="rowId=${pn.id} + '_' + ${pnCls.id}">
+						<tr	th:rowid="${rowId}">
+							<td>
+								<input type="checkbox" name="select" th:rowid="${rowId}">
+							</td>
+							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${pn.pn}"></td>
+							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${pn.name}"></td>
+							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pn.unit)}"></td>
+							<td th:text="${pnCls.name + '(' + pnClsRel.num + pn.unit.subName + ')'}"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</th:block>
+					<!-- 设定原包材时，按照原包材输出 -->
+					<th:block th:each="pnClsBOMRel, iterStat3 : ${pnClsBOMRels}"
+						th:with="bom=${pnClsBOMRel.bom},
+						clsBomSize=${#lists.size(pnClsBOMRels)},
+						rowId=${pn.id} + '_' + ${pnCls.id} + '_' + ${bom.id}">
+						<tr	th:rowid="${rowId}" th:aa="${iterStat2.index} + ' ' + ${iterStat3.index}">
+							<td>
+								<input type="checkbox" name="select" th:rowid="${rowId}">
+							</td>
+							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0 and iterStat3.index == 0}" th:text="${pn.pn}"></td>
+							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0 and iterStat3.index == 0}" th:text="${pn.name}"></td>
+							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0 and iterStat3.index == 0}" th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pn.unit)}"></td>
+							<td th:rowspan="${clsBomSize}" th:if="${iterStat3.index == 0}" th:text="${pnCls.name + '(' + pnClsRel.num + pn.unit.subName + ')'}"></td>
+							<td th:switch="${bom != null ? bom.type : ''}">
+			    				<span th:case="0">原材</span>
+					  			<span th:case="1">包材</span>
+							</td>
+							<td th:text="${bom != null} ? ${bom.pn + ' ' + bom.name} : ''"></td>
+							<td th:text="${bom != null} ? ${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(bom.unit)} : ''"></td>
+							<td th:text="${pnClsBOMRel.useNum}"></td>
+							<td th:text="${bom.price}"></td>
+						</tr>
 				</th:block>
 		    </th:block>
 		</tbody>

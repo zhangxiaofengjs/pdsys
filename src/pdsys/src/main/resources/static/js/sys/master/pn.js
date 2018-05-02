@@ -69,12 +69,12 @@ $(document).ready(function(){
 		}
 		
 		var dlg = new CommonDlg();
-		var id = selIds[0];
+		var id = selIds[0].split("_")[0];
 		var fields = [
 			{
 				"name":"id",
 				"type":"hidden",
-				"value":selIds[0]
+				"value":id
 			},
 			{
 				"name":"pn",
@@ -110,7 +110,7 @@ $(document).ready(function(){
 				"url":"/unit/list/json",
 				"convertAjaxData" : function(thisField, data) {
 					thisField.options = [];
-					data.forEach(function(unit, idx) {
+					data.units.forEach(function(unit, idx) {
 						thisField.options.push({
 							"value": unit.id,
 							"caption":"{0}({1}{2})".format(unit.name, unit.ratio, unit.subName),
@@ -156,66 +156,36 @@ $(document).ready(function(){
 		if(selIds.length != 1) {
 			return;
 		}
-		
+		var selIdArr = selIds[0].split("_");
+		var pnId = selIdArr[0];
 		var dlg = new CommonDlg();
-		var id = selIds[0];
 		var fields = [
 			{
 				"name":"id",
 				"type":"hidden",
-				"value":selIds[0]
+				"value":pnId
 			},
 			{
-				"name":"pnClss[0].id",
+				"name":"pnClsRels[0].pnCls.name",
 				"label":"子类",
-				"type":"select",
+				"type":"text",
 				"value":"",
-				"ajax": true,
-				"url":"/pncls/list/json",
-				"convertAjaxData" : function(thisField, data) {
-					thisField.options = [];
-					data.forEach(function(pnCls, idx) {
-						thisField.options.push({
-							"value": pnCls.id,
-							"caption":pnCls.name,
-						});
-					});
-				},
-				"groupButtons": [{
-					"name":"addNewPnCls",
-					"text":"+",
-					"click": function(dlg) {
-						var dlgPnCls = new CommonDlg();
-						dlgPnCls.showFormDlg({
-							"target":"pncls_dlg_div",
-							"caption":"添加子类",
-							"fields":[
-								{
-									"name":"name",
-									"label":"子类名",
-									"type":"text",
-									"value":"",
-								}
-							],
-							"url":"/pncls/add",
-							"success" : function(data) {
-								dlgPnCls.hide();
-								dlg.rebuildFieldWithValue("pnClss[0].id", data.pnCls.id);
-							},
-							"error": function(data) {
-								PdSys.alert(data.msg);
-							}
-						});
-					}
-				}],
-			}
+				"required": true,
+			},
+			{
+				"name":"pnClsRels[0].num",
+				"label":"单位配比",
+				"type":"number",
+				"value":"1",
+				"min":"1",
+			},
 		];
 		
 		dlg.showFormDlg({
 			"target":"dlg_div",
 			"caption":"追加子类",
 			"fields":fields,
-			"url":"/pn/addPnCls",
+			"url":"/pn/addpncls",
 			"success": function(data) {
 				dlg.hide();
 				PdSys.success({
@@ -230,6 +200,53 @@ $(document).ready(function(){
 		});
 	});
 	
+	$("#deletePnCls").click(function(){
+		var self = $(this);
+		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
+		if(selIds.length != 1) {
+			return;
+		}
+		var selIdArr = selIds[0].split("_");
+		if(selIdArr.length < 2) {
+			PdSys.alert("无可删除子类");
+			return;
+		}
+		var pnId = selIdArr[0];
+		var clsId = selIdArr[1];
+		var dlg = new CommonDlg();
+		
+		dlg.showMsgDlg({
+			"target":"dlg_div",
+			"caption":"删除子类",
+			"msg": "确定删除该子类?",
+			"type": "yesno",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/pn/deletepncls",
+					"data": {
+						"id":pnId,
+						"pnClsRels":[
+							{
+								"pnCls": {"id":clsId}
+							}
+						]
+					},
+					"success": function(data) {
+						dlg.hide();
+						PdSys.success({
+							"ok" : function() {
+								PdSys.refresh();
+							}
+						});
+					},
+					"error": function(data) {
+						PdSys.alert(data.msg);
+					}	
+				});
+			}
+		});
+	});
+	
 	$("button[id^='addBOM'").click(function(){
 		var self = $(this);
 		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
@@ -237,21 +254,33 @@ $(document).ready(function(){
 			return;
 		}
 		
+		var selIdArr = selIds[0].split("_");
+		if(selIdArr.length < 2) {
+			PdSys.alert("请先添加子类");
+			return;
+		}
+		var pnId = selIdArr[0];
+		var clsId = selIdArr[1];
+		
 		var type = 0;
 		if(self.attr("id") == "addBOM1") {
 			type = 1;
 		}
 		
 		var dlg = new CommonDlg();
-		var id = selIds[0];
 		var fields = [
 			{
 				"name":"id",
 				"type":"hidden",
-				"value":selIds[0]
+				"value":pnId
 			},
 			{
-				"name":"bomRels[0].bom.id",
+				"name":"pnClsRels[0].pnCls.id",
+				"type":"hidden",
+				"value":clsId
+			},
+			{
+				"name":"pnClsRels[0].pnCls.pnClsBOMRels[0].bom.id",
 				"label": type == 0 ? "使用原材":"使用包材",
 				"type":"select",
 				"value":"",
@@ -263,7 +292,7 @@ $(document).ready(function(){
 					data.boms.forEach(function(bom, idx) {
 						thisField.options.push({
 							"value": bom.id,
-							"caption":bom.pn + " " + bom.name,
+							"caption":bom.pn + " " + bom.name + "(" + bom.comment + ")",
 							"data":bom.unit.name
 						});
 					});
@@ -274,20 +303,21 @@ $(document).ready(function(){
 					fieldElm.change(function() {
 						var selIndex = fieldElm[0].selectedIndex;
 						var val = self.options[selIndex].data;
-						dlg.rebuildFieldWithValue("bomRels[0].bom.unit.name", val);
+						dlg.rebuildFieldWithValue("pnClsRels[0].pnCls.pnClsBOMRels[0].bom.unit.name", val);
 					});
 					
 					fieldElm.trigger("change");
 				},
 			},
 			{
-				"name":"bomRels[0].useNum",
-				"label":"品番消耗",
+				"name":"pnClsRels[0].pnCls.pnClsBOMRels[0].useNum",
+				"label":"使用数量",
 				"type":"number",
-				"value":"0"
+				"value":"0",
+				"min":"0.00000000000000001"
 			},
 			{
-				"name":"bomRels[0].bom.unit.name",
+				"name":"pnClsRels[0].pnCls.pnClsBOMRels[0].bom.unit.name",
 				"label":"单位",
 				"type":"label",
 				"value":""
@@ -309,6 +339,63 @@ $(document).ready(function(){
 			},
 			"error": function(data) {
 				PdSys.alert(data.msg);
+			}
+		});
+	});
+	
+	$("#deleteBOM").click(function(){
+		var self = $(this);
+		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
+		if(selIds.length != 1) {
+			return;
+		}
+		var selIdArr = selIds[0].split("_");
+		if(selIdArr.length < 3) {
+			PdSys.alert("无可删除的原包材");
+			return;
+		}
+		var pnId = selIdArr[0];
+		var clsId = selIdArr[1];
+		var bomId = selIdArr[2];
+		var dlg = new CommonDlg();
+		
+		dlg.showMsgDlg({
+			"target":"dlg_div",
+			"caption":"删除原包材",
+			"msg": "确定删除该原包材?",
+			"type": "yesno",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/pn/deleteBOM",
+					"data": {
+						"id":pnId,
+						"pnClsRels":[ 
+							{
+								"pnCls": {
+									"id":clsId,
+									"pnClsBOMRels":[
+										{
+											"bom":{
+												"id":bomId
+											}
+										}
+									]
+								}
+							}
+						]
+					},
+					"success": function(data) {
+						dlg.hide();
+						PdSys.success({
+							"ok" : function() {
+								PdSys.refresh();
+							}
+						});
+					},
+					"error": function(data) {
+						PdSys.alert(data.msg);
+					}	
+				});
 			}
 		});
 	});
