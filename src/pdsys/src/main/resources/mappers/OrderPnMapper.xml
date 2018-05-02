@@ -37,48 +37,61 @@
     </resultMap>
     
     <!-- 订单详细一览取得 -->
-	<resultMap id="pnClsResultMap" type="pnClsModel" >  
-        <id column="od_pn_cls_id" property="id"/>
-        <result column="od_pn_cls_name" property="name"/>   
-    </resultMap>
 	<resultMap id="pnUnitResultMap" type="unitModel" >  
         <id column="pn_ut_id" property="id"/> 
-        <result column="pn_ut_name" property="name"/>  
+        <result column="pn_ut_name" property="name"/>
+        <result column="pn_ut_sub_name" property="subName"/>
+        <result column="pn_ut_ratio" property="ratio"/>
     </resultMap>
    	<resultMap id="bomUnitResultMap" type="unitModel" >  
         <id column="bom_ut_id" property="id"/>
-        <result column="bom_ut_name" property="name"/>  
+        <result column="bom_ut_name" property="name"/>
+        <result column="bom_ut_sub_name" property="subName"/>
+        <result column="bom_ut_ratio" property="ratio"/> 
     </resultMap>
-    <!-- 
-    <resultMap id="bomRelResultMap" type="pnBOMRelModel" >  
-        <result column="bom_rel_pn_id" property="pnId"/>
-        <result column="bom_rel_bom_id" property="bomId"/> 
-        <result column="bom_rel_use_num" property="useNum"/> 
-    </resultMap> -->
+
+    <resultMap id="bomResultMap" type="BOMModel" >
+    	<id column="bom_id" property="id" />   
+        <result column="bom_pn" property="pn"/>
+        <result column="bom_name" property="name"/> 
+        <result column="bom_type" property="type"/>
+        <association property="unit" resultMap="bomUnitResultMap"/>
+        <collection property="suppliers" ofType="supplierModel" javaType="list"> 
+            <id column="supplier_id" property="id" />
+	        <result column="supplier_name" property="name" />
+	        <result column="supplier_address" property="address" />
+	        <result column="supplier_phone" property="phone" />
+	    </collection> 
+    </resultMap>
+   	<resultMap id="pnClsResultMap" type="pnClsModel" >  
+        <id column="od_pn_cls_id" property="id"/>
+        <result column="od_pn_cls_name" property="name"/>
+        <collection property="pnClsBOMRels" ofType="pnClsBOMRelModel" javaType="list"> 
+         	<id column="bom_rel_id" property="id"/>
+	        <result column="bom_rel_use_num" property="useNum" />
+	        <association property="bom" resultMap="bomResultMap"/>
+	    </collection>  
+    </resultMap>
     <resultMap id="pnResultMap" type="pnModel" >  
         <id column="od_pn_id" property="id" />  
         <result column="od_pn_pn" property="pn"/>  
         <result column="od_pn_name" property="name"/>  
         <association property="unit" resultMap="pnUnitResultMap"/>
-        <association property="pnCls" resultMap="pnClsResultMap"/>
-        <!-- <association property="bomRel" resultMap="bomRelResultMap"/>-->
-        <collection property="boms" ofType="BOMModel" javaType="list"> 
-	        <id column="bom_id" property="id" />
-	        <result column="bom_pn" property="pn" />
-	        <result column="bom_name" property="name" />
-	        <result column="bom_type" property="type" />
-	        <association property="unit" resultMap="bomUnitResultMap"/>
+        <collection property="pnClsRels" ofType="pnPnClsRelModel" javaType="list"> 
+            <id column="pn_cls_relation_id" property="id"/>
+	        <result column="pn_cls_relation_num" property="num" />
+	        <association property="pnCls" resultMap="pnClsResultMap"/>
 	    </collection>
     </resultMap>
     <resultMap id="whpnResultMap" type="wareHousePnModel" >  
         <id column="wh_pn_id" property="id" />
         <result column="wh_pn_produced_num" property="producedNum" />
         <result column="wh_pn_semi_produced_num" property="semiProducedNum" />
+        <result column="wh_pn_defective_num" property="defectiveNum" />
     </resultMap>
 	<resultMap id="orderDetailMapper" type="orderPnModel" >  
         <id column="order_pn_id" property="id" />  
         <result column="order_pn_num" property="num" />  
-        <result column="order_pn_reject_ratio" property="rejectRatio" />  
         <association property="pn" resultMap="pnResultMap"/>
         <association property="whpn" resultMap="whpnResultMap"/> 
     </resultMap>
@@ -86,33 +99,47 @@
 	<select id="queryList" parameterType="orderModel" resultMap="orderDetailMapper">
 		select order_pn.c_id as order_pn_id,
 		       order_pn.c_num as order_pn_num,
-		  	   order_pn.c_reject_ratio as order_pn_reject_ratio,	
 			   pn.c_id as od_pn_id,
 			   pn.c_pn as od_pn_pn,
 			   pn.c_name as od_pn_name,
 			   pn_ut.c_id as pn_ut_id,
    		       pn_ut.c_name as pn_ut_name,
+   		       pn_ut.c_sub_name as pn_ut_sub_name,
+   		       pn_ut.c_ratio as pn_ut_ratio,
+   		       pn_cls_relation.c_id as pn_cls_relation_id,
+   		       pn_cls_relation.c_num as pn_cls_relation_num,
    		       pn_cls.c_id as od_pn_cls_id,
 		       pn_cls.c_name as od_pn_cls_name,
 		       bom.c_id as bom_id,
 		       bom.c_pn as bom_pn,
 		       bom.c_name as bom_name,
 		       bom.c_type as bom_type,
-		       pn_bom_relation.c_pn_id as bom_rel_pn_id,
-		       pn_bom_relation.c_bom_id as bom_rel_bom_id,
-		       pn_bom_relation.c_use_num as bom_rel_use_num,
+		       pn_cls_bom_relation.c_id as bom_rel_id,
+		       pn_cls_bom_relation.c_cls_id as bom_rel_cls_id,
+		       pn_cls_bom_relation.c_bom_id as bom_rel_bom_id,
+		       pn_cls_bom_relation.c_use_num as bom_rel_use_num,
 		       bom_ut.c_id as bom_ut_id,
 		       bom_ut.c_name as bom_ut_name,
+   		       bom_ut.c_sub_name as bom_ut_sub_name,
+   		       bom_ut.c_ratio as bom_ut_ratio,
+   		       supplier.c_id as supplier_id,
+   		       supplier.c_name as supplier_name,
+   		       supplier.c_address as supplier_address,
+   		       supplier.c_phone as supplier_phone,
 		       wh_pn.c_id as wh_pn_id,
 			   wh_pn.c_produced_num as wh_pn_produced_num,
-			   wh_pn.c_semi_produced_num as wh_pn_semi_produced_num 
+			   wh_pn.c_semi_produced_num as wh_pn_semi_produced_num,
+			   wh_pn.c_defective_num as wh_pn_defective_num 
 		from order_pn_tbl as order_pn 
 		left join pn_tbl as pn on order_pn.c_pn_id = pn.c_id 
-		left join pn_cls_tbl as pn_cls on order_pn.c_pn_cls_id = pn_cls.c_id 
 		left join unit_tbl as pn_ut on pn.c_unit_id = pn_ut.c_id 
-		left join pn_bom_relation_tbl as pn_bom_relation on pn_bom_relation.c_pn_id = pn.c_id 
-		left join bom_tbl as bom on pn_bom_relation.c_bom_id = bom.c_id 
+		left join pn_cls_relation_tbl as pn_cls_relation on pn_cls_relation.c_pn_id = pn.c_id 
+		left join pn_cls_tbl as pn_cls on pn_cls_relation.c_cls_id = pn_cls.c_id 
+		left join pn_cls_bom_relation_tbl as pn_cls_bom_relation on pn_cls_bom_relation.c_cls_id = pn_cls.c_id 
+		left join bom_tbl as bom on pn_cls_bom_relation.c_bom_id = bom.c_id 
 		left join unit_tbl as bom_ut on bom.c_unit_id = bom_ut.c_id 
+		left join bom_supplier_tbl as bom_supplier on bom_supplier.c_bom_id = bom.c_id 
+		left join supplier_tbl as supplier on supplier.c_id = bom_supplier.c_supplier_id 
 		left join warehouse_pn_tbl as wh_pn on wh_pn.c_order_pn_id = order_pn.c_id 
 		<where>
 			<if test="id != null">
@@ -165,7 +192,7 @@
 		)
 	</insert>
 	
-    <delete id="delete" parameterType="OrderPnModel">
+    <delete id="delete" parameterType="orderModel">
     	delete from order_pn_tbl
     	<where>
 			c_id = #{id}

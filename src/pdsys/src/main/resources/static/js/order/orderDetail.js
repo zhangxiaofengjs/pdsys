@@ -11,75 +11,132 @@ $(function () {
 			"data":order,
 			"success": function(data) {
 				var bodyHtml = "";
-				
 				data.orderPns.forEach(function(orderPn, idx) {
-					var bomNum = orderPn.pn.boms.length;
-					var yuanArr = [];
-					var baoArr = [];
-					var bomNum = 0;
-					orderPn.pn.boms.forEach(function(bom, idx2) {
-						if( bom.type ==0 ) {
-							yuanArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
-									bom.pn,
-									orderPn.pn.bomRel.useNum,
-									bom.unit.name));
+					var rowspanNum = 0;
+					orderPn.pn.pnClsRels.forEach(function(pnClsRel, idx3) {
+						var PnClsModel = pnClsRel.pnCls;
+						var yuanArr = [];
+						var baoArr = [];
+						var bomNum = 0;
+						PnClsModel.pnClsBOMRels.forEach(function(pnClsBOMRel, idx2) {
+							var bom = pnClsBOMRel.bom
+							if( bom.type ==0 ) {
+								yuanArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
+										bom.pn +"/"+bom.name,
+										pnClsBOMRel.useNum,
+										bom.unit.name));
+							}
+							if( bom.type ==1 ) {
+								baoArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
+										bom.pn +"/"+bom.name,
+										pnClsBOMRel.useNum,
+										bom.unit.name));
+							}
+						});
+						
+						if(yuanArr.length<baoArr.length){
+							bomNum = baoArr.length;
+							yuanArr.push("<td></td><td></td><td></td>");
 						}
-						if( bom.type ==1 ) {
-							baoArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
-									bom.pn,
-									orderPn.pn.bomRel.useNum,
-									bom.unit.name));
+						else{
+							bomNum = yuanArr.length;
+							if(yuanArr.length>baoArr.length){
+								baoArr.push("<td></td><td></td><td></td>");
+							}
 						}
-					});
-					
-					if(yuanArr.length<baoArr.length){
-						bomNum = baoArr.length;
-						yuanArr.push("<td></td><td></td><td></td>");
-					}
-					else{
-						bomNum = yuanArr.length;
-						if(yuanArr.length>baoArr.length){
-							baoArr.push("<td></td><td></td><td></td>");
-						}
-					}
-					
-					for (i=0;i<bomNum;i++)
-					{
-						if(i==0)
+						
+						if( bomNum==0 )
 						{
-							bodyHtml += "<tr><td rowspan='{0}'><input type='checkbox' name='select' rowid='{1}'/></td><td rowspan='{0}'>{2}</td><td rowspan='{0}'>{3}</td><td rowspan='{0}'>{4}</td><td rowspan='{0}'>{5}</td><td rowspan='{0}'>{6}</td>".format(
-									bomNum, 
+							rowspanNum+=1;
+						}
+						else
+						{
+							rowspanNum+=bomNum;
+						}
+						
+					});
+						
+					orderPn.pn.pnClsRels.forEach(function(pnClsRel, idx3) {
+						var PnClsModel = pnClsRel.pnCls;
+						var yuanArr = [];
+						var baoArr = [];
+						var bomNum = 0;
+						PnClsModel.pnClsBOMRels.forEach(function(pnClsBOMRel, idx2) {
+							var bom = pnClsBOMRel.bom
+							if( bom.type ==0 ) {
+								yuanArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
+										bom.pn +"/"+bom.name,
+										pnClsBOMRel.useNum,
+										bom.unit.name));
+							}
+							if( bom.type ==1 ) {
+								baoArr.push("<td>{0}</td><td>{1}</td><td>{2}</td>".format(
+										bom.pn +"/"+bom.name,
+										pnClsBOMRel.useNum,
+										bom.unit.name));
+							}
+						});
+						
+						if(yuanArr.length<baoArr.length){
+							bomNum = baoArr.length;
+							yuanArr.push("<td></td><td></td><td></td>");
+						}
+						else{
+							bomNum = yuanArr.length;
+							if(yuanArr.length>baoArr.length){
+								baoArr.push("<td></td><td></td><td></td>");
+							}
+						}
+						
+						//品目信息
+						if( idx3 == 0 )
+						{
+							bodyHtml += "<tr><td rowspan='{0}'><input type='checkbox' name='select' rowid='{1}'/></td><td rowspan='{0}'>{2}</td><td rowspan='{0}'>{3}</td>".format(
+									rowspanNum, 
 									orderPn.id, 
 									orderPn.pn.pn,
-									orderPn.pn.name,
-									orderPn.pn.pnCls.name,
+									orderPn.pn.name);
+						}
+						
+						bodyHtml += "<td>{0}</td>".format(PnClsModel.name);
+						
+						if( idx3 == 0 )
+						{
+							bodyHtml += "<td rowspan='{0}'>{1}</td><td rowspan='{0}'>{2}</td>".format(
+									rowspanNum, 
 									orderPn.num,
 									orderPn.pn.unit.name);
 						}
 						
-						//原材
-						bodyHtml += yuanArr[i];
-						//包材
-						bodyHtml += baoArr[i];
-						//生产状态
-						if(i==0)
+						//原材、包材
+						for (i=0;i<bomNum;i++)
 						{
-							bodyHtml += "<td rowspan='{0}'>{1}</td><td rowspan='{0}'>{2}</td><td rowspan='{0}'>{3}</td></tr>".format(
-								bomNum,
-								orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
-								orderPn.whpn ? orderPn.whpn.producedNum : 0,
-								orderPn.rejectRatio);
+							//原材
+							bodyHtml += yuanArr[i];
+							//包材
+							bodyHtml += baoArr[i];
+							
 						}
-					}
+						//bom信息没有的情况下
+						if(bomNum==0)
+						{
+							//原材
+							bodyHtml += "<td></td><td></td><td></td>";
+							//包材
+							bodyHtml += "<td></td><td></td><td></td>";
+						}
+						
+						bodyHtml += "</tr>";
+
+					});
 					
-					//bom信息没有的情况下
-					if(bomNum==0)
+					if(rowspanNum==0)
 					{
 						bodyHtml += "<tr><td><input type='checkbox' name='select' rowid='{0}'/></td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td>".format(
 								orderPn.id, 
 								orderPn.pn.pn,
 								orderPn.pn.name,
-								orderPn.pn.pnCls.name,
+								'',
 								orderPn.num,
 								orderPn.pn.unit.name);
 						
@@ -87,16 +144,9 @@ $(function () {
 						bodyHtml += "<td></td><td></td><td></td>";
 						//包材
 						bodyHtml += "<td></td><td></td><td></td>";
-						
-						//生产状态
-						bodyHtml += "<td rowspan='{0}'>{1}</td><td rowspan='{0}'>{2}</td><td rowspan='{0}'>{3}</td></tr>".format(
-							bomNum,
-							orderPn.whpn ? orderPn.whpn.semiProducedNum : 0,
-							orderPn.whpn ? orderPn.whpn.producedNum : 0,
-							orderPn.rejectRatio);
+						bodyHtml += "</tr>";
 					}
-					
-					
+
 				});
 
 				var body = $('#bomInfo');

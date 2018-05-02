@@ -14,9 +14,8 @@ public class OrderPnModel extends BaseModel{
 
 	private PnModel pn;
 	private OrderModel order;
-	@Min(value = 1,message="数量必须是一个数组，其值必须大于0！")
+	@Min(value = 1,message="数量必须是一个数字，其值必须大于0！")
 	private float num;
-	private float rejectRatio;
 	private WareHousePnModel whpn;
 	
 	public OrderPnModel() {
@@ -33,12 +32,6 @@ public class OrderPnModel extends BaseModel{
 	}
 	public void setNum(float num) {
 		this.num = num;
-	}
-	public float getRejectRatio() {
-		return rejectRatio;
-	}
-	public void setRejectRatio(float rejectRatio) {
-		this.rejectRatio = rejectRatio;
 	}
 
 	public OrderModel getOrder() {
