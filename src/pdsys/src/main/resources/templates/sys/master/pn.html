@@ -94,7 +94,7 @@
 						th:with="bom=${pnClsBOMRel.bom},
 						clsBomSize=${#lists.size(pnClsBOMRels)},
 						rowId=${pn.id} + '_' + ${pnCls.id} + '_' + ${bom.id}">
-						<tr	th:rowid="${rowId}" th:aa="${iterStat2.index} + ' ' + ${iterStat3.index}">
+						<tr	th:rowid="${rowId}">
 							<td>
 								<input type="checkbox" name="select" th:rowid="${rowId}">
 							</td>

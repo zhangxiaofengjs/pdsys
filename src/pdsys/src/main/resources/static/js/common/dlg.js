@@ -83,8 +83,8 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 		if(f.type != "hidden") {
 			strFormHtml += 
 					'<div class="form-group">\
-						<label for="{0}" class="col-sm-4 control-label">{1}</label>\
-						<div class="col-sm-8">'.
+						<label for="{0}" class="col-sm-3 control-label">{1}</label>\
+						<div class="col-sm-9">'.
 					format(f.name,
 						   f.label);
 		}
@@ -120,7 +120,7 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 	
 	var strHtml = 
 		'<div id="{0}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">\
-		  <div class="modal-dialog modal-sm" role="document">\
+		  <div class="modal-dialog modal-md" role="document">\
 		    <div class="modal-content">\
 				<div class="modal-header">\
 		    	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\

@@ -4,35 +4,12 @@ import org.apache.ibatis.type.Alias;
 
 /**
  * @author: zhangxiaofengjs@163.com
- * @version: 2018/04/06
+ * @version: 2018/05/02
  */
 @Alias("wareHouseEntryPnModel")
-public class WareHouseEntryPnModel extends BaseModel{
-	private OrderPnModel orderPn;
-	private WareHousePnModel wareHousePn;
+public class WareHouseEntryPnModel extends WareHousePnModel{
 	private WareHouseEntryModel wareHouseEntry;
-	private float producedNum;
-	private float semiProducedNum;
-	private float defectiveNum;
-	
-	public WareHouseEntryPnModel() {
-	}
-
-	public WareHouseEntryModel getWareHouseEntry() {
-		return wareHouseEntry;
-	}
-
-	public void setWareHouseEntry(WareHouseEntryModel wareHouseEntry) {
-		this.wareHouseEntry = wareHouseEntry;
-	}
-
-	public OrderPnModel getOrderPn() {
-		return orderPn;
-	}
-
-	public void setOrderPn(OrderPnModel orderPn) {
-		this.orderPn = orderPn;
-	}
+	private WareHousePnModel wareHousePn;//实际库存
 
 	public WareHousePnModel getWareHousePn() {
 		return wareHousePn;
@@ -42,27 +19,11 @@ public class WareHouseEntryPnModel extends BaseModel{
 		this.wareHousePn = wareHousePn;
 	}
 
-	public float getProducedNum() {
-		return producedNum;
+	public WareHouseEntryModel getWareHouseEntry() {
+		return wareHouseEntry;
 	}
 
-	public void setProducedNum(float producedNum) {
-		this.producedNum = producedNum;
-	}
-
-	public float getSemiProducedNum() {
-		return semiProducedNum;
-	}
-
-	public void setSmiProducedNum(float semiProducedNum) {
-		this.semiProducedNum = semiProducedNum;
-	}
-
-	public float getDefectiveNum() {
-		return defectiveNum;
-	}
-
-	public void setDefectiveNum(float defectiveNum) {
-		this.defectiveNum = defectiveNum;
+	public void setWareHouseEntry(WareHouseEntryModel wareHouseEntry) {
+		this.wareHouseEntry = wareHouseEntry;
 	}
 }

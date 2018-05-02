@@ -13,6 +13,7 @@ import org.apache.ibatis.type.Alias;
 public class WareHouseEntryModel extends BaseModel{
 	private UserModel user;
 	private Date entryTime;
+	private String no;
 	private int state;
 	private int type;
 	private String comment;
@@ -85,5 +86,13 @@ public class WareHouseEntryModel extends BaseModel{
 
 	public void setWareHouseEntryMachineParts(List<WareHouseEntryMachinePartModel> wareHouseEntryMachineParts) {
 		this.wareHouseEntryMachineParts = wareHouseEntryMachineParts;
+	}
+
+	public String getNo() {
+		return no;
+	}
+
+	public void setNo(String no) {
+		this.no = no;
 	}
 }

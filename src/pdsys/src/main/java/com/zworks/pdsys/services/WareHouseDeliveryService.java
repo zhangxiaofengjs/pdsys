@@ -102,16 +102,14 @@ public class WareHouseDeliveryService {
 				if(wareHousePn != null) {
 					semiNum = wareHousePn.getSemiProducedNum() - deliveryPn.getSemiProducedNum();
 					num = wareHousePn.getProducedNum() - deliveryPn.getProducedNum();
-					defectiveNum = wareHousePn.getDefectiveNum() - deliveryPn.getDefectiveNum();
 				}
 				
-				if(num < 0 || semiNum < 0 || defectiveNum < 0) {
+				if(num < 0 || semiNum < 0) {
 					//库存不足
 					return false;
 				}
 				wareHousePn.setProducedNum(num);
 				wareHousePn.setSemiProducedNum(num);
-				wareHousePn.setDefectiveNum(defectiveNum);
 				wareHousePnService.update(wareHousePn);
 			}
 		} else if(delivery.getType() == (int)DeliveryType.BOM.ordinal()) {

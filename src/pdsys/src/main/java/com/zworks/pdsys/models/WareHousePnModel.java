@@ -8,25 +8,10 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("wareHousePnModel")
 public class WareHousePnModel extends BaseModel{
-	public static final WareHousePnModel Empty = new WareHousePnModel();
-	
-	private OrderPnModel orderPn;
+	private PnModel pn;
 	private float producedNum;
 	private float semiProducedNum;
-	private float defectiveNum;
 	
-	public WareHousePnModel() {
-		orderPn = OrderPnModel.Empty;
-	}
-
-	public OrderPnModel getOrderPn() {
-		return orderPn;
-	}
-
-	public void setOrderPn(OrderPnModel orderPn) {
-		this.orderPn = orderPn;
-	}
-
 	public float getProducedNum() {
 		return producedNum;
 	}
@@ -43,11 +28,11 @@ public class WareHousePnModel extends BaseModel{
 		this.semiProducedNum = semiProducedNum;
 	}
 
-	public float getDefectiveNum() {
-		return defectiveNum;
+	public PnModel getPn() {
+		return pn;
 	}
 
-	public void setDefectiveNum(float defectiveNum) {
-		this.defectiveNum = defectiveNum;
+	public void setPn(PnModel pn) {
+		this.pn = pn;
 	}
 }
