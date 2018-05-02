@@ -47,7 +47,7 @@ $(document).ready(function(){
 			],
 	    	url : "/warehouse/entry/add/entry",
 	        success : function(data) {
-	        	$(location).attr('href', PdSys.url('/warehouse/entry/main/pn?id=' + data.id));
+	        	$(location).attr('href', PdSys.url('/warehouse/entry/main/pn?no=' + data.entry.no));
 	        },
 	        error: function(data) {
 	        	PdSys.alert(data.msg);

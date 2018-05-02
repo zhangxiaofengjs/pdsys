@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.mappers.WareHouseBOMMapper;
+import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 
 /**
@@ -15,19 +16,19 @@ import com.zworks.pdsys.models.WareHouseBOMModel;
 @Service
 public class WareHouseBOMService {
 	@Autowired
-    private WareHouseBOMMapper wareHouseMapper;
+    private WareHouseBOMMapper wareHouseBOMMapper;
 	
-	public List<WareHouseBOMModel> queryList(WareHouseBOMModel filterObj) {
-		List<WareHouseBOMModel> list = wareHouseMapper.queryList(filterObj);
+	public List<BOMModel> queryList(BOMModel filterObj) {
+		List<BOMModel> list = wareHouseBOMMapper.queryList(filterObj);
 		
 		return list;
 	}
 
 	public void add(WareHouseBOMModel wareHouseBOM) {
-		wareHouseMapper.add(wareHouseBOM);
+		wareHouseBOMMapper.add(wareHouseBOM);
 	}
 
 	public void update(WareHouseBOMModel wareHouseBOM) {
-		wareHouseMapper.update(wareHouseBOM);
+		wareHouseBOMMapper.update(wareHouseBOM);
 	}
 }

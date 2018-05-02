@@ -8,8 +8,6 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("wareHouseBOMModel")
 public class WareHouseBOMModel extends BaseModel{
-	public static final WareHouseBOMModel Empty = new WareHouseBOMModel();
-	
 	private float num;
 	private BOMModel bom;
 	

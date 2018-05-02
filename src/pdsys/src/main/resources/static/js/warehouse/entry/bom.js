@@ -14,6 +14,13 @@ $(document).ready(function(){
 					"value":"1"
 				},
 				{
+					"name":"no",
+					"type":"text",
+					"label":"入库单号",
+					"value":"1-" + dateYYYYMMDD() + "-",
+					"required":"required"
+				},
+				{
 					"name":"user.id",
 					"label":"提交人",
 					"type":"select",
@@ -40,25 +47,10 @@ $(document).ready(function(){
 			],
 	    	url : "/warehouse/entry/add/entry",
 	        success : function(data) {
-	        	if(data.success)
-	        	{
-	        		$(location).attr('href', PdSys.url('/warehouse/entry/main/bom?id=' + data.id));
-	        	}
-	        	else
-	        	{
-	        		var dlg = new CommonDlg();
-	    			dlg.showMsgDlg({
-	    				"target":"msg_div",
-	    				"type":"ok",
-	    				"msg":"新建入库单号发生错误。"});
-	        	}
+	        	$(location).attr('href', PdSys.url('/warehouse/entry/main/bom?no=' + data.entry.no));
 	        },
 	        error: function(data) {
-	        	var dlg = new CommonDlg();
-    			dlg.showMsgDlg({
-    				"target":"msg_div",
-    				"type":"ok",
-    				"msg":"发生错误。"});
+    			PdSys.alert(data.msg);
 	        }
 	    });
 	});
@@ -87,14 +79,10 @@ $(document).ready(function(){
 				//将返回的值转化为Field规格数据,以供重新渲染
 				//做成选择分支
 				thisField.options = [];
-				thisField.options.push({
-					"value": -1,
-					"caption":"请选择品番...",
-				});
 				data.boms.forEach(function(bom, idx) {
 					thisField.options.push({
 						"value": bom.id,
-						"caption": "{0} {1}".format(bom.pn, bom.name),
+						"caption": "{0} {1}({2})".format(bom.pn, bom.name, bom.comment),
 						"data":bom.unit.name
 					});
 				});
@@ -114,6 +102,7 @@ $(document).ready(function(){
 					}
 					dlg.rebuildFieldWithValue("unit.name", val);
 				});
+				thisElem.trigger("change");
 			},
 		},
 		{

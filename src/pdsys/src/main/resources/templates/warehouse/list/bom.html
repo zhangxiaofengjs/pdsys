@@ -1,18 +1,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<div th:fragment="content(wareHouseBoms)">
+<div th:fragment="content(boms)">
 	<script th:src="@{/js/warehouse/list/bom.js}"></script> 
 	<nav style="border-radius:0px;margin-bottom:-1px;" class="navbar navbar-default">
 		<div class="container-fluid">
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.wareHouseBOM}" th:action="@{main?type=bom}" method="post">
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.BOM}" th:action="@{main?type=bom}" method="post">
 				 <div class="form-group">
-				   <input type="text" class="form-control" th:field="*{bom.pn}" placeholder="输入品番">
+				   <input type="text" class="form-control" th:field="*{pn}" placeholder="输入品番">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
+	 			<button type="button" class="btn btn-sm btn-info">添加到采购单</button>
 			</form>
 		</div>
 	</nav>
@@ -20,32 +21,31 @@
 		<thead>
 		    <tr>
 				<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
+				<th>种类</th>
 				<th>品番</th>
 				<th>名称</th>
-				<th>种类</th>
-				<th>在库数量</th>
 				<th>单位</th>
-				<th>供应商</th>
+				<th>在库数量</th>
+				<th>已下单数量</th>
 		    </tr>
 		</thead>
 		<tbody>
-		<tr th:each="wareHouseBom : ${wareHouseBoms}"
-			th:with="bom=${wareHouseBom.bom},
-					 unit=(${wareHouseBom.bom}?${wareHouseBom.bom.unit}:_),
-					 supplier=(${wareHouseBom.bom}?${wareHouseBom.bom.supplier}:_)"
-			th:rowid="${wareHouseBom.id}">
+		<tr th:each="bom : ${boms}"
+			th:with="whBom=${bom.wareHouseBOM},
+					 unit=${bom.unit}"
+			th:rowid="${bom.id}">
 			<td>
-				<input type="checkbox" name="select" th:rowid="${wareHouseBom.id}">
+				<input type="checkbox" name="select" th:rowid="${bom.id}">
 			</td>
-			<td th:text="${bom}?${bom.pn}:_"></td>
-			<td th:text="${bom}?${bom.name}:_"></td>
 			<td th:switch="${bom}?${bom.type}:0">
 			  <span th:case="0">原材</span>
 			  <span th:case="*">包材</span>
 			</td>
-			<td th:text="${wareHouseBom.num}"></td>
-			<td th:text="${unit}?${unit.name}:_"></td>
-			<td th:text="${supplier}?${supplier.name}:_"></td>
+			<td th:text="${bom.pn}"></td>
+			<td th:text="${bom.name + (bom.comment!=null and bom.comment!='' ? '(' + bom.comment + ')' :'')}"></td>
+			<td th:text="${unit.name}"></td>
+			<td th:text="${whBom != null ? whBom.num:'0'}"></td>
+			<td th:text="'0'"></td>
 	    </tr>
 	  </tbody>
 	</table>

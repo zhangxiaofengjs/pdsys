@@ -88,7 +88,7 @@ public class WareHouseEntryController {
 			return JSONResponse.error("已经存在单号。");
 		}
 		wareHouseEntryService.add(entry);
-		return JSONResponse.success().put("id", entry.getId());
+		return JSONResponse.success().put("entry", entry);
     }
 	
 	/**

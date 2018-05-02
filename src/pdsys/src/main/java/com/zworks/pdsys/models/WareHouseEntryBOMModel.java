@@ -7,23 +7,10 @@ import org.apache.ibatis.type.Alias;
  * @version: 2018/04/19
  */
 @Alias("wareHouseEntryBOMModel")
-public class WareHouseEntryBOMModel extends BaseModel{
+public class WareHouseEntryBOMModel extends WareHouseBOMModel{
 	private WareHouseEntryModel wareHouseEntry;
-	private WareHouseBOMModel wareHouseBOM;
-	private BOMModel bom;
-	private float num;
-	public BOMModel getBom() {
-		return bom;
-	}
-	public void setBom(BOMModel bom) {
-		this.bom = bom;
-	}
-	public float getNum() {
-		return num;
-	}
-	public void setNum(float num) {
-		this.num = num;
-	}
+	private WareHouseBOMModel wareHouseBOM;//实际库存
+
 	public WareHouseEntryModel getWareHouseEntry() {
 		return wareHouseEntry;
 	}

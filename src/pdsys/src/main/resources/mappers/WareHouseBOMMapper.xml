@@ -6,47 +6,41 @@
         <id column="unit_id" property="id"/>  
         <result column="unit_name" property="name"/>  
     </resultMap>
-	<resultMap id="supplierResultMap" type="supplierModel" >  
-        <id column="supplier_id" property="id" />  
-        <result column="supplier_name" property="name"/>  
-    </resultMap>
     <resultMap id="bomResultMap" type="BOMModel" >  
         <id column="bom_id" property="id" />  
         <result column="bom_pn" property="pn"/>  
         <result column="bom_name" property="name"/>  
         <result column="bom_type" property="type"/>  
+        <result column="bom_comment" property="comment"/>  
         <association property="unit" resultMap="unitResultMap"/>
-        <association property="supplier" resultMap="supplierResultMap"/>
+        <association property="wareHouseBOM" resultMap="warehouseBOMResultMap"/>
     </resultMap>
 	<resultMap id="warehouseBOMResultMap" type="wareHouseBOMModel" >  
         <id column="wh_id" property="id" />  
         <result column="wh_num" property="num" />  
-        <association property="bom" resultMap="bomResultMap"/>
     </resultMap>
     
-	<select id="queryList" parameterType="wareHouseBOMModel" resultMap="warehouseBOMResultMap">
+	<select id="queryList" parameterType="BOMModel" resultMap="bomResultMap">
 		select wh_bom.c_id as wh_id,
 		       wh_bom.c_num as wh_num,
 		       bom.c_id as bom_id,
 		       bom.c_pn as bom_pn,
 		       bom.c_name as bom_name,
 		       bom.c_type as bom_type,
+		       bom.c_comment as bom_comment,
 		       unit.c_id as unit_id,
-		       unit.c_name as unit_name,
-		       supplier.c_id as supplier_id,
-		       supplier.c_name as supplier_name
-		from warehouse_bom_tbl as wh_bom
-		left join bom_tbl as bom on wh_bom.c_bom_id = bom.c_id
+		       unit.c_name as unit_name
+		from bom_tbl as bom
+		left join warehouse_bom_tbl as wh_bom on bom.c_id = wh_bom.c_bom_id
 		left join unit_tbl as unit on bom.c_unit_id = unit.c_id
-		left join supplier_tbl as supplier on bom.c_supplier_id = supplier.c_id
 		<where>
-			<if test="bom != null and bom.pn != null and bom.pn !=''">
+			<if test="pn != null and pn !=''">
 				<choose>
 	                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
-						and bom.c_pn like '%${bom.pn}%'
+						and bom.c_pn like '%${pn}%'
 					</when>
 					 <otherwise>
-	                    and bom.c_pn=#{bom.pn}
+	                    and bom.c_pn=#{pn}
 	                </otherwise>
 				</choose>
 			</if>

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.zworks.pdsys.business.beans.WareHouseListFormBean;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
+import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
@@ -40,11 +41,11 @@ public class WareHouseController {
 		}
 		
 		if(type.equals("bom")) {
-			WareHouseBOMModel whBom = formBean.getWareHouseBOM();
-			if(whBom != null) {
-				whBom.getFilterCond().put("fuzzyPnSearch", true);
+			BOMModel bom = formBean.getBOM();
+			if(bom != null) {
+				bom.getFilterCond().put("fuzzyPnSearch", true);
 			}
-			List<?> list = wareHouseBOMService.queryList(whBom);
+			List<?> list = wareHouseBOMService.queryList(bom);
 			model.addAttribute("list", list);
 		}
 		else if(type.equals("pn")) {
