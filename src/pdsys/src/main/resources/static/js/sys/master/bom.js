@@ -30,6 +30,12 @@ $(document).ready(function(){
 				"requried":"requried",
 			},
 			{
+				"name":"price",
+				"label":"单价",
+				"type":"number",
+				"requried":"requried",
+			},
+			{
 				"name":"unit.id",
 				"label":"规格单位",
 				"type":"select",
@@ -54,7 +60,12 @@ $(document).ready(function(){
 						});
 					});
 				}
-			}
+			},
+			{
+				"name":"comment",
+				"label":"备注",
+				"type":"text",
+			},
 		];
 		
 		dlg.showFormDlg({
@@ -124,6 +135,12 @@ $(document).ready(function(){
 				"requried":"requried",
 			},
 			{
+				"name":"price",
+				"label":"单价",
+				"type":"number",
+				"requried":"requried",
+			},
+			{
 				"name":"unit.id",
 				"label":"规格单位",
 				"type":"select",
@@ -151,6 +168,11 @@ $(document).ready(function(){
 					});
 				}
 			},
+			{
+				"name":"comment",
+				"label":"备注",
+				"type":"text",
+			},
 		];
 		
 		dlg.showFormDlg({
@@ -168,6 +190,7 @@ $(document).ready(function(){
 					dlg.rebuildFieldWithValue("name", data.bom.name);
 					dlg.rebuildFieldWithValue("unit.id", data.bom.unit.id);
 					dlg.rebuildFieldWithValue("price", data.bom.price);
+					dlg.rebuildFieldWithValue("comment", data.bom.comment);
 				}
 			},
 			"url":"/bom/update",

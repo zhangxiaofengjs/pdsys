@@ -67,7 +67,7 @@ public class PnController {
 	/**
 	 * 添加子类
 	 * */
-	@RequestMapping(value="/addPnCls")
+	@RequestMapping(value="/addpncls")
 	@ResponseBody
     public JSONResponse addPnCls(@RequestBody PnModel pn) {
 		if(pnService.existsPnCls(pn)) {
@@ -76,6 +76,15 @@ public class PnController {
 		pnService.addPnCls(pn);
 		return JSONResponse.success();
     }
+	/**
+	 * 删除子类
+	 * */
+	@RequestMapping(value="/deletepncls")
+	@ResponseBody
+	public JSONResponse deletePnCls(@RequestBody PnModel pn) {
+		pnService.deletePnCls(pn);
+		return JSONResponse.success();
+	}
 	
 	/**
 	 * 添加原包材
@@ -85,21 +94,19 @@ public class PnController {
 	public JSONResponse addBOM(@RequestBody PnModel pn) {
 		if(pnService.existsBOM(pn)) {
 			//已经存在该原包材 则做更新
-			pnService.updateBOM(pn);
-			return JSONResponse.success();
+			return JSONResponse.error("已经存在该原包材");
 		}
 		pnService.addBOM(pn);
 		return JSONResponse.success();
 	}
 	
 	/**
-	 * 当前品目下的子类一览
-	 */
-	@RequestMapping("/clsList/json")
+	 * 删除原包材
+	 * */
+	@RequestMapping(value="/deleteBOM")
 	@ResponseBody
-	public List<PnClsModel> pnClsListJson(@RequestBody PnModel pn) {
-		List<PnClsModel> list = pnService.queryClsList(pn);
-		return list;
+	public JSONResponse deleteBOM(@RequestBody PnModel pn) {
+		pnService.deleteBOM(pn);
+		return JSONResponse.success();
 	}
-
 }

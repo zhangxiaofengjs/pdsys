@@ -12,6 +12,7 @@ import org.apache.ibatis.type.Alias;
 public class BOMModel extends BaseModel {
 	private String pn;
 	private String name;
+	private String comment;
 	private int type = -1;
 	private float price;
 	private UnitModel unit;
@@ -72,5 +73,13 @@ public class BOMModel extends BaseModel {
 
 	public void setPrice(float price) {
 		this.price = price;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 }

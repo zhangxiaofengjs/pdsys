@@ -69,9 +69,11 @@ public class BOMController {
 		if(b == null) {
 			return JSONResponse.error("该品番不存在");
 		}
-		if(!bomService.existsSupplier(b, bom.getSuppliers())) {
-			bomService.addSupplier(bom);
+		if(bomService.existsSupplier(b, bom.getSuppliers())) {
+			return JSONResponse.error("该供应商已经追加");
 		}
+		
+		bomService.addSupplier(bom);
 		return JSONResponse.success();
 	}
 	
