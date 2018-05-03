@@ -9,7 +9,7 @@ import org.apache.ibatis.type.Alias;
 @Alias("pnPnClsRelModel")
 public class PnPnClsRelModel extends BaseModel{
 	private PnClsModel pnCls;
-	private String num;
+	private float num;
 	
 	public PnClsModel getPnCls() {
 		return pnCls;
@@ -19,11 +19,11 @@ public class PnPnClsRelModel extends BaseModel{
 		this.pnCls = pnCls;
 	}
 
-	public String getNum() {
+	public float getNum() {
 		return num;
 	}
 
-	public void setNum(String num) {
+	public void setNum(float num) {
 		this.num = num;
 	}
 }

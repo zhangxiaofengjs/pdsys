@@ -15,7 +15,6 @@ import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
-import com.zworks.pdsys.models.PnClsModel;
 import com.zworks.pdsys.services.OrderPnService;
 import com.zworks.pdsys.services.OrderService;
 
@@ -28,16 +27,6 @@ public class OrderPnController {
 	
 	@Autowired
 	OrderService orderService;
-	
-	/**
-	 * 订单详细
-	 */
-	@RequestMapping("/list/json")
-	@ResponseBody
-	public JSONResponse listOrderPnJson(@RequestBody OrderModel order) {
-		List<OrderPnModel> list = orderPnService.queryOrderPnList(order);
-		return JSONResponse.success().put("orderPns", list);
-    }
 	
 	/**
 	 * 添加品目订单详细
@@ -88,16 +77,6 @@ public class OrderPnController {
 	}
 	
 	/**
-	 * 通过订单详细的ID取得子品目
-	 */
-	@RequestMapping("/showClsInfo")
-	@ResponseBody
-	public JSONResponse queryClsByOrderPnId( OrderPnModel orderPn ){
-		List<PnClsModel> clss = orderPnService.queryClsByOrderPnId( orderPn );
-		return JSONResponse.success().put("data", clss);
-	}
-	
-	/**
 	 * 更新订单详细的ID取得品目
 	 */
 	@RequestMapping("/update")
@@ -136,9 +115,7 @@ public class OrderPnController {
 			
 			model.addAttribute("order", order);
 		}
-		
 
-		
         return "order/bomDetail";
     }
 
