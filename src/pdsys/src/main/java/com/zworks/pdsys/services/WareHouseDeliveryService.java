@@ -96,21 +96,21 @@ public class WareHouseDeliveryService {
 		if(delivery.getType() == (int)DeliveryType.PN.ordinal()) {
 			delivery = this.queryOneWithPn(delivery);
 			for(WareHouseDeliveryPnModel deliveryPn : delivery.getWareHouseDeliveryPns()) {
-				WareHousePnModel wareHousePn = deliveryPn.getWareHousePn();
-				
-				float semiNum = -1, num = -1, defectiveNum = -1;
-				if(wareHousePn != null) {
-					semiNum = wareHousePn.getSemiProducedNum() - deliveryPn.getSemiProducedNum();
-					num = wareHousePn.getProducedNum() - deliveryPn.getProducedNum();
-				}
-				
-				if(num < 0 || semiNum < 0) {
-					//库存不足
-					return false;
-				}
-				wareHousePn.setProducedNum(num);
-				wareHousePn.setSemiProducedNum(num);
-				wareHousePnService.update(wareHousePn);
+//				WareHousePnModel wareHousePn = deliveryPn.getWareHousePn();
+//				
+//				float semiNum = -1, num = -1, defectiveNum = -1;
+//				if(wareHousePn != null) {
+//					semiNum = wareHousePn.getSemiProducedNum() - deliveryPn.getSemiProducedNum();
+//					num = wareHousePn.getProducedNum() - deliveryPn.getProducedNum();
+//				}
+//				
+//				if(num < 0 || semiNum < 0) {
+//					//库存不足
+//					return false;
+//				}
+//				wareHousePn.setProducedNum(num);
+//				wareHousePn.setSemiProducedNum(num);
+//				wareHousePnService.update(wareHousePn);
 			}
 		} else if(delivery.getType() == (int)DeliveryType.BOM.ordinal()) {
 			delivery = this.queryOneWithBOM(delivery);

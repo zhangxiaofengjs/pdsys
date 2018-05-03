@@ -7,7 +7,6 @@
         <id column="wh_pn_id" property="id" />
         <id column="wh_pn_produced_num" property="producedNum" />  
         <id column="wh_pn_semi_produced_num" property="semiProducedNum" />  
-        <id column="wh_pn_defective_num" property="defectiveNum" />  
     </resultMap>
     <resultMap id="wareHouseBOMResultMap" type="wareHouseBOMModel" >  
         <id column="wh_bom_id" property="id" />
@@ -21,10 +20,6 @@
         <id column="o_id" property="id" />  
         <id column="o_no" property="no" />  
     </resultMap>
-	<resultMap id="pnClsResultMap" type="pnClsModel" >  
-        <id column="pn_cls_id" property="id" />  
-        <id column="pn_cls_name" property="name" />  
-    </resultMap>
 	<resultMap id="unitResultMap" type="unitModel" >  
         <id column="unit_id" property="id" />  
         <id column="unit_name" property="name" />  
@@ -33,7 +28,6 @@
         <id column="pn_id" property="id" />  
         <id column="pn_pn" property="pn" />  
         <id column="pn_name" property="name" />  
-        <association property="pnCls" resultMap="pnClsResultMap"/>
         <association property="unit" resultMap="unitResultMap"/>
     </resultMap>
     <resultMap id="bomResultMap" type="BOMModel" >  
@@ -57,7 +51,6 @@
         <id column="d_pn_id" property="id" />  
         <result column="d_pn_produced_num" property="producedNum" />  
         <result column="d_pn_semi_produced_num" property="semiProducedNum" />  
-        <result column="d_pn_defective_num" property="defectiveNum" />  
         <association property="orderPn" resultMap="orderPnResultMap" />
         <association property="wareHousePn" resultMap="wareHousePnResultMap" />
     </resultMap>
@@ -80,6 +73,7 @@
     </resultMap>
 	<resultMap id="wareHouseDeliveryResultMap" type="wareHouseDeliveryModel" >  
         <id column="d_id" property="id" />  
+        <id column="d_no" property="no" />  
         <result column="d_state" property="state" />  
         <result column="d_type" property="type" />  
         <result column="d_comment" property="comment" />  
@@ -95,6 +89,7 @@
 
 	<select id="queryList" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
 		select delivery.c_id as d_id,
+			   delivery.c_no as d_no,
 			   delivery.c_delivery_time as d_delivery_time,
 			   delivery.c_create_time as d_create_time,
 			   delivery.c_update_time as d_update_time,
@@ -111,13 +106,14 @@
 		left join user_tbl as user on delivery.c_user_id = user.c_id
 		left join user_tbl as upt_user on delivery.c_update_user_id = upt_user.c_id
 		<where>
-			<if test="id >= 0">
+			<if test="id > 0">
 				and delivery.c_id = #{id}
 			</if>
 		</where>
 	</select>
 	<select id="queryListWithPn" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
 		select delivery.c_id as d_id,
+			   delivery.c_no as d_no,
 			   delivery.c_delivery_time as d_delivery_time,
 			   delivery.c_create_time as d_create_time,
 			   delivery.c_update_time as d_update_time,
@@ -133,22 +129,18 @@
 		       d_pn.c_id as d_pn_id,
 		       d_pn.c_produced_num as d_pn_produced_num,
 		       d_pn.c_semi_produced_num as d_pn_semi_produced_num,
-		       d_pn.c_defective_num as d_pn_defective_num,
 		       o_pn.c_id as o_pn_id,
 		       o_pn.c_num as o_pn_num,
 		       pn.c_id as pn_id,
 		       pn.c_pn as pn_pn,
 		       pn.c_name as pn_name,
-		       pn_cls.c_id as pn_cls_id,
-		       pn_cls.c_name as pn_cls_name,
 		       unit.c_id as unit_id,
 		       unit.c_name as unit_name,
 		       o.c_id as o_id,
 		       o.c_no as o_no,
 		       wh_pn.c_id as wh_pn_id,
 		       wh_pn.c_produced_num as wh_pn_produced_num,
-		       wh_pn.c_semi_produced_num as wh_pn_semi_produced_num,
-		       wh_pn.c_defective_num as wh_pn_defective_num
+		       wh_pn.c_semi_produced_num as wh_pn_semi_produced_num
 		from delivery_tbl as delivery
 		left join user_tbl as user on delivery.c_user_id = user.c_id
 		left join user_tbl as upt_user on delivery.c_update_user_id = upt_user.c_id
@@ -156,17 +148,27 @@
 		left join order_pn_tbl as o_pn on d_pn.c_ref_id = o_pn.c_id
 		left join pn_tbl as pn on o_pn.c_pn_id = pn.c_id
 		left join unit_tbl as unit on pn.c_unit_id = unit.c_id
-		left join pn_cls_tbl as pn_cls on o_pn.c_pn_cls_id = pn_cls.c_id
 		left join order_tbl as o on o_pn.c_order_id = o.c_id
-		left join warehouse_pn_tbl as wh_pn on d_pn.c_ref_id = wh_pn.c_order_pn_id
+		left join warehouse_pn_tbl as wh_pn on o_pn.c_pn_id = wh_pn.c_pn_id
 		<where>
-			<if test="id >= 0">
+			<if test="id > 0">
 				and delivery.c_id = #{id}
+			</if>
+			<if test="no != null and no != ''">
+				<choose>
+	                <when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
+	                   	and delivery.c_no like '%${no}%'
+	                </when>
+	                <otherwise>
+						and delivery.c_no = #{no} 
+	                </otherwise>
+	            </choose>
 			</if>
 		</where>
 	</select>
 	<select id="queryListWithBOM" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
 		select delivery.c_id as d_id,
+			   delivery.c_no as d_no,
 			   delivery.c_delivery_time as d_delivery_time,
 			   delivery.c_create_time as d_create_time,
 			   delivery.c_update_time as d_update_time,
@@ -196,13 +198,24 @@
 		left join unit_tbl as unit on bom.c_unit_id = unit.c_id
 		left join warehouse_bom_tbl as wh_bom on bom.c_id = wh_bom.c_bom_id
 		<where>
-			<if test="id >= 0">
+			<if test="id > 0">
 				and delivery.c_id = #{id}
+			</if>
+			<if test="no != null and no != ''">
+				<choose>
+	                <when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
+	                   	and delivery.c_no like '%${no}%'
+	                </when>
+	                <otherwise>
+						and delivery.c_no = #{no} 
+	                </otherwise>
+	            </choose>
 			</if>
 		</where>
 	</select>
 	<select id="queryListWithMachinePart" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
 		select delivery.c_id as d_id,
+			   delivery.c_no as d_no,
 			   delivery.c_delivery_time as d_delivery_time,
 			   delivery.c_create_time as d_create_time,
 			   delivery.c_update_time as d_update_time,
@@ -232,8 +245,18 @@
 		left join unit_tbl as unit on mp.c_unit_id = unit.c_id
 		left join warehouse_machine_part_tbl as wh_mp on mp.c_id = wh_mp.c_machine_part_id
 		<where>
-			<if test="id >= 0">
+			<if test="id > 0">
 				and delivery.c_id = #{id}
+			</if>
+			<if test="no != null and no != ''">
+				<choose>
+	                <when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
+	                   	and delivery.c_no like '%${no}%'
+	                </when>
+	                <otherwise>
+						and delivery.c_no = #{no} 
+	                </otherwise>
+	            </choose>
 			</if>
 		</where>
 	</select>
@@ -241,10 +264,12 @@
 	<insert id="add"  parameterType="wareHouseDeliveryModel">
     	insert into delivery_tbl (
     		c_user_id,
+    		c_no,
     		c_type,
     		c_comment) 
     	values (
     		#{user.id},
+    		#{no},
     		#{type},
     		#{comment})
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">

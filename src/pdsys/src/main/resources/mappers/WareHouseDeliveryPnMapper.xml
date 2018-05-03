@@ -6,7 +6,6 @@
         <id column="wh_pn_id" property="id" />  
         <result column="wh_pn_produced_num" property="producedNum" />
         <result column="wh_pn_semi_produced_num" property="semiProducedNum" />
-        <result column="wh_pn_defective_num" property="defectiveNum" />
     </resultMap>
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="user_id" property="id" />  
@@ -46,14 +45,12 @@
     		c_delivery_id,
     		c_ref_id,
     		c_semi_produced_num,
-    		c_produced_num,
-    		c_defective_num) 
+    		c_produced_num) 
     	values (
     		#{wareHouseDelivery.id},
     		#{orderPn.id},
     		#{semiProducedNum},
-    		#{producedNum},
-    		#{defectiveNum})
+    		#{producedNum})
       	<selectKey keyProperty="id" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
       	</selectKey>
@@ -62,8 +59,7 @@
     <update id="update"  parameterType="wareHouseDeliveryPnModel">
     	update delivery_pn_tbl
 		set	c_semi_produced_num = #{semiProducedNum},
-			c_produced_num = #{producedNum},
-			c_defective_num = #{defectiveNum}
+			c_produced_num = #{producedNum}
     	<where>
     		<if test="id > 0">
 				and c_id = #{id}

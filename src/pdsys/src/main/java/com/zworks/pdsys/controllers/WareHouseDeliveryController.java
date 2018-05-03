@@ -42,7 +42,7 @@ public class WareHouseDeliveryController {
 	@RequestMapping(value= {"/main", "/main/{type}"})
     public String main(
     		@PathVariable(name="type" ,required=false)String type,
-    		@RequestParam(name="id", required=false)Integer id,
+    		@RequestParam(name="no", required=false)String no,
     		Model model) {
 
 		if(type == null) {
@@ -51,10 +51,10 @@ public class WareHouseDeliveryController {
 			throw new PdsysException("错误参数:/delivery/main/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
 		
-		WareHouseDeliveryModel delivery;
-		if(id != null) {
+		WareHouseDeliveryModel delivery = null;
+		if(no != null) {
 			delivery = new WareHouseDeliveryModel();
-			delivery.setId(id);
+			delivery.setNo(no);
 			
 			if(type.equals("pn")) {
 				delivery = wareHouseDeliveryService.queryOneWithPn(delivery);
@@ -65,10 +65,9 @@ public class WareHouseDeliveryController {
 			} else {
 				delivery = null;
 			}
-			if(delivery == null) {
-				throw new PdsysException("错误参数:/delivery/main/" + type + "/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM);
-			}
-		} else {
+		}
+		
+		if(delivery == null) {
 			delivery = new WareHouseDeliveryModel();
 		}
 		
@@ -84,7 +83,7 @@ public class WareHouseDeliveryController {
 	@ResponseBody
     public JSONResponse addDelivery(@RequestBody WareHouseDeliveryModel delivery, Model model) {
 		wareHouseDeliveryService.add(delivery);
-		return JSONResponse.success().put("id", delivery.getId());
+		return JSONResponse.success().put("delivery", delivery);
     }
 	
 	/**

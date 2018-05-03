@@ -14,6 +14,13 @@ $(document).ready(function(){
 					"value":"0",
 				},
 				{
+					"name":"no",
+					"label":"出库单号",
+					"type":"text",
+					"value":"0-" + dateYYYYMMDD() + "-",
+					"required":"required"
+				},
+				{
 					"name":"user.id",
 					"label":"领收人",
 					"type":"select",
@@ -40,25 +47,10 @@ $(document).ready(function(){
 			],
 	    	url : "/warehouse/delivery/add/delivery",
 	        success : function(data) {
-	        	if(data.success)
-	        	{
-	        		$(location).attr('href', PdSys.url('/warehouse/delivery/main/pn?id=' + data.id));
-	        	}
-	        	else
-	        	{
-	        		var dlg = new CommonDlg();
-	    			dlg.showMsgDlg({
-	    				"target":"msg_div",
-	    				"type":"ok",
-	    				"msg":"新建出库单号发生错误。"});
-	        	}
+	        	$(location).attr('href', PdSys.url('/warehouse/delivery/main/pn?no=' + data.delivery.no));
 	        },
 	        error: function(data) {
-	        	var dlg = new CommonDlg();
-    			dlg.showMsgDlg({
-    				"target":"msg_div",
-    				"type":"ok",
-    				"msg":"发生错误。"});
+    			PdSys.alert(data.msg);
 	        }
 	    });
 	});
@@ -156,12 +148,6 @@ $(document).ready(function(){
 			"label":"成品数",
 			"type":"number",
 			"value":"0",
-		},
-		{
-			"name":"defectiveNum",
-			"label":"不良品数",
-			"type":"number",
-			"value":"0",
 		}];
 		
 		var dlg = new CommonDlg();
@@ -171,11 +157,9 @@ $(document).ready(function(){
 			"fields":fields,
 			"valid":function() {
 				if(dlg.fieldVal("semiProducedNum") == 0 &&
-				   dlg.fieldVal("producedNum") == 0 &&
-				   dlg.fieldVal("defectiveNum") == 0) {
-					dlg.setError("semiProducedNum", "半成品/成品/不良品数量都未输入");
-					dlg.setError("producedNum", "半成品/成品/不良品数量都未输入");
-					dlg.setError("defectiveNum", "半成品/成品/不良品数量都未输入");
+				   dlg.fieldVal("producedNum") == 0) {
+					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
+					dlg.setError("producedNum", "半成品/成品数量都未输入");
 					return false;
 				}
 				return true;
