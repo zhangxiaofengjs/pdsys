@@ -53,48 +53,39 @@
 		    	<th rowspan="2" style="width:20px;"><input type="checkbox" name="selectAll"></th>
 				<th rowspan="2">关联订单</th>
 				<th rowspan="2">品目</th>
-				<th rowspan="2">名称</th>
-				<th rowspan="2">子类</th>
 				<th rowspan="2">单位</th>
-				<th colspan="2">在库数量</th>
-				<th colspan="2">出库数量</th>
+				<th colspan="2">半成品</th>
+				<th colspan="2">成品</th>
 		    </tr>
 		    <tr>
-				<th>半成品</th>
-				<th>成品</th>
-				<th>半成品</th>
-				<th>成品</th>
+				<th>在库</th>
+				<th>出库</th>
+				<th>在库</th>
+				<th>出库</th>
 		    </tr>
 		</thead>
 		<tbody>
 			<tr th:each="wareHouseDeliveryPn : ${delivery.wareHouseDeliveryPns}"
-				th:with="orderPn=(${wareHouseDeliveryPn.orderPn}),
-						 pn=(${orderPn !=null}?${orderPn.pn}:null),
-						 unit=(${pn != null}?${pn.unit}:null),
-						 pnCls=(${pn != null}?${pn.pnCls}:null),
- 						 order=(${orderPn != null}?${orderPn.order}:null),
- 						 wareHousePn=(${wareHouseDeliveryPn.wareHousePn}),
+				th:with="orderPn=${wareHouseDeliveryPn.orderPn},
+						 pn=${orderPn.pn},
+						 unit=${pn.unit},
+ 						 order=${orderPn.order},
+ 						 wareHousePn=${wareHouseDeliveryPn.wareHousePn},
  						 wareHousesSemiNum=(${wareHousePn != null}?${wareHousePn.semiProducedNum}:0),
- 						 wareHouseNum=(${wareHousePn != null}?${wareHousePn.producedNum}:0),
- 						 wareHouseDefectiveNum=(${wareHousePn != null}?${wareHousePn.defectiveNum}:0)"
+ 						 wareHouseNum=(${wareHousePn != null}?${wareHousePn.producedNum}:0)"
 						 th:rowid="${wareHouseDeliveryPn.id}">
 				<td>
 					<input type="checkbox" name="select" th:rowid="${wareHouseDeliveryPn.id}">
 				</td>
-				<td th:text="${order != null}?${order.no}:_"></td>
-				<td th:text="${pn!= null}?${pn.pn}:_"></td>
-				<td th:text="${pn!= null}?${pn.name}:_"></td>
-				<td th:text="${pnCls!= null}?${pnCls.name}:_"></td>
-				<td th:text="${unit!= null}?${unit.name}:_"></td>
+				<td th:text="${order.no}"></td>
+				<td th:text="${pn.pn + pn.name}"></td>
+				<td th:text="${unit.name}"></td>
 				<td th:text="${wareHousesSemiNum}"></td>
-				<td th:text="${wareHouseNum}"></td>
-				<td th:text="${wareHouseDefectiveNum}"></td>
 				<td th:text="${wareHouseDeliveryPn.semiProducedNum}" 
 					th:class="${wareHousesSemiNum < wareHouseDeliveryPn.semiProducedNum}?'text-danger':''"></td>
+				<td th:text="${wareHouseNum}"></td>
 				<td th:text="${wareHouseDeliveryPn.producedNum}" 
 					th:class="${wareHouseNum < wareHouseDeliveryPn.producedNum}?'text-danger':''"></td>
-				<td th:text="${wareHouseDeliveryPn.defectiveNum}" 
-					th:class="${wareHouseDefectiveNum < wareHouseDeliveryPn.defectiveNum}?'text-danger':''"></td>
 		    </tr>
 		</tbody>
 	</table>

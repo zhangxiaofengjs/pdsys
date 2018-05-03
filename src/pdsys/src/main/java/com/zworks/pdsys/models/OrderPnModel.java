@@ -10,12 +10,12 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("orderPnModel")
 public class OrderPnModel extends BaseModel{
-	public static final OrderPnModel Empty = new OrderPnModel();
-
 	private PnModel pn;
 	private OrderModel order;
+	
 	@Min(value = 1,message="数量必须是一个数字，其值必须大于0！")
 	private float num;
+	private float deliveredNum;
 	private WareHousePnModel whpn;
 	
 	public OrderPnModel() {
@@ -48,6 +48,14 @@ public class OrderPnModel extends BaseModel{
 
 	public void setWhpn(WareHousePnModel whpn) {
 		this.whpn = whpn;
+	}
+
+	public float getDeliveredNum() {
+		return deliveredNum;
+	}
+
+	public void setDeliveredNum(float deliveredNum) {
+		this.deliveredNum = deliveredNum;
 	}
 
 }

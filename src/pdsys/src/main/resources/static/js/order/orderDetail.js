@@ -30,7 +30,7 @@ $(function () {
 					"value": -1,
 					"caption":"请选择品目...",
 				});
-				data.forEach(function(pn, idx) {
+				data.pns.forEach(function(pn, idx) {
 					thisField.options.push({
 					"value": pn.id,
 					"caption": "{0} {1}".format(pn.pn, pn.name)
@@ -157,8 +157,7 @@ $(function () {
 		if(selIds.length != 1) {
 			return;
 		}
-		var numArr = [];
-		var unitArr = [];
+		
 		var dlg = new CommonDlg();
 		dlg.showFormDlg({
 			"target":"addOrUpPn_div",
@@ -170,27 +169,18 @@ $(function () {
 					"value":selIds[0]
 				},
 				{
-					"name":"pn.id",
+					"name":"pn.name",
 					"label":"品目名",
-					"disabled":"disabled",
-					"type":"select",
-					"options":[],
+					"type":"label",
 					"ajax":true,
-					"url":"/orderPn/showPnInfo?id="+selIds[0],
+					"url":"/orderPn/get",
+					"ajaxData":{"id":selIds[0]},
 					"convertAjaxData" : function(field, data) {
-						data.data.forEach(function(op, idx) {
-							field.options.push({
-							"value": op.pn.id,
-							"caption": "{0} {1}".format(op.pn.pn, op.pn.name)
-
-						    });
-							
-							numArr.push(op.num);
-							unitArr.push(op.pn.unit.name);
-					    });
-						dlg.fieldElem("type", "num").val(numArr[0]);
-						dlg.fieldElem("type", "unitName").val(unitArr[0]);
-						dlg.fieldElem("type", "unitName").attr("readonly","readonly");
+						var op = data.orderPn;
+						field.ajax = false;//防止循环调用自身ajax
+						dlg.rebuildFieldWithValue("pn.name", "{0} {1}".format(op.pn.pn, op.pn.name));
+						dlg.rebuildFieldWithValue("num", op.num);
+						dlg.rebuildFieldWithValue("unitName", op.pn.unit.name);
 					}
 				},
 				{

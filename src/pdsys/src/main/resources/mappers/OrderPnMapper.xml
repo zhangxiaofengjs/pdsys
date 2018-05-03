@@ -2,10 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.OrderPnMapper">
-  	<!-- bom取得 -->
   	<resultMap id="supplierResultMap" type="supplierModel" >
    	    <id column="supplier_id" property="id" />  
         <result column="supplier_name" property="name" /> 
+        <result column="supplier_address" property="address" />
+	    <result column="supplier_phone" property="phone" />
     </resultMap>
     
 	<resultMap id="bomDetailMap" type="com.zworks.pdsys.business.beans.BOMDetailModel" > 
@@ -17,52 +18,20 @@
         <association property="supplier" resultMap="supplierResultMap"/>
     </resultMap>
     
-    <!-- 通过订单详细的ID取得品目 -->
-    <resultMap id="utResultMap" type="unitModel" >  
+	<resultMap id="unitResultMap" type="unitModel" >  
         <id column="ut_id" property="id"/> 
-        <result column="ut_name" property="name"/>  
+        <result column="ut_name" property="name"/>
+        <result column="ut_sub_name" property="subName"/>
+        <result column="ut_ratio" property="ratio"/>
     </resultMap>
-    
-   	<resultMap id="pnResultMap2" type="pnModel" >
-        <id column="pn_id" property="id" />  
-        <result column="pn_pn" property="pn" />  
-        <result column="pn_name" property="name" />
-        <association property="unit" resultMap="utResultMap"/>     
-    </resultMap>
-    
-   	<resultMap id="orderPnMapper" type="orderPnModel" >  
-        <id column="order_pn_id" property="id" />  
-        <result column="order_pn_num" property="num" />   
-        <association property="pn" resultMap="pnResultMap2"/>
-    </resultMap>
-    
-    <!-- 订单详细一览取得 -->
-	<resultMap id="pnUnitResultMap" type="unitModel" >  
-        <id column="pn_ut_id" property="id"/> 
-        <result column="pn_ut_name" property="name"/>
-        <result column="pn_ut_sub_name" property="subName"/>
-        <result column="pn_ut_ratio" property="ratio"/>
-    </resultMap>
-   	<resultMap id="bomUnitResultMap" type="unitModel" >  
-        <id column="bom_ut_id" property="id"/>
-        <result column="bom_ut_name" property="name"/>
-        <result column="bom_ut_sub_name" property="subName"/>
-        <result column="bom_ut_ratio" property="ratio"/> 
-    </resultMap>
-
     <resultMap id="bomResultMap" type="BOMModel" >
     	<id column="bom_id" property="id" />   
         <result column="bom_pn" property="pn"/>
         <result column="bom_name" property="name"/> 
         <result column="bom_type" property="type"/>
         <result column="bom_price" property="price"/>
-        <association property="unit" resultMap="bomUnitResultMap"/>
-        <collection property="suppliers" ofType="supplierModel" javaType="list"> 
-            <id column="supplier_id" property="id" />
-	        <result column="supplier_name" property="name" />
-	        <result column="supplier_address" property="address" />
-	        <result column="supplier_phone" property="phone" />
-	    </collection> 
+        <association property="unit" resultMap="unitResultMap" columnPrefix="bom_"/>
+        <collection property="suppliers" ofType="supplierModel" resultMap="supplierResultMap" />
     </resultMap>
    	<resultMap id="pnClsResultMap" type="pnClsModel" >  
         <id column="od_pn_cls_id" property="id"/>
@@ -74,10 +43,10 @@
 	    </collection>  
     </resultMap>
     <resultMap id="pnResultMap" type="pnModel" >  
-        <id column="od_pn_id" property="id" />  
-        <result column="od_pn_pn" property="pn"/>  
-        <result column="od_pn_name" property="name"/>  
-        <association property="unit" resultMap="pnUnitResultMap"/>
+        <id column="pn_id" property="id" />  
+        <result column="pn_pn" property="pn"/>  
+        <result column="pn_name" property="name"/>  
+        <association property="unit" resultMap="unitResultMap"/>
         <collection property="pnClsRels" ofType="pnPnClsRelModel" javaType="list"> 
             <id column="pn_cls_relation_id" property="id"/>
 	        <result column="pn_cls_relation_num" property="num" />
@@ -88,11 +57,11 @@
         <id column="wh_pn_id" property="id" />
         <result column="wh_pn_produced_num" property="producedNum" />
         <result column="wh_pn_semi_produced_num" property="semiProducedNum" />
-        <result column="wh_pn_defective_num" property="defectiveNum" />
     </resultMap>
 	<resultMap id="orderDetailMapper" type="orderPnModel" >  
         <id column="order_pn_id" property="id" />  
         <result column="order_pn_num" property="num" />  
+        <result column="order_pn_delivered_num" property="deliveredNum" />  
         <association property="pn" resultMap="pnResultMap"/>
         <association property="whpn" resultMap="whpnResultMap"/> 
     </resultMap>
@@ -100,13 +69,14 @@
 	<select id="queryList" parameterType="orderModel" resultMap="orderDetailMapper">
 		select order_pn.c_id as order_pn_id,
 		       order_pn.c_num as order_pn_num,
-			   pn.c_id as od_pn_id,
-			   pn.c_pn as od_pn_pn,
-			   pn.c_name as od_pn_name,
-			   pn_ut.c_id as pn_ut_id,
-   		       pn_ut.c_name as pn_ut_name,
-   		       pn_ut.c_sub_name as pn_ut_sub_name,
-   		       pn_ut.c_ratio as pn_ut_ratio,
+		       order_pn.c_delivered_num as order_pn_delivered_num,
+			   pn.c_id as pn_id,
+			   pn.c_pn as pn_pn,
+			   pn.c_name as pn_name,
+			   pn_ut.c_id as ut_id,
+   		       pn_ut.c_name as ut_name,
+   		       pn_ut.c_sub_name as ut_sub_name,
+   		       pn_ut.c_ratio as ut_ratio,
    		       pn_cls_relation.c_id as pn_cls_relation_id,
    		       pn_cls_relation.c_num as pn_cls_relation_num,
    		       pn_cls.c_id as od_pn_cls_id,
@@ -130,8 +100,7 @@
    		       supplier.c_phone as supplier_phone,
 		       wh_pn.c_id as wh_pn_id,
 			   wh_pn.c_produced_num as wh_pn_produced_num,
-			   wh_pn.c_semi_produced_num as wh_pn_semi_produced_num,
-			   wh_pn.c_defective_num as wh_pn_defective_num 
+			   wh_pn.c_semi_produced_num as wh_pn_semi_produced_num
 		from order_pn_tbl as order_pn 
 		left join pn_tbl as pn on order_pn.c_pn_id = pn.c_id 
 		left join unit_tbl as pn_ut on pn.c_unit_id = pn_ut.c_id 
@@ -142,23 +111,47 @@
 		left join unit_tbl as bom_ut on bom.c_unit_id = bom_ut.c_id 
 		left join bom_supplier_tbl as bom_supplier on bom_supplier.c_bom_id = bom.c_id 
 		left join supplier_tbl as supplier on supplier.c_id = bom_supplier.c_supplier_id 
-		left join warehouse_pn_tbl as wh_pn on wh_pn.c_order_pn_id = order_pn.c_id 
+		left join warehouse_pn_tbl as wh_pn on wh_pn.c_pn_id = pn.c_id 
 		<where>
-			<if test="id != null">
+			<if test="id != null and id > 0">
 				and order_pn.c_order_id = #{id}
 			</if>
+			<if test="filterCond.notDelivered != null and filterCond.notDelivered">
+				<!-- 查询还有未出库的 -->
+				and order_pn.c_num &gt; order_pn.c_delivered_num
+			</if>
+			<if test="filterCond.inWareHouse != null and filterCond.inWareHouse">
+				<!-- 查询还有库存的 -->
+				and (wh_pn.c_produced_num &gt; 0 or wh_pn.c_semi_produced_num &gt; 0)
+			</if>
+			
 		</where>
 	</select>
 	
 	<select id="queryOrderPns" parameterType="orderPnModel" resultMap="orderDetailMapper">
 		select order_pn.c_id as order_pn_id,
-		       order_pn.c_num as order_pn_num 
+		       order_pn.c_num as order_pn_num,
+		       order_pn.c_delivered_num as order_pn_delivered_num,
+		       pn.c_id as pn_id,
+			   pn.c_pn as pn_pn,
+			   pn.c_name as pn_name,
+			   ut.c_id as ut_id,
+			   ut.c_name as ut_name,
+			   wh_pn.c_id as wh_pn_id,
+			   wh_pn.c_produced_num as wh_pn_produced_num,
+			   wh_pn.c_semi_produced_num as wh_pn_semi_produced_num
 		from order_pn_tbl order_pn 
+		left join pn_tbl as pn on order_pn.c_pn_id = pn.c_id 
+	    left join unit_tbl as ut on pn.c_unit_id = ut.c_id 
+	    left join warehouse_pn_tbl as wh_pn on wh_pn.c_pn_id = pn.c_id 
 		<where>
-			<if test="order != null">
+			<if test="id != null and id > 0">
+				and order_pn.c_id=#{id}
+			</if>
+			<if test="order != null and order.id > 0">
 				and order_pn.c_order_id = #{order.id} 
 			</if>
-			<if test="pn != null">
+			<if test="pn != null and pn.id > 0">
 				and order_pn.c_pn_id = #{pn.id} 
 			</if>
 		</where>
@@ -218,25 +211,4 @@
 		</where>
 		 group by bom_pn_name, bom_type, bom_ut_name, wh_bom_num, supplier_id, supplier_name
 	</select>
-	
-	<select id="queryPnByOrderPnId" resultMap="orderPnMapper">
-		select order_pn.c_id as order_pn_id,
-		       order_pn.c_num as order_pn_num,
-			   pn.c_id as pn_id,
-			   pn.c_pn as pn_pn,
-			   pn.c_name as pn_name,
-			   ut.c_id as ut_id,
-			   ut.c_name as ut_name from order_pn_tbl as order_pn 
-			   
-	    left join pn_tbl as pn on order_pn.c_pn_id = pn.c_id 
-	    left join unit_tbl as ut on pn.c_unit_id = ut.c_id 
-	    <where>
-			<if test="id != null">
-				and order_pn.c_id = #{id} 
-		    </if>
-		</where>
-	    
-	    order by pn_id desc
-	</select>
-
 </mapper>

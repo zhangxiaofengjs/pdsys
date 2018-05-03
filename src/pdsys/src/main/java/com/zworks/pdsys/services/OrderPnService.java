@@ -27,8 +27,12 @@ public class OrderPnService {
 		return orderPnMapper.queryBomList( order );
 	}
 	
-	public List<OrderPnModel> queryPnByOrderPnId( OrderPnModel orderPn ){
-		return orderPnMapper.queryPnByOrderPnId( orderPn );
+	public OrderPnModel queryOne( OrderPnModel orderPn ){
+		List<OrderPnModel> ops = orderPnMapper.queryOrderPns(orderPn);
+		if(ops.size() == 1) {
+			return ops.get(0);
+		}
+		return null;
 	}
 	
 	public List<OrderPnModel> queryOrderPnList( OrderModel order ) {

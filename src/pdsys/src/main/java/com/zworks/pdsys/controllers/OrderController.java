@@ -49,9 +49,9 @@ public class OrderController {
 	
 	@RequestMapping("/list/json")
 	@ResponseBody
-	public List<OrderModel> showOrderlistJson(OrderModel order) {
+	public JSONResponse showOrderlistJson(@RequestBody OrderModel order) {
 		List<OrderModel> list = orderService.queryList(order);
-		return list;
+		return JSONResponse.success().put("orders", list);
 	}
 	
 	/**
@@ -104,14 +104,4 @@ public class OrderController {
 
         return "order/detail";
     }
-	
-	/**
-	 * 生产计划
-	 */
-	@RequestMapping("/plan")
-    public String plan(Model model) {
-		
-        return "order/plan";
-    }
-
 }

@@ -21,7 +21,5 @@ public interface OrderPnMapper {
 	
 	List<BOMDetailModel> queryBomList(OrderModel order);
 	
-	List<OrderPnModel> queryPnByOrderPnId( OrderPnModel orderPn );
-	
 	List<OrderPnModel> queryOrderPns(OrderPnModel orderPn);
 }
