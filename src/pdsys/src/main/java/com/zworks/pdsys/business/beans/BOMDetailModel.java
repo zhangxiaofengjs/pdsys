@@ -2,13 +2,14 @@ package com.zworks.pdsys.business.beans;
 
 import org.apache.ibatis.type.Alias;
 
-import com.zworks.pdsys.models.SupplierModel;
-
 /**
  * @author: ZHAI
  */
-@Alias("BOMDetailModel")
+@Alias("bomDetailModel")
 public class BOMDetailModel {
+	
+	//bom的ID
+	private int bomId;
 	
 	//数量
 	private float bomNum;
@@ -24,9 +25,6 @@ public class BOMDetailModel {
 	
 	//库存量
 	private int whbomNum;
-	
-	//制造商
-	private SupplierModel supplier;
 
 	public int getWhbomNum() {
 		return whbomNum;
@@ -68,12 +66,12 @@ public class BOMDetailModel {
 		this.unitName = unitName;
 	}
 
-	public SupplierModel getSupplier() {
-		return supplier;
+	public int getBomId() {
+		return bomId;
 	}
 
-	public void setSupplier(SupplierModel supplier) {
-		this.supplier = supplier;
+	public void setBomId(int bomId) {
+		this.bomId = bomId;
 	}
 	
 }
