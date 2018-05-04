@@ -20,6 +20,9 @@ public class BOMDetailModel {
 	//分类
 	private int bomType;
 	
+	//单价
+	private float bomPrice;
+	
 	//单位
 	private String unitName;
 	
@@ -72,6 +75,14 @@ public class BOMDetailModel {
 
 	public void setBomId(int bomId) {
 		this.bomId = bomId;
+	}
+
+	public float getBomPrice() {
+		return bomPrice;
+	}
+
+	public void setBomPrice(float bomPrice) {
+		this.bomPrice = bomPrice;
 	}
 	
 }

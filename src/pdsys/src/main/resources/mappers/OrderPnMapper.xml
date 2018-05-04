@@ -192,9 +192,11 @@
 		       CONCAT(bom.c_pn," ",bom.c_name) as bom_pn_name,
 		       bom.c_id as bom_id,
 		       bom.c_type as bom_type,
+      		   bom.c_price as bom_price,
 		       bom_ut.c_name as bom_ut_name,
 			   wh_bom.c_num as wh_bom_num 
 		from order_pn_tbl as order_pn 
+		left join order_tbl on order_tbl.c_id = order_pn.c_order_id 
 		left join pn_tbl as pn on order_pn.c_pn_id = pn.c_id 
 		left join pn_cls_relation_tbl as pn_cls_relation on pn_cls_relation.c_pn_id = pn.c_id 
 		left join pn_cls_tbl as pn_cls on pn_cls_relation.c_cls_id = pn_cls.c_id
@@ -203,8 +205,8 @@
 		left join unit_tbl as bom_ut on bom.c_unit_id = bom_ut.c_id 
 		left join warehouse_bom_tbl as wh_bom on wh_bom.c_bom_id = bom.c_id 
 		<where>
-			<if test="id != null">
-				and order_pn.c_order_id = #{id}
+			<if test="no != null and no != ''">
+				and c_no like concat('%',#{no},'%') 
 			</if>
 		</where>
 		 group by bom_pn_name

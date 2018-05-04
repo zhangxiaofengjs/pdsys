@@ -7,13 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.zworks.pdsys.business.beans.BOMDetailModel;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
-import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.services.OrderPnService;
 import com.zworks.pdsys.services.OrderService;
@@ -95,34 +92,5 @@ public class OrderPnController {
 		orderPnService.updateOrderPn(orderPn);
 		return JSONResponse.success();
 	}
-	
-	/**
-	 * BOM详细
-	 */
-	@RequestMapping("/bomInfo/list")
-    public String list(@RequestParam(name="id") int id, Model model) {
-		OrderModel order = orderService.queryObject(id);
-		if( order!=null )
-		{
-			boolean isExist = true;
-			List<BOMDetailModel> list = orderPnService.queryBomList(order);
-			for(int i =0;i<list.size();i++)
-			{
-				BOMDetailModel bom = list.get(i);
-				if( bom ==null)
-				{
-					isExist = false;
-					break;
-				}
-			}
-			
-			if( isExist )
-				model.addAttribute("boms", list);
-			
-			model.addAttribute("order", order);
-		}
-
-        return "order/bomDetail";
-    }
 
 }

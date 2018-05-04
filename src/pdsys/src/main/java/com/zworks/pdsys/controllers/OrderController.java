@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.zworks.pdsys.business.beans.BOMDetailModel;
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
@@ -104,31 +103,6 @@ public class OrderController {
 		model.addAttribute("orderPns", list);
 
         return "order/detail";
-    }
-	
-	/**
-	 * 采购管理
-	 */
-	@RequestMapping("/purchase/list")
-    public String plan(OrderModel order,Model model) {
-		
-		boolean isExist = true;
-		order.setId(1);
-		List<BOMDetailModel> list = orderPnService.queryBomList(order);
-		for(int i =0;i<list.size();i++)
-		{
-			BOMDetailModel bom = list.get(i);
-			if( bom ==null)
-			{
-				isExist = false;
-				break;
-			}
-		}
-		
-		if( isExist )
-			model.addAttribute("boms", list);
-		
-        return "order/purchase";
     }
 
 }
