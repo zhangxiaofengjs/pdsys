@@ -100,6 +100,12 @@
 			<if test="id > 0">
 				and entry.c_id=#{id}
 			</if>
+			<if test="type > -1">
+				and entry.c_type=#{type}
+			</if>
+			<if test="state > -1">
+				and entry.c_state=#{state}
+			</if>
 			<if test="no != null and no != ''">
 				<choose>
 	                <when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
@@ -109,6 +115,9 @@
 						and entry.c_no = #{no} 
 	                </otherwise>
 	            </choose>
+			</if>
+			<if test="user != null and user.id > 0">
+				and entry.c_user_id = #{user.id}
 			</if>
 		</where>
 	</select>

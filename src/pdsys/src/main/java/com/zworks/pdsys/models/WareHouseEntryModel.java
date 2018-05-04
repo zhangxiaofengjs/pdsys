@@ -14,8 +14,8 @@ public class WareHouseEntryModel extends BaseModel{
 	private UserModel user;
 	private Date entryTime;
 	private String no;
-	private int state;
-	private int type;
+	private int state = -1;
+	private int type = -1;
 	private String comment;
 	private List<WareHouseEntryPnModel> wareHouseEntryPns;
 	private List<WareHouseEntryBOMModel> wareHouseEntryBOMs;

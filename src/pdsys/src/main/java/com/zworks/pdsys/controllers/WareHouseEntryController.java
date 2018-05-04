@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
@@ -84,8 +85,19 @@ public class WareHouseEntryController {
 	@RequestMapping(value="/add/entry")
 	@ResponseBody
     public JSONResponse addEntry(@RequestBody WareHouseEntryModel entry, Model model) {
-		if(wareHouseEntryService.exists(entry)) {
-			return JSONResponse.error("已经存在单号。");
+		WareHouseEntryModel e = new WareHouseEntryModel();
+		e.setNo(entry.getNo());
+		if(wareHouseEntryService.exists(e)) {
+			return JSONResponse.error("已经存在单号:" + entry.getNo());
+		}
+		
+		e = new WareHouseEntryModel();
+		e.setType(entry.getType());
+		e.setUser(entry.getUser());
+		e.setState(EntryState.PLANNING.ordinal());
+		List<WareHouseEntryModel> es = wareHouseEntryService.queryList(e);
+		if(es.size()!=0) {
+			return JSONResponse.error("当前用户[" + es.get(0).getUser().getName() + "]存在未处理单号:" + es.get(0).getNo());
 		}
 		wareHouseEntryService.add(entry);
 		return JSONResponse.success().put("entry", entry);

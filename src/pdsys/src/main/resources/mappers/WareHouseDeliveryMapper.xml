@@ -111,6 +111,25 @@
 			<if test="id > 0">
 				and delivery.c_id = #{id}
 			</if>
+			<if test="type > -1">
+				and delivery.c_type=#{type}
+			</if>
+			<if test="state > -1">
+				and delivery.c_state=#{state}
+			</if>
+			<if test="no != null and no != ''">
+				<choose>
+	                <when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
+	                   	and delivery.c_no like '%${no}%'
+	                </when>
+	                <otherwise>
+						and delivery.c_no = #{no} 
+	                </otherwise>
+	            </choose>
+			</if>
+			<if test="user != null and user.id > 0">
+				and delivery.c_user_id = #{user.id}
+			</if>
 		</where>
 	</select>
 	<select id="queryListWithPn" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
@@ -164,7 +183,7 @@
 	            </choose>
 			</if>
 		</where>
-		<if test="filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
+		<if test="_parameter != null and filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
 			for update
 		</if>
 	</select>

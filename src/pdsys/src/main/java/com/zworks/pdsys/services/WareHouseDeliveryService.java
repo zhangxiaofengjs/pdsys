@@ -39,6 +39,14 @@ public class WareHouseDeliveryService {
 		return wareHouseDeliveryMapper.queryList(obj);
 	}
 	
+	public boolean exists(WareHouseDeliveryModel d) {
+		List<WareHouseDeliveryModel> list = queryList(d);
+		if(list.size() != 0) {
+			return true;
+		}
+		return false;
+	}
+	
 	public List<WareHouseDeliveryModel> queryListWithPn(WareHouseDeliveryModel delivery) {
 		return wareHouseDeliveryMapper.queryListWithPn(delivery);
 	}

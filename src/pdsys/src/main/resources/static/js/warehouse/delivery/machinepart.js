@@ -14,6 +14,13 @@ $(document).ready(function(){
 					"value":"2",
 				},
 				{
+					"name":"no",
+					"label":"出库单号",
+					"type":"text",
+					"value":"2-" + dateYYYYMMDD() + "-",
+					"required":"required"
+				},
+				{
 					"name":"user.id",
 					"label":"领收人",
 					"type":"select",

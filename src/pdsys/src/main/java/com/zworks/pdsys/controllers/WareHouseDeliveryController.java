@@ -11,13 +11,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
+import com.zworks.pdsys.common.utils.StringUtils;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
+import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryMachinePartService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
@@ -52,7 +55,7 @@ public class WareHouseDeliveryController {
 		}
 		
 		WareHouseDeliveryModel delivery = null;
-		if(no != null) {
+		if(!StringUtils.isNullOrEmpty(no)) {
 			delivery = new WareHouseDeliveryModel();
 			delivery.setNo(no);
 			
@@ -82,6 +85,21 @@ public class WareHouseDeliveryController {
 	@RequestMapping(value="/add/delivery")
 	@ResponseBody
     public JSONResponse addDelivery(@RequestBody WareHouseDeliveryModel delivery, Model model) {
+		WareHouseDeliveryModel d = new WareHouseDeliveryModel();
+		d.setNo(delivery.getNo());
+		if(wareHouseDeliveryService.exists(d)) {
+			return JSONResponse.error("已经存在单号:" + delivery.getNo());
+		}
+		
+		d = new WareHouseDeliveryModel();
+		d.setType(delivery.getType());
+		d.setUser(delivery.getUser());
+		d.setState(EntryState.PLANNING.ordinal());
+		List<WareHouseDeliveryModel> ds = wareHouseDeliveryService.queryList(d);
+		if(ds.size()!=0) {
+			return JSONResponse.error("当前用户[" + ds.get(0).getUser().getName() + "]存在未处理单号:" + ds.get(0).getNo());
+		}
+		
 		wareHouseDeliveryService.add(delivery);
 		return JSONResponse.success().put("delivery", delivery);
     }

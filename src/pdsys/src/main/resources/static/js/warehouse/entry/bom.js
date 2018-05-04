@@ -82,7 +82,7 @@ $(document).ready(function(){
 				data.boms.forEach(function(bom, idx) {
 					thisField.options.push({
 						"value": bom.id,
-						"caption": "{0} {1}({2})".format(bom.pn, bom.name, bom.comment),
+						"caption": M.bomName(bom),
 						"data":bom.unit.name
 					});
 				});
@@ -96,8 +96,7 @@ $(document).ready(function(){
 				thisElem.change(function() {
 					var selIndex = thisElem[0].selectedIndex;
 					var val = "";
-					if(selIndex != 0) {
-						//第一项是[请选择]，无视
+					if(selIndex != -1) {
 						val = self.options[selIndex].data;
 					}
 					dlg.rebuildFieldWithValue("unit.name", val);

@@ -52,7 +52,7 @@
 			</if>
 		</where>
 		order by pn.c_pn
-		<if test="filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
+		<if test="_parameter != null and filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
 			for update
 		</if>
 	</select>

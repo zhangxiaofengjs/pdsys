@@ -10,7 +10,7 @@
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/delivery/main/bom}" method="post">
 	 			<div class="form-group">
-				   <input type="text" class="form-control" name="id" id="id" th:value="${delivery.id != 0 ? delivery.id:_}" placeholder="出库单号">
+				   <input type="text" class="form-control" name="no" id="no" th:value="${delivery.no != 0 ? delivery.no:_}" placeholder="出库单号">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info" name="refresh">查询</button>
 	 			<button type="button" class="btn btn-sm btn-info" name="addDelivery">新建出库单</button>
@@ -31,7 +31,7 @@
 			</tr>
 			<tr>
 				<th th:colspan="2">出库单号:&nbsp;
-					<a th:style="${delivery.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="((${delivery.createTime} != null) ? ${#dates.format(delivery.createTime, 'yyyyMMddHHmmss')} : '00000000000000') + '#' + ${delivery.id}"></a>
+					<a th:style="${delivery.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${delivery.no!=null?delivery.no:''}"></a>
 					<i th:if="${delivery.state == 2}" th:text="已删除" class="text-muted"></i>
 					<input type="hidden" id="delivery_id" name="delivery_id" th:value="${delivery.id}">
 					<a th:if="${delivery.state == 0}" href="javascript:void(0);" class="glyphicon glyphicon-trash" id="deleteDelivery"></a>
