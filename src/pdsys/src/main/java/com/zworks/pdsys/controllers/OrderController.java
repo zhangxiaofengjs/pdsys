@@ -50,9 +50,9 @@ public class OrderController {
 	
 	@RequestMapping("/list/json")
 	@ResponseBody
-	public List<OrderModel> showOrderlistJson(OrderModel order) {
+	public JSONResponse showOrderlistJson(@RequestBody OrderModel order) {
 		List<OrderModel> list = orderService.queryList(order);
-		return list;
+		return JSONResponse.success().put("orders", list);
 	}
 	
 	/**
