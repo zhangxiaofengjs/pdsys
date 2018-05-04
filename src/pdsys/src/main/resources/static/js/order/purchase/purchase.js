@@ -48,45 +48,11 @@ $(function () {
 					"type":"ok",
 					"msg":data.msg,
 					"ok":function(){
-						//采购单详细的保存
-						PdSys.ajax({
-							"url":'/purchase/saveDetail"?purchaseId=' + data.id +'&orderNo='+ orderNo,
-							"data":bomIds,
-							"success": function(data) {
-								dlg.hide();
-								var msgDlg = new CommonDlg();
-								msgDlg.showMsgDlg({
-									"target":"msg_div",
-									"type":"ok",
-									"msg":data.msg,
-									"ok":function(){
-										PdSys.refresh();
-									}});
-							},
-							"error": function(data) {
-								dlg.hide();
-								var msgDlg = new CommonDlg();
-								msgDlg.showMsgDlg({
-									"target":"msg_div",
-									"type":"ok",
-									"msg":data.msg});
-							}
-						});
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						$(location).attr('href', PdSys.url('/purchase/purchaseDetail?purchaseId=' + data.id +'&orderNo='+ orderNo ));
-					}});
+						//采购单详细的保存，显示
+						var url = '/purchase/saveDetail?purchaseId=' + data.id +'&orderNo='+ orderNo +'&bomIds='+ bomIds;
+						$(location).attr('href', PdSys.url(url ));
+					}
+				});
 			},
 			"error": function(data) {
 	        	var dlg = new CommonDlg();

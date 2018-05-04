@@ -200,6 +200,7 @@
 		       CONCAT(bom.c_pn," ",bom.c_name) as bom_pn_name,
 		       bom.c_id as bom_id,
 		       bom.c_type as bom_type,
+      		   bom.c_price as bom_price,
 		       bom_ut.c_name as bom_ut_name,
 			   wh_bom.c_num as wh_bom_num 
 		from order_pn_tbl as order_pn 

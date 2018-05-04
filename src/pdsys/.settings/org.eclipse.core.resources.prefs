@@ -10,6 +10,7 @@ encoding//src/main/resources/templates/login.html=UTF-8
 encoding//src/main/resources/templates/order/bomDetail.html=UTF-8
 encoding//src/main/resources/templates/order/detail.html=UTF-8
 encoding//src/main/resources/templates/order/list.html=UTF-8
+encoding//src/main/resources/templates/order/purchase/detail.html=UTF-8
 encoding//src/main/resources/templates/order/purchase/main.html=UTF-8
 encoding//src/main/resources/templates/sys/master/bom.html=UTF-8
 encoding//src/main/resources/templates/sys/master/customer.html=UTF-8

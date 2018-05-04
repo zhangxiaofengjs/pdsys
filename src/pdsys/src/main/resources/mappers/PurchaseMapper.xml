@@ -2,8 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.PurchaseMapper">
-    
-	<insert id="save" parameterType="purchaseModel" useGeneratedKeys="true" keyProperty="id">
+
+    <!-- 新增采购单 -->
+	<insert id="savePurchase" parameterType="purchaseModel" useGeneratedKeys="true" keyProperty="id">
 		insert into purchase_tbl
 		(
 			`c_user_id`,
@@ -16,4 +17,21 @@
 			0
 		)
 	</insert>
+	
+	<!-- 新增采购单详细 -->
+	<insert id="savePurchaseDetail" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+		insert into purchase_bom_tbl
+		(
+			`c_purchase_id`,
+			`c_bom_id`,
+			`c_num`,
+			`c_price`
+		)
+		values
+	    <foreach collection="list" item="purchaseBom" index="index" separator=",">  
+	        (#{purchaseBom.purchase.id},#{purchaseBom.bom.id},#{purchaseBom.num},#{purchaseBom.price})  
+	    </foreach>
+ 
+	</insert>
+	
 </mapper>

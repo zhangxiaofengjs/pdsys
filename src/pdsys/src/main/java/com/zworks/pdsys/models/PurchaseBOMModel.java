@@ -10,8 +10,8 @@ import org.apache.ibatis.type.Alias;
  * @author ZHAI
  * @date 2018-05-04 13:22:06
  */
-@Alias("purchaseModel")
-public class PurchaseBomModel extends BaseModel implements Serializable {
+@Alias("purchaseBomModel")
+public class PurchaseBOMModel extends BaseModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private PurchaseModel purchase;

@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.zworks.pdsys.business.beans.BOMDetailModel;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
+import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.OrderModel;
-import com.zworks.pdsys.models.PurchaseBomModel;
+import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
 import com.zworks.pdsys.services.OrderPnService;
 import com.zworks.pdsys.services.PurchaseService;
@@ -66,7 +67,7 @@ public class PurchaseController {
 		JSONResponse JR = ValidatorUtils.doValidate(purchase);
 		if( JR!=null )
 			return JR;
-		purchaseService.save(purchase);
+		purchaseService.savePurchase(purchase);
 		return JSONResponse.success("新增采购单成功!").put("id", purchase.getId());
 	}
 	
@@ -74,17 +75,48 @@ public class PurchaseController {
 	 * 采购单详细
 	 */
 	@RequestMapping("/saveDetail")
-	@ResponseBody
-	public String purchaseDetail(@RequestBody int[] bomIds,
-									   @RequestParam(name="purchaseId", required=false)Integer purchaseId,
-									   @RequestParam(name="orderNo", required=false)String orderNo,Model model)
+	public String purchaseDetail(@RequestParam(name="bomIds", required=false) int[] bomIds,
+							     @RequestParam(name="purchaseId", required=false)Integer purchaseId,
+							     @RequestParam(name="orderNo", required=false)String orderNo,Model model)
 	{
+		List<PurchaseBOMModel> purchaseBoms = new ArrayList<PurchaseBOMModel>();
+		OrderModel order = new OrderModel();
+		List<BOMDetailModel> list = orderPnService.queryBomList(order);
+		for(int i =0;i<list.size();i++)
+		{
+			BOMDetailModel BOMDetail = list.get(i);
+			for(int j =0;j<bomIds.length;j++)
+			{
+				int bomId = bomIds[j];
+				if(BOMDetail.getBomId()==bomId)
+				{
+					PurchaseBOMModel purchaseBom = new PurchaseBOMModel();
+					PurchaseModel purchase = new PurchaseModel();
+					purchase.setId(purchaseId);
+					//采购单号
+					purchaseBom.setPurchase(purchase);
 
-		List<PurchaseBomModel> purchaseBoms = new ArrayList<PurchaseBomModel>();
+					BOMModel bom = new BOMModel();
+					bom.setId(bomId);
+					//原包材
+					purchaseBom.setBom(bom);
+					//数量
+					purchaseBom.setNum(BOMDetail.getBomNum());
+					//单价
+					purchaseBom.setPrice(BOMDetail.getBomPrice());
+					
+					//追加一条采购单详细的记录
+					purchaseBoms.add(purchaseBom);
+				}
+			}
+		}
+		
+		if( purchaseBoms.size() > 0 )
+			purchaseService.savePurchaseDetail(purchaseBoms);
+		
 		model.addAttribute("purchaseBoms", purchaseBoms);
 		
         return "order/purchase/detail";
 	}
-	
 
 }
