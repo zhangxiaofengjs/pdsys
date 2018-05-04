@@ -46,4 +46,38 @@ public class DateUtils {
 		Calendar ca = Calendar.getInstance();
 		return ca.getTime();
 	}
+
+	public static Date thisMonthStart() {
+		Date now = now();
+		Calendar ca = Calendar.getInstance();
+    	ca.setTime(now);
+    	ca.set(Calendar.DAY_OF_MONTH, 1);
+    	return ca.getTime();
+	}
+
+	public static Date endOfDay(Date end) {
+		if(end == null) {
+			return end;
+		}
+		Calendar ca = Calendar.getInstance();
+    	ca.setTime(end);
+    	ca.set(Calendar.HOUR_OF_DAY, 23);
+    	ca.set(Calendar.MINUTE, 59);
+    	ca.set(Calendar.SECOND, 59);
+    	ca.set(Calendar.MILLISECOND, 999);
+    	return ca.getTime();
+	}
+
+	public static Date startOfDay(Date start) {
+		if(start == null) {
+			return start;
+		}
+		Calendar ca = Calendar.getInstance();
+    	ca.setTime(start);
+    	ca.set(Calendar.HOUR_OF_DAY, 0);
+    	ca.set(Calendar.MINUTE, 0);
+    	ca.set(Calendar.SECOND, 0);
+    	ca.set(Calendar.MILLISECOND, 0);
+    	return ca.getTime();
+	}
 }
