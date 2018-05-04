@@ -11,13 +11,12 @@
 			  		<div class="navbar-header">
 			  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 			  		</div>
-			  		<form class="navbar-form navbar-left" role="form" th:object="${order}" th:action="@{/order/purchase/list}" method="post">
+			  		<form class="navbar-form navbar-left" role="form" th:object="${order}" th:action="@{/purchase/list}" method="post">
 						<div class="form-group">
-						   <input type="text" class="form-control" placeholder="订单编号">  
+						   <input type="text" class="form-control" th:field="*{no}" placeholder="订单编号">  
 			 			</div>
 			 			<button type="submit" class="btn btn-sm btn-info">查询</button>
-			 			<button type="button" class="btn btn-sm btn-info" id="addOrder">修改</button>
-			 			<button type="button" class="btn btn-sm btn-info" id="delOrder">删除</button>
+			 			<button type="button" class="btn btn-sm btn-info" id="addPurchase">生成采购单</button>
 					</form>
 				</div>
 			</nav>
@@ -50,11 +49,11 @@
 			</table>
    	 	</div>
    	 	<div th:replace="common/footer::copyright"></div>
-   	 	<div id="addOrder_div"></div>
+   	 	<div id="addPurchase_div"></div>
    	 	<div id="msg_div"></div>
 	</div>
 	
-	<script th:src="@{/js/order/order.js}"></script>
+	<script th:src="@{/js/order/purchase/purchase.js}"></script>
 	<script th:src="@{/js/common/table.js}"></script> 
 	<script th:src="@{/js/common/dlg.js}"></script> 
 	<script th:src="@{/js/common/date.js}"></script> 
