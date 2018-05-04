@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.PurchaseMapper">
+    
+	<insert id="save" parameterType="purchaseModel" useGeneratedKeys="true" keyProperty="id">
+		insert into purchase_tbl
+		(
+			`c_user_id`,
+			`c_state`
+			
+		)
+		values
+		(
+			#{user.id},
+			0
+		)
+	</insert>
+</mapper>

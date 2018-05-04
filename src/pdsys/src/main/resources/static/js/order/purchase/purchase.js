@@ -3,12 +3,13 @@ $(function () {
 	//生成采购单
 	$("#addPurchase").click(function(){
 		var self = $(this);
-		var orderIds = getSelectedRowId();
-		if(orderIds.length == 0) {
+		var bomIds = getSelectedRowId();
+		if(bomIds.length == 0) {
 			return;
 		}
 		
 		//
+		var orderNo = $('#order_no').val();
 		var dlg = new CommonDlg();
 		dlg.showFormDlg({
 			"target":"addPurchase_div",
@@ -47,7 +48,44 @@ $(function () {
 					"type":"ok",
 					"msg":data.msg,
 					"ok":function(){
-						$(location).attr('href', PdSys.url('/warehouse/delivery/main/pn?id=' + data.id));
+						//采购单详细的保存
+						PdSys.ajax({
+							"url":'/purchase/saveDetail"?purchaseId=' + data.id +'&orderNo='+ orderNo,
+							"data":bomIds,
+							"success": function(data) {
+								dlg.hide();
+								var msgDlg = new CommonDlg();
+								msgDlg.showMsgDlg({
+									"target":"msg_div",
+									"type":"ok",
+									"msg":data.msg,
+									"ok":function(){
+										PdSys.refresh();
+									}});
+							},
+							"error": function(data) {
+								dlg.hide();
+								var msgDlg = new CommonDlg();
+								msgDlg.showMsgDlg({
+									"target":"msg_div",
+									"type":"ok",
+									"msg":data.msg});
+							}
+						});
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						$(location).attr('href', PdSys.url('/purchase/purchaseDetail?purchaseId=' + data.id +'&orderNo='+ orderNo ));
 					}});
 			},
 			"error": function(data) {
