@@ -42,16 +42,18 @@
         <result column="mp_name" property="name" />  
         <association property="unit" resultMap="unitResultMap"/>
     </resultMap>
+    <!-- 
 	<resultMap id="orderPnResultMap" type="orderPnModel" >  
         <id column="o_pn_id" property="id" />  
         <association property="pn" resultMap="pnResultMap" />
         <association property="order" resultMap="orderResultMap" />
-    </resultMap>
+    </resultMap> -->
 	<resultMap id="wareHouseDeliveryPnResultMap" type="wareHouseDeliveryPnModel">  
         <id column="d_pn_id" property="id" />  
         <result column="d_pn_produced_num" property="producedNum" />  
         <result column="d_pn_semi_produced_num" property="semiProducedNum" />  
-        <association property="orderPn" resultMap="orderPnResultMap" />
+        <association property="order" resultMap="orderResultMap" />
+        <association property="pn" resultMap="pnResultMap" />
         <association property="wareHousePn" resultMap="wareHousePnResultMap" />
     </resultMap>
 	<resultMap id="wareHouseDeliveryBOMResultMap" type="wareHouseDeliveryBOMModel">  
@@ -129,8 +131,6 @@
 		       d_pn.c_id as d_pn_id,
 		       d_pn.c_produced_num as d_pn_produced_num,
 		       d_pn.c_semi_produced_num as d_pn_semi_produced_num,
-		       o_pn.c_id as o_pn_id,
-		       o_pn.c_num as o_pn_num,
 		       pn.c_id as pn_id,
 		       pn.c_pn as pn_pn,
 		       pn.c_name as pn_name,
@@ -145,11 +145,10 @@
 		left join user_tbl as user on delivery.c_user_id = user.c_id
 		left join user_tbl as upt_user on delivery.c_update_user_id = upt_user.c_id
 		left join delivery_pn_tbl as d_pn on delivery.c_id = d_pn.c_delivery_id
-		left join order_pn_tbl as o_pn on d_pn.c_ref_id = o_pn.c_id
-		left join pn_tbl as pn on o_pn.c_pn_id = pn.c_id
+		left join pn_tbl as pn on d_pn.c_ref_id = pn.c_id
 		left join unit_tbl as unit on pn.c_unit_id = unit.c_id
-		left join order_tbl as o on o_pn.c_order_id = o.c_id
-		left join warehouse_pn_tbl as wh_pn on o_pn.c_pn_id = wh_pn.c_pn_id
+		left join order_tbl as o on d_pn.c_order_id = o.c_id
+		left join warehouse_pn_tbl as wh_pn on pn.c_id = wh_pn.c_pn_id
 		<where>
 			<if test="id > 0">
 				and delivery.c_id = #{id}
@@ -165,6 +164,9 @@
 	            </choose>
 			</if>
 		</where>
+		<if test="filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
+			for update
+		</if>
 	</select>
 	<select id="queryListWithBOM" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
 		select delivery.c_id as d_id,
@@ -212,6 +214,9 @@
 	            </choose>
 			</if>
 		</where>
+		<if test="filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
+			for update
+		</if>
 	</select>
 	<select id="queryListWithMachinePart" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
 		select delivery.c_id as d_id,
@@ -259,6 +264,9 @@
 	            </choose>
 			</if>
 		</where>
+		<if test="filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
+			for update
+		</if>
 	</select>
 	
 	<insert id="add"  parameterType="wareHouseDeliveryModel">

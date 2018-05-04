@@ -70,7 +70,7 @@
 									<td th:text="${bom != null} ? ${bom.pn + ' ' + bom.name} : ''"></td>
 									<td th:text="${bom != null} ? ${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(bom.unit)} : ''"></td>
 									<td th:text="${bom.price}"></td>
-									<td th:text="${pnClsBOMRel.useNum*pnClsRel.num}"></td>
+									<td th:text="${pnClsBOMRel.useNum * pnClsRel.num * orderPn.num}"></td>
 								</tr>
 						</th:block>
 			    </th:block>

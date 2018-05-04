@@ -2,18 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.OrderMapper">
+	<resultMap id="orderPnResultMap" type="orderModel" >
+        <id column="o_pn_id" property="id"/> 
+    </resultMap>
 	<resultMap id="orderResultMap" type="orderModel" >
-        <id column="c_id" property="id"/> 
-        <result column="c_no" property="no"/>
-        <result column="c_order_date" property="orderDate"/>  
-        <result column="c_ship_dead_date" property="shipDeadDate"/>  
-        <result column="c_ship_date" property="shipDate"/>  
-        <result column="c_state" property="state"/>  
-        <result column="c_comment" property="comment"/>  
+        <id column="o_id" property="id"/> 
+        <result column="o_no" property="no"/>
+        <result column="o_order_date" property="orderDate"/>  
+        <result column="o_ship_dead_date" property="shipDeadDate"/>  
+        <result column="o_ship_date" property="shipDate"/>  
+        <result column="o_state" property="state"/>  
+        <result column="o_comment" property="comment"/>
+        <collection property="orderPns" ofType="orderPnModel" resultMap="orderPnResultMap" />
     </resultMap>
     
 	<select id="queryList" resultMap="orderResultMap">
-		select * from order_tbl 
+		select o.c_id as o_id,
+			   o.c_no as o_no,
+			   o.c_order_date as o_order_date,
+			   o.c_ship_dead_date as o_ship_dead_date,
+			   o.c_ship_date as o_ship_date,
+			   o.c_state as o_state,
+			   o.c_comment as o_comment,
+			   o_pn.c_id as o_pn_id
+		from order_tbl as o
+		left join order_pn_tbl as o_pn on o.c_id=o_pn.c_order_id 
 		<where>
 			<if test="no != null and no != ''">
 				<choose>
@@ -27,6 +40,12 @@
 			</if>
 			<if test="state >-1">
 				and c_state = #{state}
+			</if>
+			<if test="orderPns != null and orderPns.size() != 0">
+				and o_pn.c_pn_id in
+				<foreach collection="orderPns" index="index" item="orderPn" open="(" separator="," close=")">  
+			        #{orderPn.pn.id}
+			    </foreach> 
 			</if>
 		</where>
 		order by c_order_date desc

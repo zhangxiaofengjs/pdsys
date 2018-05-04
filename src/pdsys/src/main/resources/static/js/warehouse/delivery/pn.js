@@ -79,70 +79,34 @@ $(document).ready(function(){
 			"value":$('#delivery_id').val()
 		},
 		{
-			"name":"orderPn.order.id",
-			"label":"订单",
-			"type":"select",
-			"options":[],
-			"ajax":true,
-			"url":"/order/list/json",
-			"ajaxData" :{
-				"state": 0
-			},
-			"convertAjaxData" : function(thisField, data) {
-				//将返回的值转化为Field规格数据,以供重新渲染
-				//做成选择分支
-				data.orders.forEach(function(order, idx) {
-					thisField.options.push({
-						"value": order.id,
-						"caption":order.no,
-					});
-				});
-			},
-			"afterBuild": function() {
-				var self = this;
-				
-				var thisElem = dlg.fieldElem(self.type, self.name);
-				
-				//select选择以后刷新品目
-				thisElem.change(function() {
-					var selIndex = thisElem[0].selectedIndex;
-					var val = self.options[selIndex].value;
-					
-					var orderPnField = fields[2];
-					orderPnField.ajaxData = {
-							"id": val,
-							"filterCond":{
-								"notDelivered": true,
-								"inWareHouse": true,
-							}
-					};
-
-					dlg.buildAjaxField(orderPnField);
-				});
-				thisElem.trigger("change");
-			}
-		},
-		{
-			"name":"orderPn.id",
+			"name":"pn.id",
 			"label":"品目",
 			"type":"select",
 			"options":[],
 			"required":"required",
 			"ajax":true,
-			"depend":true,//不立即执行，等订单项目的刷新
 			"url":"/orderPn/list/json",
 			"ajaxData":{
-				"id": -1
+				"filterCond":{
+					"notDelivered": true,
+					"inWareHouse": true,
+				}
 			},
 			"convertAjaxData" : function(thisField, data) {
 				//将返回的值转化为Field规格数据,以供重新渲染
 				//做成选择分支
 				thisField.options = [];
+				var pnIdArr=[];
 				data.orderPns.forEach(function(orderPn, idx) {
-					thisField.options.push({
-						"value": orderPn.id,
-						"caption": "{0} {1}".format(orderPn.pn.pn, orderPn.pn.name),
-					});
+					var pn = orderPn.pn;
+					
+					if(pnIdArr.indexOf(pn.id) == -1) {
+						thisField.options.push({
+							"value": pn.id,
+							"caption": "{0} {1}".format(pn.pn, pn.name),
+						});
+						pnIdArr.push(pn.id);
+					}
 				});
 			},
 			"afterBuild": function() {
@@ -157,11 +121,68 @@ $(document).ready(function(){
 					if(selIndex != -1) {
 						val = self.options[selIndex].value;
 					}
-					var fieldPnInfo = dlg.fieldByName("pnInfo");
-					fieldPnInfo.ajaxData = { "id":val };
-					dlg.buildAjaxField(fieldPnInfo);
+					var fieldOrder = dlg.fieldByName("order.id");
+					fieldOrder.ajaxData={
+						"state": 0,//未出库
+						"orderPns":[{"pn":{"id":val}}]//关联该订单
+					};
+					dlg.buildAjaxField(fieldOrder);
 				});
 				thisElem.trigger("change");
+			}
+		},
+		{
+			"name":"order.id",
+			"label":"订单",
+			"type":"select",
+			"options":[],
+			"ajax":true,
+			"depend":true,
+			"url":"/order/list/json",
+			"ajaxData" :{
+				"state": 0,
+				"orderPns":[{"pn":{"id":-1}}]
+			},
+			"convertAjaxData" : function(thisField, data) {
+				//将返回的值转化为Field规格数据,以供重新渲染
+				//做成选择分支
+				thisField.options = [];
+				data.orders.forEach(function(order, idx) {
+					thisField.options.push({
+						"value": order.id,
+						"caption":order.no,
+					});
+				});
+			},
+			"afterBuild": function() {
+				var self = this;
+				
+				var orderElem = dlg.fieldElem(self.type, self.name);
+				var pnElem = dlg.findFieldElem("pn.id");
+				var pnField = dlg.fieldByName("pn.id");
+				var orderField = dlg.fieldByName("order.id");
+				
+				//select选择以后品目在库情况
+				orderElem.change(function() {
+					var pnId = -1, selIndex = pnElem[0].selectedIndex;
+					if(selIndex != -1) {
+						pnId = pnField.options[selIndex].value;
+					}
+					
+					selIndex = orderElem[0].selectedIndex;
+					var orderId = -1;
+					if(selIndex != -1) {
+						orderId = orderField.options[selIndex].value;
+					}
+					
+					var fieldPnInfo = dlg.fieldByName("pnInfo");
+					fieldPnInfo.ajaxData={
+						"pn":{"id":pnId},
+						"order":{"id":orderId}
+					};
+					dlg.buildAjaxField(fieldPnInfo);
+				});
+				orderElem.trigger("change");
 			}
 		},
 		{

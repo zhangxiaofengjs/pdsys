@@ -34,8 +34,11 @@
 			<if test="wareHouseDelivery != null and wareHouseDelivery.id > 0">
 				and d_pn.c_delivery_id = #{wareHouseDelivery.id}
 			</if>
-			<if test="orderPn != null and orderPn.id > 0">
-				and d_pn.c_ref_id = #{orderPn.id}
+			<if test="pn != null and pn.id > 0">
+				and d_pn.c_ref_id = #{pn.id}
+			</if>
+			<if test="order != null and order.id > 0">
+				and d_pn.c_order_id = #{order.id}
 			</if>
 		</where>
 	</select>
@@ -43,12 +46,14 @@
 	<insert id="add"  parameterType="wareHouseDeliveryPnModel">
     	insert into delivery_pn_tbl (
     		c_delivery_id,
+    		c_order_id,
     		c_ref_id,
     		c_semi_produced_num,
     		c_produced_num) 
     	values (
     		#{wareHouseDelivery.id},
-    		#{orderPn.id},
+    		#{order.id},
+    		#{pn.id},
     		#{semiProducedNum},
     		#{producedNum})
       	<selectKey keyProperty="id" resultType="java.lang.Integer">
@@ -67,8 +72,11 @@
 			<if test="wareHouseDelivery != null and wareHouseDelivery.id > 0">
 				and c_delivery_id = #{wareHouseDelivery.id}
 			</if>
-			<if test="orderPn != null and orderPn.id > 0">
-				and c_ref_id = #{orderPn.id}
+			<if test="pn != null and pn.id > 0">
+				and c_ref_id = #{pn.id}
+			</if>
+			<if test="order != null and order.id > 0">
+				and c_order_id = #{order.id}
 			</if>
 		</where>
     </update>

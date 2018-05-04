@@ -1,7 +1,9 @@
 package com.zworks.pdsys.services;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.enumClass.DeliveryType;
 import com.zworks.pdsys.mappers.WareHouseDeliveryMapper;
+import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
@@ -93,27 +96,63 @@ public class WareHouseDeliveryService {
 	
 	@Transactional
 	public boolean delivery(WareHouseDeliveryModel delivery) {
+		delivery.getFilterCond().put("LOCKUPDATE", true);
+		
 		if(delivery.getType() == (int)DeliveryType.PN.ordinal()) {
 			delivery = this.queryOneWithPn(delivery);
+			if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
+				//已经被其他人出库过
+				return false;
+			}
+			Map<Integer, Float> pnDeliverySemiNumMap = new HashMap<Integer, Float>(); 
+			Map<Integer, Float> pnDeliveryNumMap = new HashMap<Integer, Float>(); 
+
+			//搜集各出库品番数量
 			for(WareHouseDeliveryPnModel deliveryPn : delivery.getWareHouseDeliveryPns()) {
-//				WareHousePnModel wareHousePn = deliveryPn.getWareHousePn();
-//				
-//				float semiNum = -1, num = -1, defectiveNum = -1;
-//				if(wareHousePn != null) {
-//					semiNum = wareHousePn.getSemiProducedNum() - deliveryPn.getSemiProducedNum();
-//					num = wareHousePn.getProducedNum() - deliveryPn.getProducedNum();
-//				}
-//				
-//				if(num < 0 || semiNum < 0) {
-//					//库存不足
-//					return false;
-//				}
-//				wareHousePn.setProducedNum(num);
-//				wareHousePn.setSemiProducedNum(num);
-//				wareHousePnService.update(wareHousePn);
+				PnModel pn = deliveryPn.getPn();
+				int pnId = pn.getId();
+				
+				float semiNum = 0, num = 0;
+				if(pnDeliverySemiNumMap.containsKey(pnId)) {
+					semiNum = pnDeliverySemiNumMap.get(pnId);
+				}
+				pnDeliverySemiNumMap.put(pnId, semiNum + deliveryPn.getSemiProducedNum());
+				
+				if(pnDeliveryNumMap.containsKey(pnId)) {
+					num = pnDeliveryNumMap.get(pnId);
+				}
+				pnDeliveryNumMap.put(pnId, num + deliveryPn.getProducedNum());
+			}
+			
+			//准备更新
+			PnModel pn = new PnModel();
+			WareHousePnModel whPn = new WareHousePnModel();
+			whPn.setPn(pn);
+			whPn.getFilterCond().put("LOCKUPDATE", true);
+			for (Integer pnId : pnDeliverySemiNumMap.keySet()) {
+				pn.setId(pnId);
+				WareHousePnModel wareHousePn = wareHousePnService.queryOne(whPn);
+				if(wareHousePn == null) {
+					return false;//库存不够
+				}
+				
+				float semiNum = wareHousePn.getSemiProducedNum() - pnDeliverySemiNumMap.get(pnId);
+				float num = wareHousePn.getProducedNum() - pnDeliveryNumMap.get(pnId);
+				if(num < 0 || semiNum < 0) {
+					//库存不足
+					return false;
+				}
+				
+				wareHousePn.setProducedNum(num);
+				wareHousePn.setSemiProducedNum(semiNum);
+				wareHousePnService.update(wareHousePn);
 			}
 		} else if(delivery.getType() == (int)DeliveryType.BOM.ordinal()) {
 			delivery = this.queryOneWithBOM(delivery);
+			if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
+				//已经被其他人出库过
+				return false;
+			}
 			for(WareHouseDeliveryBOMModel deliveryBOM : delivery.getWareHouseDeliveryBOMs()) {
 				WareHouseBOMModel wareHouseBOM = deliveryBOM.getWareHouseBOM();
 				
@@ -132,6 +171,10 @@ public class WareHouseDeliveryService {
 			}
 		} else if(delivery.getType() == (int)DeliveryType.MACHINEPART.ordinal()) {
 			delivery = this.queryOneWithMachinePart(delivery);
+			if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
+				//已经被其他人出库过
+				return false;
+			}
 			for(WareHouseDeliveryMachinePartModel deliveryMp : delivery.getWareHouseDeliveryMachineParts()) {
 				WareHouseMachinePartModel wareHouseMP = deliveryMp.getWareHouseMachinePart();
 				

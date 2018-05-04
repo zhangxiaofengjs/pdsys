@@ -10,7 +10,7 @@ import org.apache.ibatis.type.Alias;
 public class WareHouseDeliveryPnModel extends WareHousePnModel{
 	private WareHouseDeliveryModel wareHouseDelivery;
 	private WareHousePnModel wareHousePn;//实际在库
-	private OrderPnModel orderPn;
+	private OrderModel order;
 	
 	public WareHouseDeliveryPnModel() {
 	}
@@ -23,19 +23,19 @@ public class WareHouseDeliveryPnModel extends WareHousePnModel{
 		this.wareHouseDelivery = wareHouseDelivery;
 	}
 
-	public OrderPnModel getOrderPn() {
-		return orderPn;
-	}
-
-	public void setOrderPn(OrderPnModel orderPn) {
-		this.orderPn = orderPn;
-	}
-
 	public WareHousePnModel getWareHousePn() {
 		return wareHousePn;
 	}
 
 	public void setWareHousePn(WareHousePnModel wareHousePn) {
 		this.wareHousePn = wareHousePn;
+	}
+
+	public OrderModel getOrder() {
+		return order;
+	}
+
+	public void setOrder(OrderModel order) {
+		this.order = order;
 	}
 }

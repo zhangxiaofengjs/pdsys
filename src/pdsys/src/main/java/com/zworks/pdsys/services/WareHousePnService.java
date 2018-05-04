@@ -23,6 +23,14 @@ public class WareHousePnService {
 		
 		return list;
 	}
+	
+	public WareHousePnModel queryOne(WareHousePnModel filterObj) {
+		List<WareHousePnModel> list = queryList(filterObj);
+		if(list.size() == 1) {
+			return list.get(0);
+		}
+		return null;
+	}
 
 	public void update(WareHousePnModel wareHousePn) {
 		wareHousePnMapper.update(wareHousePn);

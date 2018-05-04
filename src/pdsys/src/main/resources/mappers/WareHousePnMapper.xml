@@ -35,18 +35,26 @@
 		left join pn_tbl AS pn on wh_pn.c_pn_id = pn.c_id
 		left join unit_tbl AS unit on pn.c_unit_id = unit.c_id
 		<where>
-			<if test="pn != null and pn.pn != ''">
-				<choose>
-	                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
-						and pn.c_pn like '%${pn.pn}%'
-					</when>
-					 <otherwise>
-	                    and pn.c_pn=#{pn.pn}
-	                </otherwise>
-				</choose>
+			<if test="pn != null">
+				<if test="pn.id > 0">
+					and pn.c_id=#{pn.id}
+				</if>
+				<if test="pn.pn != null and pn.pn != ''">
+					<choose>
+		                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+							and pn.c_pn like '%${pn.pn}%'
+						</when>
+						 <otherwise>
+		                    and pn.c_pn=#{pn.pn}
+		                </otherwise>
+					</choose>
+				</if>
 			</if>
 		</where>
 		order by pn.c_pn
+		<if test="filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
+			for update
+		</if>
 	</select>
 	
 	<insert id="add" parameterType="wareHousePnModel">
