@@ -18,7 +18,7 @@ public class WareHouseBOMService {
 	@Autowired
     private WareHouseBOMMapper wareHouseBOMMapper;
 	
-	public List<BOMModel> queryList(BOMModel filterObj) {
+	public List<BOMModel> queryList(WareHouseBOMModel filterObj) {
 		List<BOMModel> list = wareHouseBOMMapper.queryList(filterObj);
 		
 		return list;

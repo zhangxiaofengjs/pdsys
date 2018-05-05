@@ -8,9 +8,9 @@
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.BOM}" th:action="@{main?type=bom}" method="post">
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.wareHouseBOM}" th:action="@{main?type=bom}" method="post">
 				 <div class="form-group">
-				   <input type="text" class="form-control" th:field="*{pn}" placeholder="输入品番">
+				   <input type="text" class="form-control" th:field="*{bom.pn}" placeholder="输入品番">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 			</form>
@@ -31,7 +31,8 @@
 		<tbody>
 		<tr th:each="bom : ${boms}"
 			th:with="whBom=${bom.wareHouseBOM},
-					 unit=${bom.unit}"
+					 unit=${bom.unit},
+					 purchaseBom=${whBom != null?whBom.purchaseBOM:null}"
 			th:rowid="${bom.id}">
 			<td>
 				<input type="checkbox" name="select" th:rowid="${bom.id}">
@@ -44,7 +45,7 @@
 			<td th:text="${bom.name + (bom.comment!=null and bom.comment!='' ? '(' + bom.comment + ')' :'')}"></td>
 			<td th:text="${unit.name}"></td>
 			<td th:text="${whBom != null ? whBom.num:'0'}"></td>
-			<td th:text="'0'"></td>
+			<td th:text="${purchaseBom != null ? purchaseBom.num:'0'}"></td>
 	    </tr>
 	  </tbody>
 	</table>

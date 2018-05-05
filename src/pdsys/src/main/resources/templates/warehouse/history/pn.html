@@ -1,16 +1,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<div th:fragment="content(wareHousePns)">
-	<script th:src="@{/js/warehouse/list/pn.js}"></script> 
+<div th:fragment="content(dPnList)">
 	<nav style="border-radius:0px;margin-bottom:-1px;" class="navbar navbar-default">
 		<div class="container-fluid">
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.wareHousePn}" th:action="@{main?type=pn}" method="post">
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/history/main/pn}" method="post">
 				 <div class="form-group">
-				   <input type="text" class="form-control" th:field="*{pn.pn}" placeholder="输入品目">
+				   <input type="date" class="form-control" name="start" th:value="${#dates.format(formBean.start, 'yyyy-MM-dd')}" placeholder="开始日期">
+				   <b>到</b>
+				   <input type="date" class="form-control" name="end" th:value="${#dates.format(formBean.end, 'yyyy-MM-dd')}" placeholder="结束日期">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 			</form>
@@ -24,7 +25,7 @@
 				<th rowspan="2" >品目</th>
 				<th rowspan="2" >名称</th>
 				<th rowspan="2" >单位</th>
-				<th colspan="2">在库数量</th>
+				<th colspan="2">出库数量</th>
 		    </tr>
 		    <tr>
 				<th>半成品</th>
@@ -32,22 +33,22 @@
 		    </tr>
 		</thead>
 		<tbody>
-			<tr th:each="wareHousePn : ${wareHousePns}"
-				th:with="pn=${wareHousePn.pn},
+			<tr th:each="dPn : ${dPnList}"
+				th:with="pn=${dPn.pn},
 						 unit=${pn.unit}"
-						 th:rowid="${wareHousePn.id}">
+						 th:rowid="${dPn.id}">
 				<td>
-					<input type="checkbox" name="select" th:rowid="${wareHousePn.id}">
+					<input type="checkbox" name="select" th:rowid="${dPn.id}">
 				</td>
 				<td th:text="${pn.pn}"></td>
 				<td th:text="${pn.name}"></td>
 				<td th:text="${unit.name}"></td>
-				<td th:text="${wareHousePn.semiProducedNum}"></td>
-				<td th:text="${wareHousePn.producedNum}"></td>
+				<td th:text="${dPn.semiProducedNum}"></td>
+				<td th:text="${dPn.producedNum}"></td>
 		    </tr>
 		</tbody>
 	</table>
-	<div id="checkout_dlg_div"></div>
+	<div id="dlg_div"></div>
 	<div id="msg_div"></div>
 </div>
 </body>

@@ -2,37 +2,57 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseDeliveryPnMapper">
-	<resultMap id="wareHousePnResultMap" type="wareHousePnModel" >  
-        <id column="wh_pn_id" property="id" />  
-        <result column="wh_pn_produced_num" property="producedNum" />
-        <result column="wh_pn_semi_produced_num" property="semiProducedNum" />
+	<resultMap id="unitResultMap" type="unitModel" >  
+        <id column="u_id" property="id" />  
+        <result column="u_name" property="name" />
     </resultMap>
-	<resultMap id="userResultMap" type="userModel" >  
-        <id column="user_id" property="id" />  
-        <result column="user_no" property="no" />  
-        <result column="user_name" property="name" />  
+    <resultMap id="pnResultMap" type="pnModel" >  
+        <id column="pn_id" property="id" />  
+        <result column="pn_pn" property="pn" />
+        <result column="pn_name" property="name" />
+        <association property="unit" resultMap="unitResultMap"/>
     </resultMap>
 	<resultMap id="wareHouseDeliveryResultMap" type="wareHouseDeliveryModel" >  
         <id column="d_id" property="id" />  
         <result column="d_time" property="time" />  
-        <association property="user" resultMap="userResultMap"/>
     </resultMap>
 	<resultMap id="wareHouseDeliveryPnResultMap" type="wareHouseDeliveryPnModel" >  
         <id column="d_pn_id" property="id" />  
         <result column="d_pn_semi_produced_num" property="semiProducedNum" />  
         <result column="d_pn_produced_num" property="producedNum" />  
         <association property="wareHouseDelivery" resultMap="wareHouseDeliveryResultMap"/>
-        <association property="wareHousePn" resultMap="wareHousePnResultMap"/>
+        <association property="pn" resultMap="pnResultMap"/>
     </resultMap>
 
 	<select id="queryList" parameterType="wareHouseDeliveryPnModel" resultMap="wareHouseDeliveryPnResultMap">
-		select d_pn.c_id as d_pn_id,
-			   d_pn.c_semi_produced_num as d_pn_semi_produced_num,
-			   d_pn.c_produced_num as d_pn_produced_num
+		select 
+			<if test="filterCond.groupByPn != null and filterCond.groupByPn">
+				MAX(d_pn.c_id) as d_pn_id,
+				SUM(d_pn.c_semi_produced_num) as d_pn_semi_produced_num,
+				SUM(d_pn.c_produced_num) as d_pn_produced_num,
+		   		MAX(d.c_id) as d_id,
+		   	</if>	
+			<if test="filterCond.groupByPn == null or !filterCond.groupByPn">
+				d_pn.c_id as d_pn_id,
+				d_pn.c_semi_produced_num as c_semi_produced_num,
+				d_pn.c_produced_num as c_produced_num,
+				d.c_id as d_id,
+			</if>
+				pn.c_id as pn_id,
+				pn.c_pn as pn_pn,
+				pn.c_name as pn_name,
+				u.c_id as u_id,
+				u.c_name as u_name
 		from delivery_pn_tbl as d_pn
+		left join delivery_tbl as d on d_pn.c_delivery_id = d.c_id
+		left join pn_tbl as pn on d_pn.c_ref_id = pn.c_id
+		left join unit_tbl as u on pn.c_unit_id = u.c_id
 		<where>
 			<if test="wareHouseDelivery != null and wareHouseDelivery.id > 0">
 				and d_pn.c_delivery_id = #{wareHouseDelivery.id}
+			</if>
+			<if test="wareHouseDelivery != null and wareHouseDelivery.state > -1">
+				and d.c_state = #{wareHouseDelivery.state}
 			</if>
 			<if test="pn != null and pn.id > 0">
 				and d_pn.c_ref_id = #{pn.id}
@@ -40,7 +60,17 @@
 			<if test="order != null and order.id > 0">
 				and d_pn.c_order_id = #{order.id}
 			</if>
+			<if test="filterCond.deliveryStart != null">
+				and d.c_delivery_time &gt;= #{filterCond.deliveryStart}
+			</if>
+			<if test="filterCond.deliveryEnd != null">
+				and d.c_delivery_time &lt;= #{filterCond.deliveryEnd}
+			</if>
 		</where>
+		<if test="filterCond.groupByPn != null and filterCond.groupByPn">
+			group by pn.c_id
+		</if>
+		order by pn.c_pn
 	</select>
 	
 	<insert id="add"  parameterType="wareHouseDeliveryPnModel">

@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseBOMMapper">
+	<resultMap id="purchaseBOMResultMap" type="purchaseBomModel" >  
+        <id column="pbom_id" property="id"/>  
+        <result column="pbom_num" property="num"/>  
+    </resultMap>
 	<resultMap id="unitResultMap" type="unitModel" >  
         <id column="unit_id" property="id"/>  
         <result column="unit_name" property="name"/>  
@@ -18,33 +22,52 @@
 	<resultMap id="warehouseBOMResultMap" type="wareHouseBOMModel" >  
         <id column="wh_id" property="id" />  
         <result column="wh_num" property="num" />  
+        <association property="purchaseBOM" resultMap="purchaseBOMResultMap"/>
     </resultMap>
     
-	<select id="queryList" parameterType="BOMModel" resultMap="bomResultMap">
-		select wh_bom.c_id as wh_id,
-		       wh_bom.c_num as wh_num,
-		       bom.c_id as bom_id,
-		       bom.c_pn as bom_pn,
-		       bom.c_name as bom_name,
-		       bom.c_type as bom_type,
-		       bom.c_comment as bom_comment,
-		       unit.c_id as unit_id,
-		       unit.c_name as unit_name
+	<select id="queryList" parameterType="wareHouseBOMModel" resultMap="bomResultMap">
+		select  wh_bom.c_id as wh_id,
+				wh_bom.c_num as wh_num,
+				bom.c_id as bom_id,
+				bom.c_pn as bom_pn,
+				bom.c_name as bom_name,
+				bom.c_type as bom_type,
+				bom.c_comment as bom_comment,
+				unit.c_id as unit_id,
+				unit.c_name as unit_name,
+				pbom.pb_id as pbom_id,
+				pbom.pb_num as pbom_num
 		from bom_tbl as bom
 		left join warehouse_bom_tbl as wh_bom on bom.c_id = wh_bom.c_bom_id
 		left join unit_tbl as unit on bom.c_unit_id = unit.c_id
+		left join (
+			select 	MAX(pb.c_id) as pb_id,
+				 	pb.c_bom_id as pb_bom_id,
+					SUM(pb.c_num) as pb_num
+			from purchase_bom_tbl as pb
+			left join purchase_tbl as p on pb.c_purchase_id = p.c_id
+			<where>
+				<if test="purchaseBOM != null and purchaseBOM.purchase != null and purchaseBOM.purchase.state > -1">
+					p.c_state=#{purchaseBOM.purchase.state}
+				</if>
+			</where>
+			group by pb.c_bom_id
+		) AS pbom on bom.c_id = pbom.pb_bom_id
 		<where>
-			<if test="pn != null and pn !=''">
-				<choose>
-	                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
-						and bom.c_pn like '%${pn}%'
-					</when>
-					 <otherwise>
-	                    and bom.c_pn=#{pn}
-	                </otherwise>
-				</choose>
+			<if test="bom != null">
+				<if test="bom.pn != null and bom.pn !=''">
+					<choose>
+		                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+							and bom.c_pn like '%${pn}%'
+						</when>
+						 <otherwise>
+		                    and bom.c_pn=#{pn}
+		                </otherwise>
+					</choose>
+				</if>
 			</if>
 		</where>
+		
 		order by bom.c_type asc, bom.c_pn asc
 	</select>
 	

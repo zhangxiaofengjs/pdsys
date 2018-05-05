@@ -10,7 +10,7 @@ import com.zworks.pdsys.models.WareHousePnModel;
  * @version: 2018/04/05
  */
 public class WareHouseListFormBean {
-	private BOMModel BOM;
+	private WareHouseBOMModel wareHouseBOM;
 	private WareHousePnModel wareHousePn;
 	private WareHouseMachinePartModel wareHouseMachinePart;
 	
@@ -32,11 +32,11 @@ public class WareHouseListFormBean {
 		this.wareHouseMachinePart = wareHouseMachinePart;
 	}
 
-	public BOMModel getBOM() {
-		return BOM;
+	public WareHouseBOMModel getWareHouseBOM() {
+		return wareHouseBOM;
 	}
 
-	public void setBOM(BOMModel bOM) {
-		BOM = bOM;
+	public void setWareHouseBOM(WareHouseBOMModel wareHouseBOM) {
+		this.wareHouseBOM = wareHouseBOM;
 	}
 }

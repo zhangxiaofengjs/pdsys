@@ -4,11 +4,11 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li role="presentation" th:class="(${type}=='bom'? 'active' : '')">
-			<a th:href="@{/warehouse/history/main/bom}">原包材</a>
-		</li>
 		<li role="presentation" th:class="(${type}=='pn'? 'active' : '')">
-			<a th:href="@{/warehouse/history/main/pn}">产品</a>
+			<a th:href="@{/warehouse/history/main/pn}">生产出库统计</a>
+		</li>
+		<li role="presentation" th:class="(${type}=='bom'? 'active' : '')">
+			<a th:href="@{/warehouse/history/main/bom}">原包材出库统计</a>
 		</li>
 	</ul>
 	
