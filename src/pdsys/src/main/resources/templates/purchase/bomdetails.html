@@ -11,7 +11,7 @@
 			  		<div class="navbar-header">
 			  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 			  		</div>
-			  		<form class="navbar-form navbar-left" role="form" th:object="${order}" th:action="@{/purchase/list}" method="post">
+			  		<form class="navbar-form navbar-left" role="form" th:object="${order}" th:action="@{/purchase/bomdetails}" method="post">
 						<div class="form-group">
 						   <input type="text" class="form-control" th:field="*{no}" placeholder="订单编号">  
 			 			</div>
@@ -27,11 +27,11 @@
 						<th style="width:20px;"><input type="checkbox" name="selectAll" /></th>
 						<th>种类</th>
 						<th>品名</th>
-						<th>在库数量</th>
-						<th>订单实需数量</th>
-						<th>需采购</th>
-						<th>已采购(下单)</th>
 						<th>单位</th>
+						<th>订单实需数量</th>
+						<th>在库数量</th>
+						<th>在库不足量</th>
+						<th>已采购(下单)</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -42,11 +42,11 @@
 						  <span th:case="*">包材</span>
 				      </td>
    				      <td th:text="${bom.bomName}"></td>
-				      <td th:text="${bom.whbomNum}"></td>
+				      <td th:text="${bom.unitName}"></td>
 				      <td th:text="${bom.bomNum}"></td>
+				      <td th:text="${bom.whbomNum}"></td>
 				      <td th:text="${bom.bomNum > bom.whbomNum} ? ${bom.bomNum - bom.whbomNum} : '0'"></td>
 				      <td th:id="'purchasedNum_'+${bom.bomId}">0</td>
-				      <td th:text="${bom.unitName}"></td>
 				    </tr>
 				</tbody>
 			</table>
@@ -56,9 +56,6 @@
    	 	<div id="msg_div"></div>
 	</div>
 	
-	<script th:src="@{/js/order/purchase/purchase.js}"></script>
-	<script th:src="@{/js/common/table.js}"></script> 
-	<script th:src="@{/js/common/dlg.js}"></script> 
-	<script th:src="@{/js/common/date.js}"></script> 
+	<script th:src="@{/js/purchase/bomdetails.js}"></script>
 </body>
 </html>

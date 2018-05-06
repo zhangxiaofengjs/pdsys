@@ -195,7 +195,7 @@
 		       bom.c_type as bom_type,
       		   bom.c_price as bom_price,
 		       bom_ut.c_name as bom_ut_name,
-			   wh_bom.c_num as wh_bom_num 
+			   MAX(wh_bom.c_num) as wh_bom_num 
 		from order_pn_tbl as order_pn 
 		left join order_tbl on order_tbl.c_id = order_pn.c_order_id 
 		left join pn_tbl as pn on order_pn.c_pn_id = pn.c_id 
@@ -210,6 +210,7 @@
 				and c_no like concat('%',#{no},'%') 
 			</if>
 		</where>
-		 group by bom_pn_name
+		 group by bom.c_id
+		 order by bom.c_type, bom.c_pn
 	</select>
 </mapper>

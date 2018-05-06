@@ -34,7 +34,7 @@ public class PurchaseController {
 	/**
 	 * 采购管理
 	 */
-	@RequestMapping("/list")
+	@RequestMapping("/bomdetails")
     public String showBomList(OrderModel order,Model model) {
 		
 		boolean isExist = true;
@@ -54,7 +54,7 @@ public class PurchaseController {
 		
 		model.addAttribute("order", order);
 		
-        return "order/purchase/main";
+        return "/purchase/bomdetails";
     }
 	
 	/**
