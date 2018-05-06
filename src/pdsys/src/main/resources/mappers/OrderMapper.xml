@@ -28,18 +28,21 @@
 		from order_tbl as o
 		left join order_pn_tbl as o_pn on o.c_id=o_pn.c_order_id 
 		<where>
+			<if test="id > 0">
+				and o.c_id = #{id}
+			</if>
 			<if test="no != null and no != ''">
 				<choose>
 					<when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
-						and c_no like concat('%',#{no},'%') 
+						and o.c_no like concat('%',#{no},'%') 
 					</when>
 	                <otherwise>
-						and c_no = #{no}
+						and o.c_no = #{no}
 	                </otherwise>
 	            </choose>
 			</if>
 			<if test="state >-1">
-				and c_state = #{state}
+				and o.c_state = #{state}
 			</if>
 			<if test="orderPns != null and orderPns.size() != 0">
 				and o_pn.c_pn_id in
@@ -49,10 +52,6 @@
 			</if>
 		</where>
 		order by c_order_date desc
-	</select>
-	
-	<select id="queryObject" resultMap="orderResultMap">
-		select * from order_tbl where c_id = #{id}
 	</select>
 	
 	<delete id="updateOrderState" parameterType="orderModel">

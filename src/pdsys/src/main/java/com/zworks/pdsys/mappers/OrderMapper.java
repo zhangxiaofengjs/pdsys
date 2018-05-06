@@ -13,7 +13,5 @@ public interface OrderMapper {
 	
 	void updateOrderState(OrderModel orderModel);
 	
-	OrderModel queryObject(int id);
-	
 	void save(OrderModel orderModel);
 }

@@ -9,7 +9,6 @@ $(function () {
 	$("#addPn").click(function(){
 		var self = $(this);
 		var caption = "添加品目";
-		var unitArr = [];
 		var fields = [
 		{
 			"name":"order.id",
@@ -33,10 +32,9 @@ $(function () {
 				data.pns.forEach(function(pn, idx) {
 					thisField.options.push({
 					"value": pn.id,
-					"caption": "{0} {1}".format(pn.pn, pn.name)
+					"caption": "{0} {1}".format(pn.pn, pn.name),
+					"data":pn.unit.name
 					});
-					
-					unitArr.push(pn.unit.name);
 				});
 			},
 			"afterBuild": function() {
@@ -53,9 +51,7 @@ $(function () {
 					}
 
 					//单位
-					var utField = fields[3];
-					dlg.fieldElem("type", "pn.unit.name").val(unitArr[selIndex-1]);
-					utField.readonly = false;
+					dlg.rebuildFieldWithValue("pn.unit.name", self.options[selIndex].data);
 				});
 			}
 		},
@@ -67,8 +63,7 @@ $(function () {
 		{
 			"name":"pn.unit.name",
 			"label":"单位",
-			"type":"text",
-			"readonly":true
+			"type":"label",
 		}];
 		
 		
@@ -191,8 +186,7 @@ $(function () {
 				{
 					"name":"unitName",
 					"label":"单位",
-					"type":"text",
-					"readonly":"readonly"
+					"type":"label",
 				}],
 
 	    	"url":"/orderPn/update",

@@ -59,17 +59,14 @@ public class OrderController {
 	 */
 	@RequestMapping("/delete")
 	@ResponseBody
-	public JSONResponse updateOrderState(@RequestBody int[] ids) {
-		for (int i=0; i<ids.length; i++)
-		{
-			OrderModel order = orderService.queryObject(ids[i]);
-			if(order == null) {
-				return JSONResponse.error("已选订单不存在！");
-			}
-
-			order.setState(OrderState.DELETED.ordinal());
-			orderService.updateOrderState(order);
+	public JSONResponse updateOrderState(@RequestBody OrderModel order) {
+		OrderModel o = orderService.queryOne(order);
+		if(o == null) {
+			return JSONResponse.error("已选订单不存在！");
 		}
+
+		o.setState(OrderState.DELETED.ordinal());
+		orderService.updateOrderState(o);
 		return JSONResponse.success("删除订单成功！");
 	}
 	
@@ -90,9 +87,11 @@ public class OrderController {
 	/**
 	 * 订单信息
 	 */
-	@RequestMapping("/orderInfo")
+	@RequestMapping("/detail")
 	public String showOrderInfo(@RequestParam(name="id") int id, Model model) {
-		OrderModel order = orderService.queryObject(id);
+		OrderModel order = new OrderModel();
+		order.setId(id);
+		order = orderService.queryOne(order);
 		model.addAttribute("order", order);
 		
 		List<OrderPnModel> list = null;
@@ -104,5 +103,4 @@ public class OrderController {
 
         return "order/detail";
     }
-
 }

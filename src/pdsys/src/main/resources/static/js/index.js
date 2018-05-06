@@ -99,12 +99,45 @@ function showPage(pATag)
 	$("#nav_title").html(menuDisplay);
 }
 
+function initParentHeight(h) 
+{
+	if(h<$(document).height()) {
+		h = $(document).height();
+	}
+var div = window.parent.document.getElementById('main_div'); 
+div.style.height=h+"px";//window.document.body.scrollHeight||window.document.body.offsetHeight+5; 
+} 
+
+function SetWinHeight(obj) 
+{ 
+  var win=obj; 
+  var height;
+   if (win && !window.opera) 
+   { 
+     if (win.contentWindow && win.contentWindow.document.body.offsetHeight)   //ie  8 
+     { 
+        try{ 
+			var bheight=win.contentWindow.document.body.scrollHeight; 
+			var dheight=win.contentWindow.document.documentElement.scrollHeight; 
+			    height=Math.max(bheight,dheight); 
+			}catch(ex){} 
+			       win.style.height = height + "px"; 
+     } 
+     else if(win.Document && win.Document.body.scrollHeight)//ie  6 
+     { 
+      win.style.height = win.Document.body.scrollHeight; 
+     } 
+   } 
+   initParentHeight(height); //加上右边标题
+} 
+
+/*
 //iframe自适应
 $(window).on('resize', function() {
 	var $content = $('.content');
-	$content.height($(this).height() - 155);
+	$content.height($(this).height());
 	$content.find('iframe').each(function() {
 		$(this).height($content.height());
 	});
 }).resize();
-
+*/

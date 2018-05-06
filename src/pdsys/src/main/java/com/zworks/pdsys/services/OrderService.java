@@ -23,8 +23,12 @@ public class OrderService {
 		orderMapper.updateOrderState( orderModel );
 	}
 	
-	public OrderModel queryObject(int id) {
-		return orderMapper.queryObject( id );
+	public OrderModel queryOne(OrderModel order) {
+		List<OrderModel> list = queryList(order);
+		if(list.size() == 1) {
+			return list.get(0);
+		}
+		return null;
 	}
 	
 	public void save(OrderModel orderModel) {

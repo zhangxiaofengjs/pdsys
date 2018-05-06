@@ -16,7 +16,6 @@
 						   <input type="text" class="form-control" th:field="*{no}" placeholder="订单编号">
    			               <select id="orderState" class="selectpicker show-tick form-control" th:field="*{state}">  
 			                  <option value="-1">订单状态</option>
-			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==0}">计划中</option>
 			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==1}">生产中</option>
 			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==2}">已完成</option>
 			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==3}">已删除</option>
@@ -42,7 +41,7 @@
 				<tbody>
 				    <tr th:each="order : ${orders}">
 				      <td><input type="checkbox" name="select" th:rowid="${order.id}"/></td>
-				      <td><a th:text="${order.no}" th:href="@{'/order/orderInfo?id=' +${order.id}}"></a></td>
+				      <td><a th:text="${order.no}" th:href="@{'/order/detail?id=' +${order.id}}"></a></td>
 				      <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}"></td>
 				      <td th:text="${#dates.format(order.shipDeadDate, 'yyyy-MM-dd')}"></td>
 				      <td th:switch="${order.state}">
@@ -60,9 +59,6 @@
    	 	<div id="msg_div"></div>
 	</div>
 	
-<script th:src="@{/js/order/order.js}"></script>
-<script th:src="@{/js/common/table.js}"></script> 
-<script th:src="@{/js/common/dlg.js}"></script> 
-<script th:src="@{/js/common/date.js}"></script> 
+<script th:src="@{/js/order/list.js}"></script>
 </body>
 </html>

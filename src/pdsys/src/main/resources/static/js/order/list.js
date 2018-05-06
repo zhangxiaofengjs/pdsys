@@ -82,7 +82,7 @@ $(function () {
 	
 	$("#delOrder").click(function(){
 		var self = $(this);
-		var orderIds = getSelectedRowId();
+		var orderIds = getSelectedRowId({"checkOne":true, "showMsg":true});
 		if(orderIds.length == 0) {
 			return;
 		}
@@ -96,7 +96,7 @@ $(function () {
 			"yes": function() {
 				PdSys.ajax({
 					"url":"/order/delete",
-					"data":orderIds,
+					"data":{"id":orderIds[0]},
 					"success": function(data) {
 						dlg.hide();
 						var msgDlg = new CommonDlg();
