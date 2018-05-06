@@ -3,8 +3,6 @@
 	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 	<meta th:include="common/header::header">
-	<link rel="stylesheet" href="css/font-awesome.min.css">
-	<link rel="stylesheet" href="css/AdminLTE.min.css">
 	<link rel="stylesheet" href="css/index.css">
 	<style type="text/css">  
        *{  
@@ -24,7 +22,7 @@
        }  
    </style>
 </head>
-<bodyred>
+<body>
 	<script src="js/index.js"></script>
 	<div  id="main_div">
 		<div class="page-header" id='headerdiv' style="color:#fff;background-color:#3c8dbc;margin:0px;padding-bottom:0px;'">
@@ -156,18 +154,13 @@
 		    </ul>  
 		</div>
 		  
-	  	<div style="height:100%;margin-left:250px;background-color:#eee;">
-		    <section class="content-header">
-		      <ol class="breadcrumb" style="position:static;float:none;">
-		        <li class="active"><i class="fa fa-home" style="font-size:20px;position:relative;top:2px;left:-3px;"></i> &nbsp; 首页</li>
-		        <li id="nav_title" class="active"></li>
-		      </ol>
-		    </section>
-		
-		    <!-- Main content -->
-		    <div class="content" style="background:#fff;height:100%;">
-		     	<iframe id="frame_content" onload="Javascript:SetWinHeight(this);" scrolling="no" frameborder="0" style="width:100%;min-height:200px;overflow-x:hidden;background:#fff;" src="main.html"></iframe>
+	  	<div style="height:100%;margin-left:250px;">
+		    <div style="height:30px;padding:5px;background-color:#eee;">
+		    	<span class="glyphicon glyphicon-home" style=""></span>
+		    	<span id="nav_title" style="font-size:9pt;color:#867E7E">主页</span>
 		    </div>
+		    <!-- Main content -->
+		     	<iframe id="frame_content" onload="Javascript:SetWinHeight(this);" scrolling="no" frameborder="0" style="padding:10px;width:100%;min-height:200px;overflow-x:hidden;background:#fff;" src="main.html"></iframe>
 		</div>
 		<div id="msg_div"></div>
 		<div id="chg_pwd_dlg_div"></div>

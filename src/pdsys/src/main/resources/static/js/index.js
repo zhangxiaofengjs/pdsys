@@ -96,7 +96,7 @@ function showPage(pATag)
 	frame.attr('src', url);
 
 	//更新导航条
-	$("#nav_title").html(menuDisplay);
+	$("#nav_title").html("主页 > " + menuDisplay);
 }
 
 function initParentHeight(h) 
@@ -121,7 +121,7 @@ function SetWinHeight(obj)
 			var dheight=win.contentWindow.document.documentElement.scrollHeight; 
 			    height=Math.max(bheight,dheight); 
 			}catch(ex){} 
-			       win.style.height = height + "px"; 
+			win.style.height = height + "px"; 
      } 
      else if(win.Document && win.Document.body.scrollHeight)//ie  6 
      { 
