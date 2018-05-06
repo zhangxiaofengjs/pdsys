@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.zworks.pdsys.business.beans.SysMasterFormBean;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
+import com.zworks.pdsys.common.utils.RequestContextUtils;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.CustomerModel;
 import com.zworks.pdsys.models.MachineModel;
@@ -46,28 +47,34 @@ public class MasterController {
     		Model model) {
 
 		if(type == null) {
-			type = "customer";
+			type = RequestContextUtils.getSessionAttribute(this, "type", "customer");
 		} else if(!(type.equals("customer") || type.equals("bom") || 
 				type.equals("pn") || type.equals("machine")|| type.equals("fileinput"))) {
 			throw new PdsysException("错误参数:/sys/master/main/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
+		RequestContextUtils.setSessionAttribute(this, "type", type);
 		
 		if(type.equals("customer")) {
 			model.addAttribute("list", customerService.queryList(new CustomerModel()));
 		} else if(type.equals("bom")) {
 			BOMModel bom = formBean.getBom();
-			if(bom != null) {
-				bom.getFilterCond().put("fuzzyPnSearch", true);
+			if(bom == null) {
+				bom = RequestContextUtils.getSessionAttribute(this, "bom", new BOMModel());
+				formBean.setBom(bom);
 			}
+			bom.getFilterCond().put("fuzzyPnSearch", true);
 			
 			model.addAttribute("list", bOMService.queryList(bom));
+			RequestContextUtils.setSessionAttribute(this, "bom", bom);
 		} else if(type.equals("pn")) {
 			PnModel pn = formBean.getPn();
-			if(pn != null) {
-				pn.getFilterCond().put("fuzzyPnSearch", true);
+			if(pn == null) {
+				pn = RequestContextUtils.getSessionAttribute(this, "pn", new PnModel());
+				formBean.setPn(pn);
 			}
-			List<?> ll = pnService.queryList(pn);
+			pn.getFilterCond().put("fuzzyPnSearch", true);
 			model.addAttribute("list", pnService.queryList(pn));
+			RequestContextUtils.setSessionAttribute(this, "pn", pn);
 		} else if(type.equals("machine")) {
 			model.addAttribute("list", machineService.queryList(new MachineModel()));
 		}

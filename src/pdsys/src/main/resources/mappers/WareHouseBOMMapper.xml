@@ -58,10 +58,10 @@
 				<if test="bom.pn != null and bom.pn !=''">
 					<choose>
 		                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
-							and bom.c_pn like '%${pn}%'
+							and bom.c_pn like '%${bom.pn}%'
 						</when>
 						 <otherwise>
-		                    and bom.c_pn=#{pn}
+		                    and bom.c_pn=#{bom.pn}
 		                </otherwise>
 					</choose>
 				</if>

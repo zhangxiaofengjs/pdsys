@@ -1,8 +1,13 @@
 package com.zworks.pdsys.controllers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +22,9 @@ import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.enumClass.PurchaseState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
+import com.zworks.pdsys.common.utils.DateUtils;
+import com.zworks.pdsys.common.utils.RequestContextUtils;
+import com.zworks.pdsys.common.utils.SpringContextUtils;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
@@ -50,19 +58,21 @@ public class WareHouseController extends BaseController{
 	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
 	@Autowired
 	WareHouseDeliveryPnService wareHouseDeliveryPnService;
-	
+
 	@RequestMapping("/list/main")
-    public String listMain(@RequestParam(name="type",required = false, defaultValue="pn")String type, 
+    public String listMain(@RequestParam(name="type",required = false/*, defaultValue="pn"*/)String type, 
     		WareHouseListFormBean formBean,
     		Model model) {
-		if(formBean == null) {
-			formBean = new WareHouseListFormBean();
+		if(type == null) {
+			type = RequestContextUtils.getSessionAttribute(this, "type", "pn");
 		}
+		RequestContextUtils.setSessionAttribute(this, "type", type);
 		
 		if(type.equals("bom")) {
 			WareHouseBOMModel whbom = formBean.getWareHouseBOM();
 			if(whbom == null) {
-				whbom = new WareHouseBOMModel();
+				whbom =  RequestContextUtils.getSessionAttribute(this, "whbom", new WareHouseBOMModel());
+				formBean.setWareHouseBOM(whbom);
 			}
 			whbom.getFilterCond().put("fuzzyPnSearch", true);
 			
@@ -75,22 +85,30 @@ public class WareHouseController extends BaseController{
 			
 			List<?> list = wareHouseBOMService.queryList(whbom);
 			model.addAttribute("list", list);
+			RequestContextUtils.setSessionAttribute(this, "whbom", whbom);
 		}
 		else if(type.equals("pn")) {
 			WareHousePnModel whPn = formBean.getWareHousePn();
-			if(whPn != null) {
-				whPn.getFilterCond().put("fuzzyPnSearch", true);
+			if(whPn == null) {
+				whPn =  RequestContextUtils.getSessionAttribute(this, "whPn", new WareHousePnModel());
+				formBean.setWareHousePn(whPn);
 			}
+			whPn.getFilterCond().put("fuzzyPnSearch", true);
+			
 			List<?> list = wareHousePnService.queryList(whPn);
 			model.addAttribute("list", list);
+			RequestContextUtils.setSessionAttribute(this, "whPn", whPn);
 		}
 		else if(type.equals("machinepart")) {
 			WareHouseMachinePartModel whMp = formBean.getWareHouseMachinePart();
-			if(whMp != null) {
-				whMp.getFilterCond().put("fuzzyPnSearch", true);
+			if(whMp == null) {
+				whMp =  RequestContextUtils.getSessionAttribute(this, "whMp", new WareHouseMachinePartModel());
+				formBean.setWareHouseMachinePart(whMp);
 			}
+			whMp.getFilterCond().put("fuzzyPnSearch", true);
 			List<?> list = wareHouseMachinePartService.queryList(whMp);
 			model.addAttribute("list", list);
+			RequestContextUtils.setSessionAttribute(this, "whMp", whMp);
 		}
 		else {
 			throw new PdsysException("错误参数:/list/main?type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
@@ -106,21 +124,32 @@ public class WareHouseController extends BaseController{
 			@PathVariable(name="type" ,required=false)String type,
 			WareHouseHistoryFormBean formBean,
 			Model model) {
-		if(formBean == null) {
-			formBean = new WareHouseHistoryFormBean();
-		}
-		formBean.normalizeStartEnd();
 		if(type == null) {
-			type = "pn";
+			type = RequestContextUtils.getSessionAttribute(this, "his_type", "pn");
 		}
+		RequestContextUtils.setSessionAttribute(this, "his_type", type);
+		
+		Date s = DateUtils.startOfDay(formBean.getStart());
+		Date e = DateUtils.endOfDay(formBean.getEnd());
+		if(s == null) {
+			s = RequestContextUtils.getSessionAttribute(this, "start" + type, DateUtils.startOfDay(DateUtils.thisMonthStart()));
+			formBean.setStart(s);
+		}
+		RequestContextUtils.setSessionAttribute(this, "start" + type, s);
+		if(e == null) {
+			e = RequestContextUtils.getSessionAttribute(this, "end" + type, DateUtils.endOfDay(DateUtils.now()));
+			formBean.setEnd(e);
+		}
+		RequestContextUtils.setSessionAttribute(this, "end" + type, e);
 		
 		if(type.equals("bom")) {
+			
 			WareHouseDeliveryBOMModel bom = new WareHouseDeliveryBOMModel();
 			WareHouseDeliveryModel d = new WareHouseDeliveryModel();
 			d.setState(DeliveryState.DELIVERIED.ordinal());
 			bom.setWareHouseDelivery(d);
-			bom.getFilterCond().put("deliveryStart", formBean.getStart());
-			bom.getFilterCond().put("deliveryEnd", formBean.getEnd());
+			bom.getFilterCond().put("deliveryStart", s);
+			bom.getFilterCond().put("deliveryEnd", e);
 			bom.getFilterCond().put("groupByBOM", true);
 			
 			List<WareHouseDeliveryBOMModel> list = wareHouseDeliveryBOMService.queryList(bom);
@@ -131,8 +160,8 @@ public class WareHouseController extends BaseController{
 			WareHouseDeliveryModel d = new WareHouseDeliveryModel();
 			d.setState(DeliveryState.DELIVERIED.ordinal());
 			pn.setWareHouseDelivery(d);
-			pn.getFilterCond().put("deliveryStart", formBean.getStart());
-			pn.getFilterCond().put("deliveryEnd", formBean.getEnd());
+			pn.getFilterCond().put("deliveryStart", s);
+			pn.getFilterCond().put("deliveryEnd", e);
 			pn.getFilterCond().put("groupByPn", true);
 			
 			List<WareHouseDeliveryPnModel> list = wareHouseDeliveryPnService.queryList(pn);

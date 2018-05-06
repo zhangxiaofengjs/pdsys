@@ -13,8 +13,8 @@ import com.zworks.pdsys.common.utils.DateUtils;
  * @version: 2018/05/04
  */
 public class WareHouseHistoryFormBean {
-	private Date start = DateUtils.startOfDay(DateUtils.thisMonthStart());
-	private Date end= DateUtils.endOfDay(DateUtils.now());
+	private Date start;
+	private Date end;
 	
 	public void normalizeStartEnd() {
 		start = DateUtils.startOfDay(start);

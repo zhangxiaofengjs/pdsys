@@ -15,6 +15,7 @@ import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
+import com.zworks.pdsys.common.utils.RequestContextUtils;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
@@ -47,12 +48,18 @@ public class WareHouseEntryController {
     		Model model) {
 
 		if(type == null) {
-			type = "pn";
+			type = RequestContextUtils.getSessionAttribute(this, "type", "pn");
 		}
 		else if(!(type.equals("bom") || type.equals("pn") || type.equals("machinepart"))) {
 			throw new PdsysException("错误参数:/entry/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
+		RequestContextUtils.setSessionAttribute(this, "type", type);
 		
+		if(no == null) {
+			no = RequestContextUtils.getSessionAttribute(this, "no" + type, null);
+		}
+		RequestContextUtils.setSessionAttribute(this, "no" + type, no);
+
 		WareHouseEntryModel entry = null;
 		if(no != null) {
 			entry = new WareHouseEntryModel();
