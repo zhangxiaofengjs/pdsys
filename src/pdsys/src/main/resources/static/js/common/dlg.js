@@ -83,8 +83,8 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 		if(f.type != "hidden") {
 			strFormHtml += 
 					'<div class="form-group">\
-						<label for="{0}" class="col-sm-4 control-label">{1}</label>\
-						<div class="col-sm-8">'.
+						<label for="{0}" class="col-sm-3 control-label">{1}</label>\
+						<div class="col-sm-9">'.
 					format(f.name,
 						   f.label);
 		}
@@ -120,7 +120,7 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 	
 	var strHtml = 
 		'<div id="{0}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">\
-		  <div class="modal-dialog modal-sm" role="document">\
+		  <div class="modal-dialog modal-md" role="document">\
 		    <div class="modal-content">\
 				<div class="modal-header">\
 		    	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
@@ -221,7 +221,7 @@ CommonDlg.prototype.buildField = function(field) {
 		});
 		strFormHtml += '</select><span name="{0}" class="text-danger"><span>'.format(field.name + "_err");
 	} else if(field.type == "label") {
-		strFormHtml += '<span id={0} name={0} class="form-control" style="box-shadow:0 1px 1px rgba(0, 0, 0, 0);border-width:0px;padding-left:0px;">{1}</span>'.
+		strFormHtml += '<div id={0} name={0} style="padding-top:7px;">{1}</div>'.
 			format(field.name, field.value || '');
 	} else {
 		var strAttrHtml = "";
@@ -338,11 +338,11 @@ CommonDlg.prototype.doFieldValid = function(field) {
 		self.setError(field, "这个值不能为空");
 		return false;
 	}
-	if(field.min != undefined && (val == "" || val.compareNumber(field.min) < 0)) {
+	if(field.min != undefined && (val == "" || val == null || val.compareNumber(field.min) < 0)) {
 		self.setError(field, "这个值必须大于等于" + field.min);
 		return false;
 	}
-	if(field.max != undefined && (val == "" || val.compareNumber(field.max) > 0)) {
+	if(field.max != undefined && (val == ""|| val == null || val.compareNumber(field.max) > 0)) {
 		self.setError(field, "这个值必须小于等于" + field.max);
 		return false;
 	}

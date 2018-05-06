@@ -1,19 +1,35 @@
 package com.zworks.pdsys.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.zworks.pdsys.business.beans.WareHouseHistoryFormBean;
 import com.zworks.pdsys.business.beans.WareHouseListFormBean;
+import com.zworks.pdsys.common.enumClass.DeliveryState;
+import com.zworks.pdsys.common.enumClass.PurchaseState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
+import com.zworks.pdsys.models.BOMModel;
+import com.zworks.pdsys.models.PurchaseBOMModel;
+import com.zworks.pdsys.models.PurchaseModel;
+import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
+import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
+import com.zworks.pdsys.models.WareHouseDeliveryModel;
+import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.services.WareHouseBOMService;
+import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
+import com.zworks.pdsys.services.WareHouseDeliveryPnService;
 import com.zworks.pdsys.services.WareHouseMachinePartService;
 import com.zworks.pdsys.services.WareHousePnService;
 
@@ -23,13 +39,17 @@ import com.zworks.pdsys.services.WareHousePnService;
  */
 @Controller
 @RequestMapping("/warehouse")
-public class WareHouseController {
+public class WareHouseController extends BaseController{
 	@Autowired
 	WareHouseBOMService wareHouseBOMService;
 	@Autowired
 	WareHousePnService wareHousePnService;
 	@Autowired
 	WareHouseMachinePartService wareHouseMachinePartService;
+	@Autowired
+	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
+	@Autowired
+	WareHouseDeliveryPnService wareHouseDeliveryPnService;
 	
 	@RequestMapping("/list/main")
     public String listMain(@RequestParam(name="type",required = false, defaultValue="pn")String type, 
@@ -40,11 +60,20 @@ public class WareHouseController {
 		}
 		
 		if(type.equals("bom")) {
-			WareHouseBOMModel whBom = formBean.getWareHouseBOM();
-			if(whBom != null) {
-				whBom.getFilterCond().put("fuzzyPnSearch", true);
+			WareHouseBOMModel whbom = formBean.getWareHouseBOM();
+			if(whbom == null) {
+				whbom = new WareHouseBOMModel();
 			}
-			List<?> list = wareHouseBOMService.queryList(whBom);
+			whbom.getFilterCond().put("fuzzyPnSearch", true);
+			
+			//搜寻已经下单的对象
+			PurchaseBOMModel purchaseBOM = new PurchaseBOMModel();
+			whbom.setPurchaseBOM(purchaseBOM);
+			PurchaseModel purchase = new PurchaseModel();
+			purchaseBOM.setPurchase(purchase);
+			purchase.setState(PurchaseState.ORDERED.ordinal());
+			
+			List<?> list = wareHouseBOMService.queryList(whbom);
 			model.addAttribute("list", list);
 		}
 		else if(type.equals("pn")) {
@@ -71,4 +100,49 @@ public class WareHouseController {
 		model.addAttribute("type", type);
 		return "warehouse/list/main";
     }
+	
+	@RequestMapping(value= {"/history/main", "/history/main/{type}"})
+	public String historyMain(
+			@PathVariable(name="type" ,required=false)String type,
+			WareHouseHistoryFormBean formBean,
+			Model model) {
+		if(formBean == null) {
+			formBean = new WareHouseHistoryFormBean();
+		}
+		formBean.normalizeStartEnd();
+		if(type == null) {
+			type = "pn";
+		}
+		
+		if(type.equals("bom")) {
+			WareHouseDeliveryBOMModel bom = new WareHouseDeliveryBOMModel();
+			WareHouseDeliveryModel d = new WareHouseDeliveryModel();
+			d.setState(DeliveryState.DELIVERIED.ordinal());
+			bom.setWareHouseDelivery(d);
+			bom.getFilterCond().put("deliveryStart", formBean.getStart());
+			bom.getFilterCond().put("deliveryEnd", formBean.getEnd());
+			bom.getFilterCond().put("groupByBOM", true);
+			
+			List<WareHouseDeliveryBOMModel> list = wareHouseDeliveryBOMService.queryList(bom);
+			model.addAttribute("list", list);
+		}
+		else if(type.equals("pn")) {
+			WareHouseDeliveryPnModel pn = new WareHouseDeliveryPnModel();
+			WareHouseDeliveryModel d = new WareHouseDeliveryModel();
+			d.setState(DeliveryState.DELIVERIED.ordinal());
+			pn.setWareHouseDelivery(d);
+			pn.getFilterCond().put("deliveryStart", formBean.getStart());
+			pn.getFilterCond().put("deliveryEnd", formBean.getEnd());
+			pn.getFilterCond().put("groupByPn", true);
+			
+			List<WareHouseDeliveryPnModel> list = wareHouseDeliveryPnService.queryList(pn);
+			model.addAttribute("list", list);
+		} else {
+			throw new PdsysException("错误参数:/history/main?type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
+		}
+		
+		model.addAttribute("formBean", formBean);
+		model.addAttribute("type", type);
+		return "warehouse/history/main";
+	}
 }

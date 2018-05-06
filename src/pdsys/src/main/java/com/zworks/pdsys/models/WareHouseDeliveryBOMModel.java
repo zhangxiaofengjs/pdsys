@@ -7,24 +7,13 @@ import org.apache.ibatis.type.Alias;
  * @version: 2018/04/04
  */
 @Alias("wareHouseDeliveryBOMModel")
-public class WareHouseDeliveryBOMModel extends BaseModel{
-	
+public class WareHouseDeliveryBOMModel extends WareHouseBOMModel{
 	private WareHouseDeliveryModel wareHouseDelivery;
-	private BOMModel bom;
 	private WareHouseBOMModel wareHouseBOM;
-	private float num;
 	
 	public WareHouseDeliveryBOMModel() {
 	}
 	
-	public float getNum() {
-		return num;
-	}
-
-	public void setNum(float num) {
-		this.num = num;
-	}
-
 	public WareHouseDeliveryModel getWareHouseDelivery() {
 		return wareHouseDelivery;
 	}
@@ -39,13 +28,5 @@ public class WareHouseDeliveryBOMModel extends BaseModel{
 
 	public void setWareHouseBOM(WareHouseBOMModel wareHouseBOM) {
 		this.wareHouseBOM = wareHouseBOM;
-	}
-
-	public BOMModel getBom() {
-		return bom;
-	}
-
-	public void setBom(BOMModel bom) {
-		this.bom = bom;
 	}
 }

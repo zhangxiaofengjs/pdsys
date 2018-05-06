@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zworks.pdsys.common.security.PdSysLoginUser;
+import com.zworks.pdsys.models.UserModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -26,6 +27,7 @@ public class IndexController {
 	
 	@RequestMapping(value= {"/", "/index"})
     public String index(Model model) {
+		//DEBUG!!!!
 		PdSysLoginUser loginUser = (PdSysLoginUser) SecurityContextHolder.getContext()
 			    .getAuthentication()
 			    .getPrincipal();

@@ -53,11 +53,12 @@
 				    	</a>
 				    </li>
 				    <li>
-				    	<a href="#" th:refURL="'order/plan'" th:displayText="'生产管理/生产计划'">
+				    	<a href="#" th:refURL="'purchase/list'" th:displayText="'生产管理/采购管理'">
 				    		<i style="padding-left:20px;" class="glyphicon glyphicon-calendar"></i>
-				    		<span style="margin-left:5px;"><b>生产计划</b></span>
+				    		<span style="margin-left:5px;"><b>采购管理</b></span>
 				    	</a>
-				    </li>  
+				    </li> 
+				    
 				</ul> 
 	         </li>  
 	         <li>  
@@ -83,6 +84,12 @@
 	                	<a href="#" th:refURL="'warehouse/delivery/main'" th:displayText="'仓库管理/出库管理'">
 	                		<i style="padding-left:20px;" class="glyphicon glyphicon-shopping-cart"></i>
 	                		<span style="margin-left:5px;"><b>出库管理</b></span>
+	                	</a>
+	                </li>  
+	                <li>
+	                	<a href="#" th:refURL="'warehouse/history/main'" th:displayText="'仓库管理/库存统计'">
+	                		<i style="padding-left:20px;" class="glyphicon glyphicon-retweet"></i>
+	                		<span style="margin-left:5px;"><b>库存记录</b></span>
 	                	</a>
 	                </li>  
             	</ul>  

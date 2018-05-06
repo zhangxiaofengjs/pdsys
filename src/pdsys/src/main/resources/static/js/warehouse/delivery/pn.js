@@ -14,6 +14,13 @@ $(document).ready(function(){
 					"value":"0",
 				},
 				{
+					"name":"no",
+					"label":"出库单号",
+					"type":"text",
+					"value":"0-" + dateYYYYMMDD() + "-",
+					"required":"required"
+				},
+				{
 					"name":"user.id",
 					"label":"领收人",
 					"type":"select",
@@ -40,28 +47,27 @@ $(document).ready(function(){
 			],
 	    	url : "/warehouse/delivery/add/delivery",
 	        success : function(data) {
-	        	if(data.success)
-	        	{
-	        		$(location).attr('href', PdSys.url('/warehouse/delivery/main/pn?id=' + data.id));
-	        	}
-	        	else
-	        	{
-	        		var dlg = new CommonDlg();
-	    			dlg.showMsgDlg({
-	    				"target":"msg_div",
-	    				"type":"ok",
-	    				"msg":"新建出库单号发生错误。"});
-	        	}
+	        	$(location).attr('href', PdSys.url('/warehouse/delivery/main/pn?no=' + data.delivery.no));
 	        },
 	        error: function(data) {
-	        	var dlg = new CommonDlg();
-    			dlg.showMsgDlg({
-    				"target":"msg_div",
-    				"type":"ok",
-    				"msg":"发生错误。"});
+    			PdSys.alert(data.msg);
 	        }
 	    });
 	});
+	
+	function getOrderPnTable(orderPn) {
+		var t={};
+		t.headers=[{"text":""}, {"text":"订购"}, {"text":"已出库"}, {"text":"未出库"}, {"text":"在库"}];
+		t.rows=[
+			{
+				"cells":[{"text":"半成品"}, {"text":""}, {"text":""}, {"text":""}, {"text":orderPn.whpn.semiProducedNum}]
+			},
+			{
+				"cells":[{"text":"成品"}, {"text":orderPn.num}, {"text":orderPn.deliveredNum}, {"text":orderPn.num - orderPn.deliveredNum}, {"text":orderPn.whpn.producedNum}]
+			}
+		];
+		return PdSysTable.buildTable(t);
+	}
 	
 	$("button[name='addDeliveryPn']").click(function(){
 		var self = $(this);
@@ -73,21 +79,75 @@ $(document).ready(function(){
 			"value":$('#delivery_id').val()
 		},
 		{
-			"name":"orderPn.order.id",
-			"label":"订单",
+			"name":"pn.id",
+			"label":"品目",
 			"type":"select",
 			"options":[],
-			"min":1,
+			"required":"required",
 			"ajax":true,
-			"url":"/order/list/json",
+			"url":"/orderPn/list/json",
+			"ajaxData":{
+				"filterCond":{
+					"notDelivered": true,
+					"inWareHouse": true,
+				}
+			},
 			"convertAjaxData" : function(thisField, data) {
 				//将返回的值转化为Field规格数据,以供重新渲染
 				//做成选择分支
-				thisField.options.push({
-					"value": -1,
-					"caption":"请选择订单...",
+				thisField.options = [];
+				var pnIdArr=[];
+				data.orderPns.forEach(function(orderPn, idx) {
+					var pn = orderPn.pn;
+					
+					if(pnIdArr.indexOf(pn.id) == -1) {
+						thisField.options.push({
+							"value": pn.id,
+							"caption": "{0} {1}".format(pn.pn, pn.name),
+						});
+						pnIdArr.push(pn.id);
+					}
 				});
-				data.forEach(function(order, idx) {
+			},
+			"afterBuild": function() {
+				var self = this;
+				
+				var thisElem = dlg.fieldElem(self.type, self.name);
+				
+				//select选择以后品目在库情况
+				thisElem.change(function() {
+					var selIndex = thisElem[0].selectedIndex;
+					var val = -1;
+					if(selIndex != -1) {
+						val = self.options[selIndex].value;
+					}
+					var fieldOrder = dlg.fieldByName("order.id");
+					fieldOrder.ajaxData={
+						"state": 0,//未出库
+						"orderPns":[{"pn":{"id":val}}]//关联该订单
+					};
+					dlg.buildAjaxField(fieldOrder);
+				});
+				thisElem.trigger("change");
+			}
+		},
+		{
+			"name":"order.id",
+			"label":"订单",
+			"type":"select",
+			"options":[],
+			"ajax":true,
+			"depend":true,
+			"url":"/order/list/json",
+			"ajaxData" :{
+				"state": 0,
+				"orderPns":[{"pn":{"id":-1}}]
+			},
+			"convertAjaxData" : function(thisField, data) {
+				//将返回的值转化为Field规格数据,以供重新渲染
+				//做成选择分支
+				thisField.options = [];
+				data.orders.forEach(function(order, idx) {
 					thisField.options.push({
 						"value": order.id,
 						"caption":order.no,
@@ -97,71 +157,68 @@ $(document).ready(function(){
 			"afterBuild": function() {
 				var self = this;
 				
-				var thisElem = dlg.fieldElem(self.type, self.name);
+				var orderElem = dlg.fieldElem(self.type, self.name);
+				var pnElem = dlg.findFieldElem("pn.id");
+				var pnField = dlg.fieldByName("pn.id");
+				var orderField = dlg.fieldByName("order.id");
 				
-				//select选择以后刷新品目
-				thisElem.change(function() {
-					var selIndex = thisElem[0].selectedIndex;
-					if(selIndex == 0) {
-						//第一项是[请选择]，无视
-						return;
+				//select选择以后品目在库情况
+				orderElem.change(function() {
+					var pnId = -1, selIndex = pnElem[0].selectedIndex;
+					if(selIndex != -1) {
+						pnId = pnField.options[selIndex].value;
 					}
-					var val = self.options[selIndex].value;
 					
-					var orderPnField = fields[2];
-					orderPnField.ajaxData = {
-							"id": val
+					selIndex = orderElem[0].selectedIndex;
+					var orderId = -1;
+					if(selIndex != -1) {
+						orderId = orderField.options[selIndex].value;
+					}
+					
+					var fieldPnInfo = dlg.fieldByName("pnInfo");
+					fieldPnInfo.ajaxData={
+						"pn":{"id":pnId},
+						"order":{"id":orderId}
 					};
-					
-					dlg.buildAjaxField(orderPnField);
+					dlg.buildAjaxField(fieldPnInfo);
 				});
+				orderElem.trigger("change");
 			}
 		},
 		{
-			"name":"orderPn.id",
-			"label":"品目",
-			"type":"select",
-			"options":[],
-			"min":1,
+			"name":"pnInfo",
+			"label":"状态",
+			"type":"label",
+			"value":"",
 			"ajax":true,
-			"depend":true,//不立即执行，等订单项目的刷新
-			"url":"/orderPn/list/json",
-			"ajaxData":{
-				"id": -1
-			},
+			"url":"/orderPn/get",
+			"depend":true,
+			"ajaxData":{"id":-1},
 			"convertAjaxData" : function(thisField, data) {
-				//将返回的值转化为Field规格数据,以供重新渲染
-				//做成选择分支
-				thisField.options = [];
-				thisField.options.push({
-					"value": -1,
-					"caption":"请选择品目...",
-				});
-				data.orderPns.forEach(function(orderPn, idx) {
-					thisField.options.push({
-						"value": orderPn.id,
-						"caption": "{0} {1} / {2}".format(orderPn.pn.pn, orderPn.pn.name, orderPn.pn.pnCls.name)
-					});
-				});
+				var orderPn = data.orderPn;
+				var whPn = orderPn.whpn;
+				
+				thisField.value = getOrderPnTable(orderPn);
+				
+				dlg.fieldByName("semiProducedNum").max = whPn.semiProducedNum;
+				dlg.fieldByName("producedNum").max = whPn.producedNum;
 			},
 		},
 		{
 			"name":"semiProducedNum",
-			"label":"半成品数",
+			"label":"出库(半成品数)",
 			"type":"number",
 			"value":"0",
+			"min":"0",
+			"max":10000000,
 		},
 		{
 			"name":"producedNum",
-			"label":"成品数",
+			"label":"出库(成品数)",
 			"type":"number",
 			"value":"0",
-		},
-		{
-			"name":"defectiveNum",
-			"label":"不良品数",
-			"type":"number",
-			"value":"0",
+			"min":"0",
+			"max":10000000,
 		}];
 		
 		var dlg = new CommonDlg();
@@ -171,11 +228,9 @@ $(document).ready(function(){
 			"fields":fields,
 			"valid":function() {
 				if(dlg.fieldVal("semiProducedNum") == 0 &&
-				   dlg.fieldVal("producedNum") == 0 &&
-				   dlg.fieldVal("defectiveNum") == 0) {
-					dlg.setError("semiProducedNum", "半成品/成品/不良品数量都未输入");
-					dlg.setError("producedNum", "半成品/成品/不良品数量都未输入");
-					dlg.setError("defectiveNum", "半成品/成品/不良品数量都未输入");
+				   dlg.fieldVal("producedNum") == 0) {
+					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
+					dlg.setError("producedNum", "半成品/成品数量都未输入");
 					return false;
 				}
 				return true;

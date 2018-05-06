@@ -7,14 +7,10 @@ import org.apache.ibatis.type.Alias;
  * @version: 2018/04/04
  */
 @Alias("wareHouseDeliveryPnModel")
-public class WareHouseDeliveryPnModel extends BaseModel{
-	
+public class WareHouseDeliveryPnModel extends WareHousePnModel{
 	private WareHouseDeliveryModel wareHouseDelivery;
-	private OrderPnModel orderPn;
-	private WareHousePnModel wareHousePn;
-	private float semiProducedNum;
-	private float producedNum;
-	private float defectiveNum;
+	private WareHousePnModel wareHousePn;//实际在库
+	private OrderModel order;
 	
 	public WareHouseDeliveryPnModel() {
 	}
@@ -27,14 +23,6 @@ public class WareHouseDeliveryPnModel extends BaseModel{
 		this.wareHouseDelivery = wareHouseDelivery;
 	}
 
-	public OrderPnModel getOrderPn() {
-		return orderPn;
-	}
-
-	public void setOrderPn(OrderPnModel orderPn) {
-		this.orderPn = orderPn;
-	}
-
 	public WareHousePnModel getWareHousePn() {
 		return wareHousePn;
 	}
@@ -43,27 +31,11 @@ public class WareHouseDeliveryPnModel extends BaseModel{
 		this.wareHousePn = wareHousePn;
 	}
 
-	public float getSemiProducedNum() {
-		return semiProducedNum;
+	public OrderModel getOrder() {
+		return order;
 	}
 
-	public void setSemiProducedNum(float semiProducedNum) {
-		this.semiProducedNum = semiProducedNum;
-	}
-
-	public float getProducedNum() {
-		return producedNum;
-	}
-
-	public void setProducedNum(float producedNum) {
-		this.producedNum = producedNum;
-	}
-
-	public float getDefectiveNum() {
-		return defectiveNum;
-	}
-
-	public void setDefectiveNum(float defectiveNum) {
-		this.defectiveNum = defectiveNum;
+	public void setOrder(OrderModel order) {
+		this.order = order;
 	}
 }

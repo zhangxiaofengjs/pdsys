@@ -1,5 +1,7 @@
 package com.zworks.pdsys.models;
 
+import java.util.List;
+
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -8,13 +10,14 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("BOMModel")
 public class BOMModel extends BaseModel {
-	public static final BOMModel Empty = new BOMModel();
 	private String pn;
 	private String name;
+	private String comment;
 	private int type = -1;
+	private float price;
 	private UnitModel unit;
-	private SupplierModel supplier;
-	private WareHouseBOMModel whbom;
+	private List<SupplierModel> suppliers;
+	private WareHouseBOMModel wareHouseBOM;
 
 	public String getPn() {
 		return pn;
@@ -40,14 +43,6 @@ public class BOMModel extends BaseModel {
 		this.unit = unit;
 	}
 
-	public SupplierModel getSupplier() {
-		return supplier;
-	}
-
-	public void setSupplier(SupplierModel supplier) {
-		this.supplier = supplier;
-	}
-
 	public int getType() {
 		return type;
 	}
@@ -56,11 +51,35 @@ public class BOMModel extends BaseModel {
 		this.type = type;
 	}
 
-	public WareHouseBOMModel getWhbom() {
-		return whbom;
+	public List<SupplierModel> getSuppliers() {
+		return suppliers;
 	}
 
-	public void setWhbom(WareHouseBOMModel whbom) {
-		this.whbom = whbom;
+	public void setSuppliers(List<SupplierModel> suppliers) {
+		this.suppliers = suppliers;
+	}
+
+	public float getPrice() {
+		return price;
+	}
+
+	public void setPrice(float price) {
+		this.price = price;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public WareHouseBOMModel getWareHouseBOM() {
+		return wareHouseBOM;
+	}
+
+	public void setWareHouseBOM(WareHouseBOMModel wareHouseBOM) {
+		this.wareHouseBOM = wareHouseBOM;
 	}
 }

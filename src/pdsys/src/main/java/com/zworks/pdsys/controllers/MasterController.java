@@ -1,5 +1,7 @@
 package com.zworks.pdsys.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -64,6 +66,7 @@ public class MasterController {
 			if(pn != null) {
 				pn.getFilterCond().put("fuzzyPnSearch", true);
 			}
+			List<?> ll = pnService.queryList(pn);
 			model.addAttribute("list", pnService.queryList(pn));
 		} else if(type.equals("machine")) {
 			model.addAttribute("list", machineService.queryList(new MachineModel()));

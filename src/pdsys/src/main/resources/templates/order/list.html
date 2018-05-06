@@ -46,10 +46,9 @@
 				      <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}"></td>
 				      <td th:text="${#dates.format(order.shipDeadDate, 'yyyy-MM-dd')}"></td>
 				      <td th:switch="${order.state}">
-      					  <span class="label label-warning" th:case="0">计划中</span>
-				  		  <span class="label label-primary" th:case="1">生产中</span>
-				  		  <span class="label label-success" th:case="2">已完成</span>
-				  		  <span class="label label-default" th:case="3">已删除</span>
+				  		  <span class="label label-primary" th:case="0">生产中</span>
+				  		  <span class="label label-success" th:case="1">已完成</span>
+				  		  <span class="label label-default" th:case="2">已删除</span>
 				      </td>
 				      <td th:text="${order.comment}"></td>
 				    </tr>

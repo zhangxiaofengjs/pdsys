@@ -43,4 +43,10 @@
 			c_id = #{id}
 		</where>
     </update>
+    <delete id="delete">
+    	delete from pn_cls_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
 </mapper>

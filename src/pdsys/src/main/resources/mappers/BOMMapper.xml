@@ -9,14 +9,18 @@
 	<resultMap id="unitResultMap" type="unitModel" >  
         <id column="u_id" property="id"/>  
         <result column="u_name" property="name"/>  
+        <result column="u_sub_name" property="subName"/>  
+        <result column="u_ratio" property="ratio"/>  
     </resultMap>
 	<resultMap id="bomResultMap" type="bomModel" >  
         <id column="b_id" property="id"/>  
         <result column="b_pn" property="pn"/>  
         <result column="b_name" property="name"/>  
+        <result column="b_price" property="price"/>
         <result column="b_type" property="type"/>
+        <result column="b_comment" property="comment"/>
         <association property="unit" resultMap="unitResultMap"/>
-        <association property="supplier" resultMap="supplierResultMap"/>
+        <collection property="suppliers" ofType="supplierModel" resultMap="supplierResultMap" />
     </resultMap>
     
 	<select id="queryList" resultMap="bomResultMap">
@@ -24,14 +28,19 @@
 			b.c_id as b_id,
 			b.c_pn as b_pn,
 			b.c_name as b_name,
+			b.c_price as b_price,
 			b.c_type as b_type,
+			b.c_comment as b_comment,
 			u.c_id as u_id,
 			u.c_name as u_name,
+			u.c_sub_name as u_sub_name,
+			u.c_ratio as u_ratio,
 			s.c_id as s_id,
 			s.c_name as s_name
 		from bom_tbl as b
 		left join unit_tbl as u on b.c_unit_id=u.c_id	
-		left join supplier_tbl as s on b.c_supplier_id=s.c_id	
+		left join bom_supplier_tbl as bs on b.c_id=bs.c_bom_id
+		left join supplier_tbl as s on bs.c_supplier_id=s.c_id	
 		<where>
 			<if test="id > 0">
 				and b.c_id = #{id}
@@ -50,7 +59,7 @@
 				and b.c_type = #{type}
 			</if>
 		</where>
-		order by b.c_type
+		order by b.c_type, b.c_pn
 	</select>
 	
 	<insert id="add" parameterType="bomModel">
@@ -58,14 +67,16 @@
     		c_pn,
     		c_name,
     		c_type,
+    		c_price,
     		c_unit_id,
-    		c_supplier_id)
+    		c_comment)
     	values (
     		#{pn},
     		#{name},
     		#{type},
+    		#{price},
     		#{unit.id},
-    		#{supplier.id}
+    		#{comment}
     	)
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
@@ -76,9 +87,44 @@
     	update bom_tbl
 		set	c_pn = #{pn},
 			c_name = #{name},
-			c_type = #{type},
 			c_unit_id = #{unit.id},
-			c_supplier_id = #{supplier.id}
+			c_price=#{price},
+			c_comment=#{comment}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
+    
+    <insert id="addSupplier" parameterType="bomModel">
+    	insert into bom_supplier_tbl (
+    		c_bom_id,
+    		c_supplier_id)
+    	values
+    	<foreach collection ="suppliers" item="supplier" index= "index" separator =",">
+        (
+			#{id},
+			#{supplier.id}
+		)
+        </foreach >
+    </insert>
+    
+    <delete id="deleteSupplier" parameterType="bomModel">
+    	<if test="suppliers != null">
+	    	<foreach collection ="suppliers" item="supplier" index= "index" separator =";">
+		    	delete from bom_supplier_tbl
+		    	<where>
+		    		c_bom_id=#{id} and
+		    		c_supplier_id=#{supplier.id}
+		    	</where>
+		    </foreach>
+	    </if>
+    </delete>
+    
+	<update id="">
+    	update 
+		set	c_bom_id = #{pn},
+			c_name = #{name},
+			c_unit_id = #{unit.id}
     	<where>
 			c_id = #{id}
 		</where>

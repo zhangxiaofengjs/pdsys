@@ -10,7 +10,7 @@
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/entry/main/bom}" method="post">
 	 			<div class="form-group">
-				   <input type="text" class="form-control" name="id" id="id" th:value="${entry.id != 0 ? entry.id:_}" placeholder="入库单号">
+				   <input type="text" class="form-control" name="no" id="no" th:value="${entry.no != null ? entry.no:''}" placeholder="入库单号">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info" name="refresh">查询</button>
 	 			<button type="button" class="btn btn-sm btn-info" name="addEntry">新建入库单</button>
@@ -31,7 +31,7 @@
 			</tr>
 			<tr>
 				<th th:colspan="2">入库单号:&nbsp;
-					<a th:style="${entry.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="((${entry.createTime} != null) ? ${#dates.format(entry.createTime, 'yyyyMMddHHmmss')} : '00000000000000') + '#' + ${entry.id}"></a>
+					<a th:style="${entry.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${entry.no != null ? entry.no :''}"></a>
 					<i th:if="${entry.state == 2}" th:text="已删除" class="text-muted"></i>
 					<input type="hidden" id="entry_id" name="entry_id" th:value="${entry.id}">
 					<a th:if="${entry.state == 0 and entry.id > 0}" href="javascript:void(0);" class="glyphicon glyphicon-trash" id="deleteEntry"></a>
@@ -60,7 +60,7 @@
 		<tbody>
 			<tr th:each="wareHouseEntryBOM : ${entry.wareHouseEntryBOMs}"
 				th:with="bom=(${wareHouseEntryBOM.bom}),
-						 unit=(${bom != null}?${bom.unit}:null)"
+						 unit=${bom.unit}"
 						 th:rowid="${wareHouseEntryBOM.id}">
 				<td>
 					<input type="checkbox" name="select" th:rowid="${wareHouseEntryBOM.id}">

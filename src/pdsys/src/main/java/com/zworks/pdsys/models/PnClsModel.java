@@ -1,5 +1,7 @@
 package com.zworks.pdsys.models;
 
+import java.util.List;
+
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -8,14 +10,21 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("pnClsModel")
 public class PnClsModel extends BaseModel{
-	public static final PnClsModel Empty = new PnClsModel();
 	private String name;
-
+	private List<PnClsBOMRelModel> pnClsBOMRels;
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<PnClsBOMRelModel> getPnClsBOMRels() {
+		return pnClsBOMRels;
+	}
+
+	public void setPnClsBOMRels(List<PnClsBOMRelModel> pnClsBOMRels) {
+		this.pnClsBOMRels = pnClsBOMRels;
 	}
 }

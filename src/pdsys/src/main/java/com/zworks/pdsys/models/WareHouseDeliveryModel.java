@@ -12,9 +12,10 @@ import org.apache.ibatis.type.Alias;
 @Alias("wareHouseDeliveryModel")
 public class WareHouseDeliveryModel extends BaseModel{
 	private UserModel user;
+	private String no;
 	private Date deliveryTime;
-	private int state;
-	private int type;
+	private int state = -1;
+	private int type = -1;
 	private String comment;
 	private List<WareHouseDeliveryPnModel> wareHouseDeliveryPns;
 	private List<WareHouseDeliveryBOMModel> wareHouseDeliveryBOMs;
@@ -85,5 +86,13 @@ public class WareHouseDeliveryModel extends BaseModel{
 
 	public void setWareHouseDeliveryMachineParts(List<WareHouseDeliveryMachinePartModel> wareHouseDeliveryMachineParts) {
 		this.wareHouseDeliveryMachineParts = wareHouseDeliveryMachineParts;
+	}
+
+	public String getNo() {
+		return no;
+	}
+
+	public void setNo(String no) {
+		this.no = no;
 	}
 }

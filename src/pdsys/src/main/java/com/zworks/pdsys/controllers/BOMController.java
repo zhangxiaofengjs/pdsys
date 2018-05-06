@@ -61,4 +61,32 @@ public class BOMController {
 		bomService.update(bom);
 		return JSONResponse.success();
 	}
+	
+	@RequestMapping("/addsupplier")
+	@ResponseBody
+	public JSONResponse addSupplier(@RequestBody BOMModel bom, Model model) {
+		BOMModel b = bomService.queryById(bom.getId());
+		if(b == null) {
+			return JSONResponse.error("该品番不存在");
+		}
+		if(bomService.existsSupplier(b, bom.getSuppliers())) {
+			return JSONResponse.error("该供应商已经追加");
+		}
+		
+		bomService.addSupplier(bom);
+		return JSONResponse.success();
+	}
+	
+	@RequestMapping("/deletesupplier")
+	@ResponseBody
+	public JSONResponse deleteSupplier(@RequestBody BOMModel bom, Model model) {
+		BOMModel b = bomService.queryById(bom.getId());
+		if(b == null) {
+			return JSONResponse.error("该品番不存在");
+		}
+		if(bomService.existsSupplier(b, bom.getSuppliers())) {
+			bomService.deleteSupplier(bom);
+		}
+		return JSONResponse.success();
+	}
 }

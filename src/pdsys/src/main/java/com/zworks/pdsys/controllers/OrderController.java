@@ -14,6 +14,7 @@ import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
 import com.zworks.pdsys.models.OrderModel;
+import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.services.OrderPnService;
 import com.zworks.pdsys.services.OrderService;
 
@@ -48,9 +49,9 @@ public class OrderController {
 	
 	@RequestMapping("/list/json")
 	@ResponseBody
-	public List<OrderModel> showOrderlistJson(OrderModel order) {
+	public JSONResponse showOrderlistJson(@RequestBody OrderModel order) {
 		List<OrderModel> list = orderService.queryList(order);
-		return list;
+		return JSONResponse.success().put("orders", list);
 	}
 	
 	/**
@@ -93,17 +94,15 @@ public class OrderController {
 	public String showOrderInfo(@RequestParam(name="id") int id, Model model) {
 		OrderModel order = orderService.queryObject(id);
 		model.addAttribute("order", order);
+		
+		List<OrderPnModel> list = null;
+		if( order!=null )
+		{
+			list = orderPnService.queryOrderPnList(order);
+		}
+		model.addAttribute("orderPns", list);
 
         return "order/detail";
-    }
-	
-	/**
-	 * 生产计划
-	 */
-	@RequestMapping("/plan")
-    public String plan(Model model) {
-		
-        return "order/plan";
     }
 
 }

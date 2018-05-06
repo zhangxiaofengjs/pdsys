@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 
 /**
@@ -13,7 +14,7 @@ import com.zworks.pdsys.models.WareHouseBOMModel;
 @Mapper
 public interface WareHouseBOMMapper {
 	
-	List<WareHouseBOMModel> queryList(WareHouseBOMModel filterObj);
+	List<BOMModel> queryList(WareHouseBOMModel filterObj);
 
 	void add(WareHouseBOMModel wareHouseBOM);
 

@@ -9,7 +9,6 @@ import com.zworks.pdsys.business.beans.BOMDetailModel;
 import com.zworks.pdsys.mappers.OrderPnMapper;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
-import com.zworks.pdsys.models.PnClsModel;
 
 @Service
 public class OrderPnService {
@@ -28,12 +27,12 @@ public class OrderPnService {
 		return orderPnMapper.queryBomList( order );
 	}
 	
-	public List<OrderPnModel> queryPnByOrderPnId( OrderPnModel orderPn ){
-		return orderPnMapper.queryPnByOrderPnId( orderPn );
-	}
-	
-	public List<PnClsModel> queryClsByOrderPnId( OrderPnModel orderPn ){
-		return orderPnMapper.queryClsByOrderPnId( orderPn );
+	public OrderPnModel queryOne( OrderPnModel orderPn ){
+		List<OrderPnModel> ops = orderPnMapper.queryOrderPns(orderPn);
+		if(ops.size() == 1) {
+			return ops.get(0);
+		}
+		return null;
 	}
 	
 	public List<OrderPnModel> queryOrderPnList( OrderModel order ) {

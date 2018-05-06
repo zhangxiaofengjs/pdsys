@@ -2,6 +2,7 @@ package com.zworks.pdsys.models;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -50,6 +51,8 @@ public class OrderModel extends BaseModel implements Serializable {
 	private UserModel user;
 	
 	private CustomerModel customer;
+	
+	private List<OrderPnModel> orderPns;
 	
 	public String getNo() {
 		return no;
@@ -113,5 +116,13 @@ public class OrderModel extends BaseModel implements Serializable {
 
 	public void setCustomer(CustomerModel customer) {
 		this.customer = customer;
+	}
+
+	public List<OrderPnModel> getOrderPns() {
+		return orderPns;
+	}
+
+	public void setOrderPns(List<OrderPnModel> orderPns) {
+		this.orderPns = orderPns;
 	}
 }

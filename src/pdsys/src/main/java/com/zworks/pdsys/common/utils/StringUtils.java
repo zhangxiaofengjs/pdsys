@@ -22,4 +22,12 @@ public class StringUtils {
 		}
 		return list;
     }
+
+	public static boolean isNullOrEmpty(String subName) {
+		if(subName == null || subName.equals("")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

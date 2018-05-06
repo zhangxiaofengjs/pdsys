@@ -19,6 +19,8 @@
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='addBOM'>添加</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='editBOM'>修改</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addBOMSupplier'>追加供应商</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='deleteBOMSupplier'>删除供应商</button>
 			</form>
 		</div>
 	</nav>
@@ -31,11 +33,14 @@
 				<th>品番</th>
 				<th>名称</th>
 				<th>单位</th>
+				<th>单价</th>
 				<th>供应商</th>
+				<th>备注</th>
 		    </tr>
 		</thead>
 		<tbody>
 			<tr th:each="bom : ${list}"
+				th:with="unit=${bom.unit}"
 				th:rowid="${bom.id}">
 				<td>
 					<input type="checkbox" name="select" th:rowid="${bom.id}">
@@ -46,8 +51,14 @@
 				</td>
 				<td th:text="${bom.pn}"></td>
 				<td th:text="${bom.name}"></td>
-				<td th:text="${bom.unit.name}"></td>
-				<td th:text="${bom.supplier.name}"></td>
+				<td th:text="${unit != null} ? ${unit.name + (unit.subName!=null?('(' + unit.ratio + unit.subName) + ')': '')} : ''"></td>
+				<td th:text="${bom.price}"></td>
+				<td>
+					<i th:if="${#lists.isEmpty(bom.suppliers)}" th:text="未设定"></i>
+					<span th:each="supplier, iterStat : ${bom.suppliers}" th:text="(${iterStat.index} != 0 ? ',' : '') + ${supplier.name}">
+					</span>
+				</td>
+				<td th:text="${bom.comment}"></td>
 		    </tr>
 		</tbody>
 	</table>

@@ -12,5 +12,6 @@ public interface PnClsMapper {
 	List<PnClsModel> queryList(PnClsModel pnClsModel);
 
 	void add(PnClsModel pnCls);
-	
+
+	void delete(PnClsModel pnCls);
 }
