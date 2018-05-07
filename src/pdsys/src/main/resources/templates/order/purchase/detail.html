@@ -13,27 +13,31 @@
 			  		</div>
 			  		<form class="navbar-form navbar-left" role="form" method="post">
 						<div class="form-group">
-						   <input type="text" class="form-control" placeholder="原包材">  
+						   <input type="text" class="form-control" placeholder="原包材番号">  
 			 			</div>
-			 			<button type="button" class="btn btn-sm btn-info">修改</button>
-			 			<button type="button" class="btn btn-sm btn-info">删除</button>
-			 			<button type="submit" class="btn btn-sm btn-info">下单</button>
+			 			<input type="hidden" id="purchase_id" th:value="${p.id}">
+			 			<button type="submit" class="btn btn-sm btn-info">查询</button>
+			 			<button type="button" class="btn btn-sm btn-info" id="upPurchaseDetail">修改</button>
+			 			<button type="button" class="btn btn-sm btn-info" id="delPurchaseDetail">删除</button>
+			 			<button type="submit" class="btn btn-sm btn-info" id="placePurchase">下单</button>
 					</form>
 				</div>
 			</nav>
 			<table class="table table-striped table-bordered table-hover table-condensed">
 				<thead>
 					<tr>
+					    <th style="width:20px;"><input type="checkbox" name="selectAll" /></th>
 						<th>采购单号</th>
-						<th>原包材ID</th>
+						<th>原包材</th>
 						<th>数量</th>
 						<th>单价</th>
 					</tr>
 				</thead>
 				<tbody>
 				    <tr th:each="purchaseBom : ${purchaseBoms}">
+				      <td><input type="checkbox" name="select" th:rowid="${purchaseBom.id}"/></td>
    				      <td th:text="${purchaseBom.purchase.id}"></td>
-				      <td th:text="${purchaseBom.bom.id}"></td>
+				      <td th:text="${purchaseBom.bom.pn} +' '+${purchaseBom.bom.name}"></td>
 				      <td th:text="${purchaseBom.num}"></td>
 				      <td th:text="${purchaseBom.price}"></td>
 				    </tr>
@@ -48,5 +52,6 @@
 	<script th:src="@{/js/common/table.js}"></script> 
 	<script th:src="@{/js/common/dlg.js}"></script> 
 	<script th:src="@{/js/common/date.js}"></script> 
+	<script th:src="@{/js/order/purchase/purchaseDetail.js}"></script> 
 </body>
 </html>

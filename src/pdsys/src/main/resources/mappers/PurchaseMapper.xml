@@ -34,4 +34,11 @@
  
 	</insert>
 	
+   	<delete id="delPurchaseDetail"  parameterType="purchaseBomModel">
+    	delete from purchase_bom_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
+	
 </mapper>
