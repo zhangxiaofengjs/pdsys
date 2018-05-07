@@ -1,16 +1,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<div th:fragment="content(boms)">
-	<script th:src="@{/js/warehouse/list/bom.js}"></script> 
+<div th:fragment="content(dBOMList)">
 	<nav style="border-radius:0px;margin-bottom:-1px;" class="navbar navbar-default">
 		<div class="container-fluid">
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.wareHouseBOM}" th:action="@{main?type=bom}" method="post">
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/history/main/bom}" method="post">
 				 <div class="form-group">
-				   <input type="text" class="form-control" th:field="*{bom.pn}" placeholder="输入品番">
+				   <input type="date" class="form-control" name="start" th:value="${#dates.format(formBean.start, 'yyyy-MM-dd')}" placeholder="开始日期">
+				   <b>到</b>
+				   <input type="date" class="form-control" name="end" th:value="${#dates.format(formBean.end, 'yyyy-MM-dd')}" placeholder="结束日期">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 			</form>
@@ -24,18 +25,16 @@
 				<th>品番</th>
 				<th>名称</th>
 				<th>单位</th>
-				<th>在库数量</th>
-				<th>已下单数量</th>
+				<th>出库数量</th>
 		    </tr>
 		</thead>
 		<tbody>
-		<tr th:each="bom : ${boms}"
-			th:with="whBom=${bom.wareHouseBOM},
-					 unit=${bom.unit},
-					 purchaseBom=${whBom != null?whBom.purchaseBOM:null}"
-			th:rowid="${bom.id}">
+		<tr th:each="dBOM : ${dBOMList}"
+			th:with="bom=${dBOM.bom},
+					 unit=${bom.unit}"
+			th:rowid="${dBOM.id}">
 			<td>
-				<input type="checkbox" name="select" th:rowid="${bom.id}">
+				<input type="checkbox" name="select" th:rowid="${dBOM.id}">
 			</td>
 			<td th:switch="${bom}?${bom.type}:0">
 			  <span th:case="0">原材</span>
@@ -44,12 +43,11 @@
 			<td th:text="${bom.pn}"></td>
 			<td th:text="${bom.name + (bom.comment!=null and bom.comment!='' ? '(' + bom.comment + ')' :'')}"></td>
 			<td th:text="${unit.name}"></td>
-			<td th:text="${whBom != null ? whBom.num:'0'}"></td>
-			<td th:text="${purchaseBom != null ? purchaseBom.num:'0'}"></td>
+			<td th:text="${dBOM.num}"></td>
 	    </tr>
 	  </tbody>
 	</table>
-	<div id="checkout_dlg_div"></div>
+	<div id="dlg_div"></div>
 	<div id="msg_div"></div>
 </div>
 </body>

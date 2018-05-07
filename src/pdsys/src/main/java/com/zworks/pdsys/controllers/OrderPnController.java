@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
+import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.services.OrderPnService;
 import com.zworks.pdsys.services.OrderService;
@@ -24,6 +25,16 @@ public class OrderPnController {
 	
 	@Autowired
 	OrderService orderService;
+	
+	/**
+	 * 取得订单品目
+	 */
+	@RequestMapping("/list/json")
+	@ResponseBody
+	public JSONResponse listJson(@RequestBody OrderModel order) {
+		List<OrderPnModel> list = orderPnService.queryOrderPnList(order);
+		return JSONResponse.success().put("orderPns", list);
+	}
 	
 	/**
 	 * 添加品目订单详细
@@ -56,21 +67,17 @@ public class OrderPnController {
 		return JSONResponse.success();
 	}
 	
-	@RequestMapping("/plan")
-    public String plan(Model model) {
-		
-        return "order/plan";
-    }
-	
 	/**
 	 * 通过订单详细的ID取得品目
 	 */
-	@RequestMapping("/showPnInfo")
+	@RequestMapping("/get")
 	@ResponseBody
-	public JSONResponse queryPnByOrderPnId( OrderPnModel orderPn ){
-		List<OrderPnModel> ops = orderPnService.queryPnByOrderPnId( orderPn );
-		
-		return JSONResponse.success().put("data", ops);
+	public JSONResponse get(@RequestBody OrderPnModel orderPn ){
+		OrderPnModel op = orderPnService.queryOne( orderPn );
+		if(op == null) {
+			return JSONResponse.error("不存在的订单品目");
+		}
+		return JSONResponse.success().put("orderPn", op);
 	}
 	
 	/**

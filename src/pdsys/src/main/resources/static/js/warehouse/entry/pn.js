@@ -14,6 +14,13 @@ $(document).ready(function(){
 					"value":"0"
 				},
 				{
+					"name":"no",
+					"label":"入库单号",
+					"type":"text",
+					"value":"0-" + dateYYYYMMDD() + "-",
+					"required":"required"
+				},
+				{
 					"name":"user.id",
 					"label":"提交人",
 					"type":"select",
@@ -40,25 +47,10 @@ $(document).ready(function(){
 			],
 	    	url : "/warehouse/entry/add/entry",
 	        success : function(data) {
-	        	if(data.success)
-	        	{
-	        		$(location).attr('href', PdSys.url('/warehouse/entry/main/pn?id=' + data.id));
-	        	}
-	        	else
-	        	{
-	        		var dlg = new CommonDlg();
-	    			dlg.showMsgDlg({
-	    				"target":"msg_div",
-	    				"type":"ok",
-	    				"msg":"新建入库单号发生错误。"});
-	        	}
+	        	$(location).attr('href', PdSys.url('/warehouse/entry/main/pn?no=' + data.entry.no));
 	        },
 	        error: function(data) {
-	        	var dlg = new CommonDlg();
-    			dlg.showMsgDlg({
-    				"target":"msg_div",
-    				"type":"ok",
-    				"msg":"发生错误。"});
+	        	PdSys.alert(data.msg);
 	        }
 	    });
 	});
@@ -73,74 +65,21 @@ $(document).ready(function(){
 			"value":$('#entry_id').val()
 		},
 		{
-			"name":"orderPn.order.id",
-			"label":"订单",
-			"type":"select",
-			"options":[],
-			"min":1,
-			"ajax":true,
-			"url":"/order/list/json",
-			"convertAjaxData" : function(thisField, data) {
-				//将返回的值转化为Field规格数据,以供重新渲染
-				//做成选择分支
-				thisField.options.push({
-					"value": -1,
-					"caption":"请选择订单...",
-				});
-				data.forEach(function(order, idx) {
-					thisField.options.push({
-						"value": order.id,
-						"caption":order.no,
-					});
-				});
-			},
-			"afterBuild": function() {
-				var self = this;
-				
-				var thisElem = dlg.fieldElem(self.type, self.name);
-				
-				//select选择以后刷新品目
-				thisElem.change(function() {
-					var selIndex = thisElem[0].selectedIndex;
-					var val = -1;
-					if(selIndex != 0) {
-						//第一项是[请选择]，无视
-						val = self.options[selIndex].value;
-					}
-					var orderPnField = fields[2];
-					orderPnField.ajaxData = {
-						"id": val
-					};
-					
-					dlg.buildAjaxField(orderPnField);
-				});
-			}
-		},
-		{
-			"name":"orderPn.id",
+			"name":"pn.id",
 			"label":"品目",
 			"type":"select",
 			"options":[],
-			"min":1,
 			"ajax":true,
-			"depend":true,//不立即执行，等订单项目的刷新
-			"url":"/orderPn/list/json",
-			"ajaxData":{
-				"id": -1
-			},
+			"url":"/pn/list/json",
 			"convertAjaxData" : function(thisField, data) {
 				//将返回的值转化为Field规格数据,以供重新渲染
 				//做成选择分支
 				thisField.options = [];
-				thisField.options.push({
-					"value": -1,
-					"caption":"请选择品目...",
-				});
-				data.orderPns.forEach(function(orderPn, idx) {
+				data.pns.forEach(function(pn, idx) {
 					thisField.options.push({
-						"value": orderPn.id,
-						"caption": "{0} {1} / {2}".format(orderPn.pn.pn, orderPn.pn.name, orderPn.pn.pnCls.name),
-						"data":orderPn.pn.unit.name
+						"value": pn.id,
+						"caption": "{0} {1}".format(pn.pn, pn.name),
+						"data": pn.unit.name
 					});
 				});
 			},
@@ -152,13 +91,10 @@ $(document).ready(function(){
 				//select选择以后刷新品目单位
 				thisElem.change(function() {
 					var selIndex = thisElem[0].selectedIndex;
-					var val = "";
-					if(selIndex != 0) {
-						//第一项是[请选择]，无视
-						val = self.options[selIndex].data;
-					}
+					var val = self.options[selIndex].data;
 					dlg.rebuildFieldWithValue("unit.name", val);
 				});
+				thisElem.trigger("change");
 			},
 		},
 		{
@@ -170,13 +106,6 @@ $(document).ready(function(){
 		},
 		{
 			"name":"producedNum",
-			"label":"成品数",
-			"type":"number",
-			"value":"0",
-			"min":"0",
-		},
-		{
-			"name":"defectiveNum",
 			"label":"成品数",
 			"type":"number",
 			"value":"0",
@@ -197,11 +126,9 @@ $(document).ready(function(){
 			"url":"/warehouse/entry/update/pn",
 			"valid":function() {
 				if(dlg.fieldVal("semiProducedNum") == 0 &&
-				   dlg.fieldVal("producedNum") == 0 &&
-				   dlg.fieldVal("defectiveNum") == 0) {
-					dlg.setError("semiProducedNum", "半成品/成品/不良品数量都未输入");
-					dlg.setError("producedNum", "半成品/成品/不良品数量都未输入");
-					dlg.setError("defectiveNum", "半成品/成品/不良品数量都未输入");
+				   dlg.fieldVal("producedNum") == 0) {
+					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
+					dlg.setError("producedNum", "半成品/成品数量都未输入");
 					return false;
 				}
 				return true;

@@ -36,16 +36,17 @@ public class WareHouseEntryService {
 		return wareHouseEntryMapper.queryList(obj);
 	}
 	
-	public WareHouseEntryModel queryOne(Integer id) {
-		WareHouseEntryModel entry = new WareHouseEntryModel();
-		entry.setId(id);
-
+	public WareHouseEntryModel queryOne(WareHouseEntryModel entry) {
 		List<WareHouseEntryModel> entries = this.queryList(entry);
 		if(entries.size() == 1) {
 			return entries.get(0);
 		}
 		
 		return null;
+	}
+	
+	public boolean exists(WareHouseEntryModel entry) {
+		return queryOne(entry) != null;
 	}
 	
 	public List<WareHouseEntryModel> queryListWithPn(WareHouseEntryModel obj) {
@@ -106,10 +107,9 @@ public class WareHouseEntryService {
 				if(wareHousePn == null) {
 					//还没入库过，新建
 					wareHousePn = new WareHousePnModel();
-					wareHousePn.setOrderPn(entryPn.getOrderPn());
+					wareHousePn.setPn(entryPn.getPn());
 					wareHousePn.setProducedNum(entryPn.getProducedNum());
 					wareHousePn.setSemiProducedNum(entryPn.getSemiProducedNum());
-					wareHousePn.setDefectiveNum(entryPn.getDefectiveNum());
 					wareHousePnService.add(wareHousePn);
 				} else {
 					float semiNum = wareHousePn.getSemiProducedNum() + entryPn.getSemiProducedNum();
@@ -118,8 +118,6 @@ public class WareHouseEntryService {
 					float num = wareHousePn.getProducedNum() + entryPn.getProducedNum();
 					wareHousePn.setProducedNum(num);
 					
-					float defNum = wareHousePn.getDefectiveNum() + entryPn.getDefectiveNum();
-					wareHousePn.setDefectiveNum(defNum);
 					wareHousePnService.update(wareHousePn);
 				}
 			}

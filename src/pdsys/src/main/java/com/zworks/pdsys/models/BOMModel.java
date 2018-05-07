@@ -17,7 +17,7 @@ public class BOMModel extends BaseModel {
 	private float price;
 	private UnitModel unit;
 	private List<SupplierModel> suppliers;
-	private WareHouseBOMModel whbom;
+	private WareHouseBOMModel wareHouseBOM;
 
 	public String getPn() {
 		return pn;
@@ -51,14 +51,6 @@ public class BOMModel extends BaseModel {
 		this.type = type;
 	}
 
-	public WareHouseBOMModel getWhbom() {
-		return whbom;
-	}
-
-	public void setWhbom(WareHouseBOMModel whbom) {
-		this.whbom = whbom;
-	}
-
 	public List<SupplierModel> getSuppliers() {
 		return suppliers;
 	}
@@ -81,5 +73,13 @@ public class BOMModel extends BaseModel {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public WareHouseBOMModel getWareHouseBOM() {
+		return wareHouseBOM;
+	}
+
+	public void setWareHouseBOM(WareHouseBOMModel wareHouseBOM) {
+		this.wareHouseBOM = wareHouseBOM;
 	}
 }

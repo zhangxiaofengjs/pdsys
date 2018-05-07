@@ -28,9 +28,9 @@ public class PnController {
 	 */
 	@RequestMapping("/list/json")
 	@ResponseBody
-	public List<PnModel> listJson(PnModel pn, Model model) {
+	public JSONResponse listJson(PnModel pn, Model model) {
 		List<PnModel> list = pnService.queryList(pn);
-		return list;
+		return JSONResponse.success().put("pns", list);
 	}
 	
 	/**

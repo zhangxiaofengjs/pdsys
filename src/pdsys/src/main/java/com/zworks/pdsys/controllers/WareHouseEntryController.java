@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
@@ -42,7 +43,7 @@ public class WareHouseEntryController {
 	@RequestMapping(value= {"/main", "/main/{type}"})
     public String entryMain(
     		@PathVariable(name="type" ,required=false)String type,
-    		@RequestParam(name="id", required=false)Integer id,
+    		@RequestParam(name="no", required=false)String no,
     		Model model) {
 
 		if(type == null) {
@@ -53,9 +54,10 @@ public class WareHouseEntryController {
 		}
 		
 		WareHouseEntryModel entry = null;
-		if(id != null) {
+		if(no != null) {
 			entry = new WareHouseEntryModel();
-			entry.setId(id);
+			entry.setNo(no);
+			entry.getFilterCond().put("fuzzyNoSearch", true);
 			
 			if(type.equals("bom")) {
 				entry = wareHouseEntryService.queryOneWithBOM(entry);
@@ -66,11 +68,9 @@ public class WareHouseEntryController {
 			} else {
 				entry = null;
 			}
-			
-			if(entry == null) {
-				throw new PdsysException("错误参数:/entry/type/id=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
-			}
-		} else {
+		}
+
+		if(entry == null) {
 			entry = new WareHouseEntryModel();
 		}
 		
@@ -85,8 +85,22 @@ public class WareHouseEntryController {
 	@RequestMapping(value="/add/entry")
 	@ResponseBody
     public JSONResponse addEntry(@RequestBody WareHouseEntryModel entry, Model model) {
+		WareHouseEntryModel e = new WareHouseEntryModel();
+		e.setNo(entry.getNo());
+		if(wareHouseEntryService.exists(e)) {
+			return JSONResponse.error("已经存在单号:" + entry.getNo());
+		}
+		
+		e = new WareHouseEntryModel();
+		e.setType(entry.getType());
+		e.setUser(entry.getUser());
+		e.setState(EntryState.PLANNING.ordinal());
+		List<WareHouseEntryModel> es = wareHouseEntryService.queryList(e);
+		if(es.size()!=0) {
+			return JSONResponse.error("当前用户[" + es.get(0).getUser().getName() + "]存在未处理单号:" + es.get(0).getNo());
+		}
 		wareHouseEntryService.add(entry);
-		return JSONResponse.success().put("id", entry.getId());
+		return JSONResponse.success().put("entry", entry);
     }
 	
 	/**
@@ -167,7 +181,9 @@ public class WareHouseEntryController {
 	@RequestMapping(value="/delete/entry/{id}")
 	@ResponseBody
 	public JSONResponse deleteEntry(@PathVariable(name="id") Integer id, Model model) {
-		WareHouseEntryModel entry = wareHouseEntryService.queryOne(id);
+		WareHouseEntryModel entry = new WareHouseEntryModel();
+		entry.setId(id);
+		entry = wareHouseEntryService.queryOne(entry);
 		if(entry == null) {
 			throw new PdsysException("错误参数:/entry/delete/entry/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM); 
 		}
@@ -180,8 +196,10 @@ public class WareHouseEntryController {
 	 * */
 	@RequestMapping(value="/entry/{id}")
 	@ResponseBody
-    public JSONResponse delivery(@PathVariable(name="id", required=false)Integer id, Model model) {
-		WareHouseEntryModel entry = wareHouseEntryService.queryOne(id);
+    public JSONResponse entry(@PathVariable(name="id", required=false)Integer id, Model model) {
+		WareHouseEntryModel entry = new WareHouseEntryModel();
+		entry.setId(id);
+		entry = wareHouseEntryService.queryOne(entry);
 		if(entry == null) {
 			throw new PdsysException("错误参数:/entry/entry/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM); 
 		}

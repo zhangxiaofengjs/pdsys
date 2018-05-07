@@ -1,5 +1,6 @@
 package com.zworks.pdsys.business.beans;
 
+import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
@@ -16,12 +17,6 @@ public class WareHouseListFormBean {
 	public WareHouseListFormBean() {
 	}
 	
-	public WareHouseBOMModel getWareHouseBOM() {
-		return wareHouseBOM;
-	}
-	public void setWareHouseBOM(WareHouseBOMModel wareHouseBOM) {
-		this.wareHouseBOM = wareHouseBOM;
-	}
 	public WareHousePnModel getWareHousePn() {
 		return wareHousePn;
 	}
@@ -35,5 +30,13 @@ public class WareHouseListFormBean {
 
 	public void setWareHouseMachinePart(WareHouseMachinePartModel wareHouseMachinePart) {
 		this.wareHouseMachinePart = wareHouseMachinePart;
+	}
+
+	public WareHouseBOMModel getWareHouseBOM() {
+		return wareHouseBOM;
+	}
+
+	public void setWareHouseBOM(WareHouseBOMModel wareHouseBOM) {
+		this.wareHouseBOM = wareHouseBOM;
 	}
 }
