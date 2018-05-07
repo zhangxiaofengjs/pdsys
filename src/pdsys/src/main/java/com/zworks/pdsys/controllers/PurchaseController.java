@@ -18,6 +18,7 @@ import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
+import com.zworks.pdsys.services.BOMService;
 import com.zworks.pdsys.services.OrderPnService;
 import com.zworks.pdsys.services.PurchaseService;
 
@@ -30,6 +31,9 @@ public class PurchaseController {
 	
 	@Autowired
 	PurchaseService purchaseService;
+	
+	@Autowired
+	BOMService bomService;
 	
 	/**
 	 * 采购管理
@@ -96,8 +100,10 @@ public class PurchaseController {
 					//采购单号
 					purchaseBom.setPurchase(purchase);
 
-					BOMModel bom = new BOMModel();
-					bom.setId(bomId);
+					BOMModel bom = bomService.queryById(bomId);
+					if(bom == null) {
+						bom = new BOMModel();
+					}
 					//原包材
 					purchaseBom.setBom(bom);
 					//数量
@@ -116,7 +122,21 @@ public class PurchaseController {
 		
 		model.addAttribute("purchaseBoms", purchaseBoms);
 		
+		PurchaseModel purchase = new PurchaseModel();
+		purchase.setId(purchaseId);
+		model.addAttribute("p", purchase);
+		
         return "order/purchase/detail";
 	}
+	
+	/**
+	 * 删除采购单明细
+	 * */
+	@RequestMapping(value="/delete/purchaseDetail")
+	@ResponseBody
+    public JSONResponse deletePurchaseDetail(@RequestBody List<PurchaseBOMModel> purchaseBoms, Model model) {
+		purchaseService.delPurchaseDetail(purchaseBoms);
+		return JSONResponse.success("采购单明细删除成功！");
+    }
 
 }

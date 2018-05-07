@@ -13,4 +13,6 @@ public interface PurchaseMapper {
 	void savePurchase(PurchaseModel purchase);
 	
 	void savePurchaseDetail(List<PurchaseBOMModel> purchaseBoms);
+	
+	void delPurchaseDetail(PurchaseBOMModel purchaseBoms);
 }
