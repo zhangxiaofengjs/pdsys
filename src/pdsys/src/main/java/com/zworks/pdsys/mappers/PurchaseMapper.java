@@ -15,4 +15,14 @@ public interface PurchaseMapper {
 	void savePurchaseDetail(List<PurchaseBOMModel> purchaseBoms);
 	
 	void delPurchaseDetail(PurchaseBOMModel purchaseBoms);
+	
+	PurchaseModel queryOne(PurchaseModel purchase);
+	
+	PurchaseBOMModel queryPurchaseBOM(PurchaseBOMModel purchaseBom);
+	
+	void updatePB(PurchaseBOMModel purchaseBom);
+	
+	List<PurchaseBOMModel> showPurchaseDetail(PurchaseBOMModel purchaseBom);
+	
+	void updatePurchase(PurchaseModel purchase);
 }

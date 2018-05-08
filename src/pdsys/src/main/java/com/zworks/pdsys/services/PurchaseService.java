@@ -30,4 +30,27 @@ public class PurchaseService {
 			purchaseMapper.delPurchaseDetail(purchaseBom);
 		}
 	}
+	
+	public PurchaseModel queryOne(PurchaseModel purchase) {
+		PurchaseModel p = purchaseMapper.queryOne(purchase);
+		return p;
+	}
+	
+	public PurchaseBOMModel queryPurchaseBOM(PurchaseBOMModel purchaseBom) {
+		PurchaseBOMModel pb = purchaseMapper.queryPurchaseBOM(purchaseBom);
+		return pb;
+	}
+	
+	public void updatePB(PurchaseBOMModel purchaseBom) {
+		purchaseMapper.updatePB(purchaseBom);
+	}
+	
+	public List<PurchaseBOMModel> showPurchaseDetail(PurchaseBOMModel purchaseBom) {
+		return purchaseMapper.showPurchaseDetail(purchaseBom);
+	}
+	
+	public void updatePurchase(PurchaseModel purchase) {
+		purchaseMapper.updatePurchase(purchase);
+	}
+	
 }

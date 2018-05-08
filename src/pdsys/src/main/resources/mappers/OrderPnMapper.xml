@@ -15,7 +15,8 @@
         <result column="bom_pn_name" property="bomName" />  
         <result column="bom_type" property="bomType" />
         <result column="bom_ut_name" property="unitName" />
-        <result column="wh_bom_num" property="whbomNum" /> 
+        <result column="wh_bom_num" property="whbomNum" />
+        <result column="purchase_bom_num" property="purchasedNum" />
     </resultMap>
     
 	<resultMap id="unitResultMap" type="unitModel" >  
@@ -195,7 +196,8 @@
 		       bom.c_type as bom_type,
       		   bom.c_price as bom_price,
 		       bom_ut.c_name as bom_ut_name,
-			   MAX(wh_bom.c_num) as wh_bom_num 
+			   MAX(wh_bom.c_num) as wh_bom_num,
+			   pbom.pb_num as purchase_bom_num 
 		from order_pn_tbl as order_pn 
 		left join order_tbl on order_tbl.c_id = order_pn.c_order_id 
 		left join pn_tbl as pn on order_pn.c_pn_id = pn.c_id 
@@ -204,7 +206,18 @@
 		left join pn_cls_bom_relation_tbl as pn_cls_bom_relation on pn_cls_bom_relation.c_cls_id = pn_cls.c_id 
 		left join bom_tbl as bom on pn_cls_bom_relation.c_bom_id = bom.c_id 
 		left join unit_tbl as bom_ut on bom.c_unit_id = bom_ut.c_id 
-		left join warehouse_bom_tbl as wh_bom on wh_bom.c_bom_id = bom.c_id 
+		left join warehouse_bom_tbl as wh_bom on wh_bom.c_bom_id = bom.c_id
+		left join (
+			select 	MAX(pb.c_id) as pb_id,
+				 	pb.c_bom_id as pb_bom_id,
+					SUM(pb.c_num) as pb_num
+			from purchase_bom_tbl as pb
+			left join purchase_tbl as p on pb.c_purchase_id = p.c_id
+			<where>
+				p.c_state=1
+			</where>
+			group by pb.c_bom_id
+		) AS pbom on bom.c_id = pbom.pb_bom_id 
 		<where>
 			<if test="no != null and no != ''">
 				and c_no like concat('%',#{no},'%') 

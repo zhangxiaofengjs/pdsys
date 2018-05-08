@@ -39,30 +39,18 @@ $(function () {
 					"type":"date",
 					"label":"生成时间",
 				}],
-			"url":"/purchase/save",
-			"success": function(data) {
-				dlg.hide();
-				var msgDlg = new CommonDlg();
-				msgDlg.showMsgDlg({
-					"target":"msg_div",
-					"type":"ok",
-					"msg":data.msg,
-					"ok":function(){
-						//采购单详细的保存，显示
-						var url = '/purchase/saveDetail?purchaseId=' + data.id +'&orderNo='+ orderNo +'&bomIds='+ bomIds;
-						$(location).attr('href', PdSys.url(url ));
-					}
-				});
-			},
-			"error": function(data) {
-	        	var dlg = new CommonDlg();
-    			dlg.showMsgDlg({
-    				"target":"msg_div",
-    				"type":"ok",
-    				"msg":data.msg});
-			}
+			"url":'/purchase/save?orderNo='+ orderNo +'&bomIds='+ bomIds,
+	        success : function(data) {
+	        	var url = '/purchase/showDetail?purchaseId=' + data.purchaseId;
+	        	$(location).attr('href', PdSys.url(url));
+	        },
+	        error: function(data) {
+    			PdSys.alert(data.msg);
+	        }
 		});
 	});
+	
+
 	
 
 });

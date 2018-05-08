@@ -1,6 +1,10 @@
 package com.zworks.pdsys.business.beans;
 
+import java.util.List;
+
 import org.apache.ibatis.type.Alias;
+
+import com.zworks.pdsys.models.SupplierModel;
 
 /**
  * @author: ZHAI
@@ -28,6 +32,12 @@ public class BOMDetailModel {
 	
 	//库存量
 	private int whbomNum;
+	
+	//供应商
+	private List<SupplierModel> suppliers;
+	
+	//已下单
+	private float purchasedNum;
 
 	public int getWhbomNum() {
 		return whbomNum;
@@ -83,6 +93,22 @@ public class BOMDetailModel {
 
 	public void setBomPrice(float bomPrice) {
 		this.bomPrice = bomPrice;
+	}
+
+	public List<SupplierModel> getSuppliers() {
+		return suppliers;
+	}
+
+	public void setSuppliers(List<SupplierModel> suppliers) {
+		this.suppliers = suppliers;
+	}
+
+	public float getPurchasedNum() {
+		return purchasedNum;
+	}
+
+	public void setPurchasedNum(float purchasedNum) {
+		this.purchasedNum = purchasedNum;
 	}
 	
 }

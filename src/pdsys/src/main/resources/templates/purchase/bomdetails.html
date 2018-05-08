@@ -46,7 +46,7 @@
 				      <td th:text="${bom.bomNum}"></td>
 				      <td th:text="${bom.whbomNum}"></td>
 				      <td th:text="${bom.bomNum > bom.whbomNum} ? ${bom.bomNum - bom.whbomNum} : '0'"></td>
-				      <td th:id="'purchasedNum_'+${bom.bomId}">0</td>
+				      <td th:id="'purchasedNum_'+${bom.bomId}" th:text="${bom.purchasedNum}"></td>
 				    </tr>
 				</tbody>
 			</table>
