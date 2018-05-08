@@ -37,11 +37,13 @@ spring:
         servlet:
             content-type: text/html
 
+#log配置
 logging: 
-    level:
-        com:
-          zworks:
-              pdsys: DEBUG
+  level:
+    org.springframework.web: WARN
+    com.zworks.pdsys: DEBUG
+  file: c:/pdsys/log/pdsys.log
+     
 # Mybatis配置
 mybatis:
     mapperLocations: classpath:mappers/*.xml

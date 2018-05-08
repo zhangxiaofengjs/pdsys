@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.zworks.pdsys.common.annotations.PdSysLog;
 import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.services.UserService;
 
@@ -15,6 +16,7 @@ public class PdSysUserDetailsService implements UserDetailsService {
     private UserService userService;
 	
 	@Override
+	@PdSysLog("user login")
 	public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
 		//从数据库查找用户，以及权限
 		UserModel user = new UserModel();

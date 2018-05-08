@@ -29,13 +29,17 @@ public class PdSysLoginUser implements UserDetails{
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
-		List<UserRoleModel> roles = user.getRoles();
-		for(UserRoleModel role : roles) {
-			//定义权限集合  
-	        GrantedAuthority ga = new SimpleGrantedAuthority(role.getRole());
-	        grantedAuthorities.add(ga);
+		if(user != null) {
+			List<UserRoleModel> roles = user.getRoles();
+			
+			if(roles != null) {
+				for(UserRoleModel role : roles) {
+					//定义权限集合  
+			        GrantedAuthority ga = new SimpleGrantedAuthority(role.getRole());
+			        grantedAuthorities.add(ga);
+				}
+			}
 		}
-		
 		return grantedAuthorities;
 	}
 	
