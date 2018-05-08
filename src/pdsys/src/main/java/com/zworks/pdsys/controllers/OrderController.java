@@ -80,6 +80,13 @@ public class OrderController {
 		JSONResponse JR = ValidatorUtils.doValidate(order);
 		if( JR!=null )
 			return JR;
+		
+		//订单已存在验证
+		OrderModel o = orderService.queryOne(order);
+		if(o != null) {
+			String errMsg = "订单已存在,订单号为："+order.getNo();
+			return JSONResponse.error(errMsg);
+		}
 		orderService.save(order);
 		return JSONResponse.success("新增订单成功!");
 	}

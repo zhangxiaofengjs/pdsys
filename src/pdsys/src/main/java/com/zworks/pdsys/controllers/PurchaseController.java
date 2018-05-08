@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.BOMDetailModel;
 import com.zworks.pdsys.common.enumClass.PurchaseState;
+import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
 import com.zworks.pdsys.models.BOMModel;
@@ -59,7 +60,7 @@ public class PurchaseController {
 		
 		model.addAttribute("order", order);
 		
-        return "/purchase/bomdetails";
+        return "/purchase/main";
     }
 	
 	/**
@@ -74,6 +75,7 @@ public class PurchaseController {
 		JSONResponse JR = ValidatorUtils.doValidate(purchase);
 		if( JR!=null )
 			return JR;
+		
 		purchaseService.savePurchase(purchase);
 		int purchaseId = purchase.getId();
 		
@@ -135,7 +137,7 @@ public class PurchaseController {
 		model.addAttribute("purchaseBoms", purchaseBoms);
 		model.addAttribute("p", purchase);
 		
-        return "/purchase/detail";
+        return "/purchase/purchaseBomList";
 	}
 	
 	/**
@@ -159,9 +161,14 @@ public class PurchaseController {
 			return JSONResponse.error("采购单不存在！");
 		}
 
+		if( purchaseService.checkSupplierIdIsNull(purchase) )
+		{
+			return JSONResponse.error("请先进行修改操作，选择一个供应商！");
+		}
 		p.setState(PurchaseState.ORDERED.ordinal());
+		p.setPurchaseDate(DateUtils.getCurrentDate());
 		purchaseService.updatePurchase(p);
-		return JSONResponse.success("修改采购单成功！");
+		return JSONResponse.success("下单成功！");
 	}
 	
 	/**
@@ -187,5 +194,27 @@ public class PurchaseController {
 		purchaseService.updatePB(purchaseBom);
 		return JSONResponse.success();
 	}
+	
+	/**
+	 * 采购单一览
+	 */
+	@RequestMapping("/list")
+    public String showOrderlist(PurchaseModel purchase, Model model) {
+		
+		//采购单一览加载
+		purchase.getFilterCond().put("fuzzyNoSearch", true);
+		
+		List<PurchaseModel> list = purchaseService.queryList(purchase);
+		model.addAttribute("purchases", list);
+		model.addAttribute("purchase", purchase);
+		
+		//下拉列表加载
+		PurchaseModel o =new PurchaseModel();
+		list = purchaseService.queryList(o);
+		int[] states = purchaseService.removeDuplicate(list);
+		model.addAttribute("states", states);
+
+        return "purchase/purchaseList";
+    }
 
 }

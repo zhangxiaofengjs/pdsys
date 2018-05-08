@@ -83,7 +83,7 @@ $(function () {
 	$("#delOrder").click(function(){
 		var self = $(this);
 		var orderIds = getSelectedRowId({"checkOne":true, "showMsg":true});
-		if(orderIds.length == 0) {
+		if(orderIds.length != 1) {
 			return;
 		}
 		

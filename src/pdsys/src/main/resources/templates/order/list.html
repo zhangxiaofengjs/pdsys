@@ -16,9 +16,9 @@
 						   <input type="text" class="form-control" th:field="*{no}" placeholder="订单编号">
    			               <select id="orderState" class="selectpicker show-tick form-control" th:field="*{state}">  
 			                  <option value="-1">订单状态</option>
-			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==1}">生产中</option>
-			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==2}">已完成</option>
-			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==3}">已删除</option>
+			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==0}">生产中</option>
+			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==1}">已完成</option>
+			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==2}">已删除</option>
 			               </select>  
 			 			</div>
 			 			<button type="submit" class="btn btn-sm btn-info">查询</button>

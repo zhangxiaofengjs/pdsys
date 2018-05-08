@@ -25,4 +25,6 @@ public interface PurchaseMapper {
 	List<PurchaseBOMModel> showPurchaseDetail(PurchaseBOMModel purchaseBom);
 	
 	void updatePurchase(PurchaseModel purchase);
+	
+	List<PurchaseModel> queryList(PurchaseModel purchase);
 }

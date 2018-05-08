@@ -1,5 +1,10 @@
 $(function () {
 	
+	//返回上一页
+	$("#reback").click(function(){
+		history.go(-1);
+	});
+	
 	//删除采购单详细
 	$("#delPurchaseDetail").click(function(){
 		var self = $(this);
@@ -142,14 +147,18 @@ $(function () {
 					"data":{"id":purchaseId},
 					"success": function(data) {
 						dlg.hide();
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":data.msg,
-							"ok":function(){
-								PdSys.refresh();
-							}});
+						if(data.success) {
+				        	var url = '/purchase/list?id=' + purchaseId;
+				        	$(location).attr('href', PdSys.url(url));
+						}
+						else
+						{
+							var msgDlg = new CommonDlg();
+							msgDlg.showMsgDlg({
+								"target":"msg_div",
+								"type":"ok",
+								"msg":data.msg});
+						}
 					},
 					"error": function(data) {
 						dlg.hide();

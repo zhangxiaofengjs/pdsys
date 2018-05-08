@@ -16,6 +16,12 @@ $(function () {
 			"caption":"新增采购单",
 			"fields":[
 				{
+					"name":"no",
+					"label":"采购单号",
+					"type":"text",
+					"value":"D_" + dateYYYYMMDDHHmmss()
+				},
+				{
 					"name":"user.id",
 					"label":"提交人",
 					"type":"select",
@@ -32,12 +38,6 @@ $(function () {
 							});
 						});
 					}
-				},
-				{
-					"name":"createDate",
-					"value":dateFormat(),
-					"type":"date",
-					"label":"生成时间",
 				}],
 			"url":'/purchase/save?orderNo='+ orderNo +'&bomIds='+ bomIds,
 	        success : function(data) {
@@ -50,7 +50,10 @@ $(function () {
 		});
 	});
 	
-
-	
+	//采购单一览
+	$("#PurchaseInfo").click(function(){
+    	var url = '/purchase/list';
+    	$(location).attr('href', PdSys.url(url));
+	});
 
 });

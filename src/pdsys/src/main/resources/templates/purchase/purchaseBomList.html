@@ -13,8 +13,9 @@
 			  		</div>
 			 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" method="post">
 			 			<div class="form-group">
-						   <input type="text" class="form-control" placeholder="采购单号">
+						   <input type="text" class="form-control" placeholder="原包材">
 			 			</div>
+			 			<button type="button" class="btn btn-sm btn-info" id="reback">返回</button>
 			 			<button type="submit" class="btn btn-sm btn-info" name="refresh">查询</button>
 			 			<button type="button" class="btn btn-sm btn-info" id="upPurchaseDetail">修改</button>
 			 			<button type="button" class="btn btn-sm btn-info" id="delPurchaseDetail">删除</button>
@@ -23,10 +24,11 @@
 				</div>
 			</nav>
 			<input type="hidden" id="purchase_id" th:value="${p.id}">
+			<input type="hidden" id="isEdit">
 			<table class="table table-striped table-bordered table-hover table-condensed">
 				<thead>
 					<tr>
-						<th style="text-align:center;" th:colspan="4">
+						<th style="text-align:center;" th:colspan="5">
 							<h4><b>采购单明细表</b></h4>
 						</th>
 					</tr>
@@ -35,6 +37,7 @@
 						<th>原包材</th>
 						<th>数量</th>
 						<th>单价</th>
+						<th>供应商</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -43,6 +46,11 @@
 				      <td th:text="${purchaseBom.bom.pn} +' '+${purchaseBom.bom.name}"></td>
 				      <td th:text="${purchaseBom.num}"></td>
 				      <td th:text="${purchaseBom.price}"></td>
+				      <td>
+						<i th:if="${#lists.isEmpty(purchaseBom.bom.suppliers)}" th:text="未设定"></i>
+						<span th:each="supplier, iterStat : ${purchaseBom.bom.suppliers}" th:text="(${iterStat.index} != 0 ? ',' : '') + ${supplier.name}">
+						</span>
+					 </td>
 				    </tr>
 				</tbody>
 			</table>
