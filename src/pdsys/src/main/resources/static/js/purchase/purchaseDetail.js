@@ -158,6 +158,7 @@ $(function () {
 								"target":"msg_div",
 								"type":"ok",
 								"msg":data.msg});
+							PdSys.refresh();
 						}
 					},
 					"error": function(data) {
