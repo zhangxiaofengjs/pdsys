@@ -10,6 +10,7 @@
     
     <resultMap id="selfSupplierResultMap" type="supplierModel" >  
         <id column="pb_supplier_id" property="id"/>   
+        <result column="ss_name" property="name"/>
     </resultMap>
 
 	<resultMap id="bomResultMap" type="bomModel" >  
@@ -135,6 +136,7 @@
 			   pb.c_num as pb_num,
 		       pb.c_price as pb_price,
 		       pb.c_supplier_id as pb_supplier_id,
+		       ss.c_name as ss_name,
 		       b.c_id as b_id,
 		       b.c_pn as b_pn,
 		       b.c_name as b_name,
@@ -144,6 +146,7 @@
 		left join bom_tbl as b on b.c_id = pb.c_bom_id
 		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
 		left join supplier_tbl as s on s.c_id = bs.c_supplier_id
+		left join supplier_tbl as ss on ss.c_id = pb.c_supplier_id 
 		<where>
 			<if test="purchase.id != null and purchase.id !=''">
 				and pb.c_purchase_id = #{purchase.id}

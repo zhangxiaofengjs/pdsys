@@ -47,9 +47,7 @@
 				      <td th:text="${purchaseBom.num}"></td>
 				      <td th:text="${purchaseBom.price}"></td>
 				      <td>
-						<i th:if="${#lists.isEmpty(purchaseBom.bom.suppliers)}" th:text="未设定"></i>
-						<span th:each="supplier, iterStat : ${purchaseBom.bom.suppliers}" th:text="(${iterStat.index} != 0 ? ',' : '') + ${supplier.name}">
-						</span>
+						<i th:if="${purchaseBom.supplier!=null}" th:text="${purchaseBom.supplier.name}"></i>
 					 </td>
 				    </tr>
 				</tbody>
