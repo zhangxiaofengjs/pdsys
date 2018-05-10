@@ -16,6 +16,8 @@ public interface PurchaseMapper {
 	
 	void delPurchaseDetail(PurchaseBOMModel purchaseBoms);
 	
+	void delPurchase(PurchaseModel purchase);
+	
 	PurchaseModel queryOne(PurchaseModel purchase);
 	
 	PurchaseBOMModel queryPurchaseBOM(PurchaseBOMModel purchaseBom);

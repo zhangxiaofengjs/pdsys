@@ -23,6 +23,10 @@ public class OrderService {
 		orderMapper.updateOrderState( orderModel );
 	}
 	
+	public void updateOrder(OrderModel orderModel) {
+		orderMapper.updateOrder( orderModel );
+	}
+	
 	public OrderModel queryOne(OrderModel order) {
 		List<OrderModel> list = queryList(order);
 		if(list.size() == 1) {

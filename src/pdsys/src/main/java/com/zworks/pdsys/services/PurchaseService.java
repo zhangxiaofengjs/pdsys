@@ -33,6 +33,14 @@ public class PurchaseService {
 		}
 	}
 	
+	@Transactional
+	public void delPurchase(List<PurchaseModel> purchases){
+		for(PurchaseModel purchase : purchases) 
+		{
+			purchaseMapper.delPurchase(purchase);
+		}
+	}
+
 	public PurchaseModel queryOne(PurchaseModel purchase) {
 		PurchaseModel p = purchaseMapper.queryOne(purchase);
 		return p;

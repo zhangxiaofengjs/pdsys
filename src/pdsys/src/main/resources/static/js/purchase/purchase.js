@@ -1,29 +1,7 @@
 $(function () {
 	
-	$('#search').click(function(){
-		var bomNo = $('#bomNo').val();
-        var storeId = document.getElementById('store'); 
-        var rowsLength = storeId.rows.length;
-        var searchCol = 1;
-  
-        for(var i=2;i<rowsLength;i++){
-            var searchText = storeId.rows[i].cells[searchCol].innerHTML; 
-  
-            if(searchText.match(bomNo)){
-                storeId.rows[i].style.display='';
-            }else{  
-                storeId.rows[i].style.display='none';
-            }  
-        }
-	});
-	
-	//返回上一页
-	$("#reback").click(function(){
-		history.go(-1);
-	});
-	
-	//删除采购单详细
-	$("#delPurchaseDetail").click(function(){
+	//删除采购单
+	$("#delPurchase").click(function(){
 		var self = $(this);
 		var purchaseBomIds = getSelectedRowId();
 		if(purchaseBomIds.length == 0) {
@@ -38,12 +16,12 @@ $(function () {
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
 			"target":"msg_div",
-			"caption":"删除采购单详细",
+			"caption":"删除采购单",
 			"type":"yesno",
-			"msg":"确定删除已选采购单详细?",
+			"msg":"确定删除已选采购单?",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/purchase/delete/purchaseDetail",
+					"url":"/purchase/delete/purchase",
 					"data":ajaxDatas,
 					"success": function(data) {
 						dlg.hide();
@@ -175,11 +153,10 @@ $(function () {
 								"target":"msg_div",
 								"type":"ok",
 								"msg":data.msg,
-								"ok":function() {
+								"ok": function() {
 									PdSys.refresh();
 								}
 							});
-							
 						}
 					},
 					"error": function(data) {
