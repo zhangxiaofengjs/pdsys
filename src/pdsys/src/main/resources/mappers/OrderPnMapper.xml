@@ -190,7 +190,7 @@
     </delete>
     
     <select id="queryBomList" parameterType="orderModel" resultMap="bomDetailMap">
-		select sum(order_pn.c_num * pn_cls_bom_relation.c_use_num * pn_cls_relation.c_num ) as real_bom_num,
+		select sum((order_pn.c_num -wp.c_produced_num)* pn_cls_bom_relation.c_use_num * pn_cls_relation.c_num ) as real_bom_num,
 		       CONCAT(bom.c_pn," ",bom.c_name) as bom_pn_name,
 		       bom.c_id as bom_id,
 		       bom.c_type as bom_type,
@@ -207,6 +207,7 @@
 		left join bom_tbl as bom on pn_cls_bom_relation.c_bom_id = bom.c_id 
 		left join unit_tbl as bom_ut on bom.c_unit_id = bom_ut.c_id 
 		left join warehouse_bom_tbl as wh_bom on wh_bom.c_bom_id = bom.c_id
+		left join warehouse_pn_tbl as wp on wp.c_pn_id = pn.c_id 
 		left join (
 			select 	MAX(pb.c_id) as pb_id,
 				 	pb.c_bom_id as pb_bom_id,
