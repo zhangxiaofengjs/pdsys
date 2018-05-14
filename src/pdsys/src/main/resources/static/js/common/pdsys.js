@@ -26,9 +26,10 @@ PdSys.ajax = function(option) {
         cache: false,
         data: JSON.stringify(option.data),
         success : function(data) {
-        	if(option.success) {
+        	if(option.success && data.success) {
         		option.success(data);
-        	} else if(option.error) {
+        	}
+        	if(option.error && data.error) {
         		option.error(data);
         	}
         },
