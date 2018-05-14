@@ -1,24 +1,5 @@
 $(function () {
 	
-//	$('#search').click(function(){
-//		var phurchaseId = $("#purchase_id").value();
-//		
-//		var bomNo = $('#bomNo').val();
-//        var storeId = document.getElementById('store'); 
-//        var rowsLength = storeId.rows.length;
-//        var searchCol = 1;
-//  
-//        for(var i=2;i<rowsLength;i++){
-//            var searchText = storeId.rows[i].cells[searchCol].innerHTML; 
-//  
-//            if(searchText.match(bomNo)){
-//                storeId.rows[i].style.display='';
-//            }else{  
-//                storeId.rows[i].style.display='none';
-//            }  
-//        }
-//	});
-	
 	//返回上一页
 	$("#reback").click(function(){
 		history.go(-1);
@@ -39,32 +20,26 @@ $(function () {
 		
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
-			"target":"msg_div",
+			"target":"delPurchase_div",
 			"caption":"删除采购单详细",
 			"type":"yesno",
 			"msg":"确定删除已选采购单详细?",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/purchase/delete/purchaseDetail",
+					"url":"/purchase/delete/bom",
 					"data":ajaxDatas,
 					"success": function(data) {
 						dlg.hide();
 						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":data.msg,
+						PdSys.success({
 							"ok":function(){
 								PdSys.refresh();
-							}});
+							}
+						});
 					},
 					"error": function(data) {
 						dlg.hide();
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":data.msg});
+						PdSys.alert(data.msg);
 					}
 				});
 			}

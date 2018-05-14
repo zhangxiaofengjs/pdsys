@@ -26,6 +26,7 @@ import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
 import com.zworks.pdsys.services.BOMService;
 import com.zworks.pdsys.services.OrderPnService;
+import com.zworks.pdsys.services.PurchaseBOMService;
 import com.zworks.pdsys.services.PurchaseService;
 
 @Controller
@@ -41,6 +42,8 @@ public class PurchaseController {
 	@Autowired
 	BOMService bomService;
 	
+	@Autowired
+	PurchaseBOMService purchaseBOMService;
 	/**
 	 * 采购管理
 	 */
@@ -171,10 +174,11 @@ public class PurchaseController {
 	/**
 	 * 删除采购单明细
 	 * */
-	@RequestMapping(value="/delete/purchaseDetail")
+	@RequestMapping(value="/delete/bom")
 	@ResponseBody
     public JSONResponse deletePurchaseDetail(@RequestBody List<PurchaseBOMModel> purchaseBoms, Model model) {
-		purchaseService.delPurchaseDetail(purchaseBoms);
+		
+		purchaseBOMService.delPurchaseDetail(purchaseBoms);
 		return JSONResponse.success("采购单明细删除成功！");
     }
 	
