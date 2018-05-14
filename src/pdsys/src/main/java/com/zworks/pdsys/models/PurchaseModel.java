@@ -20,6 +20,9 @@ import com.zworks.pdsys.common.utils.DateJsonSerializer;
 public class PurchaseModel extends BaseModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	//编号
+	private String no;
+	
 	//生成时间
     @JsonSerialize(using=DateJsonSerializer.class)
     @JsonDeserialize(using=DateJsonDeserializer.class)
@@ -88,6 +91,14 @@ public class PurchaseModel extends BaseModel implements Serializable {
 
 	public void setUser(UserModel user) {
 		this.user = user;
+	}
+
+	public String getNo() {
+		return no;
+	}
+
+	public void setNo(String no) {
+		this.no = no;
 	}
 
 }

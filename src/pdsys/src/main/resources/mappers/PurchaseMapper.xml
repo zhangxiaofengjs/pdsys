@@ -3,16 +3,66 @@
 
 <mapper namespace="com.zworks.pdsys.mappers.PurchaseMapper">
 
+	<resultMap id="supplierResultMap" type="supplierModel" >  
+        <id column="s_id" property="id"/>  
+        <result column="s_name" property="name"/>  
+    </resultMap>
+    
+    <resultMap id="selfSupplierResultMap" type="supplierModel" >  
+        <id column="pb_supplier_id" property="id"/>   
+        <result column="ss_name" property="name"/>
+    </resultMap>
+
+	<resultMap id="bomResultMap" type="bomModel" >  
+        <id column="b_id" property="id"/>  
+        <result column="b_pn" property="pn"/>  
+        <result column="b_name" property="name"/>  
+        <collection property="suppliers" ofType="supplierModel" resultMap="supplierResultMap" />
+    </resultMap>
+    
+    <resultMap id="wareHouseEntryResultMap" type="wareHouseEntryModel" >  
+        <id column="e_id" property="id" />  
+        <result column="e_no" property="no" />  
+    </resultMap>
+    
+    <resultMap id="userResultMap" type="userModel" >  
+        <id column="user_id" property="id" />  
+        <result column="user_no" property="no" />  
+        <result column="user_name" property="name" />  
+    </resultMap>
+    
+    <resultMap id="purchaseResultMap" type="purchaseModel" >  
+        <id column="pb_purchase_id" property="id"/>
+        <result column="p_no" property="no"/>
+        <result column="p_create_date" property="createDate"/>  
+        <result column="p_purchase_date" property="purchaseDate"/> 
+        <result column="p_arrive_date" property="arriveDate"/>  
+        <result column="p_state" property="state"/> 
+        <association property="user" resultMap="userResultMap"/>  
+        <association property="wareHouseEntry" resultMap="wareHouseEntryResultMap"/>
+    </resultMap>
+    
+	<resultMap id="purchaseBomResultMap" type="purchaseBomModel" >  
+        <id column="pb_id" property="id"/>  
+        <result column="pb_num" property="num"/>  
+        <result column="pb_price" property="price"/>
+        <association property="purchase" resultMap="purchaseResultMap"/>  
+        <association property="bom" resultMap="bomResultMap"/>
+        <association property="supplier" resultMap="selfSupplierResultMap"/>
+    </resultMap>
+
     <!-- 新增采购单 -->
 	<insert id="savePurchase" parameterType="purchaseModel" useGeneratedKeys="true" keyProperty="id">
 		insert into purchase_tbl
 		(
+		    `c_no`,
 			`c_user_id`,
 			`c_state`
 			
 		)
 		values
 		(
+		    #{no},
 			#{user.id},
 			0
 		)
@@ -40,5 +90,131 @@
 			c_id = #{id}
 		</where>
     </delete>
+    
+     <delete id="delPurchase"  parameterType="purchaseModel">
+    	delete from purchase_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
+    
+    <!-- 通过采购单ID搜索采购单 -->
+   	<select id="queryOne" resultMap="purchaseResultMap">
+	SELECT p.c_id AS pb_purchase_id,
+			p.c_state AS p_state,
+			p.c_no AS p_no,
+			p.c_create_date AS p_create_date,
+			p.c_purchase_date AS p_purchase_date,
+			p.c_arrive_date AS p_arrive_date,
+			u.c_id as user_id,
+			u.c_name as user_name
+		from purchase_tbl as p
+		left join user_tbl as u on u.c_id = p.c_user_id 
+		where p.c_id = #{id}
+	</select>
+	
+	<!-- 通过采购单详细ID搜索采购单详细 -->
+   	<select id="queryPurchaseBOM" resultMap="purchaseBomResultMap">
+		select pb.c_id as pb_id,
+		       pb.c_bom_id as pb_bom_id,
+			   pb.c_num as pb_num,
+		       pb.c_price as pb_price,
+		       b.c_id as b_id,
+		       b.c_pn as b_pn,
+		       b.c_name as b_name,
+		       s.c_id as s_id,
+		       s.c_name as s_name 
+		from purchase_bom_tbl as pb 
+		left join bom_tbl as b on b.c_id = pb.c_bom_id
+		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
+		left join supplier_tbl as s on s.c_id = bs.c_supplier_id
+		<where>
+			<if test="id != null and id !=''">
+				and pb.c_id = #{id}
+			</if>
+		</where>
+	</select>
+	
+	<update id="updatePB" parameterType="purchaseBomModel">
+    	update purchase_bom_tbl
+		set	c_num = #{num},
+			c_price = #{price},
+			c_supplier_id = #{supplier.id}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
+    
+    <!-- 通过采购单ID搜索采购单详细 -->
+   	<select id="showPurchaseDetail" resultMap="purchaseBomResultMap">
+		select pb.c_id as pb_id,
+			   pb.c_purchase_id as pb_purchase_id,
+		       pb.c_bom_id as pb_bom_id,
+			   pb.c_num as pb_num,
+		       pb.c_price as pb_price,
+		       pb.c_supplier_id as pb_supplier_id,
+		       ss.c_name as ss_name,
+		       b.c_id as b_id,
+		       b.c_pn as b_pn,
+		       b.c_name as b_name,
+		       s.c_id as s_id,
+		       s.c_name as s_name 
+		from purchase_bom_tbl as pb 
+		left join bom_tbl as b on b.c_id = pb.c_bom_id
+		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
+		left join supplier_tbl as s on s.c_id = bs.c_supplier_id
+		left join supplier_tbl as ss on ss.c_id = pb.c_supplier_id 
+		<where>
+			<if test="purchase.id != null and purchase.id !=''">
+				and pb.c_purchase_id = #{purchase.id}
+			</if>
+		</where>
+	</select>
+	
+	<update id="updatePurchase" parameterType="purchaseModel">
+		update purchase_tbl 
+		<set> 
+			`c_state` = #{state}, 
+			`c_purchase_date` = #{purchaseDate},
+		</set>
+		where c_id = #{id}
+	</update>
+	
+	<select id="queryList" resultMap="purchaseResultMap">
+		select p.c_id as pb_purchase_id,
+		       p.c_no as p_no,
+			   p.c_create_date as p_create_date,
+			   p.c_purchase_date as p_purchase_date,
+			   p.c_arrive_date as p_arrive_date,
+			   p.c_state as p_state,
+			   user.c_id as user_id,
+		       user.c_no as user_no,
+		       user.c_name as user_name,
+		       entry.c_id as e_id,
+			   entry.c_no as e_no
+		from purchase_tbl as p
+		left join user_tbl as user on p.c_user_id = user.c_id 
+		left join entry_tbl as entry on entry.c_id = p.c_entry_id
+		<where>
+			<if test="id > 0">
+				and p.c_id = #{id}
+			</if>
+			<if test="no != null and no != ''">
+				<choose>
+					<when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
+						and p.c_no like concat('%',#{no},'%') 
+					</when>
+	                <otherwise>
+						and p.c_no = #{no}
+	                </otherwise>
+	            </choose>
+			</if>
+			<if test="state >-1">
+				and p.c_state = #{state}
+			</if>
+		</where>
+		order by c_purchase_date desc
+	</select>
+	
 	
 </mapper>

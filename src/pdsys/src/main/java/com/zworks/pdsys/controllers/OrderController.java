@@ -71,6 +71,41 @@ public class OrderController {
 	}
 	
 	/**
+	 * 修改订单
+	 */
+	@RequestMapping("/update")
+	@ResponseBody
+	public JSONResponse updateOrder(@RequestBody OrderModel order) {
+		OrderModel om = new OrderModel();
+		om.setId(order.getId());
+		
+		OrderModel o = orderService.queryOne(om);
+		if(o == null) {
+			return JSONResponse.error("已选订单不存在！");
+		}
+		else if( o.getState() == OrderState.DELETED.ordinal() )
+		{
+			return JSONResponse.error("状态为已删除的订单不能修改！");
+		}
+
+		orderService.updateOrder(order);
+		return JSONResponse.success("修改订单成功！");
+	}
+	
+	/**
+	 * 通过ID获取订单
+	 */
+	@RequestMapping("/get")
+	@ResponseBody
+	public JSONResponse getOrderInfo(@RequestBody OrderModel order) {
+		OrderModel o = orderService.queryOne(order);
+		if(o == null) {
+			return JSONResponse.error("已选订单不存在！");
+		}
+		return JSONResponse.success().put("order", o);
+	}
+	
+	/**
 	 * 新增订单
 	 */
 	@RequestMapping("/save")
@@ -80,6 +115,13 @@ public class OrderController {
 		JSONResponse JR = ValidatorUtils.doValidate(order);
 		if( JR!=null )
 			return JR;
+		
+		//订单已存在验证
+		OrderModel o = orderService.queryOne(order);
+		if(o != null) {
+			String errMsg = "订单已存在,订单号为："+order.getNo();
+			return JSONResponse.error(errMsg);
+		}
 		orderService.save(order);
 		return JSONResponse.success("新增订单成功!");
 	}

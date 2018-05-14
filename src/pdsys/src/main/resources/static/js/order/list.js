@@ -83,7 +83,7 @@ $(function () {
 	$("#delOrder").click(function(){
 		var self = $(this);
 		var orderIds = getSelectedRowId({"checkOne":true, "showMsg":true});
-		if(orderIds.length == 0) {
+		if(orderIds.length != 1) {
 			return;
 		}
 		
@@ -120,6 +120,94 @@ $(function () {
 			}
 		});
 		
+	});
+	
+	//修改订单
+	$("#upOrder").click(function(){
+		var self = $(this);
+		var caption = "修改订单";
+		var option = {
+			"showMsg":true,
+			"checkOne":true
+		};
+		var selIds = getSelectedRowId(option);
+		if(selIds.length != 1) {
+			return;
+		}
+		
+		var dlg = new CommonDlg();
+		dlg.showFormDlg({
+			"target":"upOrder_div",
+			"caption":caption,
+			"fields":[
+				{
+					"name":"id",
+					"type":"hidden",
+					"value":selIds[0]
+				},
+				{
+					"name":"orderNo",
+					"label":"订单编号",
+					"type":"label",
+					"ajax":true,
+					"url":"/order/get",
+					"ajaxData":{"id":selIds[0]},
+					"convertAjaxData" : function(field, data) {
+						var o = data.order;
+						field.ajax = false;//防止循环调用自身ajax
+						dlg.rebuildFieldWithValue("orderNo", o.no);
+						dlg.rebuildFieldWithValue("shipDeadDate", o.shipDeadDate);
+						dlg.rebuildFieldWithValue("comment", o.comment);
+						dlg.rebuildFieldWithValue("state", o.state);
+					}
+				},
+				{
+					"name":"shipDeadDate",
+					"type":"date",
+					"label":"下单时间",	
+				},
+				{
+					"name":"state",
+					"label":"状态",
+					"type":"select",
+					"options":[
+						{
+							"caption":"生产中",
+							"value":"0",
+						},
+						{
+							"caption":"已完成",
+							"value":"1",
+						},
+						{
+							"caption":"已删除",
+							"value":"2",
+						}]
+				},
+				{
+					"name":"comment",
+					"label":"备注",
+					"type":"text",
+				}],
+
+	    	"url":"/order/update",
+	        "success":function(data) {
+	        	dlg.hide();
+				var msgDlg = new CommonDlg();
+				msgDlg.showMsgDlg({
+					"target":"msg_div",
+					"type":"ok",
+					"msg":data.msg,
+					"ok": function() {
+						PdSys.refresh();
+					}
+				});
+	        },
+	        "error":function(data) {
+	        	dlg.hide();
+	        	PdSys.alert(data.msg);
+	        }
+	    });
 	});
 
 });

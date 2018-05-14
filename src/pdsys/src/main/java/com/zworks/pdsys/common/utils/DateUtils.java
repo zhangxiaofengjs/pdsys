@@ -1,5 +1,6 @@
 package com.zworks.pdsys.common.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -79,5 +80,17 @@ public class DateUtils {
     	ca.set(Calendar.SECOND, 0);
     	ca.set(Calendar.MILLISECOND, 0);
     	return ca.getTime();
+	}
+	
+	public static Date getCurrentDate() {
+		Date now = now();
+		SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_PATTERN);
+    	try {
+			return sdf.parse(sdf.format(new Date()));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return now;
 	}
 }

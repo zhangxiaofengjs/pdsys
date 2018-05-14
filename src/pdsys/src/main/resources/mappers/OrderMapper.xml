@@ -62,6 +62,18 @@
 		where c_id = #{id}
 	</delete>
 	
+	<update id="updateOrder" parameterType="orderModel">
+    	update order_tbl
+    	<set>
+		`c_state`=#{state},
+		`c_ship_dead_date`=#{shipDeadDate},
+		`c_comment` = #{comment}
+		</set>
+    	where c_id = #{id}
+    </update>
+	
+	
+	
 	<insert id="save" parameterType="orderModel" useGeneratedKeys="true" keyProperty="id">
 		insert into order_tbl
 		(
