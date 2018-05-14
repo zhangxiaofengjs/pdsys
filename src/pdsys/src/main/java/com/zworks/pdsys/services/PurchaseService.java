@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zworks.pdsys.mappers.PurchaseBOMMapper;
 import com.zworks.pdsys.mappers.PurchaseMapper;
 import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
@@ -16,6 +17,8 @@ import com.zworks.pdsys.models.PurchaseModel;
 public class PurchaseService {
 	@Autowired
     private PurchaseMapper purchaseMapper;
+	@Autowired
+	private PurchaseBOMMapper purchaseBOMMapper;
 	
 	public void savePurchase(PurchaseModel purchase) {
 		purchaseMapper.savePurchase( purchase );
@@ -34,16 +37,23 @@ public class PurchaseService {
 	}
 	
 	@Transactional
-	public void delPurchase(List<PurchaseModel> purchases){
+	public void delete(List<PurchaseModel> purchases){
 		for(PurchaseModel purchase : purchases) 
 		{
-			purchaseMapper.delPurchase(purchase);
+			for(PurchaseBOMModel phBOM : purchase.getPurchaseBOMs()) {
+				purchaseBOMMapper.delete(phBOM);
+			}
+
+			purchaseMapper.delete(purchase);
 		}
 	}
 
 	public PurchaseModel queryOne(PurchaseModel purchase) {
-		PurchaseModel p = purchaseMapper.queryOne(purchase);
-		return p;
+		List<PurchaseModel> ps = queryList(purchase);
+		if(ps.size() == 1) {
+			return ps.get(0);
+		}
+		return null;
 	}
 	
 	public PurchaseBOMModel queryPurchaseBOM(PurchaseBOMModel purchaseBom) {

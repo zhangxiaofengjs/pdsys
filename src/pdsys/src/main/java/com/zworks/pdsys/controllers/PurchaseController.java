@@ -143,7 +143,19 @@ public class PurchaseController {
 	@RequestMapping(value="/delete/purchase")
 	@ResponseBody
     public JSONResponse deletePurchase(@RequestBody List<PurchaseModel> purchases, Model model) {
-		purchaseService.delPurchase(purchases);
+		List<PurchaseModel> delTarget = new ArrayList<PurchaseModel>();
+		for(PurchaseModel ph : purchases) {
+			PurchaseModel p = purchaseService.queryOne(ph);
+			if(p == null) {
+				continue;
+			}
+			if(p.getState() != PurchaseState.PLANNING.ordinal()) {
+				return JSONResponse.error("只能删除计划中的采购单");
+			}
+			
+			delTarget.add(p);
+		}
+		purchaseService.delete(delTarget);
 		return JSONResponse.success("采购单删除成功！");
     }
 	
@@ -206,7 +218,7 @@ public class PurchaseController {
 	 * 采购单一览
 	 */
 	@RequestMapping("/list")
-    public String showOrderlist(PurchaseModel purchase, Model model) {
+    public String showList(PurchaseModel purchase, Model model) {
 		
 		//采购单一览加载
 		purchase.getFilterCond().put("fuzzyNoSearch", true);
@@ -215,13 +227,7 @@ public class PurchaseController {
 		model.addAttribute("purchases", list);
 		model.addAttribute("purchase", purchase);
 		
-		//下拉列表加载
-		PurchaseModel o =new PurchaseModel();
-		list = purchaseService.queryList(o);
-		int[] states = purchaseService.removeDuplicate(list);
-		model.addAttribute("states", states);
-
-        return "purchase/purchaseList";
+        return "purchase/list";
     }
 
 }

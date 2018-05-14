@@ -15,10 +15,10 @@
 						<div class="form-group">
 						   <input type="text" class="form-control" th:field="*{no}" placeholder="采购单号">
    			               <select id="orderState" class="selectpicker show-tick form-control" th:field="*{state}">  
-			                  <option value="-1">采购状态</option>
-			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==0}">计划</option>
-			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==1}">下单</option>
-			                  <option th:each="s : ${states}" th:value="${s}" th:if="${s==2}">到货入库</option>
+			                  <option value="-1">--采购状态--</option>
+			                  <option th:value="0">计划</option>
+			                  <option th:value="1">下单</option>
+			                  <option th:value="2">到货入库</option>
 			               </select>  
 			 			</div>
 			 			<button type="submit" class="btn btn-sm btn-info">查询</button>
@@ -56,11 +56,9 @@
    	 	<div th:replace="common/footer::copyright"></div>
    	 	<div id="addOrder_div"></div>
    	 	<div id="msg_div"></div>
+   	 	<div id="delete_alert_div"></div>
 	</div>
 	
-	<script th:src="@{/js/common/table.js}"></script> 
-	<script th:src="@{/js/common/dlg.js}"></script> 
-	<script th:src="@{/js/common/date.js}"></script> 
-    <script th:src="@{/js/purchase/purchase.js}"></script>
+    <script th:src="@{/js/purchase/list.js}"></script>
 </body>
 </html>

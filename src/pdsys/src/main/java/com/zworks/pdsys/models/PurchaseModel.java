@@ -2,6 +2,7 @@ package com.zworks.pdsys.models;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.ibatis.type.Alias;
 
@@ -45,6 +46,8 @@ public class PurchaseModel extends BaseModel implements Serializable {
 	
 	private UserModel user;
 
+	private List<PurchaseBOMModel> purchaseBOMs;
+	
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -101,4 +104,11 @@ public class PurchaseModel extends BaseModel implements Serializable {
 		this.no = no;
 	}
 
+	public List<PurchaseBOMModel> getPurchaseBOMs() {
+		return purchaseBOMs;
+	}
+
+	public void setPurchaseBOMs(List<PurchaseBOMModel> purchaseBOMs) {
+		this.purchaseBOMs = purchaseBOMs;
+	}
 }

@@ -15,7 +15,7 @@ $(function () {
 		
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
-			"target":"msg_div",
+			"target":"delete_alert_div",
 			"caption":"删除采购单",
 			"type":"yesno",
 			"msg":"确定删除已选采购单?",
@@ -25,22 +25,15 @@ $(function () {
 					"data":ajaxDatas,
 					"success": function(data) {
 						dlg.hide();
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":data.msg,
+						PdSys.success({
 							"ok":function(){
 								PdSys.refresh();
-							}});
+							}
+						});
 					},
 					"error": function(data) {
 						dlg.hide();
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":data.msg});
+						PdSys.alert(data.msg);
 					}
 				});
 			}

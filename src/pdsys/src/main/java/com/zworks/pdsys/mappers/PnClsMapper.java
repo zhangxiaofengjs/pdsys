@@ -6,6 +6,10 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.zworks.pdsys.models.PnClsModel;
 
+/**
+ * @author: zhangxiaofengjs@163.com
+ * @version: 2018/04/15
+ */
 @Mapper
 public interface PnClsMapper {
 

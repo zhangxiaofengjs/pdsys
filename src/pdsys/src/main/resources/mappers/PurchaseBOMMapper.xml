@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.PurchaseBOMMapper">
+	<resultMap id="purchaseBomResultMap" type="purchaseBomModel" >  
+        <id column="pb_id" property="id"/>  
+        <result column="pb_num" property="num"/>  
+        <result column="pb_price" property="price"/>
+        <association property="bom" resultMap="bomResultMap"/>
+        <association property="supplier" resultMap="selfSupplierResultMap"/>
+    </resultMap>
+
+   	<delete id="delete"  parameterType="purchaseBomModel">
+    	delete from purchase_bom_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
+</mapper>
