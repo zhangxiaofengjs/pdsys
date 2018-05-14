@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.enumClass.DeliveryType;
 import com.zworks.pdsys.mappers.WareHouseDeliveryMapper;
+import com.zworks.pdsys.models.OrderModel;
+import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
@@ -34,6 +36,8 @@ public class WareHouseDeliveryService {
 	private WareHouseBOMService wareHouseBOMService;
 	@Autowired
 	private WareHouseMachinePartService wareHouseMachinePartService;
+	@Autowired
+	private OrderPnService orderPnService;
 	
 	public List<WareHouseDeliveryModel> queryList(WareHouseDeliveryModel obj) {
 		return wareHouseDeliveryMapper.queryList(obj);
@@ -115,7 +119,7 @@ public class WareHouseDeliveryService {
 			Map<Integer, Float> pnDeliverySemiNumMap = new HashMap<Integer, Float>(); 
 			Map<Integer, Float> pnDeliveryNumMap = new HashMap<Integer, Float>(); 
 
-			//搜集各出库品番数量
+			//搜集各出库品番数量(因为是按照order的，所以品番可能重复在不同的order中)
 			for(WareHouseDeliveryPnModel deliveryPn : delivery.getWareHouseDeliveryPns()) {
 				PnModel pn = deliveryPn.getPn();
 				int pnId = pn.getId();
@@ -130,6 +134,14 @@ public class WareHouseDeliveryService {
 					num = pnDeliveryNumMap.get(pnId);
 				}
 				pnDeliveryNumMap.put(pnId, num + deliveryPn.getProducedNum());
+				
+				//更新出库数量
+				OrderPnModel opn = new OrderPnModel();
+				opn.setOrder(deliveryPn.getOrder());
+				opn.setPn(deliveryPn.getPn());
+				opn.setDeliveredNum(deliveryPn.getProducedNum());
+				opn.getFilterCond().put("update_delivery_num", true);
+				orderPnService.update(opn);
 			}
 			
 			//准备更新

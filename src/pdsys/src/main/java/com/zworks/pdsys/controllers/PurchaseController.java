@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.BOMDetailModel;
+import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.enumClass.PurchaseState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
@@ -44,25 +45,14 @@ public class PurchaseController {
 	 */
 	@RequestMapping("/bomdetails")
     public String showBomList(OrderModel order,Model model) {
-		
-		boolean isExist = true;
+		//只计算生产中
+		order.setState(OrderState.PRODUCTING.ordinal());
+
 		List<BOMDetailModel> list = orderPnService.queryBomList(order);
-		for(int i =0;i<list.size();i++)
-		{
-			BOMDetailModel bom = list.get(i);
-			if( bom ==null)
-			{
-				isExist = false;
-				break;
-			}
-		}
-		
-		if( isExist )
-			model.addAttribute("boms", list);
-		
+		model.addAttribute("boms", list);
 		model.addAttribute("order", order);
-		
-        return "/purchase/main";
+
+        return "/purchase/bomdetails";
     }
 	
 	/**

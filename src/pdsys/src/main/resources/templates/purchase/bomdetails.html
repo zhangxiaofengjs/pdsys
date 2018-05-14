@@ -29,14 +29,15 @@
 						<th>种类</th>
 						<th>品名</th>
 						<th>单位</th>
-						<th>订单实需数量</th>
+						<th>待生产订单实需量</th>
 						<th>在库数量</th>
+						<th>已下单采购量</th>
 						<th>在库不足量</th>
-						<th>采购中(已下单)</th>
 					</tr>
 				</thead>
 				<tbody>
-				    <tr th:each="bom : ${boms}">
+				    <tr th:each="bom : ${boms}"
+				    	th:with="bomToBuyNum=${bom.bomNum - bom.purchasedNum - bom.whbomNum}">
 				      <td><input type="checkbox" name="select" th:rowid="${bom.bomId}"/></td>
 				      <td th:switch="${bom.bomType}">
 						  <span th:case="0">原材</span>
@@ -46,8 +47,8 @@
 				      <td th:text="${bom.unitName}"></td>
 				      <td th:text="${bom.bomNum}"></td>
 				      <td th:text="${bom.whbomNum}"></td>
-				      <td th:text="${bom.bomNum > bom.whbomNum} ? ${bom.bomNum - bom.whbomNum} : '0'"></td>
 				      <td th:id="'purchasedNum_'+${bom.bomId}" th:text="${bom.purchasedNum}"></td>
+				      <td th:text="${bomToBuyNum>0} ? ${bomToBuyNum} : '0'"></td>
 				    </tr>
 				</tbody>
 			</table>

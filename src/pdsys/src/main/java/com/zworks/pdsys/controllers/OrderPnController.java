@@ -89,7 +89,9 @@ public class OrderPnController {
 		JSONResponse JR = ValidatorUtils.doValidate(orderPn);
 		if( JR!=null )
 			return JR;
-		orderPnService.updateOrderPn(orderPn);
+		
+		orderPn.getFilterCond().put("update_num", true);
+		orderPnService.update(orderPn);
 		return JSONResponse.success();
 	}
 

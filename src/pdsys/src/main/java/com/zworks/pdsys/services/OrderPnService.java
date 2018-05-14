@@ -39,8 +39,8 @@ public class OrderPnService {
 		return orderPnMapper.queryList( order );
 	}
 	
-	public void updateOrderPn(OrderPnModel orderPnModel) {
-		orderPnMapper.updateOrderPn( orderPnModel );
+	public void update(OrderPnModel orderPnModel) {
+		orderPnMapper.update( orderPnModel );
 	}
 	
 	public boolean existsOrderPn(OrderPnModel orderPn) {

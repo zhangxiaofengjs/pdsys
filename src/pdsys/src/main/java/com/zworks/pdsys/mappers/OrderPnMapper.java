@@ -13,7 +13,7 @@ public interface OrderPnMapper {
 	
 	List<OrderPnModel> queryList( OrderModel order );
 	
-	void updateOrderPn(OrderPnModel orderPnModel);
+	void update(OrderPnModel orderPnModel);
 	
 	void save(OrderPnModel orderPn);
 	

@@ -159,11 +159,25 @@
 		</where>
 	</select>
 	
-	<update id="updateOrderPn" parameterType="orderPnModel">
+	<update id="update" parameterType="orderPnModel">
     	update order_pn_tbl
-		set	c_num = #{num} 
+		<set>
+			<if test="filterCond.update_num != null and filterCond.update_num">
+				c_num = #{num},
+			</if>
+			<if test="filterCond.update_delivery_num != null and filterCond.update_delivery_num">
+				c_delivered_num = #{deliveredNum},
+			</if>
+		</set>	
     	<where>
-			c_id = #{id}
+    		<choose>
+	    		<when test="id != null and id > 0">
+					c_id = #{id}
+				</when>
+				<otherwise>
+					c_order_id=#{order.id} and c_pn_id=#{pn.id}
+				</otherwise>
+			</choose>
 		</where>
     </update>
     
@@ -190,7 +204,7 @@
     </delete>
     
     <select id="queryBomList" parameterType="orderModel" resultMap="bomDetailMap">
-		select sum((order_pn.c_num -wp.c_produced_num)* pn_cls_bom_relation.c_use_num * pn_cls_relation.c_num ) as real_bom_num,
+		select sum((order_pn.c_num - ifnull(wp.c_produced_num,0) - order_pn.c_delivered_num)* pn_cls_bom_relation.c_use_num * pn_cls_relation.c_num ) as real_bom_num,
 		       CONCAT(bom.c_pn," ",bom.c_name) as bom_pn_name,
 		       bom.c_id as bom_id,
 		       bom.c_type as bom_type,
@@ -220,8 +234,11 @@
 			group by pb.c_bom_id
 		) AS pbom on bom.c_id = pbom.pb_bom_id 
 		<where>
+			<if test="state > -1">
+				and order_tbl.c_state=#{state} 
+			</if>
 			<if test="no != null and no != ''">
-				and c_no like concat('%',#{no},'%') 
+				and order_tbl.c_no like concat('%',#{no},'%') 
 			</if>
 		</where>
 		 group by bom.c_id
