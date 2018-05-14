@@ -3,7 +3,6 @@
 	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 	<meta th:include="common/header::header">
-	<link rel="stylesheet" href="css/index.css">
 	<style type="text/css">  
        *{  
            margin: 0;  
@@ -155,12 +154,12 @@
 		</div>
 		  
 	  	<div style="height:100%;margin-left:250px;">
-		    <div style="height:30px;padding:5px;background-color:#eee;">
+		    <div id="frame_title" style="height:30px;padding:5px;background-color:#eee;">
 		    	<span class="glyphicon glyphicon-home" style=""></span>
 		    	<span id="nav_title" style="font-size:9pt;color:#867E7E">主页</span>
 		    </div>
 		    <!-- Main content -->
-		     	<iframe id="frame_content" onload="Javascript:SetWinHeight(this);" scrolling="no" frameborder="0" style="padding:10px;width:100%;min-height:200px;overflow-x:hidden;background:#fff;" src="main.html"></iframe>
+		     	<iframe id="frame_content" onload="Javascript:SetWinHeight(this);" scrolling="no" frameborder="0" style="padding:10px;width:100%;heifht:100%;min-height:200px;overflow-x:hidden;background:#fff;" src="main.html"></iframe>
 		</div>
 		<div id="msg_div"></div>
 		<div id="chg_pwd_dlg_div"></div>

@@ -99,13 +99,15 @@ function showPage(pATag)
 	$("#nav_title").html("主页 > " + menuDisplay);
 }
 
-function initParentHeight(h) 
+function initContentHeight(h, framWin) 
 {
 	if(h<$(document).height()) {
 		h = $(document).height();
 	}
 var div = window.parent.document.getElementById('main_div'); 
-div.style.height=h+"px";//window.document.body.scrollHeight||window.document.body.offsetHeight+5; 
+div.style.height=h+"px";//window.document.body.scrollHeight||window.document.body.offsetHeight+5;
+
+	framWin.style.height=(h-30) + "px";//注意减去右侧标题栏高度
 } 
 
 function SetWinHeight(obj) 
@@ -127,8 +129,8 @@ function SetWinHeight(obj)
      { 
       win.style.height = win.Document.body.scrollHeight; 
      } 
-   } 
-   initParentHeight(height); //加上右边标题
+   }
+   initContentHeight(height, win); //加上右边标题
 } 
 
 /*
