@@ -38,8 +38,8 @@ public class PurchaseService {
 	
 	@Transactional
 	public void delete(List<PurchaseModel> purchases){
-		for(PurchaseModel purchase : purchases) 
-		{
+		for(PurchaseModel purchase : purchases) {
+			//先删除对应购物单BOM
 			for(PurchaseBOMModel phBOM : purchase.getPurchaseBOMs()) {
 				purchaseBOMMapper.delete(phBOM);
 			}

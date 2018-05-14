@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.BOMDetailModel;
+import com.zworks.pdsys.business.beans.PurchaseBOMListFromBean;
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.enumClass.PurchaseState;
 import com.zworks.pdsys.common.exception.PdsysException;
@@ -117,24 +118,32 @@ public class PurchaseController {
 	/**
 	 * 采购单详细
 	 */
-	@RequestMapping("/showDetail")
-	public String purchaseDetail(@RequestParam(name="purchaseId", required=false)Integer purchaseId,Model model)
+	@RequestMapping("/purchasebomlist")
+	public String purchaseBOMList(PurchaseBOMListFromBean formBean, Model model)
 	{
 		PurchaseModel purchase = new PurchaseModel();
-		purchase.setId(purchaseId);
-		PurchaseModel p = purchaseService.queryOne(purchase);
-		if(p== null)
-		{
-			throw new PdsysException("错误参数:/purchase/showDetail?purchaseId=" + purchaseId, PdsysExceptionCode.ERROR_REQUEST_PARAM);
-		}
-		PurchaseBOMModel purchaseBom = new PurchaseBOMModel();
-		purchaseBom.setPurchase(purchase);
-		List<PurchaseBOMModel> purchaseBoms = purchaseService.showPurchaseDetail(purchaseBom);
-
-		model.addAttribute("purchaseBoms", purchaseBoms);
-		model.addAttribute("p", p);
+		purchase.setId(formBean.getPurchaseId());
 		
-        return "/purchase/purchaseBomList";
+		if(formBean.getBomPn() != null) {
+			List<PurchaseBOMModel> purchaseBOMs = new ArrayList<PurchaseBOMModel>();
+			purchase.setPurchaseBOMs(purchaseBOMs);
+			
+			PurchaseBOMModel purchaseBOM = new PurchaseBOMModel();
+			purchaseBOMs.add(purchaseBOM);
+			
+			BOMModel bom = new BOMModel();
+			bom.setPn(formBean.getBomPn());
+			purchaseBOM.setBom(bom);
+		}
+		
+		PurchaseModel p = purchaseService.queryOne(purchase);
+		if(p == null) {
+			p = new PurchaseModel();
+		}
+		model.addAttribute("purchase", p);
+		model.addAttribute("formBean", formBean);
+		
+        return "/purchase/purchasebomlist";
 	}
 	
 	/**

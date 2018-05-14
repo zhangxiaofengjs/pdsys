@@ -98,21 +98,6 @@
 		</where>
     </delete>
     
-    <!-- 通过采购单ID搜索采购单 -->
-   	<select id="queryOne" resultMap="purchaseResultMap">
-	SELECT p.c_id AS pb_purchase_id,
-			p.c_state AS p_state,
-			p.c_no AS p_no,
-			p.c_create_date AS p_create_date,
-			p.c_purchase_date AS p_purchase_date,
-			p.c_arrive_date AS p_arrive_date,
-			u.c_id as user_id,
-			u.c_name as user_name
-		from purchase_tbl as p
-		left join user_tbl as u on u.c_id = p.c_user_id 
-		where p.c_id = #{id}
-	</select>
-	
 	<!-- 通过采购单详细ID搜索采购单详细 -->
    	<select id="queryPurchaseBOM" resultMap="purchaseBomResultMap">
 		select pb.c_id as pb_id,
@@ -224,6 +209,13 @@
 			</if>
 			<if test="state >-1">
 				and p.c_state = #{state}
+			</if>
+			<if test="purchaseBOMs != null and purchaseBOMs.size() != 0">
+				and ( 
+				<foreach collection ="purchaseBOMs" item="purchaseBOM" index= "index" separator ="or">
+			    		b.c_pn like concat('%',#{purchaseBOM.bom.pn},'%')
+			    </foreach>
+			    )
 			</if>
 		</where>
 		order by c_purchase_date desc

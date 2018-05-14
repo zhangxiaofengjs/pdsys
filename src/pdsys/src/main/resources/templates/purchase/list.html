@@ -40,7 +40,7 @@
 				<tbody>
 				    <tr th:each="p : ${purchases}">
 				      <td><input type="checkbox" name="select" th:rowid="${p.id}"/></td>
-				      <td><a th:text="${p.no}" th:href="@{'/purchase/showDetail?purchaseId=' +${p.id}}"></a></td>
+				      <td><a th:text="${p.no}" th:href="@{'/purchase/purchasebomlist?purchaseId=' +${p.id}}"></a></td>
 				      <td th:text="${#dates.format(p.purchaseDate, 'yyyy-MM-dd')}"></td>
 				      <td th:text="${#dates.format(p.arriveDate, 'yyyy-MM-dd')}"></td>
 				      <td th:switch="${p.state}">
