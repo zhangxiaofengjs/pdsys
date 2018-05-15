@@ -12,4 +12,6 @@ import com.zworks.pdsys.models.PurchaseBOMModel;
 public interface PurchaseBOMMapper {
 
 	void delete(PurchaseBOMModel purchaseBOM);
+	
+	void addPB(PurchaseBOMModel purchaseBOM);
 }

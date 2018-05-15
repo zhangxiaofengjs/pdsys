@@ -1,6 +1,7 @@
 package com.zworks.pdsys.controllers;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,6 @@ import com.zworks.pdsys.business.beans.BOMDetailModel;
 import com.zworks.pdsys.business.beans.PurchaseBOMListFromBean;
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.enumClass.PurchaseState;
-import com.zworks.pdsys.common.exception.PdsysException;
-import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
@@ -24,6 +23,7 @@ import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
+import com.zworks.pdsys.models.SupplierModel;
 import com.zworks.pdsys.services.BOMService;
 import com.zworks.pdsys.services.OrderPnService;
 import com.zworks.pdsys.services.PurchaseBOMService;
@@ -178,8 +178,19 @@ public class PurchaseController {
 	@ResponseBody
     public JSONResponse deletePurchaseDetail(@RequestBody List<PurchaseBOMModel> purchaseBoms, Model model) {
 		
-		//purchaseBOMService.delPurchaseDetail(purchaseBoms);
+		purchaseBOMService.delete(purchaseBoms);
 		return JSONResponse.success("采购单明细删除成功！");
+    }
+	
+	/**
+	 * 新增采购单明细
+	 * */
+	@RequestMapping(value="/addPB")
+	@ResponseBody
+    public JSONResponse addPB(@RequestBody PurchaseBOMModel purchaseBom) {
+		
+		purchaseBOMService.addPB(purchaseBom);
+		return JSONResponse.success();
     }
 	
 	/**
@@ -215,6 +226,65 @@ public class PurchaseController {
 		}
 
 		return JSONResponse.success().put("pb", pb);
+	}
+	
+	/**
+	 * 当前采购以外的原包材取得
+	 */
+	@RequestMapping("/get/bom")
+	@ResponseBody
+	public JSONResponse showOtherBoms(@RequestBody PurchaseModel purchase) {
+		PurchaseModel p = purchaseService.queryOne(purchase);
+		if(p == null) {
+			p = new PurchaseModel();
+		}
+		
+		List<PurchaseBOMModel> pbs = p.getPurchaseBOMs();
+		BOMModel bom = new BOMModel();
+		List<BOMModel> boms = bomService.queryList(bom);
+		if( pbs==null || pbs.size()==0)
+			return JSONResponse.success().put("boms", boms);
+		
+		Iterator<BOMModel> bomsIterator = boms.iterator();
+		while (bomsIterator.hasNext()) { 
+			BOMModel b = bomsIterator.next();
+			for(int i =0;i<pbs.size();i++)
+			{
+				PurchaseBOMModel pb = pbs.get(i);
+				int bomId = pb.getBom().getId();
+				if(b.getId()==bomId)
+				{
+					bomsIterator.remove();
+					break;
+				}
+			}
+		}
+
+		return JSONResponse.success().put("boms", boms);
+	}
+	
+	/**
+	 * 当前原包材的供应商取得
+	 */
+	@RequestMapping("/get/supplier")
+	@ResponseBody
+	public JSONResponse showSuppliers(@RequestBody BOMModel bom) {
+		
+		List<SupplierModel> suppliers = new ArrayList<SupplierModel>();
+		if(bom.getId()<1)
+			return JSONResponse.success().put("suppliers", suppliers);
+
+		List<BOMModel> boms = bomService.queryList(bom);
+		if( boms==null || boms.size()==0)
+			return JSONResponse.success().put("suppliers", suppliers);
+		
+		BOMModel b = boms.get(0);
+		suppliers = b.getSuppliers();
+		if( b.getSuppliers() == null )
+			return JSONResponse.success().put("suppliers", suppliers);
+		
+		return JSONResponse.success().put("suppliers", b.getSuppliers());
+		
 	}
 	
 	/**

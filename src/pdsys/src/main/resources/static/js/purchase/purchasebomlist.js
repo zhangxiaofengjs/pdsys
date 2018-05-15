@@ -122,9 +122,108 @@ $(function () {
 
 	});
 	
+	//追加采购单详细
+	$("#addPurchaseDetail").click(function(){
+		var purchaseId = $('#purchaseId').val();
+		if(purchaseId < 1) {
+			return;
+		}
+		var dlg = new CommonDlg();
+		dlg.showFormDlg({
+			"target":"upPurchaseBom_div",
+			"caption":"添加采购单详细",
+			"fields":[
+				{
+					"name":"purchase.id",
+					"type":"hidden",
+					"value":purchaseId
+				},
+				{
+					"name":"bom.id",
+					"label":"原包材",
+					"type":"select",
+					"options":[],
+					"ajax":true,
+					"ajaxData":{"id":purchaseId},
+					"url":"/purchase/get/bom",
+					"convertAjaxData" : function(thisField, data) {
+						thisField.options.push({
+							"value": -1,
+							"caption":"请选择原包材...",
+						});
+						data.boms.forEach(function(bom, idx) {
+							thisField.options.push({
+							"value": bom.id,
+							"caption": "{0} {1}".format(bom.pn, bom.name),
+							"data":bom.price
+							});
+						});
+					},
+					"afterBuild": function() {
+						var self = this;
+						var thisElem = dlg.fieldElem(self.type, self.name);
+						//select选择以后刷新品目
+						thisElem.change(function() {
+							var selIndex = thisElem[0].selectedIndex;
+							var bomId= self.options[selIndex].value;
+							dlg.fieldElem("number", "num").val("");
+							dlg.rebuildFieldWithValue("price", self.options[selIndex].data);
+							var f = dlg.fieldByName("supplier.id");
+							f.options.length = 0;
+							//供应商
+							PdSys.ajax({
+								"url":"/purchase/get/supplier",
+								"data": {"id":bomId},
+								"success": function(data) {
+									var f = dlg.fieldByName("supplier.id");
+									data.suppliers.forEach(function(supplier, idx) {
+										f.options.push({
+											"value": supplier.id,
+											"caption":supplier.name,
+										});
+									});
+									dlg.rebuildField(f);
+								},
+								"error": function(data) {
+								}	
+							});
+
+						});
+					}
+				},
+				
+				{
+					"name":"num",
+					"type":"number",
+					"label":"数量"
+				},
+				{
+					"name":"price",
+					"label":"单价",
+					"type":"text",
+				},
+				{
+					"name":"supplier.id",
+					"label":"供应商",
+					"type":"select",
+					"options":[],
+
+				}],
+
+	    	"url":"/purchase/addPB",
+	        "success":function(data) {
+	        	PdSys.refresh();
+	        },
+	        "error":function(data) {
+	        	PdSys.alert(data.msg);
+	        }
+	    });
+
+	});
+	
 	//下单
 	$("#placePurchase").click(function(){
-		var purchaseId = $('#purchase_id').val();
+		var purchaseId = $('#purchaseId').val();
 		if(purchaseId < 1) {
 			return;
 		}
@@ -141,27 +240,20 @@ $(function () {
 					"data":{"id":purchaseId},
 					"success": function(data) {
 						dlg.hide();
-						if(data.success) {
-				        	var url = '/purchase/list?id=' + purchaseId;
-				        	$(location).attr('href', PdSys.url(url));
-						}
-						else
-						{
-							var msgDlg = new CommonDlg();
-							msgDlg.showMsgDlg({
-								"target":"msg_div",
-								"type":"ok",
-								"msg":data.msg,
-								"ok":function() {
-									PdSys.refresh();
-								}
-							});
-							
-						}
+				        var url = '/purchase/list?id=' + purchaseId;
+				        $(location).attr('href', PdSys.url(url));
 					},
 					"error": function(data) {
 						dlg.hide();
-						PdSys.alert(data.msg);
+						var msgDlg = new CommonDlg();
+						msgDlg.showMsgDlg({
+							"target":"err_div",
+							"type":"ok",
+							"msg":data.msg
+//							"ok":function() {
+//								PdSys.refresh();
+//							}
+						});
 					}
 				});
 			}
