@@ -41,19 +41,13 @@ $(function () {
 				}],
 			"url":'/purchase/save?orderNo='+ orderNo +'&bomIds='+ bomIds,
 	        success : function(data) {
-	        	var url = '/purchase/showDetail?purchaseId=' + data.purchaseId;
+	        	var url = '/purchase/purchasebomlist?purchaseId=' + data.purchaseId;
 	        	$(location).attr('href', PdSys.url(url));
 	        },
 	        error: function(data) {
     			PdSys.alert(data.msg);
 	        }
 		});
-	});
-	
-	//采购单一览
-	$("#PurchaseInfo").click(function(){
-    	var url = '/purchase/list';
-    	$(location).attr('href', PdSys.url(url));
 	});
 
 });

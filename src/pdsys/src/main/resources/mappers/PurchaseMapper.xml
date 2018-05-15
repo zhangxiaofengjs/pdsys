@@ -48,7 +48,7 @@
         <result column="pb_num" property="num"/>  
         <result column="pb_price" property="price"/>
         <association property="bom" resultMap="bomResultMap"/>
-        <association property="supplier" resultMap="supplierResultMap"/>
+        <association property="supplier" resultMap="selfSupplierResultMap"/>
     </resultMap>
 
     <!-- 新增采购单 -->
@@ -184,6 +184,8 @@
 		       b.c_id as b_id,
 		       b.c_pn as b_pn,
 		       b.c_name as b_name,
+		       ss.c_id as pb_supplier_id,
+		       ss.c_name as ss_name,
 		       s.c_id as s_id,
 		       s.c_name as s_name 
 		from purchase_tbl as p
@@ -193,6 +195,7 @@
 		left join bom_tbl as b on b.c_id = pb.c_bom_id
 		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
 		left join supplier_tbl as s on s.c_id = bs.c_supplier_id
+		left join supplier_tbl as ss on ss.c_id = pb.c_supplier_id
 		<where>
 			<if test="id > 0">
 				and p.c_id = #{id}
