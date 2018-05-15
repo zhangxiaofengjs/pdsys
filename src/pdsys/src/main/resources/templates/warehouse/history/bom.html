@@ -43,7 +43,7 @@
 			<td th:text="${bom.pn}"></td>
 			<td th:text="${bom.name + (bom.comment!=null and bom.comment!='' ? '(' + bom.comment + ')' :'')}"></td>
 			<td th:text="${unit.name}"></td>
-			<td th:text="${dBOM.num}"></td>
+			<td th:text="${#numbers.formatDecimal(dBOM.num,1,3)}" class="number"></td>
 	    </tr>
 	  </tbody>
 	</table>

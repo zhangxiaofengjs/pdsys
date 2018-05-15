@@ -57,7 +57,7 @@ public class WareHouseEntryService {
 		return wareHouseEntryMapper.queryListWithBOM(obj);
 	}
 	
-	private List<WareHouseEntryModel> queryListWithMachinePart(WareHouseEntryModel entry) {
+	public List<WareHouseEntryModel> queryListWithMachinePart(WareHouseEntryModel entry) {
 		return wareHouseEntryMapper.queryListWithMachinePart(entry);
 	}
 	

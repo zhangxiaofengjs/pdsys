@@ -1,5 +1,6 @@
 package com.zworks.pdsys.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ public class WareHouseDeliveryController {
     public String main(
     		@PathVariable(name="type" ,required=false)String type,
     		@RequestParam(name="no", required=false)String no,
+    		@RequestParam(name="fuzzyNo", required=false)String fuzzyNo,
     		Model model) {
 
 		if(type == null) {
@@ -61,27 +63,27 @@ public class WareHouseDeliveryController {
 		}
 		RequestContextUtils.setSessionAttribute(this, "no" + type, no);
 		
-		WareHouseDeliveryModel delivery = null;
-		if(!StringUtils.isNullOrEmpty(no)) {
-			delivery = new WareHouseDeliveryModel();
-			delivery.setNo(no);
+		List<?> list = null;
+		WareHouseDeliveryModel delivery = new WareHouseDeliveryModel();
+		delivery.getFilterCond().put("fuzzyNoSearch", !"false".equals(fuzzyNo));
+		delivery.setNo(no);
 			
-			if(type.equals("pn")) {
-				delivery = wareHouseDeliveryService.queryOneWithPn(delivery);
-			} else if(type.equals("bom")) {
-				delivery = wareHouseDeliveryService.queryOneWithBOM(delivery);
-			} else if(type.equals("machinepart")) {
-				delivery = wareHouseDeliveryService.queryOneWithMachinePart(delivery);
-			} else {
-				delivery = null;
-			}
+		if(type.equals("pn")) {
+			list = wareHouseDeliveryService.queryListWithPn(delivery);
+		} else if(type.equals("bom")) {
+			list = wareHouseDeliveryService.queryListWithBOM(delivery);
+		} else if(type.equals("machinepart")) {
+			list = wareHouseDeliveryService.queryListWithMachinePart(delivery);
+		} else {
+			list = new ArrayList<WareHouseDeliveryModel>();
 		}
 		
-		if(delivery == null) {
-			delivery = new WareHouseDeliveryModel();
+		if(list.size() == 1) {
+			delivery = (WareHouseDeliveryModel)list.get(0);
 		}
 		
 		model.addAttribute("delivery", delivery);
+		model.addAttribute("deliveries", list);
 		model.addAttribute("type", type);
 		return "warehouse/delivery/main";
     }
