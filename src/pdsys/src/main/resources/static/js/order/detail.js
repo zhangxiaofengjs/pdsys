@@ -2,7 +2,8 @@ $(function () {
 	
 	//返回上一页
 	$("#reback").click(function(){
-		history.go(-1);
+		PdSys.refresh("/order/list");
+		//history.go(-1); 无品目的订单刷新几次后，不能正确退回
 	});
 	
 	//添加品目
@@ -58,7 +59,8 @@ $(function () {
 		{
 			"name":"num",
 			"label":"数量",
-			"type":"number"
+			"type":"number",
+			"min":1,
 		},
 		{
 			"name":"pn.unit.name",
