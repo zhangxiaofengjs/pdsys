@@ -16,8 +16,8 @@
 						   <input type="text" class="form-control" th:field="*{no}" placeholder="采购单号">
    			               <select id="orderState" class="selectpicker show-tick form-control" th:field="*{state}">  
 			                  <option value="-1">--采购状态--</option>
-			                  <option th:value="0">计划</option>
-			                  <option th:value="1">下单</option>
+			                  <option th:value="0">计划中</option>
+			                  <option th:value="1">已下单</option>
 			                  <option th:value="2">到货入库</option>
 			               </select>  
 			 			</div>
@@ -44,8 +44,8 @@
 				      <td th:text="${#dates.format(p.purchaseDate, 'yyyy-MM-dd')}"></td>
 				      <td th:text="${#dates.format(p.arriveDate, 'yyyy-MM-dd')}"></td>
 				      <td th:switch="${p.state}">
-				  		  <span class="label label-primary" th:case="0">计划</span>
-				  		  <span class="label label-success" th:case="1">下单</span>
+				  		  <span class="label label-primary" th:case="0">计划中</span>
+				  		  <span class="label label-success" th:case="1">已下单</span>
 				  		  <span class="label label-default" th:case="2">到货入库</span>
 				      </td>
 				      <td><span th:if="${p.wareHouseEntry!=null}" th:text="${p.wareHouseEntry.no}"></span></td>
