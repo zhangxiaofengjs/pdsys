@@ -16,4 +16,23 @@
 			c_id = #{id}
 		</where>
     </delete>
+    
+    <insert id="addPB" parameterType="purchaseBomModel" useGeneratedKeys="true" keyProperty="id">
+		insert into purchase_bom_tbl
+		(
+			`c_purchase_id`,
+			`c_bom_id`,
+			`c_num`,
+			`c_price`,
+			`c_supplier_id`
+		)
+		values
+		(
+			#{purchase.id},
+			#{bom.id},
+			#{num},
+			#{price},
+			#{supplier.id}
+		)
+	</insert>
 </mapper>
