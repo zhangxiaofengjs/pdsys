@@ -160,7 +160,7 @@ $(document).ready(function(){
 					obj.machines.forEach(function(machine, idx2) {
 						machineStr += machine.pn + " " + machine.name + "</br>";
 					});
-					bodyHtml += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>".format(
+					bodyHtml += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td class='number'>{4}</td><td class='number'>{5}</td></tr>".format(
 						obj.machinePart.pn, obj.machinePart.name, machineStr, obj.machinePart.unit.name, obj.maitenaceNum, obj.wareHouseNum
 					);
 				});

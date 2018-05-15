@@ -52,7 +52,7 @@
 				<td th:text="${bom.pn}"></td>
 				<td th:text="${bom.name}"></td>
 				<td th:text="${unit != null} ? ${unit.name + (unit.subName!=null?('(' + unit.ratio + unit.subName) + ')': '')} : ''"></td>
-				<td th:text="${bom.price}"></td>
+				<td th:text="${#numbers.formatDecimal(bom.price,1,3)}" class="number"></td>
 				<td>
 					<i th:if="${#lists.isEmpty(bom.suppliers)}" th:text="未设定"></i>
 					<span th:each="supplier, iterStat : ${bom.suppliers}" th:text="(${iterStat.index} != 0 ? ',' : '') + ${supplier.name}">

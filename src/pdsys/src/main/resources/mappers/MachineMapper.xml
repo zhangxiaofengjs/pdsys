@@ -58,8 +58,15 @@
 				and m.c_id = #{id}
 			</if>
 			<if test="pn != null">
-				and m.c_pn = #{pn}
-			</if>
+			    <choose>
+	                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+	                   	and m.c_pn like '%${pn}%'
+	                </when>
+	                <otherwise>
+						and m.c_pn = #{pn} 
+	                </otherwise>
+	            </choose>
+	        </if>
 		</where>
 	</select>
 	

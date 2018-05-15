@@ -13,7 +13,10 @@
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/sys/master/main/machine}" method="post">
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.machine}" th:action="@{/sys/master/main/machine}" method="post">
+	 			<div class="form-group">
+				   <input type="text" class="form-control" th:field="*{pn}" placeholder="品番">
+	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='addMachine'>添加</button>
 	 			<button type="button" class="btn btn-sm btn-info" id='editMachine'>修改</button>
@@ -43,7 +46,7 @@
 				<td th:text="${machine.pn}"></td>
 				<td th:text="${machine.name}"></td>
 				<td th:text="${machine.unit.name}"></td>
-				<td th:text="${machine.maitenacePeriod}"></td>
+				<td th:text="${machine.maitenacePeriod}" class="number"></td>
 				<td th:text="${machine.supplier.name}"></td>
 				<td>
 					<span th:each="machineMachinePartRel,iterStat: ${machine.machineMachinePartRels}"
