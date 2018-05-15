@@ -38,12 +38,6 @@ public class OrderController {
 		model.addAttribute("orders", list);
 		model.addAttribute("order", order);
 		
-		//下拉列表加载
-		OrderModel o =new OrderModel();
-		list = orderService.queryList(o);
-		int[] states = orderService.removeDuplicate(list);
-		model.addAttribute("states", states);
-
         return "order/list";
     }
 	

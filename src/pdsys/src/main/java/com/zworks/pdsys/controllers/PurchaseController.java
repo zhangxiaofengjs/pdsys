@@ -178,7 +178,7 @@ public class PurchaseController {
 	@ResponseBody
     public JSONResponse deletePurchaseDetail(@RequestBody List<PurchaseBOMModel> purchaseBoms, Model model) {
 		
-		purchaseBOMService.delPurchaseDetail(purchaseBoms);
+		//purchaseBOMService.delPurchaseDetail(purchaseBoms);
 		return JSONResponse.success("采购单明细删除成功！");
     }
 	
