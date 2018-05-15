@@ -1,10 +1,5 @@
 package com.zworks.pdsys.business.beans;
 
-import org.apache.ibatis.type.Alias;
-
-import com.zworks.pdsys.models.BOMModel;
-import com.zworks.pdsys.models.WareHouseBOMModel;
-
 /**
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/05/14
