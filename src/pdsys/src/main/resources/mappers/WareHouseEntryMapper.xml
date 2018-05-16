@@ -171,7 +171,7 @@
 	            </choose>
 			</if>
 		</where>
-		order by pn.c_pn
+		order by entry.c_state asc, entry.c_entry_time desc, pn.c_pn
 	</select>
 	
 	<select id="queryListWithBOM" parameterType="wareHouseEntryModel" resultMap="wareHouseEntryResultMap">
@@ -222,7 +222,7 @@
 	            </choose>
 			</if>
 		</where>
-		order by bom.c_pn
+		order by entry.c_state asc, entry.c_entry_time desc, bom.c_pn
 	</select>
 	
 	<select id="queryListWithMachinePart" parameterType="wareHouseEntryModel" resultMap="wareHouseEntryResultMap">
@@ -272,7 +272,7 @@
 	            </choose>
 			</if>
 		</where>
-		order by mp.c_pn
+		order by entry.c_state asc, entry.c_entry_time desc, mp.c_pn
 	</select>
 	
 	<insert id="add" parameterType="wareHouseEntryModel">

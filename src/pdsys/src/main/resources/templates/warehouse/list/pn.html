@@ -16,7 +16,6 @@
 			</form>
 		</div>
 	</nav>
-
 	<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
 		<thead>
 		    <tr>
@@ -42,8 +41,8 @@
 				<td th:text="${pn.pn}"></td>
 				<td th:text="${pn.name}"></td>
 				<td th:text="${unit.name}"></td>
-				<td th:text="${wareHousePn.semiProducedNum}"></td>
-				<td th:text="${wareHousePn.producedNum}"></td>
+				<td th:text="${wareHousePn.semiProducedNum}" class="number"></td>
+				<td th:text="${wareHousePn.producedNum}" class="number"></td>
 		    </tr>
 		</tbody>
 	</table>

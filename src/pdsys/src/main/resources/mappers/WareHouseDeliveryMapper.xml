@@ -169,6 +169,7 @@
 		left join order_tbl as o on d_pn.c_order_id = o.c_id
 		left join warehouse_pn_tbl as wh_pn on pn.c_id = wh_pn.c_pn_id
 		<where>
+			delivery.c_type=0
 			<if test="id > 0">
 				and delivery.c_id = #{id}
 			</if>
@@ -183,6 +184,7 @@
 	            </choose>
 			</if>
 		</where>
+		order by delivery.c_state asc, delivery.c_delivery_time desc, pn.c_pn
 		<if test="_parameter != null and filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
 			for update
 		</if>
@@ -219,6 +221,7 @@
 		left join unit_tbl as unit on bom.c_unit_id = unit.c_id
 		left join warehouse_bom_tbl as wh_bom on bom.c_id = wh_bom.c_bom_id
 		<where>
+			delivery.c_type=1
 			<if test="id > 0">
 				and delivery.c_id = #{id}
 			</if>
@@ -233,6 +236,7 @@
 	            </choose>
 			</if>
 		</where>
+		order by delivery.c_state asc, delivery.c_delivery_time desc, bom.c_pn
 		<if test="filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
 			for update
 		</if>
@@ -269,6 +273,7 @@
 		left join unit_tbl as unit on mp.c_unit_id = unit.c_id
 		left join warehouse_machine_part_tbl as wh_mp on mp.c_id = wh_mp.c_machine_part_id
 		<where>
+			delivery.c_type=2
 			<if test="id > 0">
 				and delivery.c_id = #{id}
 			</if>
@@ -283,6 +288,7 @@
 	            </choose>
 			</if>
 		</where>
+		order by delivery.c_state asc, delivery.c_delivery_time desc, mp.c_pn
 		<if test="filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
 			for update
 		</if>

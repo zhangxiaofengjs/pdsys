@@ -43,8 +43,8 @@
 				<td th:text="${pn.pn}"></td>
 				<td th:text="${pn.name}"></td>
 				<td th:text="${unit.name}"></td>
-				<td th:text="${dPn.semiProducedNum}"></td>
-				<td th:text="${dPn.producedNum}"></td>
+				<td th:text="${#numbers.formatDecimal(dPn.semiProducedNum,1,3)}" class="number"></td>
+				<td th:text="${#numbers.formatDecimal(dPn.producedNum,1,3)}" class="number"></td>
 		    </tr>
 		</tbody>
 	</table>

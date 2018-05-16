@@ -32,10 +32,10 @@ $(document).ready(function(){
 				"url":"/unit/list/json",
 				"convertAjaxData" : function(thisField, data) {
 					thisField.options = [];
-					data.forEach(function(unit, idx) {
+					data.units.forEach(function(unit, idx) {
 						thisField.options.push({
 							"value": unit.id,
-							"caption":unit.name,
+							"caption":M.unitName(unit),
 						});
 					});
 				}
@@ -66,7 +66,7 @@ $(document).ready(function(){
 				"url":"/supplier/list/json",
 				"convertAjaxData" : function(thisField, data) {
 					thisField.options = [];
-					data.forEach(function(supplier, idx) {
+					data.suppliers.forEach(function(supplier, idx) {
 						thisField.options.push({
 							"value": supplier.id,
 							"caption":supplier.name,
@@ -144,10 +144,10 @@ $(document).ready(function(){
 				"url":"/unit/list/json",
 				"convertAjaxData" : function(thisField, data) {
 					thisField.options = [];
-					data.forEach(function(unit, idx) {
+					data.units.forEach(function(unit, idx) {
 						thisField.options.push({
 							"value": unit.id,
-							"caption":unit.name,
+							"caption":M.unitName(unit),
 						});
 					});
 				}
@@ -178,7 +178,7 @@ $(document).ready(function(){
 				"url":"/supplier/list/json",
 				"convertAjaxData" : function(thisField, data) {
 					thisField.options = [];
-					data.forEach(function(supplier, idx) {
+					data.supplies.forEach(function(supplier, idx) {
 						thisField.options.push({
 							"value": supplier.id,
 							"caption":supplier.name,
@@ -245,11 +245,11 @@ $(document).ready(function(){
 				"url":"/machinepart/list/json",
 				"convertAjaxData" : function(thisField, data) {
 					thisField.options = [];
-					data.forEach(function(mp, idx) {
+					data.machineparts.forEach(function(mp, idx) {
 						thisField.options.push({
 							"value": mp.id,
 							"caption":mp.pn + " " + mp.name,
-							"data":mp.unit.name
+							"data":M.unitName(mp.unit)
 						});
 					});
 				},

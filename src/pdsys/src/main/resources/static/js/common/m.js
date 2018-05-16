@@ -13,3 +13,16 @@ M.bomName = function(bom) {
 	
 	return str;
 }
+
+M.unitName = function(unit) {
+	if(unit == null || unit == undefined) {
+		return "";
+	}
+	
+	var str = unit.name;
+	if(unit.subName != null && unit.subName != "") {
+		str += "(" + unit.ratio + unit.subName + ")";
+	}
+	
+	return str;
+}

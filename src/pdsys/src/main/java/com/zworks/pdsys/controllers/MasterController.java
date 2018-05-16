@@ -76,7 +76,13 @@ public class MasterController {
 			model.addAttribute("list", pnService.queryList(pn));
 			RequestContextUtils.setSessionAttribute(this, "pn", pn);
 		} else if(type.equals("machine")) {
-			model.addAttribute("list", machineService.queryList(new MachineModel()));
+			MachineModel m = formBean.getMachine();
+			if(m == null) {
+				m = RequestContextUtils.getSessionAttribute(this, "machine", new MachineModel());
+				formBean.setMachine(m);
+			}
+			m.getFilterCond().put("fuzzyPnSearch", true);
+			model.addAttribute("list", machineService.queryList(m));
 		}
 		model.addAttribute("formBean", formBean);
 		model.addAttribute("type", type);

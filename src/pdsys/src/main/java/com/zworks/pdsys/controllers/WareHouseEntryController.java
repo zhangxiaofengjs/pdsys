@@ -1,5 +1,6 @@
 package com.zworks.pdsys.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ public class WareHouseEntryController {
     public String entryMain(
     		@PathVariable(name="type" ,required=false)String type,
     		@RequestParam(name="no", required=false)String no,
+    		@RequestParam(name="fuzzyNo", required=false)String fuzzyNo,
     		Model model) {
 
 		if(type == null) {
@@ -60,28 +62,26 @@ public class WareHouseEntryController {
 		}
 		RequestContextUtils.setSessionAttribute(this, "no" + type, no);
 
-		WareHouseEntryModel entry = null;
-		if(no != null) {
-			entry = new WareHouseEntryModel();
-			entry.setNo(no);
-			entry.getFilterCond().put("fuzzyNoSearch", true);
-			
-			if(type.equals("bom")) {
-				entry = wareHouseEntryService.queryOneWithBOM(entry);
-			} else if(type.equals("pn")) {
-				entry = wareHouseEntryService.queryOneWithPn(entry);
-			} else if(type.equals("machinepart")) {
-				entry = wareHouseEntryService.queryOneWithMachinePart(entry);
-			} else {
-				entry = null;
-			}
+		List<?> list = null;
+		WareHouseEntryModel entry = new WareHouseEntryModel();
+		entry.setNo(no);
+		entry.getFilterCond().put("fuzzyNoSearch", !"false".equals(fuzzyNo));
+		
+		if(type.equals("bom")) {
+			list = wareHouseEntryService.queryListWithBOM(entry);
+		} else if(type.equals("pn")) {
+			list = wareHouseEntryService.queryListWithPn(entry);
+		} else if(type.equals("machinepart")) {
+			list = wareHouseEntryService.queryListWithMachinePart(entry);
+		} else {
+			list = new ArrayList<WareHouseEntryModel>();
 		}
 
-		if(entry == null) {
-			entry = new WareHouseEntryModel();
+		if(list.size() == 1) {
+			entry = (WareHouseEntryModel)list.get(0);
 		}
-		
 		model.addAttribute("entry", entry);
+		model.addAttribute("entries", list);
 		model.addAttribute("type", type);
 		return "warehouse/entry/main";
     }

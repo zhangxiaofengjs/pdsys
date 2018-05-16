@@ -2,24 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.PurchaseMapper">
-
 	<resultMap id="supplierResultMap" type="supplierModel" >  
         <id column="s_id" property="id"/>  
         <result column="s_name" property="name"/>  
     </resultMap>
     
-    <resultMap id="selfSupplierResultMap" type="supplierModel" >  
-        <id column="pb_supplier_id" property="id"/>   
-        <result column="ss_name" property="name"/>
+    <resultMap id="unitResultMap" type="unitModel">
+        <id column="u_id" property="id"/>
+        <result column="u_name" property="name"/>
     </resultMap>
 
 	<resultMap id="bomResultMap" type="bomModel" >  
         <id column="b_id" property="id"/>  
         <result column="b_pn" property="pn"/>  
         <result column="b_name" property="name"/>  
-        <collection property="suppliers" ofType="supplierModel" resultMap="supplierResultMap" />
+        <association property="unit" resultMap="unitResultMap"/>
+        <collection property="suppliers" ofType="supplierModel" resultMap="supplierResultMap"/>
     </resultMap>
-    
+
     <resultMap id="wareHouseEntryResultMap" type="wareHouseEntryModel" >  
         <id column="e_id" property="id" />  
         <result column="e_no" property="no" />  
@@ -48,7 +48,7 @@
         <result column="pb_num" property="num"/>  
         <result column="pb_price" property="price"/>
         <association property="bom" resultMap="bomResultMap"/>
-        <association property="supplier" resultMap="selfSupplierResultMap"/>
+        <association property="supplier" resultMap="supplierResultMap"/>
     </resultMap>
 
     <!-- 新增采购单 -->
@@ -58,7 +58,6 @@
 		    `c_no`,
 			`c_user_id`,
 			`c_state`
-			
 		)
 		values
 		(
@@ -184,8 +183,8 @@
 		       b.c_id as b_id,
 		       b.c_pn as b_pn,
 		       b.c_name as b_name,
-		       ss.c_id as pb_supplier_id,
-		       ss.c_name as ss_name,
+		       u.c_id as u_id,
+		       u.c_name as u_name,
 		       s.c_id as s_id,
 		       s.c_name as s_name 
 		from purchase_tbl as p
@@ -195,7 +194,7 @@
 		left join bom_tbl as b on b.c_id = pb.c_bom_id
 		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
 		left join supplier_tbl as s on s.c_id = bs.c_supplier_id
-		left join supplier_tbl as ss on ss.c_id = pb.c_supplier_id
+		left join unit_tbl as u on u.c_id = b.c_unit_id
 		<where>
 			<if test="id > 0">
 				and p.c_id = #{id}
@@ -221,6 +220,6 @@
 			    )
 			</if>
 		</where>
-		order by c_purchase_date desc
+		order by p.c_state asc, c_purchase_date desc
 	</select>
 </mapper>

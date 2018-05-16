@@ -51,7 +51,7 @@
 			    </foreach> 
 			</if>
 		</where>
-		order by c_order_date desc
+		order by c_state asc, c_ship_dead_date asc, c_order_date asc, c_no asc
 	</select>
 	
 	<delete id="updateOrderState" parameterType="orderModel">
@@ -71,8 +71,6 @@
 		</set>
     	where c_id = #{id}
     </update>
-	
-	
 	
 	<insert id="save" parameterType="orderModel" useGeneratedKeys="true" keyProperty="id">
 		insert into order_tbl

@@ -45,8 +45,12 @@ PdSys.ajax = function(option) {
 	$.ajax(args);
 };
 
-PdSys.refresh = function() {
-	document.location.reload();
+PdSys.refresh = function(url) {
+	if(url == undefined || url == "" || url == null) {
+		document.location.reload();
+	} else {
+		document.location = PdSys.url(url);
+	}
 }
 
 PdSys.alert = function(msg) {

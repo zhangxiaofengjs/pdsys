@@ -179,10 +179,10 @@ $(function () {
 							"caption":"已完成",
 							"value":"1",
 						},
-						{
+						/*{//删除需要确认信息暂时不可变更
 							"caption":"已删除",
 							"value":"2",
-						}]
+						}*/]
 				},
 				{
 					"name":"comment",
