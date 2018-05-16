@@ -7,6 +7,11 @@
         <result column="s_name" property="name"/>  
     </resultMap>
     
+    <resultMap id="selfSupplierResultMap" type="supplierModel" >  
+        <id column="ss_id" property="id"/>  
+        <result column="ss_name" property="name"/>  
+    </resultMap>
+    
     <resultMap id="unitResultMap" type="unitModel">
         <id column="u_id" property="id"/>
         <result column="u_name" property="name"/>
@@ -48,7 +53,7 @@
         <result column="pb_num" property="num"/>  
         <result column="pb_price" property="price"/>
         <association property="bom" resultMap="bomResultMap"/>
-        <association property="supplier" resultMap="supplierResultMap"/>
+        <association property="supplier" resultMap="selfSupplierResultMap"/>
     </resultMap>
 
     <!-- 新增采购单 -->
@@ -107,11 +112,14 @@
 		       b.c_pn as b_pn,
 		       b.c_name as b_name,
 		       s.c_id as s_id,
-		       s.c_name as s_name 
+		       s.c_name as s_name,
+		       ss.c_id as ss_id,
+		       ss.c_name as ss_name 
 		from purchase_bom_tbl as pb 
 		left join bom_tbl as b on b.c_id = pb.c_bom_id
 		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
 		left join supplier_tbl as s on s.c_id = bs.c_supplier_id
+		left join supplier_tbl as ss on ss.c_id = pb.c_supplier_id
 		<where>
 			<if test="id != null and id !=''">
 				and pb.c_id = #{id}
@@ -142,7 +150,9 @@
 		       b.c_pn as b_pn,
 		       b.c_name as b_name,
 		       s.c_id as s_id,
-		       s.c_name as s_name 
+		       s.c_name as s_name,
+		       ss.c_id as s_id,
+		       ss.c_name as ss_name 
 		from purchase_bom_tbl as pb 
 		left join bom_tbl as b on b.c_id = pb.c_bom_id
 		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
@@ -186,7 +196,9 @@
 		       u.c_id as u_id,
 		       u.c_name as u_name,
 		       s.c_id as s_id,
-		       s.c_name as s_name 
+		       s.c_name as s_name,
+		       ss.c_id as s_id,
+		       ss.c_name as ss_name
 		from purchase_tbl as p
 		left join user_tbl as user on p.c_user_id = user.c_id 
 		left join entry_tbl as entry on entry.c_id = p.c_entry_id
@@ -195,6 +207,7 @@
 		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
 		left join supplier_tbl as s on s.c_id = bs.c_supplier_id
 		left join unit_tbl as u on u.c_id = b.c_unit_id
+		left join supplier_tbl as ss on ss.c_id = pb.c_supplier_id
 		<where>
 			<if test="id > 0">
 				and p.c_id = #{id}
