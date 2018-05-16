@@ -2,6 +2,8 @@ package com.zworks.pdsys.models;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.DecimalMin;
+
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -13,10 +15,11 @@ import org.apache.ibatis.type.Alias;
 @Alias("purchaseBomModel")
 public class PurchaseBOMModel extends BaseModel implements Serializable {
 	private static final long serialVersionUID = 1L;
-
 	private PurchaseModel purchase;
 	private BOMModel bom;
+	@DecimalMin(value = "0.01",message = "数量最低为0.01")
 	private float num;
+	@DecimalMin(value = "0.01",message = "单价最低为0.01")
 	private float price;
 	private SupplierModel supplier;
 	

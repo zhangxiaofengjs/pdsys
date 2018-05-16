@@ -188,6 +188,15 @@ public class PurchaseController {
 	@RequestMapping(value="/addPB")
 	@ResponseBody
     public JSONResponse addPB(@RequestBody PurchaseBOMModel purchaseBom) {
+		//验证处理
+		if( purchaseBom.getBom()!=null && purchaseBom.getBom().getId()<0 )
+		{
+			return JSONResponse.error("请选择原包材！");
+		}
+		
+		JSONResponse JR = ValidatorUtils.doValidate(purchaseBom);
+		if( JR!=null )
+			return JR;
 		
 		purchaseBOMService.addPB(purchaseBom);
 		return JSONResponse.success();

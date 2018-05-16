@@ -57,7 +57,7 @@
 				<tbody>
 				    <tr th:each="purchaseBom : ${purchase.purchaseBOMs}">
 				      <td><input type="checkbox" name="select" th:rowid="${purchaseBom.id}"/></td>
-				      <td th:text="${purchaseBom.bom.pn} +' '+${purchaseBom.bom.name}"></td>
+				      <td th:if="${purchaseBom.bom!=null}" th:text="${purchaseBom.bom.pn} +' '+${purchaseBom.bom.name}"></td>
 				      <td th:text="${purchaseBom.num}"></td>
 				      <td th:text="${purchaseBom.price}"></td>
 				      <td>

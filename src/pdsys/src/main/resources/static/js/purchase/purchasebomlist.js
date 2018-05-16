@@ -215,7 +215,13 @@ $(function () {
 	        	PdSys.refresh();
 	        },
 	        "error":function(data) {
-	        	PdSys.alert(data.msg);
+				dlg.hide();
+				var msgDlg = new CommonDlg();
+				msgDlg.showMsgDlg({
+					"target":"err_div",
+					"type":"ok",
+					"msg":data.msg
+				});
 	        }
 	    });
 
@@ -250,9 +256,6 @@ $(function () {
 							"target":"err_div",
 							"type":"ok",
 							"msg":data.msg
-//							"ok":function() {
-//								PdSys.refresh();
-//							}
 						});
 					}
 				});
