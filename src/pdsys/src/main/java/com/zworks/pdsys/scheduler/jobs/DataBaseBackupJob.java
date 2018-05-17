@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.zworks.pdsys.common.utils.DateUtils;
-import com.zworks.pdsys.config.PdSysBackupDataBaseConfig;
+import com.zworks.pdsys.config.BackupDataBaseConfig;
 
 /**
  * 数据库备份计划
@@ -23,7 +23,7 @@ import com.zworks.pdsys.config.PdSysBackupDataBaseConfig;
 @Component
 public class DataBaseBackupJob implements Job {
 	@Autowired
-	PdSysBackupDataBaseConfig backupDataBaseConfig;
+	BackupDataBaseConfig backupDataBaseConfig;
 	
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {

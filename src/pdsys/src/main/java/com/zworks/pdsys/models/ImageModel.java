@@ -8,33 +8,32 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("imageModel")
 public class ImageModel extends BaseModel {
-	private String imageName;
-	private String imageUrl;
-	private String imageAlt;
-	private String imageComment;
-	public String getImageUrl() {
-		return imageUrl;
+	private String name;
+	public String getName() {
+		return name;
 	}
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public String getImageAlt() {
-		return imageAlt;
+	public String getUrl() {
+		return url;
 	}
-	public void setImageAlt(String imageAlt) {
-		this.imageAlt = imageAlt;
+	public void setUrl(String url) {
+		this.url = url;
 	}
-	public String getImageComment() {
-		return imageComment;
+	public String getAlt() {
+		return alt;
 	}
-	public void setImageComment(String imageComment) {
-		this.imageComment = imageComment;
+	public void setAlt(String alt) {
+		this.alt = alt;
 	}
-	public String getImageName() {
-		return imageName;
+	public String getComment() {
+		return comment;
 	}
-	public void setImageName(String imageName) {
-		this.imageName = imageName;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
-	
+	private String url;
+	private String alt;
+	private String comment;
 }

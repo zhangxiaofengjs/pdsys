@@ -3,7 +3,7 @@ $(document).ready(function(){
 	//初期化
 	$("#uploadfile").fileinput({
 	    language: 'zh',
-	    uploadUrl: PdSys.url("/upload/imageFile"),
+	    uploadUrl: PdSys.url("/upload/image"),
 	    allowedFileExtensions: ['jpg', 'png', 'gif','jpeg'],
 	    uploadAsync: true,
 	    showUpload: false,

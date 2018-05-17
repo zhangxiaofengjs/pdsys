@@ -14,10 +14,12 @@ import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.RequestContextUtils;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.CustomerModel;
+import com.zworks.pdsys.models.ImageModel;
 import com.zworks.pdsys.models.MachineModel;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.services.BOMService;
 import com.zworks.pdsys.services.CustomerService;
+import com.zworks.pdsys.services.ImageService;
 import com.zworks.pdsys.services.MachineService;
 import com.zworks.pdsys.services.PlaceService;
 import com.zworks.pdsys.services.PnService;
@@ -39,6 +41,8 @@ public class MasterController {
 	PnService pnService;
 	@Autowired
 	MachineService machineService;
+	@Autowired
+	ImageService imageService;
 	
 	@RequestMapping(value= {"/main", "/main/{type}", "/main/{type}"})
     public String main(
@@ -49,7 +53,7 @@ public class MasterController {
 		if(type == null) {
 			type = RequestContextUtils.getSessionAttribute(this, "type", "customer");
 		} else if(!(type.equals("customer") || type.equals("bom") || 
-				type.equals("pn") || type.equals("machine")|| type.equals("fileinput"))) {
+				type.equals("pn") || type.equals("machine")|| type.equals("image"))) {
 			throw new PdsysException("错误参数:/sys/master/main/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
 		RequestContextUtils.setSessionAttribute(this, "type", type);
@@ -83,6 +87,8 @@ public class MasterController {
 			}
 			m.getFilterCond().put("fuzzyPnSearch", true);
 			model.addAttribute("list", machineService.queryList(m));
+		} else if(type.equals("image")) {
+			model.addAttribute("list", imageService.queryList(new ImageModel()));
 		}
 		model.addAttribute("formBean", formBean);
 		model.addAttribute("type", type);

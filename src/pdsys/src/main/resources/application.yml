@@ -22,7 +22,9 @@ spring:
             max-request-size: 100MB
             enabled: true
     resources: # 指定静态资源的路径
-        static-locations: classpath:/static/,classpath:/views/
+        static-locations: classpath:/static/,classpath:/views/,file:///c:/pdsys/upload/ #最后一个是上传文件的路径，参照pdsys.upload.location
+    mvc: 
+        static-path-pattern: /**
     datasource: # 数据库配置
         url: jdbc:mysql://localhost:3306/pdsys?useSSL=false&useUnicode=true&characterEncoding=utf-8
         username: root
@@ -56,6 +58,9 @@ pdsys:
     admin:
         username: admin
         password: $2a$10$qhZeMeQNJRuZ6bPCRvUOxecqqSMQ81Zs91n/fmyxCiCI6yalyMI2m #pdsys111 $2a$10$GVtgC68Z8s88s24JsqfRNuMAfLgAcPfFDKLNIIweXmI6QFICy5f2i
+    upload: 
+        location: c:/pdsys/upload/ #上传文件路径
+        image-folder: image/ #图形文件夹
     backup: #备份设定
         database:
             enable: true

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix="pdsys.backup.database")  
-public class PdSysBackupDataBaseConfig {
+public class BackupDataBaseConfig {
 	private boolean enable;
 	private String location;
 	private String backupDir;
