@@ -7,11 +7,6 @@
         <result column="s_name" property="name"/>  
     </resultMap>
     
-    <resultMap id="selfSupplierResultMap" type="supplierModel" >  
-        <id column="ss_id" property="id"/>  
-        <result column="ss_name" property="name"/>  
-    </resultMap>
-    
     <resultMap id="unitResultMap" type="unitModel">
         <id column="u_id" property="id"/>
         <result column="u_name" property="name"/>
@@ -53,7 +48,7 @@
         <result column="pb_num" property="num"/>  
         <result column="pb_price" property="price"/>
         <association property="bom" resultMap="bomResultMap"/>
-        <association property="supplier" resultMap="selfSupplierResultMap"/>
+        <association property="supplier" resultMap="supplierResultMap" columnPrefix="s"/>
     </resultMap>
 
     <!-- 新增采购单 -->

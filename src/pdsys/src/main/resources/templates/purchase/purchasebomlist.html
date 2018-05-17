@@ -40,8 +40,8 @@
 						<th th:colspan="7">提交人:&nbsp;
 							<span th:text="${purchase.user!=null?purchase.user.name:''}"></span>
 							<i class="pull-right" th:switch="${purchase.state}">状态：&nbsp;
-					  		  <span class="label label-primary" th:case="0">计划</span>
-					  		  <span class="label label-success" th:case="1">下单</span>
+					  		  <span class="label label-primary" th:case="0">计划中</span>
+					  		  <span class="label label-success" th:case="1">已下单</span>
 					  		  <span class="label label-default" th:case="2">已入库</span>
 							</i>
 						</th>

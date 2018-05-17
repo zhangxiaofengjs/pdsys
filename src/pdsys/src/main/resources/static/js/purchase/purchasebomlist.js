@@ -191,16 +191,17 @@ $(function () {
 						});
 					}
 				},
-				
 				{
 					"name":"num",
 					"type":"number",
-					"label":"数量"
+					"label":"数量",
+					"min":1,
 				},
 				{
 					"name":"price",
 					"label":"单价",
-					"type":"text",
+					"type":"number",
+					"min":0.0001
 				},
 				{
 					"name":"supplier.id",
@@ -246,8 +247,7 @@ $(function () {
 					"data":{"id":purchaseId},
 					"success": function(data) {
 						dlg.hide();
-				        var url = '/purchase/list?id=' + purchaseId;
-				        $(location).attr('href', PdSys.url(url));
+						PdSys.refresh();
 					},
 					"error": function(data) {
 						dlg.hide();
