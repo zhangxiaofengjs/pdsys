@@ -8,13 +8,12 @@
 			<a th:href="@{/warehouse/list/main?type=pn}">生产库</a>
 		</li>
 		<li role="presentation" th:class="(${type}=='bom'? 'active' : '')">
-			<a th:href="@{/warehouse/list/main?type=bom}">辅材库</a>
+			<a th:href="@{/warehouse/list/main?type=bom}">原包材库</a>
 		</li>
 		<li role="presentation" th:class="(${type}=='machinepart'? 'active' : '')">
 			<a th:href="@{/warehouse/list/main?type=machinepart}">设备备件库</a>
 		</li>
 	</ul>
-	
 <div th:replace="/warehouse/list/__${type}__::content(${list})"></div>
 <div th:replace="common/footer::copyright"></div>
 </body>

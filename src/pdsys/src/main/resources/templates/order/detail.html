@@ -31,8 +31,9 @@
 						<th rowspan='3' style="width:20px;"><input type="checkbox" name="selectAll" /></th>
 						<th rowspan='3'>品目</th>
 						<th rowspan='3'>名称</th>
-						<th rowspan='3'>数量</th>
 						<th rowspan='3'>单位</th>
+						<th rowspan='3'>订购数量</th>
+						<th rowspan='3'>已出库数量</th>
 						<th colspan='7'>详细信息</th>
 					</tr>
 					<tr>
@@ -67,8 +68,9 @@
 									</td>
 									<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0 and iterStat3.index == 0}" th:text="${orderPn.pn.pn}"></td>
 									<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0 and iterStat3.index == 0}" th:text="${orderPn.pn.name}"></td>
-									<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0 and iterStat3.index == 0}" th:text="${orderPn.num}" class="number"></td>
 									<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0 and iterStat3.index == 0}" th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(orderPn.pn.unit)}"></td>
+									<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0 and iterStat3.index == 0}" th:text="${orderPn.num}" class="number"></td>
+									<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0 and iterStat3.index == 0}" th:text="${orderPn.deliveredNum}" class="number"></td>
 									<td th:rowspan="${clsBomSize}" th:if="${iterStat3.index == 0}" th:text="${pnCls.name + '(' + pnClsRel.num + orderPn.pn.unit.subName + ')'}"></td>
 									<td th:switch="${bom != null ? bom.type : ''}">
 					    				<span th:case="0">原材</span>

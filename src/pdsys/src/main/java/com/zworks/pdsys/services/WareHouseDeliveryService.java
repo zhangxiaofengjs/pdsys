@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.enumClass.DeliveryType;
+import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.mappers.WareHouseDeliveryMapper;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
@@ -38,6 +39,8 @@ public class WareHouseDeliveryService {
 	private WareHouseMachinePartService wareHouseMachinePartService;
 	@Autowired
 	private OrderPnService orderPnService;
+	@Autowired
+	private OrderService orderService;
 	
 	public List<WareHouseDeliveryModel> queryList(WareHouseDeliveryModel obj) {
 		return wareHouseDeliveryMapper.queryList(obj);
@@ -118,7 +121,8 @@ public class WareHouseDeliveryService {
 			}
 			Map<Integer, Float> pnDeliverySemiNumMap = new HashMap<Integer, Float>(); 
 			Map<Integer, Float> pnDeliveryNumMap = new HashMap<Integer, Float>(); 
-
+			Map<Integer, OrderModel> orderMap = new HashMap<Integer, OrderModel>();
+			
 			//搜集各出库品番数量(因为是按照order的，所以品番可能重复在不同的order中)
 			for(WareHouseDeliveryPnModel deliveryPn : delivery.getWareHouseDeliveryPns()) {
 				PnModel pn = deliveryPn.getPn();
@@ -135,16 +139,20 @@ public class WareHouseDeliveryService {
 				}
 				pnDeliveryNumMap.put(pnId, num + deliveryPn.getProducedNum());
 				
+				//搜集Order
+				OrderModel order = deliveryPn.getOrder();
+				orderMap.put(order.getId(), order);
+
 				//更新出库数量
 				OrderPnModel opn = new OrderPnModel();
-				opn.setOrder(deliveryPn.getOrder());
+				opn.setOrder(order);
 				opn.setPn(deliveryPn.getPn());
 				opn.setDeliveredNum(deliveryPn.getProducedNum());
 				opn.getFilterCond().put("update_delivery_num", true);
 				orderPnService.update(opn);
 			}
 			
-			//准备更新
+			//更新库存
 			PnModel pn = new PnModel();
 			WareHousePnModel whPn = new WareHousePnModel();
 			whPn.setPn(pn);
@@ -166,6 +174,17 @@ public class WareHouseDeliveryService {
 				wareHousePn.setProducedNum(num);
 				wareHousePn.setSemiProducedNum(semiNum);
 				wareHousePnService.update(wareHousePn);
+			}
+			
+			//更新订单状态
+			OrderModel o = new OrderModel();
+			for (Integer orderId : orderMap.keySet()) {
+				o.setId(orderId);
+				if(orderService.isAllPnDelivered(o)) {
+					o.getFilterCond().put("update_state", true);
+					o.setState(OrderState.FINISHED.ordinal());
+					orderService.update(o);
+				}
 			}
 		} else if(delivery.getType() == (int)DeliveryType.BOM.ordinal()) {
 			delivery = this.queryOneWithBOM(delivery);

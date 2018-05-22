@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.zworks.pdsys.business.beans.WareHouseHistoryFormBean;
 import com.zworks.pdsys.business.beans.WareHouseListFormBean;
 import com.zworks.pdsys.common.enumClass.DeliveryState;
+import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.enumClass.PurchaseState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
@@ -24,11 +25,14 @@ import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
+import com.zworks.pdsys.models.WareHouseEntryBOMModel;
+import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.services.WareHouseBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
+import com.zworks.pdsys.services.WareHouseEntryBOMService;
 import com.zworks.pdsys.services.WareHouseMachinePartService;
 import com.zworks.pdsys.services.WareHousePnService;
 
@@ -47,6 +51,8 @@ public class WareHouseController extends BaseController{
 	WareHouseMachinePartService wareHouseMachinePartService;
 	@Autowired
 	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
+	@Autowired
+	WareHouseEntryBOMService wareHouseEntryBOMService;
 	@Autowired
 	WareHouseDeliveryPnService wareHouseDeliveryPnService;
 
@@ -133,8 +139,7 @@ public class WareHouseController extends BaseController{
 		}
 		RequestContextUtils.setSessionAttribute(this, "end" + type, e);
 		
-		if(type.equals("bom")) {
-			
+		if(type.equals("deliverybom")) {
 			WareHouseDeliveryBOMModel bom = new WareHouseDeliveryBOMModel();
 			WareHouseDeliveryModel d = new WareHouseDeliveryModel();
 			d.setState(DeliveryState.DELIVERIED.ordinal());
@@ -144,6 +149,17 @@ public class WareHouseController extends BaseController{
 			bom.getFilterCond().put("groupByBOM", true);
 			
 			List<WareHouseDeliveryBOMModel> list = wareHouseDeliveryBOMService.queryList(bom);
+			model.addAttribute("list", list);
+		} else if(type.equals("entrybom")) {
+			WareHouseEntryBOMModel bom = new WareHouseEntryBOMModel();
+			WareHouseEntryModel entry = new WareHouseEntryModel();
+			entry.setState(EntryState.ENTRIED.ordinal());
+			bom.setWareHouseEntry(entry);
+			bom.getFilterCond().put("entryStart", s);
+			bom.getFilterCond().put("entryEnd", e);
+			bom.getFilterCond().put("groupByBOM", true);
+			
+			List<WareHouseEntryBOMModel> list = wareHouseEntryBOMService.queryList(bom);
 			model.addAttribute("list", list);
 		}
 		else if(type.equals("pn")) {

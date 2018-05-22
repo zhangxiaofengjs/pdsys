@@ -2,8 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.OrderMapper">
-	<resultMap id="orderPnResultMap" type="orderModel" >
+	<resultMap id="orderPnResultMap" type="orderPnModel" >
         <id column="o_pn_id" property="id"/> 
+        <id column="o_pn_num" property="num"/> 
+        <id column="o_pn_delivered_num" property="deliveredNum"/> 
     </resultMap>
 	<resultMap id="orderResultMap" type="orderModel" >
         <id column="o_id" property="id"/> 
@@ -24,7 +26,9 @@
 			   o.c_ship_date as o_ship_date,
 			   o.c_state as o_state,
 			   o.c_comment as o_comment,
-			   o_pn.c_id as o_pn_id
+			   o_pn.c_id as o_pn_id,
+			   o_pn.c_num as o_pn_num,
+			   o_pn.c_delivered_num as o_pn_delivered_num
 		from order_tbl as o
 		left join order_pn_tbl as o_pn on o.c_id=o_pn.c_order_id 
 		<where>
@@ -51,26 +55,24 @@
 			    </foreach> 
 			</if>
 		</where>
-		order by c_state asc, c_ship_dead_date asc, c_order_date asc, c_no asc
+		order by c_state asc, c_order_date asc, c_ship_dead_date asc, c_no asc
 	</select>
 	
-	<delete id="updateOrderState" parameterType="orderModel">
-		update order_tbl 
-		<set> 
-			`c_state` = #{state}, 
+	<update id="update" parameterType="orderModel">
+		update order_tbl
+		<set>
+			<if test="filterCond.update_state != null and filterCond.update_state">
+				c_state = #{state},
+			</if>
+			<if test="filterCond.update_ship_dead_date != null and filterCond.update_ship_dead_date">
+				c_ship_dead_date = #{shipDeadDate},
+			</if>
+			<if test="filterCond.update_comment != null and filterCond.update_comment">
+				c_comment = #{comment},
+			</if>
 		</set>
 		where c_id = #{id}
-	</delete>
-	
-	<update id="updateOrder" parameterType="orderModel">
-    	update order_tbl
-    	<set>
-		`c_state`=#{state},
-		`c_ship_dead_date`=#{shipDeadDate},
-		`c_comment` = #{comment}
-		</set>
-    	where c_id = #{id}
-    </update>
+	</update>
 	
 	<insert id="save" parameterType="orderModel" useGeneratedKeys="true" keyProperty="id">
 		insert into order_tbl

@@ -98,15 +98,8 @@ $(document).ready(function(){
 			},
 		},
 		{
-			"name":"semiProducedNum",
-			"label":"半成品数",
-			"type":"number",
-			"value":"0",
-			"min":"0",
-		},
-		{
 			"name":"producedNum",
-			"label":"成品数",
+			"label":"入库数量",
 			"type":"number",
 			"value":"0",
 			"min":"0",
@@ -125,12 +118,11 @@ $(document).ready(function(){
 			"fields":fields,
 			"url":"/warehouse/entry/update/pn",
 			"valid":function() {
-				if(dlg.fieldVal("semiProducedNum") == 0 &&
-				   dlg.fieldVal("producedNum") == 0) {
-					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
-					dlg.setError("producedNum", "半成品/成品数量都未输入");
-					return false;
-				}
+//				if(dlg.fieldVal("producedNum") == 0) {
+//					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
+//					dlg.setError("producedNum", "半成品/成品数量都未输入");
+//					return false;
+//				}
 				return true;
 			},
 			"success": function(data) {
