@@ -178,7 +178,7 @@ $(document).ready(function(){
 				"url":"/supplier/list/json",
 				"convertAjaxData" : function(thisField, data) {
 					thisField.options = [];
-					data.supplies.forEach(function(supplier, idx) {
+					data.suppliers.forEach(function(supplier, idx) {
 						thisField.options.push({
 							"value": supplier.id,
 							"caption":supplier.name,

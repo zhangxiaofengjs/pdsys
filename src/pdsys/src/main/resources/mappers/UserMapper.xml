@@ -68,8 +68,7 @@
     
 	<update id="update">
     	update user_tbl
-		set	c_no = #{no},
-			c_name = #{name},
+		set	c_name = #{name},
 			c_phone = #{phone},
 			c_address = #{address}
     	<where>

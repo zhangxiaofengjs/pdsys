@@ -330,6 +330,9 @@ CommonDlg.prototype.fieldBlur = function(fieldName) {
 };
 
 CommonDlg.prototype.doFieldValid = function(field) {
+	if(field.type == "label") {
+		return true;//label类型无需验证
+	}
 	var self = this;
 	var fieldElm = self.findFieldElem(field);
 	var val = fieldElm.val();
