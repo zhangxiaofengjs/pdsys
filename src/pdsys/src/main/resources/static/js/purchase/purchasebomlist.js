@@ -73,7 +73,7 @@ $(function () {
 					"label":"原包材名",
 					"type":"label",
 					"ajax":true,
-					"url":"/purchase/get",
+					"url":"/purchase/get/purchasebom",
 					"ajaxData":{"id":purchaseBomIds[0]},
 					"convertAjaxData" : function(field, data) {
 						var pb = data.pb;

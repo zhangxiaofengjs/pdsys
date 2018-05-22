@@ -2,14 +2,55 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.PurchaseBOMMapper">
+	<resultMap id="supplierResultMap" type="supplierModel" >  
+        <id column="s_id" property="id"/>  
+        <result column="s_name" property="name"/>  
+    </resultMap>
+    
+    <resultMap id="unitResultMap" type="unitModel">
+        <id column="u_id" property="id"/>
+        <result column="u_name" property="name"/>
+    </resultMap>
+
+	<resultMap id="bomResultMap" type="bomModel" >  
+        <id column="b_id" property="id"/>  
+        <result column="b_pn" property="pn"/>  
+        <result column="b_name" property="name"/>  
+        <association property="unit" resultMap="unitResultMap"/>
+        <collection property="suppliers" ofType="supplierModel" resultMap="supplierResultMap"/>
+    </resultMap>
 	<resultMap id="purchaseBomResultMap" type="purchaseBomModel" >  
         <id column="pb_id" property="id"/>  
         <result column="pb_num" property="num"/>  
         <result column="pb_price" property="price"/>
         <association property="bom" resultMap="bomResultMap"/>
-        <association property="supplier" resultMap="selfSupplierResultMap"/>
+        <association property="supplier" resultMap="supplierResultMap" columnPrefix="s"/>
     </resultMap>
 
+	<select id="queryList" resultMap="purchaseBomResultMap">
+		select pb.c_id as pb_id,
+		       pb.c_bom_id as pb_bom_id,
+			   pb.c_num as pb_num,
+		       pb.c_price as pb_price,
+		       b.c_id as b_id,
+		       b.c_pn as b_pn,
+		       b.c_name as b_name,
+		       s.c_id as s_id,
+		       s.c_name as s_name,
+		       ss.c_id as ss_id,
+		       ss.c_name as ss_name
+		from purchase_bom_tbl as pb 
+		left join bom_tbl as b on b.c_id = pb.c_bom_id
+		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
+		left join supplier_tbl as s on s.c_id = bs.c_supplier_id
+		left join supplier_tbl as ss on ss.c_id = pb.c_supplier_id
+		<where>
+			<if test="id != null and id !=''">
+				and pb.c_id = #{id}
+			</if>
+		</where>
+	</select>
+	
    	<delete id="delete"  parameterType="purchaseBomModel">
     	delete from purchase_bom_tbl
     	<where>

@@ -36,6 +36,17 @@ public class PurchaseBOMService {
 	
 	public void add(PurchaseBOMModel purchaseBom) {
 		purchaseBOMMapper.add( purchaseBom );
-		
+	}
+	
+	public List<PurchaseBOMModel> queryList(PurchaseBOMModel purchaseBom) {
+		return purchaseBOMMapper.queryList(purchaseBom);
+	}
+	
+	public PurchaseBOMModel queryOne(PurchaseBOMModel purchaseBom) {
+		List<PurchaseBOMModel> list = queryList(purchaseBom);
+		if(list.size() == 1) {
+			return list.get(0);
+		}
+		return null;
 	}
 }

@@ -58,6 +58,13 @@ public class PurchaseController {
 		order.setState(OrderState.PRODUCTING.ordinal());
 
 		List<BOMDetailModel> list = orderPnService.queryBomList(order);
+		//删除不需要显示的
+		for(int i = list.size()-1; i>-1;i--) {
+			BOMDetailModel bd = list.get(i);
+			if(bd.getBomNum() <= 0) {
+				list.remove(i);
+			}
+		}
 		model.addAttribute("boms", list);
 		model.addAttribute("order", order);
 
@@ -219,7 +226,7 @@ public class PurchaseController {
 			return JSONResponse.error("采购单不存在！");
 		}
 
-		if( purchaseService.checkSupplierIdIsNull(purchase) )
+		if( purchaseService.checkSupplierIdIsNull(p) )
 		{
 			return JSONResponse.error("请先进行修改操作，选择一个供应商！");
 		}
@@ -232,10 +239,10 @@ public class PurchaseController {
 	/**
 	 * 原包材
 	 */
-	@RequestMapping("/get")
+	@RequestMapping("/get/purchasebom")
 	@ResponseBody
 	public JSONResponse showPurchaseInfo(@RequestBody PurchaseBOMModel purchaseBom) {
-		PurchaseBOMModel pb = purchaseService.queryPurchaseBOM(purchaseBom);
+		PurchaseBOMModel pb = purchaseBOMService.queryOne(purchaseBom);
 		if(pb == null) {
 			return JSONResponse.error("不存在的采购单信息！");
 		}

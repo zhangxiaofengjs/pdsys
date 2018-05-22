@@ -53,15 +53,6 @@ public class PurchaseService {
 		return null;
 	}
 	
-	public PurchaseBOMModel queryPurchaseBOM(PurchaseBOMModel purchaseBom) {
-		PurchaseBOMModel pb = purchaseMapper.queryPurchaseBOM(purchaseBom);
-		return pb;
-	}
-	
-	public List<PurchaseBOMModel> showPurchaseDetail(PurchaseBOMModel purchaseBom) {
-		return purchaseMapper.showPurchaseDetail(purchaseBom);
-	}
-	
 	public void update(PurchaseModel purchase) {
 		purchaseMapper.update(purchase);
 	}
@@ -71,40 +62,15 @@ public class PurchaseService {
 		return purchases;
 	}
 	
-	//去除重复的状态
-	public int[] removeDuplicate(List<PurchaseModel> list) {
-        Set<Integer> set=new TreeSet<Integer>();
-        for (int i = 0; i < list.size(); i++) {
-        	PurchaseModel o=list.get(i);
-        	set.add(o.getState());
-        }
-        
-        Integer[] arr2=set.toArray(new Integer[0]);
-        int[] result=new int[arr2.length];
-        
-        for (int i = 0; i < result.length; i++) {
-            result[i]=arr2[i];
-        }
-        return result;
-
-	}
-	
 	public boolean checkSupplierIdIsNull(PurchaseModel purchase)
 	{
-		boolean ret = false;
-		PurchaseBOMModel purchaseBom = new PurchaseBOMModel();
-		purchaseBom.setPurchase(purchase);
-		List<PurchaseBOMModel> purchaseBoms = this.showPurchaseDetail(purchaseBom);
-		for(int i =0;i<purchaseBoms.size();i++)
-		{
-			PurchaseBOMModel pb = purchaseBoms.get(i);
-			if( pb.getSupplier() == null )
-			{
-				ret = true;
-				break;
+		List<PurchaseBOMModel> purchaseBoms = purchase.getPurchaseBOMs();
+		for(PurchaseBOMModel pb : purchaseBoms) {
+			if( pb.getSupplier() == null ) {
+				return true;
 			}
 		}
-		return ret;
+		return false;
 	}
 
 	@Transactional

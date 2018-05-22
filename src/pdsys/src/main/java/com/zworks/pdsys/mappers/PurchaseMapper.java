@@ -14,12 +14,6 @@ public interface PurchaseMapper {
 	
 	void delete(PurchaseModel purchase);
 	
-	PurchaseModel queryOne(PurchaseModel purchase);
-	
-	PurchaseBOMModel queryPurchaseBOM(PurchaseBOMModel purchaseBom);
-	
-	List<PurchaseBOMModel> showPurchaseDetail(PurchaseBOMModel purchaseBom);
-	
 	void update(PurchaseModel purchase);
 	
 	List<PurchaseModel> queryList(PurchaseModel purchase);
