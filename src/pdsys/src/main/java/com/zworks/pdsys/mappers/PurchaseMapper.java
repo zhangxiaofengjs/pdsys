@@ -10,11 +10,7 @@ import com.zworks.pdsys.models.PurchaseModel;
 @Mapper
 public interface PurchaseMapper {
 
-	void savePurchase(PurchaseModel purchase);
-	
-	void savePurchaseDetail(List<PurchaseBOMModel> purchaseBoms);
-	
-	void delPurchaseDetail(PurchaseBOMModel purchaseBoms);
+	void add(PurchaseModel purchase);
 	
 	void delete(PurchaseModel purchase);
 	
@@ -22,11 +18,9 @@ public interface PurchaseMapper {
 	
 	PurchaseBOMModel queryPurchaseBOM(PurchaseBOMModel purchaseBom);
 	
-	void updatePB(PurchaseBOMModel purchaseBom);
-	
 	List<PurchaseBOMModel> showPurchaseDetail(PurchaseBOMModel purchaseBom);
 	
-	void updatePurchase(PurchaseModel purchase);
+	void update(PurchaseModel purchase);
 	
 	List<PurchaseModel> queryList(PurchaseModel purchase);
 }

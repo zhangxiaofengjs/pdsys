@@ -92,22 +92,12 @@ public class WareHouseEntryController {
 	@RequestMapping(value="/add/entry")
 	@ResponseBody
     public JSONResponse addEntry(@RequestBody WareHouseEntryModel entry, Model model) {
-		WareHouseEntryModel e = new WareHouseEntryModel();
-		e.setNo(entry.getNo());
-		if(wareHouseEntryService.exists(e)) {
-			return JSONResponse.error("已经存在单号:" + entry.getNo());
+		JSONResponse res = wareHouseEntryService.checkAddable(entry);
+		if(res.isSuccess()) {
+			wareHouseEntryService.add(entry);
+			return JSONResponse.success().put("entry", entry);
 		}
-		
-		e = new WareHouseEntryModel();
-		e.setType(entry.getType());
-		e.setUser(entry.getUser());
-		e.setState(EntryState.PLANNING.ordinal());
-		List<WareHouseEntryModel> es = wareHouseEntryService.queryList(e);
-		if(es.size()!=0) {
-			return JSONResponse.error("当前用户[" + es.get(0).getUser().getName() + "]存在未处理单号:" + es.get(0).getNo());
-		}
-		wareHouseEntryService.add(entry);
-		return JSONResponse.success().put("entry", entry);
+		return res;
     }
 	
 	/**

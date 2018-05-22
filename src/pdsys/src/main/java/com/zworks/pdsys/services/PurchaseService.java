@@ -1,5 +1,6 @@
 package com.zworks.pdsys.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -8,10 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zworks.pdsys.common.enumClass.PurchaseState;
+import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.mappers.PurchaseBOMMapper;
 import com.zworks.pdsys.mappers.PurchaseMapper;
 import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
+import com.zworks.pdsys.models.WareHouseEntryBOMModel;
+import com.zworks.pdsys.models.WareHouseEntryModel;
 
 @Service
 public class PurchaseService {
@@ -19,21 +24,13 @@ public class PurchaseService {
     private PurchaseMapper purchaseMapper;
 	@Autowired
 	private PurchaseBOMMapper purchaseBOMMapper;
+	@Autowired
+	private WareHouseEntryService wareHouseEntryService;
+	@Autowired
+	private WareHouseEntryBOMService wareHouseEntryBOMService;
 	
-	public void savePurchase(PurchaseModel purchase) {
-		purchaseMapper.savePurchase( purchase );
-	}
-	
-	public void savePurchaseDetail(List<PurchaseBOMModel> purchaseBoms) {
-		purchaseMapper.savePurchaseDetail( purchaseBoms );
-	}
-	
-	@Transactional
-	public void delPurchaseDetail(List<PurchaseBOMModel> purchaseBoms){
-		for(PurchaseBOMModel purchaseBom : purchaseBoms) 
-		{
-			purchaseMapper.delPurchaseDetail(purchaseBom);
-		}
+	public void add(PurchaseModel purchase) {
+		purchaseMapper.add( purchase );
 	}
 	
 	@Transactional
@@ -61,16 +58,12 @@ public class PurchaseService {
 		return pb;
 	}
 	
-	public void updatePB(PurchaseBOMModel purchaseBom) {
-		purchaseMapper.updatePB(purchaseBom);
-	}
-	
 	public List<PurchaseBOMModel> showPurchaseDetail(PurchaseBOMModel purchaseBom) {
 		return purchaseMapper.showPurchaseDetail(purchaseBom);
 	}
 	
-	public void updatePurchase(PurchaseModel purchase) {
-		purchaseMapper.updatePurchase(purchase);
+	public void update(PurchaseModel purchase) {
+		purchaseMapper.update(purchase);
 	}
 	
 	public List<PurchaseModel> queryList(PurchaseModel purchase) {
@@ -113,5 +106,32 @@ public class PurchaseService {
 		}
 		return ret;
 	}
-	
+
+	@Transactional
+	public WareHouseEntryModel entry(PurchaseModel p) {
+		//创建入库单以及明细
+		WareHouseEntryModel entry = p.getWareHouseEntry();
+		wareHouseEntryService.add(entry);
+
+		List<WareHouseEntryBOMModel> eBoms = new ArrayList<WareHouseEntryBOMModel>();
+		for(PurchaseBOMModel pBOM : p.getPurchaseBOMs()) {
+			WareHouseEntryBOMModel whBOM = new WareHouseEntryBOMModel();
+			whBOM.setWareHouseEntry(entry);
+			whBOM.setBom(pBOM.getBom());
+			whBOM.setNum(pBOM.getNum());
+			
+			wareHouseEntryBOMService.add(whBOM);
+			
+			eBoms.add(whBOM);
+		}
+		//进行入库
+		entry.setWareHouseEntryBOMs(eBoms);
+		wareHouseEntryService.entry(entry);
+		
+		//更新采购单
+		p.setState(PurchaseState.FINISHED.ordinal());
+		p.setPurchaseDate(DateUtils.getCurrentDate());
+		update(p);
+		return entry;
+	}
 }

@@ -17,7 +17,17 @@
 		</where>
     </delete>
     
-    <insert id="addPB" parameterType="purchaseBomModel" useGeneratedKeys="true" keyProperty="id">
+    <update id="update" parameterType="purchaseBomModel">
+    	update purchase_bom_tbl
+		set	c_num = #{num},
+			c_price = #{price},
+			c_supplier_id = #{supplier.id}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
+    
+    <insert id="add" parameterType="purchaseBomModel" useGeneratedKeys="true" keyProperty="id">
 		insert into purchase_bom_tbl
 		(
 			`c_purchase_id`,

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.enumClass.EntryType;
+import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.mappers.WareHouseEntryMapper;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
@@ -97,6 +98,24 @@ public class WareHouseEntryService {
 		wareHouseEntryMapper.update(entry);
 	}
 
+	public JSONResponse checkAddable(WareHouseEntryModel entry) {
+		WareHouseEntryModel e = new WareHouseEntryModel();
+		e.setNo(entry.getNo());
+		if(exists(e)) {
+			return JSONResponse.error("已经存在单号:" + entry.getNo());
+		}
+		
+		e = new WareHouseEntryModel();
+		e.setType(entry.getType());
+		e.setUser(entry.getUser());
+		e.setState(EntryState.PLANNING.ordinal());
+		List<WareHouseEntryModel> es = queryList(e);
+		if(es.size()!=0) {
+			return JSONResponse.error("当前用户[" + es.get(0).getUser().getName() + "]存在未处理单号:" + es.get(0).getNo());
+		}
+		
+		return JSONResponse.success();
+	}
 	public boolean entry(WareHouseEntryModel entry) {
 		if(entry.getType() == EntryType.PN.ordinal()) {
 			entry = queryOneWithPn(entry);

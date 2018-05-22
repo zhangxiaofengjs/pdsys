@@ -52,7 +52,7 @@
     </resultMap>
 
     <!-- 新增采购单 -->
-	<insert id="savePurchase" parameterType="purchaseModel" useGeneratedKeys="true" keyProperty="id">
+	<insert id="add" parameterType="purchaseModel" useGeneratedKeys="true" keyProperty="id">
 		insert into purchase_tbl
 		(
 		    `c_no`,
@@ -67,30 +67,7 @@
 		)
 	</insert>
 	
-	<!-- 新增采购单详细 -->
-	<insert id="savePurchaseDetail" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
-		insert into purchase_bom_tbl
-		(
-			`c_purchase_id`,
-			`c_bom_id`,
-			`c_num`,
-			`c_price`
-		)
-		values
-	    <foreach collection="list" item="purchaseBom" index="index" separator=",">  
-	        (#{purchaseBom.purchase.id},#{purchaseBom.bom.id},#{purchaseBom.num},#{purchaseBom.price})  
-	    </foreach>
- 
-	</insert>
-	
-   	<delete id="delPurchaseDetail"  parameterType="purchaseBomModel">
-    	delete from purchase_bom_tbl
-    	<where>
-			c_id = #{id}
-		</where>
-    </delete>
-    
-     <delete id="delete"  parameterType="purchaseModel">
+    <delete id="delete"  parameterType="purchaseModel">
     	delete from purchase_tbl
     	<where>
 			c_id = #{id}
@@ -122,16 +99,6 @@
 		</where>
 	</select>
 	
-	<update id="updatePB" parameterType="purchaseBomModel">
-    	update purchase_bom_tbl
-		set	c_num = #{num},
-			c_price = #{price},
-			c_supplier_id = #{supplier.id}
-    	<where>
-			c_id = #{id}
-		</where>
-    </update>
-    
     <!-- 通过采购单ID搜索采购单详细 -->
    	<select id="showPurchaseDetail" resultMap="purchaseBomResultMap">
 		select pb.c_id as pb_id,
@@ -160,9 +127,13 @@
 		</where>
 	</select>
 	
-	<update id="updatePurchase" parameterType="purchaseModel">
+	<update id="update" parameterType="purchaseModel">
 		update purchase_tbl 
-		<set> 
+		<set>
+			<if test="wareHouseEntry != null and wareHouseEntry.id > 0">
+				c_entry_id=#{wareHouseEntry.id},
+				c_arrive_date=current_timestamp(), 
+			</if>
 			`c_state` = #{state}, 
 			`c_purchase_date` = #{purchaseDate},
 		</set>

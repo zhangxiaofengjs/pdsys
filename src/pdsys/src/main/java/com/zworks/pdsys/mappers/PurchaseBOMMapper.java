@@ -13,5 +13,7 @@ public interface PurchaseBOMMapper {
 
 	void delete(PurchaseBOMModel purchaseBOM);
 	
-	void addPB(PurchaseBOMModel purchaseBOM);
+	void add(PurchaseBOMModel purchaseBOM);
+
+	void update(PurchaseBOMModel purchaseBom);
 }

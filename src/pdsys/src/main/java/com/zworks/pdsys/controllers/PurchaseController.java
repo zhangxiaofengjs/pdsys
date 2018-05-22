@@ -24,10 +24,12 @@ import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
 import com.zworks.pdsys.models.SupplierModel;
+import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.services.BOMService;
 import com.zworks.pdsys.services.OrderPnService;
 import com.zworks.pdsys.services.PurchaseBOMService;
 import com.zworks.pdsys.services.PurchaseService;
+import com.zworks.pdsys.services.WareHouseEntryService;
 
 @Controller
 @RequestMapping("/purchase")
@@ -44,6 +46,9 @@ public class PurchaseController {
 	
 	@Autowired
 	PurchaseBOMService purchaseBOMService;
+
+	@Autowired
+	private WareHouseEntryService wareHouseEntryService;
 	/**
 	 * 采购管理
 	 */
@@ -72,7 +77,7 @@ public class PurchaseController {
 		if( JR!=null )
 			return JR;
 		
-		purchaseService.savePurchase(purchase);
+		purchaseService.add(purchase);
 		int purchaseId = purchase.getId();
 		
 		//新增采购单详细
@@ -111,9 +116,10 @@ public class PurchaseController {
 			}
 		}
 		
-		if( purchaseBoms.size() > 0 )
-			purchaseService.savePurchaseDetail(purchaseBoms);
-
+		if( purchaseBoms.size() > 0 ) {
+			purchaseBOMService.add(purchaseBoms);
+		}
+		
 		return JSONResponse.success("采购单追加成功！").put("purchaseId", purchaseId);
 
 	}
@@ -198,7 +204,7 @@ public class PurchaseController {
 		if( JR!=null )
 			return JR;
 		
-		purchaseBOMService.addPB(purchaseBom);
+		purchaseBOMService.add(purchaseBom);
 		return JSONResponse.success();
     }
 	
@@ -219,7 +225,7 @@ public class PurchaseController {
 		}
 		p.setState(PurchaseState.ORDERED.ordinal());
 		p.setPurchaseDate(DateUtils.getCurrentDate());
-		purchaseService.updatePurchase(p);
+		purchaseService.update(p);
 		return JSONResponse.success("下单成功！");
 	}
 	
@@ -293,7 +299,6 @@ public class PurchaseController {
 			return JSONResponse.success().put("suppliers", suppliers);
 		
 		return JSONResponse.success().put("suppliers", b.getSuppliers());
-		
 	}
 	
 	/**
@@ -302,7 +307,7 @@ public class PurchaseController {
 	@RequestMapping("/updatePB")
 	@ResponseBody
 	public JSONResponse updatePB(@RequestBody PurchaseBOMModel purchaseBom) {
-		purchaseService.updatePB(purchaseBom);
+		purchaseBOMService.update(purchaseBom);
 		return JSONResponse.success();
 	}
 	
@@ -321,5 +326,26 @@ public class PurchaseController {
 		
         return "purchase/list";
     }
-
+	
+	@RequestMapping("/entry")
+	@ResponseBody
+    public JSONResponse entry(@RequestBody PurchaseModel purchase, Model model) {
+		PurchaseModel p = purchaseService.queryOne(purchase);
+		if(p == null) {
+			return JSONResponse.error("该采购单不存在，请刷新重试");
+		}
+		if(p.getState() != PurchaseState.ORDERED.ordinal()) {
+			return JSONResponse.error("该采购单还未下单");
+		}
+		
+		WareHouseEntryModel entry = purchase.getWareHouseEntry();
+		JSONResponse res = wareHouseEntryService.checkAddable(entry);
+		if(!res.isSuccess()) {
+			return res;
+		}
+		
+		p.setWareHouseEntry(entry);
+		purchaseService.entry(p);
+		return JSONResponse.success();
+    }
 }
