@@ -14,6 +14,7 @@ import com.zworks.pdsys.models.WareHouseDeliveryModel;
 public interface WareHouseDeliveryMapper {
 	List<WareHouseDeliveryModel> queryList(WareHouseDeliveryModel delivery);
 	List<WareHouseDeliveryModel> queryListWithPn(WareHouseDeliveryModel delivery);
+	List<WareHouseDeliveryModel> queryListWithSemiPn(WareHouseDeliveryModel delivery);
 	List<WareHouseDeliveryModel> queryListWithBOM(WareHouseDeliveryModel delivery);
 	List<WareHouseDeliveryModel> queryListWithMachinePart(WareHouseDeliveryModel delivery);
 

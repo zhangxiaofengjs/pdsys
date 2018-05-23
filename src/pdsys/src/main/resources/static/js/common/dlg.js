@@ -170,8 +170,13 @@ CommonDlg.prototype.hide = function() {
 	$("#" + this.id()).modal('hide');
 };
 
-CommonDlg.prototype.rebuildField = function(field) {
+CommonDlg.prototype.rebuildField = function(fieldOrName) {
 	var self = this;
+	
+	var field = fieldOrName;
+	if(typeof(fieldOrName)=="string"){
+		field = this.fieldByName(field);
+	}
 	
 	if(field.ajax) {
 		self.buildAjaxField(field);

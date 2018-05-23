@@ -17,10 +17,12 @@ public interface WareHouseEntryMapper {
 
 	List<WareHouseEntryModel> queryList(WareHouseEntryModel obj);
 	List<WareHouseEntryModel> queryListWithPn(WareHouseEntryModel obj);
+	List<WareHouseEntryModel> queryListWithSemiPn(WareHouseEntryModel entry);
 	List<WareHouseEntryModel> queryListWithBOM(WareHouseEntryModel obj);
 	List<WareHouseEntryModel> queryListWithMachinePart(WareHouseEntryModel obj);
 
 	void update(WareHouseEntryModel entry);
 
 	void delete(WareHouseEntryModel entry);
+
 }

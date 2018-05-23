@@ -2,11 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseDeliveryMapper">
-
 	<resultMap id="wareHousePnResultMap" type="wareHousePnModel" >  
         <id column="wh_pn_id" property="id" />
         <id column="wh_pn_produced_num" property="producedNum" />  
         <id column="wh_pn_semi_produced_num" property="semiProducedNum" />  
+    </resultMap>
+    <resultMap id="wareHouseSemiPnResultMap" type="wareHouseSemiPnModel" >  
+        <id column="wh_pn_id" property="id" />
+        <result column="wh_pn_num" property="num" />  
     </resultMap>
     <resultMap id="wareHouseBOMResultMap" type="wareHouseBOMModel" >  
         <id column="wh_bom_id" property="id" />
@@ -23,6 +26,7 @@
 	<resultMap id="unitResultMap" type="unitModel" >  
         <id column="unit_id" property="id" />  
         <id column="unit_name" property="name" />  
+        <id column="unit_sub_name" property="subName" />  
     </resultMap>
 	<resultMap id="pnResultMap" type="pnModel" >  
         <id column="pn_id" property="id" />  
@@ -56,6 +60,12 @@
         <association property="pn" resultMap="pnResultMap" />
         <association property="wareHousePn" resultMap="wareHousePnResultMap" />
     </resultMap>
+	<resultMap id="wareHouseDeliverySemiPnResultMap" type="wareHouseDeliverySemiPnModel">  
+        <id column="d_pn_id" property="id" />  
+        <result column="d_pn_num" property="num" />  
+        <association property="pn" resultMap="pnResultMap" />
+        <association property="wareHouseSemiPn" resultMap="wareHouseSemiPnResultMap" />
+    </resultMap>
 	<resultMap id="wareHouseDeliveryBOMResultMap" type="wareHouseDeliveryBOMModel">  
         <id column="d_bom_id" property="id" />  
         <result column="d_bom_num" property="num" />  
@@ -85,6 +95,7 @@
         <association property="user" resultMap="userResultMap"/>
         <association property="updateUser" resultMap="userResultMap" columnPrefix="upt_"/>
         <collection property="wareHouseDeliveryPns" ofType="wareHouseDeliveryPnModel" resultMap="wareHouseDeliveryPnResultMap" />
+        <collection property="wareHouseDeliverySemiPns" ofType="wareHouseDeliverySemiPnModel" resultMap="wareHouseDeliverySemiPnResultMap" />
         <collection property="wareHouseDeliveryBOMs" ofType="wareHouseDeliveryBOMModel" resultMap="wareHouseDeliveryBOMResultMap" />
         <collection property="wareHouseDeliveryMachineParts" ofType="wareHouseDeliveryMachinePartModel" resultMap="wareHouseDeliveryMachinePartResultMap" />
     </resultMap>
@@ -170,6 +181,60 @@
 		left join warehouse_pn_tbl as wh_pn on pn.c_id = wh_pn.c_pn_id
 		<where>
 			delivery.c_type=0
+			<if test="id > 0">
+				and delivery.c_id = #{id}
+			</if>
+			<if test="no != null and no != ''">
+				<choose>
+	                <when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
+	                   	and delivery.c_no like '%${no}%'
+	                </when>
+	                <otherwise>
+						and delivery.c_no = #{no} 
+	                </otherwise>
+	            </choose>
+			</if>
+		</where>
+		order by delivery.c_state asc, delivery.c_delivery_time desc, pn.c_pn
+		<if test="_parameter != null and filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
+			for update
+		</if>
+	</select>
+	<select id="queryListWithSemiPn" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
+		select delivery.c_id as d_id,
+			   delivery.c_no as d_no,
+			   delivery.c_delivery_time as d_delivery_time,
+			   delivery.c_create_time as d_create_time,
+			   delivery.c_update_time as d_update_time,
+			   delivery.c_state as d_state,
+			   delivery.c_type as d_type,
+			   delivery.c_comment as d_comment,
+		       user.c_id as user_id,
+		       user.c_no as user_no,
+		       user.c_name as user_name,
+		       upt_user.c_id as upt_user_id,
+		       upt_user.c_no as upt_user_no,
+		       upt_user.c_name as upt_user_name,
+		       d_pn.c_id as d_pn_id,
+		       d_pn.c_num as d_pn_num,
+		       pn.c_id as pn_id,
+		       pn.c_pn as pn_pn,
+		       pn.c_name as pn_name,
+		       unit.c_id as unit_id,
+		       unit.c_name as unit_name,
+		       unit.c_sub_name as unit_sub_name,
+		       wh_pn.c_id as wh_pn_id,
+		       wh_pn.c_num as wh_pn_num
+		from delivery_tbl as delivery
+		left join user_tbl as user on delivery.c_user_id = user.c_id
+		left join user_tbl as upt_user on delivery.c_update_user_id = upt_user.c_id
+		left join delivery_semi_pn_tbl as d_pn on delivery.c_id = d_pn.c_delivery_id
+		left join pn_tbl as pn on d_pn.c_pn_id = pn.c_id
+		left join pn_cls_tbl as pn_cls on d_pn.c_pn_cls_id = pn_cls.c_id
+		left join unit_tbl as unit on pn.c_unit_id = unit.c_id
+		left join warehouse_semi_pn_tbl as wh_pn on pn.c_id = wh_pn.c_pn_id and pn_cls.c_id = wh_pn.c_pn_cls_id
+		<where>
+			delivery.c_type=3
 			<if test="id > 0">
 				and delivery.c_id = #{id}
 			</if>

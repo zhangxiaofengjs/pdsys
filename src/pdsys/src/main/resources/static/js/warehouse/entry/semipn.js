@@ -11,13 +11,13 @@ $(document).ready(function(){
 				{
 					"name":"type",
 					"type":"hidden",
-					"value":"0"
+					"value":"3"
 				},
 				{
 					"name":"no",
 					"label":"入库单号",
 					"type":"text",
-					"value":"0-" + dateYYYYMMDD() + "-",
+					"value":"3-" + dateYYYYMMDD() + "-",
 					"required":"required"
 				},
 				{
@@ -47,7 +47,7 @@ $(document).ready(function(){
 			],
 	    	url : "/warehouse/entry/add/entry",
 	        success : function(data) {
-	        	$(location).attr('href', PdSys.url('/warehouse/entry/main/pn?no=' + data.entry.no));
+	        	$(location).attr('href', PdSys.url('/warehouse/entry/main/semipn?no=' + data.entry.no));
 	        },
 	        error: function(data) {
 	        	PdSys.alert(data.msg);
@@ -76,10 +76,11 @@ $(document).ready(function(){
 				//做成选择分支
 				thisField.options = [];
 				data.pns.forEach(function(pn, idx) {
+					var unit = pn.unit;
 					thisField.options.push({
 						"value": pn.id,
 						"caption": "{0} {1}".format(pn.pn, pn.name),
-						"data": pn.unit.name
+						"data": unit.subName==""?unit.name:unit.subName
 					});
 				});
 			},
@@ -91,14 +92,41 @@ $(document).ready(function(){
 				//select选择以后刷新品目单位
 				thisElem.change(function() {
 					var selIndex = thisElem[0].selectedIndex;
-					var val = self.options[selIndex].data;
-					dlg.rebuildFieldWithValue("unit.name", val);
+					var pnId = self.options[selIndex].value;
+					var unitname = self.options[selIndex].data;
+					dlg.rebuildFieldWithValue("unit.name", unitname);
+					
+					var pnClsField = dlg.fieldByName("pnClsRel.pnCls.id");
+					pnClsField.ajaxData = {"id":pnId};
+					dlg.rebuildField(pnClsField);
 				});
 				thisElem.trigger("change");
 			},
 		},
 		{
-			"name":"producedNum",
+			"name":"pnClsRel.pnCls.id",
+			"label":"子类",
+			"type":"select",
+			"options":[],
+			"ajax":true,
+			"depend":true,
+			"url":"/pn/get",
+			"ajaxData":{},
+			"convertAjaxData" : function(thisField, data) {
+				//将返回的值转化为Field规格数据,以供重新渲染
+				//做成选择分支
+				thisField.options = [];
+				data.pn.pnClsRels.forEach(function(pnClsRel, idx) {
+					var pnCls = pnClsRel.pnCls;
+					thisField.options.push({
+						"value": pnCls.id,
+						"caption": pnCls.name,
+					});
+				});
+			}
+		},
+		{
+			"name":"num",
 			"label":"入库数量",
 			"type":"number",
 			"value":"0",
@@ -116,13 +144,8 @@ $(document).ready(function(){
 			"target":"dlg_div",
 			"caption":"添加到入库单",
 			"fields":fields,
-			"url":"/warehouse/entry/update/pn",
+			"url":"/warehouse/entry/update/semipn",
 			"valid":function() {
-//				if(dlg.fieldVal("producedNum") == 0) {
-//					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
-//					dlg.setError("producedNum", "半成品/成品数量都未输入");
-//					return false;
-//				}
 				return true;
 			},
 			"success": function(data) {
@@ -137,11 +160,7 @@ $(document).ready(function(){
 					}});
 			},
 			"error": function(data) {
-				var msgDlg = new CommonDlg();
-				msgDlg.showMsgDlg({
-					"target":"msg_div",
-					"type":"ok",
-					"msg":"添加到入库单失败,请联系管理员!"});
+				PdSys.alert(data.msg);
 			}
 		});
 	});
@@ -166,7 +185,7 @@ $(document).ready(function(){
 			"msg":"确定删除选择的入库项目?",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/warehouse/entry/delete/pn",
+					"url":"/warehouse/entry/delete/semipn",
 					"data":ajaxDatas,
 					"success": function(data) {
 						dlg.hide();
@@ -180,11 +199,7 @@ $(document).ready(function(){
 							}});
 					},
 					"error": function(data) {
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":"删除失败,请联系管理员!"});
+						PdSys.alert(data.msg);
 					}
 				});
 			}
@@ -216,19 +231,11 @@ $(document).ready(function(){
 									PdSys.refresh();
 								}});
 						} else {
-							var msgDlg = new CommonDlg();
-							msgDlg.showMsgDlg({
-								"target":"msg_div",
-								"type":"ok",
-								"msg":data.msg});
+							PdSys.alert(data.msg);
 						}
 					},
 					"error": function(data) {
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":"发生错误,请联系管理员!"});
+						PdSys.alert(data.msg);
 					}
 				});
 			}

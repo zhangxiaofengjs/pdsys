@@ -7,6 +7,9 @@
 		<li role="presentation" th:class="(${type}=='pn'? 'active' : '')">
 			<a th:href="@{/warehouse/list/main?type=pn}">生产库</a>
 		</li>
+		<li role="presentation" th:class="(${type}=='semipn'? 'active' : '')">
+			<a th:href="@{/warehouse/list/main?type=semipn}">生产库(半成品)</a>
+		</li>
 		<li role="presentation" th:class="(${type}=='bom'? 'active' : '')">
 			<a th:href="@{/warehouse/list/main?type=bom}">原包材库</a>
 		</li>

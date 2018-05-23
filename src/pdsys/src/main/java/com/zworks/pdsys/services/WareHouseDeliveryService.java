@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.enumClass.DeliveryType;
-import com.zworks.pdsys.common.enumClass.EntryType;
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.mappers.WareHouseDeliveryMapper;
 import com.zworks.pdsys.models.OrderModel;
@@ -21,11 +20,10 @@ import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
-import com.zworks.pdsys.models.WareHouseEntryBOMModel;
-import com.zworks.pdsys.models.WareHouseEntryMachinePartModel;
-import com.zworks.pdsys.models.WareHouseEntryPnModel;
+import com.zworks.pdsys.models.WareHouseDeliverySemiPnModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
+import com.zworks.pdsys.models.WareHouseSemiPnModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -37,6 +35,8 @@ public class WareHouseDeliveryService {
     private WareHouseDeliveryMapper wareHouseDeliveryMapper;
 	@Autowired
 	private WareHousePnService wareHousePnService;
+	@Autowired
+	private WareHouseSemiPnService wareHouseSemiPnService;
 	@Autowired
 	private WareHouseBOMService wareHouseBOMService;
 	@Autowired
@@ -67,6 +67,9 @@ public class WareHouseDeliveryService {
 	public List<WareHouseDeliveryModel> queryListWithPn(WareHouseDeliveryModel delivery) {
 		return wareHouseDeliveryMapper.queryListWithPn(delivery);
 	}
+	public List<WareHouseDeliveryModel> queryListWithSemiPn(WareHouseDeliveryModel delivery) {
+		return wareHouseDeliveryMapper.queryListWithSemiPn(delivery);
+	}
 	
 	public List<WareHouseDeliveryModel> queryListWithBOM(WareHouseDeliveryModel delivery) {
 		return wareHouseDeliveryMapper.queryListWithBOM(delivery);
@@ -86,6 +89,14 @@ public class WareHouseDeliveryService {
 	}
 	public WareHouseDeliveryModel queryOneWithPn(WareHouseDeliveryModel obj) {
 		List<WareHouseDeliveryModel> list = wareHouseDeliveryMapper.queryListWithPn(obj);
+		
+		if(list.size() != 0) {
+			return list.get(0);
+		}
+		return null;
+	}
+	public WareHouseDeliveryModel queryOneWithSemiPn(WareHouseDeliveryModel obj) {
+		List<WareHouseDeliveryModel> list = wareHouseDeliveryMapper.queryListWithSemiPn(obj);
 		
 		if(list.size() != 0) {
 			return list.get(0);
@@ -212,6 +223,28 @@ public class WareHouseDeliveryService {
 					o.setState(OrderState.FINISHED.ordinal());
 					orderService.update(o);
 				}
+			}
+		} else if(delivery.getType() == (int)DeliveryType.SEMIPN.ordinal()) {
+			delivery = this.queryOneWithSemiPn(delivery);
+			if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
+				//已经被其他人出库过
+				return false;
+			}
+			for(WareHouseDeliverySemiPnModel deliveryPn : delivery.getWareHouseDeliverySemiPns()) {
+				WareHouseSemiPnModel wareHousePn = deliveryPn.getWareHouseSemiPn();
+				
+				float num = -1;
+				if(wareHousePn != null) {
+					num = wareHousePn.getNum() - deliveryPn.getNum();
+				}
+				
+				if(num < 0) {
+					//库存不足
+					return false;
+				}
+				wareHousePn.setNum(num);
+				
+				wareHouseSemiPnService.update(wareHousePn);
 			}
 		} else if(delivery.getType() == (int)DeliveryType.BOM.ordinal()) {
 			delivery = this.queryOneWithBOM(delivery);

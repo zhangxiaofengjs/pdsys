@@ -7,6 +7,10 @@
         <result column="wh_pn_produced_num" property="producedNum" />  
         <result column="wh_pn_semi_produced_num" property="semiProducedNum" />  
     </resultMap>
+	<resultMap id="wareHouseSemiPnResultMap" type="wareHouseSemiPnModel" >  
+        <id column="wh_pn_id" property="id" />
+        <result column="wh_pn_num" property="num" />  
+    </resultMap>
 	<resultMap id="wareHouseBOMResultMap" type="wareHouseBOMModel" >  
         <id column="wh_bom_id" property="id" />
         <result column="wh_bom_num" property="num" />  
@@ -18,12 +22,22 @@
 	<resultMap id="unitResultMap" type="unitModel" >  
         <id column="unit_id" property="id" />  
         <result column="unit_name" property="name" />  
+        <result column="unit_sub_name" property="subName" />  
     </resultMap>
 	<resultMap id="pnResultMap" type="pnModel" >  
         <id column="pn_id" property="id" />  
         <result column="pn_pn" property="pn" />  
         <result column="pn_name" property="name" />  
         <association property="unit" resultMap="unitResultMap"/>
+    </resultMap>
+	<resultMap id="pnClsResultMap" type="pnClsModel" >  
+        <id column="pn_cls_id" property="id" />  
+        <result column="pn_cls_name" property="name" />  
+    </resultMap>
+	<resultMap id="pnClsRelResultMap" type="PnPnClsRelModel" >  
+        <id column="pn_cls_rel_id" property="id" />  
+        <result column="pn_cls_rel_num" property="num" />  
+        <association property="pnCls" resultMap="pnClsResultMap"/>
     </resultMap>
 	<resultMap id="machinePartResultMap" type="MachinePartModel" >  
         <id column="mp_id" property="id" />  
@@ -44,6 +58,13 @@
         <association property="pn" resultMap="pnResultMap" />
         <association property="wareHousePn" resultMap="wareHousePnResultMap" />
     </resultMap>
+	<resultMap id="wareHouseEntrySemiPnResultMap" type="wareHouseEntrySemiPnModel">  
+        <id column="e_pn_id" property="id" />  
+        <result column="e_pn_num" property="num" />  
+        <association property="pn" resultMap="pnResultMap" />
+        <association property="pnClsRel" resultMap="pnClsRelResultMap" />
+        <association property="wareHouseSemiPn" resultMap="wareHouseSemiPnResultMap" />
+    </resultMap>
     <resultMap id="wareHouseEntryBOMResultMap" type="wareHouseEntryBOMModel">  
         <id column="e_bom_id" property="id" />  
         <result column="e_bom_num" property="num" />  
@@ -56,7 +77,6 @@
         <association property="machinePart" resultMap="machinePartResultMap" />
         <association property="wareHouseMachinePart" resultMap="wareHouseMachinePartResultMap" />
     </resultMap>
-    
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="user_id" property="id" />  
         <result column="user_no" property="no" />  
@@ -74,6 +94,7 @@
         <association property="user" resultMap="userResultMap"/>
         <association property="updateUser" resultMap="userResultMap" columnPrefix="upt_"/>
         <collection property="wareHouseEntryPns" ofType="wareHouseEntryPnModel" resultMap="wareHouseEntryPnResultMap" />
+        <collection property="wareHouseEntrySemiPns" ofType="wareHouseEntrySemiPnModel" resultMap="wareHouseEntrySemiPnResultMap" />
         <collection property="wareHouseEntryBOMs" ofType="wareHouseEntryBOMModel" resultMap="wareHouseEntryBOMResultMap" />
         <collection property="wareHouseEntryMachineParts" ofType="wareHouseEntryMachinePartModel" resultMap="wareHouseEntryMachinePartResultMap" />
     </resultMap>
@@ -172,6 +193,63 @@
 			</if>
 		</where>
 		order by entry.c_state asc, entry.c_entry_time desc, pn.c_pn
+	</select>
+	
+	<select id="queryListWithSemiPn" parameterType="wareHouseEntryModel" resultMap="wareHouseEntryResultMap">
+		select entry.c_id as e_id,
+			   entry.c_no as e_no,
+			   entry.c_entry_time as e_entry_time,
+			   entry.c_update_time as e_update_time,
+			   entry.c_create_time as e_create_time,
+			   entry.c_state as e_state,
+			   entry.c_type as e_type,
+			   entry.c_comment as e_comment,
+		       user.c_id as user_id,
+		       user.c_no as user_no,
+		       user.c_name as user_name,
+		       upt_user.c_id as upt_user_id,
+		       upt_user.c_no as upt_user_no,
+		       upt_user.c_name as upt_user_name,
+		       e_pn.c_id as e_pn_id,
+		       e_pn.c_num as e_pn_num,
+		       pn.c_id as pn_id,
+		       pn.c_pn as pn_pn,
+		       pn.c_name as pn_name,
+		       pnCls.c_id as pn_cls_id,
+		       pnCls.c_name as pn_cls_name,
+		       pnClsRel.c_id as pn_cls_rel_id,
+		       pnClsRel.c_num as pn_cls_rel_num,
+		       unit.c_id as unit_id,
+		       unit.c_name as unit_name,
+		       unit.c_sub_name as unit_sub_name,
+		       wh_pn.c_id as wh_pn_id,
+		       wh_pn.c_num as wh_pn_num
+		from entry_tbl as entry
+		left join user_tbl as user on entry.c_user_id = user.c_id
+		left join user_tbl as upt_user on entry.c_update_user_id = upt_user.c_id
+		left join entry_semi_pn_tbl as e_pn on entry.c_id = e_pn.c_entry_id
+		left join pn_tbl as pn on e_pn.c_pn_id = pn.c_id
+		left join pn_cls_tbl as pnCls on e_pn.c_pn_cls_id = pnCls.c_id
+		left join pn_cls_relation_tbl as pnClsRel on e_pn.c_pn_id = pnClsRel.c_pn_id and e_pn.c_pn_cls_id = pnClsRel.c_cls_id
+		left join unit_tbl as unit on pn.c_unit_id = unit.c_id
+		left join warehouse_semi_pn_tbl as wh_pn on e_pn.c_pn_id = wh_pn.c_pn_id and e_pn.c_pn_cls_id = wh_pn.c_pn_cls_id
+		<where>
+			entry.c_type=3
+			<if test="id > 0">
+				and entry.c_id=#{id}
+			</if>
+			<if test="no != null and no != ''">
+				<choose>
+	                <when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
+	                   	and entry.c_no like '%${no}%'
+	                </when>
+	                <otherwise>
+						and entry.c_no = #{no} 
+	                </otherwise>
+	            </choose>
+			</if>
+		</where>
+		order by entry.c_state asc, entry.c_entry_time desc, pn.c_pn asc, pnCls.c_name asc
 	</select>
 	
 	<select id="queryListWithBOM" parameterType="wareHouseEntryModel" resultMap="wareHouseEntryResultMap">

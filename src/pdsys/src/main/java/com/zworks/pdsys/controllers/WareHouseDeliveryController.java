@@ -13,20 +13,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.enumClass.DeliveryState;
-import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.RequestContextUtils;
-import com.zworks.pdsys.common.utils.StringUtils;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
-import com.zworks.pdsys.models.WareHouseEntryModel;
+import com.zworks.pdsys.models.WareHouseDeliverySemiPnModel;
 import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryMachinePartService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
+import com.zworks.pdsys.services.WareHouseDeliverySemiPnService;
 import com.zworks.pdsys.services.WareHouseDeliveryService;
 
 /**
@@ -41,6 +40,8 @@ public class WareHouseDeliveryController {
 	@Autowired
 	WareHouseDeliveryPnService wareHouseDeliveryPnService;
 	@Autowired
+	WareHouseDeliverySemiPnService wareHouseDeliverySemiPnService;
+	@Autowired
 	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
 	@Autowired
 	WareHouseDeliveryMachinePartService wareHouseDeliveryMachinePartService;
@@ -54,7 +55,7 @@ public class WareHouseDeliveryController {
 
 		if(type == null) {
 			type = RequestContextUtils.getSessionAttribute(this, "type", "pn");
-		} else if(!(type.equals("bom") || type.equals("pn") || type.equals("machinepart"))) {
+		} else if(!(type.equals("bom") || type.equals("pn") || type.equals("semipn") || type.equals("machinepart"))) {
 			throw new PdsysException("错误参数:/delivery/main/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
 		RequestContextUtils.setSessionAttribute(this, "type", type);
@@ -71,6 +72,8 @@ public class WareHouseDeliveryController {
 			
 		if(type.equals("pn")) {
 			list = wareHouseDeliveryService.queryListWithPn(delivery);
+		} else if(type.equals("semipn")) {
+			list = wareHouseDeliveryService.queryListWithSemiPn(delivery);
 		} else if(type.equals("bom")) {
 			list = wareHouseDeliveryService.queryListWithBOM(delivery);
 		} else if(type.equals("machinepart")) {
@@ -104,7 +107,7 @@ public class WareHouseDeliveryController {
 		d = new WareHouseDeliveryModel();
 		d.setType(delivery.getType());
 		d.setUser(delivery.getUser());
-		d.setState(EntryState.PLANNING.ordinal());
+		d.setState(DeliveryState.PLANNING.ordinal());
 		List<WareHouseDeliveryModel> ds = wareHouseDeliveryService.queryList(d);
 		if(ds.size()!=0) {
 			return JSONResponse.error("当前用户[" + ds.get(0).getUser().getName() + "]存在未处理单号:" + ds.get(0).getNo());
@@ -128,6 +131,17 @@ public class WareHouseDeliveryController {
 		}
 		return JSONResponse.success();
     }
+	@RequestMapping(value="/add/semipn")
+	@ResponseBody
+	public JSONResponse addDeliveryPn(@RequestBody WareHouseDeliverySemiPnModel deliveryPn, Model model) {
+		if(wareHouseDeliverySemiPnService.exists(deliveryPn)) {
+			//已经存在，做更新
+			wareHouseDeliverySemiPnService.update(deliveryPn);
+		} else {
+			wareHouseDeliverySemiPnService.add(deliveryPn);
+		}
+		return JSONResponse.success();
+	}
 	/**
 	 * 新建出库明细
 	 * */
@@ -184,6 +198,12 @@ public class WareHouseDeliveryController {
 		return JSONResponse.success();
     }
 	
+	@RequestMapping(value="/delete/semipn")
+	@ResponseBody
+    public JSONResponse deleteDeliverySemiPn(@RequestBody List<WareHouseDeliverySemiPnModel> deliveryPns, Model model) {
+		wareHouseDeliverySemiPnService.delete(deliveryPns);
+		return JSONResponse.success();
+    }
 	/**
 	 * 删除出库明细
 	 * */

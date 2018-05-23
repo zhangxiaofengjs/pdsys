@@ -29,12 +29,14 @@ import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
+import com.zworks.pdsys.models.WareHouseSemiPnModel;
 import com.zworks.pdsys.services.WareHouseBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
 import com.zworks.pdsys.services.WareHouseEntryBOMService;
 import com.zworks.pdsys.services.WareHouseMachinePartService;
 import com.zworks.pdsys.services.WareHousePnService;
+import com.zworks.pdsys.services.WareHouseSemiPnService;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -47,6 +49,8 @@ public class WareHouseController extends BaseController{
 	WareHouseBOMService wareHouseBOMService;
 	@Autowired
 	WareHousePnService wareHousePnService;
+	@Autowired
+	WareHouseSemiPnService wareHouseSemiPnService;
 	@Autowired
 	WareHouseMachinePartService wareHouseMachinePartService;
 	@Autowired
@@ -95,6 +99,18 @@ public class WareHouseController extends BaseController{
 			List<?> list = wareHousePnService.queryList(whPn);
 			model.addAttribute("list", list);
 			RequestContextUtils.setSessionAttribute(this, "whPn", whPn);
+		}
+		else if(type.equals("semipn")) {
+			WareHouseSemiPnModel whPn = formBean.getWareHouseSemiPn();
+			if(whPn == null) {
+				whPn =  RequestContextUtils.getSessionAttribute(this, "whSemiPn", new WareHouseSemiPnModel());
+				formBean.setWareHouseSemiPn(whPn);
+			}
+			whPn.getFilterCond().put("fuzzyPnSearch", true);
+			
+			List<WareHouseSemiPnModel> list = wareHouseSemiPnService.queryList(whPn);
+			model.addAttribute("list", wareHouseSemiPnService.convertToSemiPnList(list));
+			RequestContextUtils.setSessionAttribute(this, "whSemiPn", whPn);
 		}
 		else if(type.equals("machinepart")) {
 			WareHouseMachinePartModel whMp = formBean.getWareHouseMachinePart();

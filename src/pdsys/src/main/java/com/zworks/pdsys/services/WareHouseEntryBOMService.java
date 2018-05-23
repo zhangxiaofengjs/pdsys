@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.mappers.WareHouseEntryBOMMapper;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
-import com.zworks.pdsys.models.WareHouseEntryPnModel;
 
 /**
  * @author: zhangxiaofengjs@163.com

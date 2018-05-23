@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.WareHouseEntrySemiPnMapper">
+	<resultMap id="wareHouseEntryPnResultMap" type="wareHouseEntrySemiPnModel" >  
+        <id column="e_pn_id" property="id" />  
+        <result column="e_pn_produced_num" property="producedNum" />  
+        <result column="e_pn_semi_produced_num" property="semiProducedNum" />  
+    </resultMap>
+
+	<select id="queryList" parameterType="wareHouseEntrySemiPnModel" resultMap="wareHouseEntryPnResultMap">
+		select e_pn.c_id as e_pn_id,
+		       e_pn.c_entry_id as e_pn_entry_id,
+		       e_pn.c_num as e_pn_num
+		from entry_semi_pn_tbl as e_pn
+		<where>
+			<if test="wareHouseEntry.id > 0">
+				and e_pn.c_entry_id=#{wareHouseEntry.id}
+			</if>
+			<if test="pn.id > 0">
+				and e_pn.c_pn_id=#{pn.id}
+			</if>
+			<if test="pnClsRel.pnCls.id > 0">
+				and e_pn.c_pn_cls_id=#{pnClsRel.pnCls.id}
+			</if>
+		</where>
+	</select>
+	<insert id="add" parameterType="wareHouseEntrySemiPnModel">
+    	insert into entry_semi_pn_tbl (
+    		c_entry_id,
+    		c_pn_id,
+    		c_pn_cls_id,
+    		c_num)
+    	values (
+    		#{wareHouseEntry.id},
+    		#{pn.id},
+    		#{pnClsRel.pnCls.id},
+    		#{num}
+    	)
+      	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+    </insert>
+    
+    <update id="update" parameterType="wareHouseEntrySemiPnModel">
+    	update entry_semi_pn_tbl
+    	set c_num=#{num}
+    	<where>
+			<if test="id gt 0">
+				and c_id=#{id}
+			</if>
+			<if test="id lte 0">
+				and c_entry_id=#{wareHouseEntry.id}
+				and c_pn_id=#{pn.id}
+				and c_pn_cls_id=#{pnClsRel.pnCls.id}
+			</if>
+		</where>
+    </update>
+    
+    <delete id="delete" parameterType="wareHouseEntrySemiPnModel">
+    	delete from entry_semi_pn_tbl
+    	<where>
+			<choose>
+                <when test="id > 0">
+                   	c_id = #{id}
+                </when>
+                <otherwise>
+					c_entry_id = #{wareHouseEntry.id} 
+                </otherwise>
+            </choose>
+		</where>
+    </delete>
+</mapper>
