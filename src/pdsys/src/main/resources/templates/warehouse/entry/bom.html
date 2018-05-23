@@ -33,6 +33,7 @@
 					<th>提交人</th>
 					<th>状态</th>
 					<th>入库时间</th>
+					<th>备注</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -45,6 +46,7 @@
 			  			<span class="label label-default" th:case="1">已入库</span>
 				    </td>
 					<td th:text="${#dates.format(entryTgt.entryTime,'yyyy-MM-dd')}"></td>
+					<td th:text="${entryTgt.comment}"></td>
 				</tr>
 			</tbody>
 		</table>

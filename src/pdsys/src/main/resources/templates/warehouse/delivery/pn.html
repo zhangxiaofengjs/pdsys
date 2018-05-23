@@ -34,6 +34,7 @@
 					<th>提交人</th>
 					<th>状态</th>
 					<th>出库时间</th>
+					<th>备注</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -46,6 +47,7 @@
 			  			<span class="label label-default" th:case="1">已入库</span>
 				    </td>
 					<td th:text="${#dates.format(deliveryTgt.deliveryTime,'yyyy-MM-dd')}"></td>
+					<td th:text="${deliveryTgt.comment}"></td>
 				</tr>
 			</tbody>
 		</table>
@@ -85,12 +87,9 @@
 					<th rowspan="2">品目</th>
 					<th rowspan="2">单位</th>
 					<th rowspan="2">关联订单</th>
-					<th colspan="2">半成品</th>
-					<th colspan="2">成品</th>
+					<th colspan="2">数量</th>
 			    </tr>
 			    <tr>
-					<th>在库</th>
-					<th>出库</th>
 					<th>在库</th>
 					<th>出库</th>
 			    </tr>
@@ -110,9 +109,6 @@
 					<td th:text="${pn.pn + pn.name}"></td>
 					<td th:text="${unit.name}"></td>
 					<td th:text="${order.no}"></td>
-					<td th:text="${deliveryTgt.state==0?wareHousesSemiNum:'--'}" class="number"></td>
-					<td th:text="${wareHouseDeliveryPn.semiProducedNum}" 
-						th:class="'number ' + (${wareHousesSemiNum < wareHouseDeliveryPn.semiProducedNum}?'text-danger':'')"></td>
 					<td th:text="${deliveryTgt.state==0?wareHouseNum:'--'}" class="number"></td>
 					<td th:text="${wareHouseDeliveryPn.producedNum}" 
 						th:class="'number ' + (${wareHouseNum < wareHouseDeliveryPn.producedNum}?'text-danger':'')"></td>
