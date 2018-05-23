@@ -55,7 +55,14 @@
     <delete id="delete" parameterType="wareHouseEntryMachinePartModel">
     	delete from entry_machine_Part_tbl
     	<where>
-			c_id = #{id}
+			<choose>
+                <when test="id > 0">
+                   	c_id = #{id}
+                </when>
+                <otherwise>
+					c_entry_id = #{wareHouseEntry.id} 
+                </otherwise>
+            </choose>
 		</where>
     </delete>
 </mapper>

@@ -33,10 +33,14 @@ public class WareHouseEntryMachinePartService {
 	@Transactional
 	public void delete(List<WareHouseEntryMachinePartModel> entryMachineParts) {
 		for(WareHouseEntryMachinePartModel entryMachinePart : entryMachineParts) {
-			wareHouseEntryMachinePartMapper.delete(entryMachinePart);
+			delete(entryMachinePart);
 		}
 	}
 
+	public void delete(WareHouseEntryMachinePartModel eMp) {
+		wareHouseEntryMachinePartMapper.delete(eMp);
+	}
+	
 	public boolean exist(WareHouseEntryMachinePartModel entryMachinePart) {
 		return queryOne(entryMachinePart) != null;
 	}

@@ -21,4 +21,6 @@ public interface WareHouseEntryMapper {
 	List<WareHouseEntryModel> queryListWithMachinePart(WareHouseEntryModel obj);
 
 	void update(WareHouseEntryModel entry);
+
+	void delete(WareHouseEntryModel entry);
 }

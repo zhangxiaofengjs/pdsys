@@ -300,4 +300,11 @@
       		c_id=#{id}
       	</where>
     </update>
+    
+    <delete id="delete" parameterType="wareHouseEntryModel">
+    	delete from entry_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
 </mapper>

@@ -181,8 +181,8 @@ public class WareHouseEntryController {
 		WareHouseEntryModel entry = new WareHouseEntryModel();
 		entry.setId(id);
 		entry = wareHouseEntryService.queryOne(entry);
-		if(entry == null) {
-			throw new PdsysException("错误参数:/entry/delete/entry/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM); 
+		if(entry.getState() != EntryState.PLANNING.ordinal()) {
+			return JSONResponse.error("只能删除计划中入库单");
 		}
 		wareHouseEntryService.delete(entry);
 		return JSONResponse.success();

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.enumClass.EntryType;
@@ -32,6 +33,12 @@ public class WareHouseEntryService {
 	private WareHouseBOMService wareHouseBOMService;
 	@Autowired
 	private WareHouseMachinePartService wareHouseMachinePartService;
+	@Autowired
+	private WareHouseEntryPnService wareHouseEntryPnService;
+	@Autowired
+	private WareHouseEntryBOMService wareHouseEntryBOMService;
+	@Autowired
+	private WareHouseEntryMachinePartService wareHouseEntryMachinePartService;
 	
 	public List<WareHouseEntryModel> queryList(WareHouseEntryModel obj) {
 		return wareHouseEntryMapper.queryList(obj);
@@ -93,9 +100,27 @@ public class WareHouseEntryService {
 		wareHouseEntryMapper.add(obj);
 	}
 	
+	@Transactional
 	public void delete(WareHouseEntryModel entry) {
-		entry.setState(EntryState.DELETE.ordinal());
-		wareHouseEntryMapper.update(entry);
+		if(entry.getType() == EntryType.PN.ordinal()) {
+			WareHouseEntryPnModel ePn = new WareHouseEntryPnModel();
+			ePn.setWareHouseEntry(entry);
+			wareHouseEntryPnService.delete(ePn);
+		}
+		
+		if(entry.getType() == EntryType.BOM.ordinal()) {
+			WareHouseEntryBOMModel eBOM = new WareHouseEntryBOMModel();
+			eBOM.setWareHouseEntry(entry);
+			wareHouseEntryBOMService.delete(eBOM);
+		}
+		
+		if(entry.getType() == EntryType.MACHINEPART.ordinal()) {
+			WareHouseEntryMachinePartModel eMp = new WareHouseEntryMachinePartModel();
+			eMp.setWareHouseEntry(entry);
+			wareHouseEntryMachinePartService.delete(eMp);
+		}
+		
+		wareHouseEntryMapper.delete(entry);
 	}
 
 	public JSONResponse checkAddable(WareHouseEntryModel entry) {

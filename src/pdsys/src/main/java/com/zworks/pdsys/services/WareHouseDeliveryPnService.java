@@ -32,8 +32,13 @@ public class WareHouseDeliveryPnService {
 	@Transactional
 	public void delete(List<WareHouseDeliveryPnModel> deliveryPns) {
 		for(WareHouseDeliveryPnModel deliveryPn : deliveryPns) {
-			wareHouseDeliveryPnMapper.delete(deliveryPn);
+			delete(deliveryPn);
 		}
+	}
+	
+
+	public void delete(WareHouseDeliveryPnModel deliveryPn) {
+		wareHouseDeliveryPnMapper.delete(deliveryPn);
 	}
 
 	public boolean exists(WareHouseDeliveryPnModel deliveryPn) {

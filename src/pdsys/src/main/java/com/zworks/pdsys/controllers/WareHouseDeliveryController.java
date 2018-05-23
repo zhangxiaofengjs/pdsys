@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
@@ -165,9 +166,10 @@ public class WareHouseDeliveryController {
 		WareHouseDeliveryModel delivery = new WareHouseDeliveryModel();
 		delivery.setId(id);
 		delivery = wareHouseDeliveryService.queryOne(delivery);
-		if(delivery == null) {
-			throw new PdsysException("错误参数:/delivery/delete/delivery/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM); 
+		if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
+			return JSONResponse.error("只能删除计划中出库单");
 		}
+		
 		wareHouseDeliveryService.delete(delivery);
 		return JSONResponse.success();
 	}

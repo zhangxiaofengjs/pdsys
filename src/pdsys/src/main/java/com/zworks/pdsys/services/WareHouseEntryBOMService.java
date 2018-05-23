@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.mappers.WareHouseEntryBOMMapper;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
+import com.zworks.pdsys.models.WareHouseEntryPnModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -33,8 +34,12 @@ public class WareHouseEntryBOMService {
 	@Transactional
 	public void delete(List<WareHouseEntryBOMModel> entryBOMs) {
 		for(WareHouseEntryBOMModel entryBOM : entryBOMs) {
-			wareHouseEntryBOMMapper.delete(entryBOM);
+			delete(entryBOM);
 		}
+	}
+	
+	public void delete(WareHouseEntryBOMModel eBOM) {
+		wareHouseEntryBOMMapper.delete(eBOM);
 	}
 
 	public boolean exist(WareHouseEntryBOMModel entryBOM) {

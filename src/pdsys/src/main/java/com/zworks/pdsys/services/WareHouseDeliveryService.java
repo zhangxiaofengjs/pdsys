@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.enumClass.DeliveryType;
+import com.zworks.pdsys.common.enumClass.EntryType;
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.mappers.WareHouseDeliveryMapper;
 import com.zworks.pdsys.models.OrderModel;
@@ -20,6 +21,9 @@ import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
+import com.zworks.pdsys.models.WareHouseEntryBOMModel;
+import com.zworks.pdsys.models.WareHouseEntryMachinePartModel;
+import com.zworks.pdsys.models.WareHouseEntryPnModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 
@@ -41,6 +45,12 @@ public class WareHouseDeliveryService {
 	private OrderPnService orderPnService;
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private WareHouseDeliveryPnService wareHouseDeliveryPnService;
+	@Autowired
+	private WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
+	@Autowired
+	private WareHouseDeliveryMachinePartService wareHouseDeliveryMachinePartService;
 	
 	public List<WareHouseDeliveryModel> queryList(WareHouseDeliveryModel obj) {
 		return wareHouseDeliveryMapper.queryList(obj);
@@ -105,8 +115,25 @@ public class WareHouseDeliveryService {
 		wareHouseDeliveryMapper.add(obj);
 	}
 	public void delete(WareHouseDeliveryModel delivery) {
-		delivery.setState(DeliveryState.DELETE.ordinal());
-		wareHouseDeliveryMapper.update(delivery);
+		if(delivery.getType() == DeliveryType.PN.ordinal()) {
+			WareHouseDeliveryPnModel ePn = new WareHouseDeliveryPnModel();
+			ePn.setWareHouseDelivery(delivery);
+			wareHouseDeliveryPnService.delete(ePn);
+		}
+		
+		if(delivery.getType() == DeliveryType.BOM.ordinal()) {
+			WareHouseDeliveryBOMModel eBOM = new WareHouseDeliveryBOMModel();
+			eBOM.setWareHouseDelivery(delivery);
+			wareHouseDeliveryBOMService.delete(eBOM);
+		}
+		
+		if(delivery.getType() == DeliveryType.MACHINEPART.ordinal()) {
+			WareHouseDeliveryMachinePartModel eMp = new WareHouseDeliveryMachinePartModel();
+			eMp.setWareHouseDelivery(delivery);
+			wareHouseDeliveryMachinePartService.delete(eMp);
+		}
+		
+		wareHouseDeliveryMapper.delete(delivery);
 	}
 	
 	@Transactional

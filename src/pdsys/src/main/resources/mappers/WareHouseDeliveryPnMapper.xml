@@ -114,7 +114,14 @@
     <delete id="delete"  parameterType="wareHouseDeliveryPnModel">
     	delete from delivery_pn_tbl
     	<where>
-			c_id = #{id}
+			<choose>
+                <when test="id > 0">
+                   	c_id = #{id}
+                </when>
+                <otherwise>
+					c_delivery_id = #{wareHouseDelivery.id} 
+                </otherwise>
+            </choose>
 		</where>
     </delete>
 </mapper>

@@ -47,25 +47,14 @@ $(document).ready(function(){
 			],
 	    	url : "/warehouse/delivery/add/delivery",
 	        success : function(data) {
-	        	if(data.success)
-	        	{
+	        	if(data.success) {
 	        		$(location).attr('href', PdSys.url('/warehouse/delivery/main/machinepart?id=' + data.id));
-	        	}
-	        	else
-	        	{
-	        		var dlg = new CommonDlg();
-	    			dlg.showMsgDlg({
-	    				"target":"msg_div",
-	    				"type":"ok",
-	    				"msg":"新建出库单号发生错误。"});
+	        	} else {
+	        		PdSys.alert(data.msg);
 	        	}
 	        },
 	        error: function(data) {
-	        	var dlg = new CommonDlg();
-    			dlg.showMsgDlg({
-    				"target":"msg_div",
-    				"type":"ok",
-    				"msg":"发生错误。"});
+	        	PdSys.alert(data.msg);
 	        }
 	    });
 	});
@@ -135,11 +124,7 @@ $(document).ready(function(){
 					}});
 			},
 			"error": function(data) {
-				var msgDlg = new CommonDlg();
-				msgDlg.showMsgDlg({
-					"target":"msg_div",
-					"type":"ok",
-					"msg":"添加到出库单失败,请联系管理员!"});
+				PdSys.alert(data.msg);
 			}
 		});
 	});
@@ -179,11 +164,7 @@ $(document).ready(function(){
 						
 					},
 					"error": function(data) {
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":"删除失败,请联系管理员!"});
+						PdSys.alert(data.msg);
 					}
 				});
 			}
@@ -223,19 +204,19 @@ $(document).ready(function(){
 						}
 					},
 					"error": function(data) {
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":"出库失败,请联系管理员!"});
+						PdSys.alert(data.msg);
 					}
 				});
 			}
 		});
 	});
 	
-	$("#deleteDelivery").click(function(){
+	$("button[name='deleteDelivery']").click(function(){
 		var self = $(this);
+		var selIds = getSelectedRowId({"checkOne":true, "showMsg":true});
+		if(selIds.length != 1) {
+			return;
+		}
 		
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
@@ -245,7 +226,7 @@ $(document).ready(function(){
 			"msg":"确定删除出库单?",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/warehouse/delivery/delete/delivery/" + $("#delivery_id").val(),
+					"url":"/warehouse/delivery/delete/delivery/" + selIds[0],
 					"success": function(data) {
 						dlg.hide();
 						var msgDlg = new CommonDlg();
@@ -258,11 +239,7 @@ $(document).ready(function(){
 							}});
 					},
 					"error": function(data) {
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":"发生错误,请联系管理员!"});
+						PdSys.alert(data.msg);
 					}
 				});
 			}
