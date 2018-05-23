@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.NoticeMapper">
+    <resultMap id="noticeResultMap" type="noticeModel" >
+        <id column="s_id" property="id"/> 
+        <result column="s_comment" property="comment"/>
+        <result column="s_job_name" property="jobName"/>  
+        <result column="s_create_date" property="createDate"/>
+    </resultMap>
+    
+    <!-- 新增通知-->
+	<insert id="add" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+		insert into notice_tbl
+		(
+		    `c_job_name`,
+			`c_comment`
+		)
+		values
+	    <foreach collection="list" item="notice" index="index" separator=",">  
+	        (#{notice.jobName},#{notice.comment})  
+	    </foreach>
+ 
+	</insert>
+	
+	<!-- 通知一览 -->
+	<select id="queryList" parameterType="noticeModel" resultMap="noticeResultMap">
+		select s.c_id as s_id,
+			   s.c_comment as s_comment,
+			   s.c_job_name as s_job_name,
+			   s.c_create_date as s_create_date 
+		from notice_tbl as s 
+		<where>
+			<if test="filterCond.noticeStart != null">
+				and s.c_create_date &gt;= #{filterCond.noticeStart}
+			</if>
+			<if test="filterCond.noticeEnd != null">
+				and s.c_create_date &lt;= #{filterCond.noticeEnd}
+			</if>
+		</where>
+		order by s_create_date desc
+	</select>
+</mapper>
