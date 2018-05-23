@@ -73,6 +73,12 @@
 	                </otherwise>
 	            </choose>
 			</if>
+			<if test="maitenacedDate != null">
+				and DATE_FORMAT(d.c_maitenaced_date,'%Y-%m-%d') = DATE_FORMAT(#{maitenacedDate},'%Y-%m-%d')
+			</if>
+			<if test="state > 0">
+				and d.c_state=#{state}
+			</if>
 		</where>
 		order by p.c_name asc, d.c_no asc
 	</select>
