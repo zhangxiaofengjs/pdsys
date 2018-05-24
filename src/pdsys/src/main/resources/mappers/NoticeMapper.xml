@@ -2,53 +2,87 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.NoticeMapper">
+	<resultMap id="userResultMap" type="userModel" >
+        <id column="u_id" property="id"/> 
+        <result column="u_name" property="name"/>
+    </resultMap>
     <resultMap id="noticeResultMap" type="noticeModel" >
         <id column="s_id" property="id"/> 
-        <result column="s_comment" property="comment"/>
-        <result column="s_job_name" property="jobName"/>  
-        <result column="s_create_date" property="createDate"/>
+        <result column="s_type" property="type"/>
+        <result column="s_content" property="content"/>  
+        <result column="s_is_read" property="isRead"/>
+        <result column="s_ref_id" property="refId"/>
+        <result column="s_create_time" property="createTime"/>
+        <association property="sender" resultMap="userResultMap"/>
+        <association property="receiver" resultMap="userResultMap" columnPrefix="r_"/>
     </resultMap>
     
     <!-- 新增通知-->
-	<insert id="add" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+	<insert id="add" parameterType="noticeModel" useGeneratedKeys="true" keyProperty="id">
 		insert into notice_tbl
 		(
-		    `c_job_name`,
-			`c_comment`
+		    `c_type`,
+			`c_content`,
+			`c_ref_id`,
+			c_sender_id,
+			c_receiver_id
 		)
-		values
-	    <foreach collection="list" item="notice" index="index" separator=",">  
-	        (#{notice.jobName},#{notice.comment})  
-	    </foreach>
- 
+		values (
+			#{type},
+			#{content},
+			#{refId},
+			#{sender.id},
+			#{receiver.id}
+		)
 	</insert>
 	
 	<!-- 通知一览 -->
-	<select id="queryList" parameterType="java.util.Map" resultMap="noticeResultMap">
+	<select id="queryList" parameterType="noticeModel" resultMap="noticeResultMap">
 		select s.c_id as s_id,
-			   s.c_comment as s_comment,
-			   s.c_job_name as s_job_name,
-			   s.c_create_date as s_create_date 
-		from notice_tbl as s 
+			   s.c_type as s_type,
+			   s.c_content as s_content,
+			   s.c_is_read as s_is_read,
+			   s.c_ref_id as s_ref_id,
+			   s.c_create_time as s_create_time,
+			   ifnull(u.c_id,0) as u_id,
+			   ifnull(u.c_name,'系统') as u_name,
+			   ifnull(r_u.c_id,0) as r_u_id,
+			   ifnull(r_u.c_name,'系统') as r_u_name
+		from notice_tbl as s
+		left join user_tbl as u on s.c_sender_id = u.c_id
+		left join user_tbl as r_u on s.c_receiver_id = r_u.c_id
 		<where>
-			<if test="notice.filterCond.noticeStart != null">
-				and s.c_create_date &gt;= #{notice.filterCond.noticeStart}
+			<if test="id > 0">
+				and s.c_id=#{id}
 			</if>
-			<if test="notice.filterCond.noticeEnd != null">
-				and s.c_create_date &lt;= #{notice.filterCond.noticeEnd}
+			<if test="filterCond.start != null">
+				and s.c_create_time &gt;= #{filterCond.start}
 			</if>
-			<if test="notice.comment != null and notice.comment != ''">
-				and s.c_comment like concat('%',#{notice.comment},'%') 
+			<if test="filterCond.end != null">
+				and s.c_create_time &lt;= #{filterCond.end}
+			</if>
+			<if test="refId > 0">
+				and s.c_ref_id = #{refId}
+			</if>
+			<if test="receiver != null and receiver.id > 0">
+				and (s.c_receiver_id=#{receiver.id} or s.c_receiver_id=0)
 			</if>
 		</where>
-		order by s_create_date desc 
+		order by s.c_is_read asc, s.c_create_time desc 
 		<if test="page != null">
 			limit #{page.start},#{page.row}
 		</if>
-
 	</select>
 	
-	<select id="selectPageListCount" parameterType="java.util.Map" resultType="int" >
-    	select count(1) from notice_tbl
+	<select id="selectPageListCount" resultType="int" >
+    	select count(c_id) from notice_tbl
     </select>
+    
+    <update id="update" parameterType="noticeModel">
+		update notice_tbl
+		<set>
+			c_is_read = #{isRead},
+		</set>
+		where c_id = #{id}
+	</update>
 </mapper>

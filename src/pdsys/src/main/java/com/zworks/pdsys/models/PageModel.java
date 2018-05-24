@@ -1,8 +1,8 @@
-package com.zworks.pdsys.common.utils;
+package com.zworks.pdsys.models;
 
 import java.io.Serializable;
 
-public class Page implements Serializable {
+public class PageModel implements Serializable {
 
     /**
      * page工具类
@@ -40,7 +40,7 @@ public class Page implements Serializable {
         this.row = row;
     }
 
-    public Page(int pageon, int row, int rowcount) {
+    public PageModel(int pageon, int row, int rowcount) {
         pageNumber = 11;
         this.pageon = pageon;
         this.row = row;
@@ -48,17 +48,17 @@ public class Page implements Serializable {
         compute();
     }
 
-    public Page(int pageon, int row) {
+    public PageModel(int pageon, int row) {
         pageNumber = 11;
         this.pageon = pageon;
         this.row = row;
     }
-    public Page(int pageon) {
+    public PageModel(int pageon) {
         pageNumber = 11;
         this.pageon = pageon;
     }
 
-    public Page() {
+    public PageModel() {
         pageNumber = 11;
     }
 

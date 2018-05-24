@@ -16,6 +16,7 @@ public class BaseModel {
 	private Date createTime;
 	private Date updateTime;
 	private HashMap<String, Object> filterCond = new HashMap<String, Object>();
+	private PageModel page;
 	
 	public Date getUpdateTime() {
 		return updateTime;
@@ -65,5 +66,13 @@ public class BaseModel {
 
 	public void setFilterCond(HashMap<String, Object> filterCond) {
 		this.filterCond = filterCond;
+	}
+
+	public PageModel getPage() {
+		return page;
+	}
+
+	public void setPage(PageModel page) {
+		this.page = page;
 	}
 }

@@ -73,8 +73,8 @@
 	                </otherwise>
 	            </choose>
 			</if>
-			<if test="maitenacedDate != null">
-				and DATE(d.c_maitenaced_date) between CURDATE() and DATE_ADD(CURDATE(), INTERVAL 6 DAY)
+			<if test="filterCond.toMaitenaceInDays != null">
+				and DATE_ADD(d.c_maitenaced_date, INTERVAL m.c_maitenace_period DAY) between CURDATE() and DATE_ADD(CURDATE(), INTERVAL #{filterCond.toMaitenaceInDays} DAY)
 			</if>
 
 		</where>

@@ -10,9 +10,11 @@ import com.zworks.pdsys.models.NoticeModel;
 @Mapper
 public interface NoticeMapper {
 
-	void add(List<NoticeModel> ss);
+	void add(NoticeModel s);
 	
-	List<NoticeModel> queryList( Map<String,Object> map );
+	List<NoticeModel> queryList(NoticeModel n);
 	
 	int selectPageListCount(Map<String,Object> map);
+
+	void update(NoticeModel n);
 }
