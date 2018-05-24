@@ -1,4 +1,9 @@
 $(document).ready(function(){
+	$("button[name='deliveryList']").click(function(){
+		var self = $(this);
+		PdSys.refresh('/warehouse/delivery/main/machinepart?no=');
+	});
+	
 	//新建出库单
 	$("button[name='addDelivery']").click(function(){
 		var self = $(this);
@@ -48,7 +53,7 @@ $(document).ready(function(){
 	    	url : "/warehouse/delivery/add/delivery",
 	        success : function(data) {
 	        	if(data.success) {
-	        		$(location).attr('href', PdSys.url('/warehouse/delivery/main/machinepart?id=' + data.id));
+	        		$(location).attr('href', PdSys.url('/warehouse/delivery/main/machinepart?no=' + data.no));
 	        	} else {
 	        		PdSys.alert(data.msg);
 	        	}

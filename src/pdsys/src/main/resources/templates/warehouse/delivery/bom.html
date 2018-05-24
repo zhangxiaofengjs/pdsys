@@ -9,13 +9,14 @@
 	  			<span class="navbar-brand glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/delivery/main/bom}" method="post">
-	 			<div class="form-group">
+	 			<div class="form-group" th:if="${#lists.size(deliveries) != 1}">
 				   <input type="text" class="form-control" name="no" id="no" th:value="${delivery.no != null ? delivery.no:_}" placeholder="出库单号">
 				   <input type="hidden" class="form-control" name="fuzzyNo" id="fuzzyNo" value="true">
 	 			</div>
-	 			<button type="submit" class="btn btn-sm btn-info" name="refresh">查询</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="addDelivery">新建出库单</button>
+	 			<button type="submit" class="btn btn-sm btn-info" name="refresh" th:if="${#lists.size(deliveries) != 1}">查询</button>
+	 			<button type="button" class="btn btn-sm btn-info" name="addDelivery" th:if="${#lists.size(deliveries) != 1}">新建出库单</button>
 	 			<button type="button" class="btn btn-sm btn-info" name="deleteDelivery" th:if="${#lists.size(deliveries) != 1}">删除出库单</button>
+	 			<button type="button" class="btn btn-sm btn-info" name="deliveryList" th:if="${#lists.size(deliveries) == 1}">出库单一览</button>
 	 			<div style="display:inline-block;" th:if="${delivery.id >0 } and ${delivery.state == 0}">
 		 			<button type="button" class="btn btn-sm btn-info" name="addDeliveryBOM">增加出库项目</button>
 		 			<button type="button" class="btn btn-sm btn-info" name="deleteDeliveryBOM">删除出库项目</button>

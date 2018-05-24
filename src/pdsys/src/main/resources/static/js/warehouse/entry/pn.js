@@ -1,4 +1,9 @@
 $(document).ready(function(){
+	$("button[name='entryList']").click(function(){
+		var self = $(this);
+		PdSys.refresh('/warehouse/entry/main/pn?no=');
+	});
+	
 	//新建入库单
 	$("button[name='addEntry']").click(function(){
 		var self = $(this);

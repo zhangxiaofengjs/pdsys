@@ -1,4 +1,9 @@
 $(document).ready(function(){
+	$("button[name='entryList']").click(function(){
+		var self = $(this);
+		PdSys.refresh('/warehouse/entry/main/machinepart?no=');
+	});
+	
 	//新建入库单
 	$("button[name='addEntry']").click(function(){
 		var self = $(this);
@@ -49,7 +54,7 @@ $(document).ready(function(){
 	        success : function(data) {
 	        	if(data.success)
 	        	{
-	        		$(location).attr('href', PdSys.url('/warehouse/entry/main/machinepart?id=' + data.id));
+	        		$(location).attr('href', PdSys.url('/warehouse/entry/main/machinepart?no=' + data.no));
 	        	}
 	        	else
 	        	{
