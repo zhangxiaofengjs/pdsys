@@ -22,7 +22,6 @@
 					
 				</div>
 			</nav>
-			
 			<table class="table table-striped table-bordered table-hover table-condensed" id="store">
 				<thead>
 					<tr>
@@ -38,7 +37,7 @@
 					</tr>
 				</thead>
 				<tbody>
-				    <tr th:each="notice : ${notices}">
+				    <tr th:each="notice : ${list}">
 				      <td th:text="${notice.id}"></td>
 				      <td th:text="${notice.jobName}"></td>
 				      <td th:text="${notice.comment}"></td>
@@ -48,6 +47,7 @@
 			</table>
    	 	</div>
 
+		<!--  <div th:include="common/page::page"></div>-->
    	 	<div th:replace="common/footer::copyright"></div>
 	</div>
 

@@ -1,6 +1,7 @@
 package com.zworks.pdsys.mappers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,5 +12,7 @@ public interface NoticeMapper {
 
 	void add(List<NoticeModel> ss);
 	
-	List<NoticeModel> queryList( NoticeModel notice );
+	List<NoticeModel> queryList( Map<String,Object> map );
+	
+	int selectPageListCount(Map<String,Object> map);
 }

@@ -1,0 +1,53 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="page">
+<link rel="stylesheet" th:href="@{/libs/jquery/css/pagination.css}"/> 
+<script th:src="@{/libs/jquery/jquery.pagination.js}"></script> 
+<script th:src="@{/libs/jquery/jquery.min.js}"></script> 
+<script th:inline="javascript">
+(function($) {
+  /*<![CDATA[*/
+  var count=[[40]];
+  var start=[[1]];
+  /*]]>*/
+  var url=$("#page").attr('url');
+  var displaycnt=count>10?10:count;
+  fenye(count,start,url,displaycnt);
+})(jQuery);
+  function fenye(count,start,url,displaycnt){
+    /*<![CDATA[*/
+    if(count<2) 
+    return;
+    /*]]>*/
+    $("#page").paginate({
+      count     : count,
+      start     : start,
+      display   : displaycnt,
+      border          : true,
+      border_color      : '#fff',
+      text_color       : '#fff',
+      background_color    : 'pink',  
+      border_hover_color    : '#ccc',
+      text_hover_color     : '#000',
+      background_hover_color  : '#fff', 
+      images          : true,
+      mouse          : 'press',
+      onChange: function(page_index) { 
+        var tourl;
+        /*<![CDATA[*/
+        if(url.indexOf('?')>0)
+          tourl=url+'&pageon='+page_index;
+        else
+          tourl=url+'?pageon='+page_index;
+          window.location.href=tourl;
+        /*]]>*/
+      }
+    });
+  };
+</script>
+</head>
+  <body>  
+    <div th:fragment="copyright" style="text-align:right;color:#9c9a9a;">
+      © 2018-2028 ZWORKS&nbsp;<span class="glyphicon glyphicon-send" title="version:r20180515"></span>&nbsp;版权所有,仅供南通创通日用品有限公司使用。<a class="glyphicon glyphicon-envelope" href="mailTo:zhangxiaofengjs@163.com" title="zhangxiaofengjs@163.com"></a>
+     </div> 
+</html>

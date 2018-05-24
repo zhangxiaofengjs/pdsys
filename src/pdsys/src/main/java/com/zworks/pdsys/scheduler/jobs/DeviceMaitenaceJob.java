@@ -43,15 +43,19 @@ public class DeviceMaitenaceJob implements Job {
     		for(int i =0;i<ds.size();i++)
     		{
     			DeviceModel dm = ds.get(i);
-    			MachineModel m = dm.getMachine();
-    			String comment = "机器["+m.getPn()+m.getName()+"]有故障，需要维修！";
-    			NoticeModel s = new NoticeModel();
-    			s.setComment(comment);
-    			s.setJobName(jobName);
-    			notices.add(s);
+    			boolean isExist = noticeService.checkIsExit(dm.getNo());
+    			if( isExist == false )
+    			{
+	    			String comment = "机器["+dm.getNo()+"]需要保养！";
+	    			NoticeModel s = new NoticeModel();
+	    			s.setComment(comment);
+	    			s.setJobName(jobName);
+	    			notices.add(s);
+    			}
     		}
     		
-    		noticeService.add(notices);
+    		if( notices.size()>0 )
+    			noticeService.add(notices);
     	}
     }
 }

@@ -1,12 +1,13 @@
 package com.zworks.pdsys.controllers;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.zworks.pdsys.business.beans.NoticeFormBean;
 import com.zworks.pdsys.common.utils.DateUtils;
@@ -16,13 +17,14 @@ import com.zworks.pdsys.services.NoticeService;
 
 @Controller
 @RequestMapping("/notice")
-public class NoticeController {
+public class NoticeController extends BaseController {
 	
 	@Autowired
 	NoticeService noticeService;
 	
 	@RequestMapping("/list")
-    public String showNoticelist(NoticeFormBean formBean, Model model) {
+    public Object showNoticelist(@RequestParam(value="pageon",defaultValue="1")int pageon,
+    		                     NoticeFormBean formBean, ModelAndView mv) {
 		
 		NoticeModel notice = new NoticeModel();
 		Date s = DateUtils.startOfDay(formBean.getStart());
@@ -41,11 +43,13 @@ public class NoticeController {
 		notice.getFilterCond().put("noticeStart", s);
 		notice.getFilterCond().put("noticeEnd", e);
 		
-		List<NoticeModel> list = noticeService.queryList(notice);
-		model.addAttribute("notices", list);
-		model.addAttribute("formBean",formBean);
+		Map<String, Object> map = noticeService.queryList(notice,pageon);
+		map.put("formBean",formBean);
+		
+	    mv.addAllObjects(map);
+	    mv.setViewName("notice/list");
 
-        return "notice/list";
+        return mv;
     }
 	
 }
