@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.MachineTroubleMapper">
+	
+   	<resultMap id="machineTroubleResultMap" type="machineTroubleModel" >  
+        <id column="mt_id" property="id" />  
+        <result column="mt_code" property="code" />  
+        <result column="mt_coment" property="comment" />
+    </resultMap>
+    
+	<select id="queryList" parameterType="machineTroubleModel" resultMap="machineTroubleResultMap">
+		select mt.c_id as mt_id,
+		       mt.c_code as mt_code,
+		       mt.c_comment as mt_coment 
+		from machine_trouble_tbl as mt 
+		<where>
+			<if test="id > 0">
+				and mt.c_id=#{id}
+			</if>
+			<if test="code != null and code != ''">
+				and mt.c_code=#{code}
+			</if>
+		</where>
+		order by mt.c_id asc
+	</select>
+	
+	<insert id="add" parameterType="deviceModel" useGeneratedKeys="true" keyProperty="id">
+    	insert into machine_trouble_tbl (
+    		c_code,
+    		c_comment)
+    	values (
+    		#{code},
+    		#{comment}
+    	)
+    </insert>
+    
+</mapper>

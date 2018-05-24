@@ -1,43 +1,43 @@
 $(document).ready(function(){
-	$("#changeState").click(function(){
-		var self = $(this);
-		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
-		if(selIds.length != 1) {
-			return;
-		}
-		
-		var dlg = new CommonDlg();
-		dlg.showFormDlg({
-			"target":"dlg_div",
-			"caption":"选择设备状态",
-			"fields":[
-				{
-					"name":"id",
-					"type":"hidden",
-					"value":selIds[0]
-				},
-				{
-					"name":"state",
-					"label":"设备状态",
-					"type":"select",
-					"options":[
-						{ 'value': 0, "caption" : "运行中"},
-						{ 'value': 1, "caption" : "维护中"},
-						{ 'value': 2, "caption" : "故障"},
-					],
-				}
-			],
-	    	url : "/device/update",
-	        success : function(data) {
-	        	PdSys.refresh();
-	        },
-	        error: function(data) {
-	        	PdSys.sysError();
-	        }
-	    });
-	});
+//	$("#changeState").click(function(){
+//		var self = $(this);
+//		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
+//		if(selIds.length != 1) {
+//			return;
+//		}
+//		
+//		var dlg = new CommonDlg();
+//		dlg.showFormDlg({
+//			"target":"dlg_div",
+//			"caption":"选择设备状态",
+//			"fields":[
+//				{
+//					"name":"id",
+//					"type":"hidden",
+//					"value":selIds[0]
+//				},
+//				{
+//					"name":"state",
+//					"label":"设备状态",
+//					"type":"select",
+//					"options":[
+//						{ 'value': 0, "caption" : "运行中"},
+//						{ 'value': 1, "caption" : "维护中"},
+//						{ 'value': 2, "caption" : "故障"},
+//					],
+//				}
+//			],
+//	    	url : "/device/update",
+//	        success : function(data) {
+//	        	PdSys.refresh();
+//	        },
+//	        error: function(data) {
+//	        	PdSys.sysError();
+//	        }
+//	    });
+//	});
 	
-	$("#addDevice").click(function(){
+	$("#addDeviceRepair").click(function(){
 		var self = $(this);
 
 		var fields = [
@@ -170,106 +170,6 @@ $(document).ready(function(){
 			},
 			"error": function(data) {
 				PdSys.alert("查询备件库发生错误，请刷新后重试。");
-			}
-		});
-	});
-	
-	//维修单生成
-	$("#addDeviceRepair").click(function(){
-		var self = $(this);
-		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
-		if(selIds.length != 1) {
-			return;
-		}
-
-		var fields = [
-		{
-			"name":"device.id",
-			"type":"hidden",
-			"value":selIds[0]
-		},
-		{
-			"name":"machineTrouble.id",
-			"label":"故障CODE",
-			"type":"select",
-			"options":[],
-			"ajax":true,
-			"url":"/machineTrouble/list/json",
-			"convertAjaxData" : function(thisField, data) {
-				data.forEach(function(mt, idx) {
-					thisField.options.push({
-						"value": mt.id,
-						"caption": mt.code,
-					});
-				});
-			},
-			"groupButtons":[{
-				"name":"addCode",
-				"text":"+",
-				"click": function(dlg) {
-					var dlgPlace = new CommonDlg();
-					dlgPlace.showFormDlg({
-						"target":"code_dlg_div",
-						"caption":"添加故障CODE",
-						"fields":[
-							{
-								"name":"code",
-								"label":"故障CODE",
-								"type":"text",
-								"value":"",
-								"required":"required",
-							},
-							{
-								"name":"comment",
-								"label":"故障描述",
-								"type":"text",
-								"value":"",
-								"required":"required",
-							}
-						],
-						"url":"/machineTrouble/add",
-						"success" : function(data) {
-							dlgPlace.hide();
-							var f = dlg.fieldByName("machineTrouble.id");
-							f.options.length = 0;
-							dlg.rebuildFieldWithValue("machineTrouble.id", data.machineTrouble.id);
-						},
-						"error": function(data) {
-							PdSys.alert(data.msg);
-							
-						}
-					});
-				}
-			}],
-		},
-		{
-			"name":"repairDate",
-			"value":dateFormat(),
-			"type":"date",
-			"label":"故障日期",
-		},
-		{
-			"name":"comment",
-			"type":"text",
-			"label":"备注"
-		}];
-		
-		var dlg = new CommonDlg();
-		dlg.showFormDlg({
-			"target":"dlg_div",
-			"caption":"生成维修单",
-			"fields":fields,
-			"url":"/device/addRepair",
-			"success": function(data) {
-				dlg.hide();
-				PdSys.success({
-					"ok" : function() {
-						PdSys.refresh();
-					}
-				});
-			},
-			"error": function(data) {
-				PdSys.sysError();
 			}
 		});
 	});

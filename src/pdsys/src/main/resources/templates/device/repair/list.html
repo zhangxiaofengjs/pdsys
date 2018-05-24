@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/header::header">
+</head>
+<body>
+	<script th:src="@{/js/device/repair/repair.js}"></script> 
+	<nav style="border-radius:0px;margin-bottom:-1px;" class="navbar navbar-default">
+		<div class="container-fluid">
+	  		<div class="navbar-header">
+	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
+	  		</div>
+
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" method="post">
+	 			<div class="form-group">
+				   <input type="text" class="form-control" placeholder="编号">
+	 			</div>
+	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='addDeviceRepair'>添加</button>
+	 			<button type="button" class="btn btn-sm btn-info" id='changeState'>更新</button>
+			</form>
+		</div>
+	</nav>
+
+	<div style="height:auto; overflow:auto">
+		<div style="height:250px; overflow:auto">
+			<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
+				<thead>
+				    <tr>
+				    	<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
+						<th>编号</th>
+						<th>机器设备</th>
+						<th>使用地点</th>
+						<th>故障CODE</th>
+						<th>故障描述</th>
+						<th>故障日期</th>
+						<th>备注</th>
+				    </tr>
+				</thead>
+				<tbody>
+					<tr th:each="deviceRepair : ${list}"
+						th:with="device=(${deviceRepair.device}),
+								 machineTro=(${deviceRepair.machineTrouble}),
+								 machine=(${device.machine}),
+								 place=(${device.place})">
+						<td>
+							<input type="checkbox" name="select" th:rowid="${deviceRepair.id}">
+						</td>
+						<td th:text="${device}?${device.no}:_"></td>
+						<td th:text="${machine}?${machine.pn + ' ' + machine.name}:_"></td>
+						<td th:text="${place}?${place.name}:_"></td>
+						<td th:text="${machineTro}?${machineTro.code}:_"></td>
+						<td th:text="${machineTro}?${machineTro.comment}:_"></td>
+						<td th:text="${#dates.format(deviceRepair.repairDate, 'yyyy-MM-dd')}"></td>
+						<td th:text="${deviceRepair.comment}"></td>
+				    </tr>
+				</tbody>
+			</table>
+		</div>
+		
+	</div>
+	<div id="dlg_div"></div>
+	<div id="place_dlg_div"></div>
+	<div id="msg_div"></div>
+	<div th:replace="common/footer::copyright"></div>
+</body>
+</html>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.zworks.pdsys.mappers.DeviceMapper">
+<mapper namespace="com.zworks.pdsys.mappers.DeviceRepairMapper">
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="user_id" property="id"/>
         <result column="user_name" property="name"/>   
@@ -26,7 +26,14 @@
         <association property="unit" resultMap="unitResultMap"/>
         <association property="supplier" resultMap="supplierResultMap"/>
     </resultMap>
-	<resultMap id="deviceResultMapper" type="deviceModel" >  
+	
+	<resultMap id="machineTroubleResultMap" type="machineTroubleModel" >  
+        <id column="mt_id" property="id" />  
+        <result column="mt_code" property="code" />  
+        <result column="mt_coment" property="comment" />
+    </resultMap>
+    
+    <resultMap id="deviceResultMapper" type="deviceModel" >  
         <id column="d_id" property="id" />  
         <result column="d_no" property="no" />  
         <result column="d_maitenaced_date" property="maitenacedDate" />  
@@ -35,9 +42,23 @@
         <association property="place" resultMap="placeResultMap"/>
         <association property="user" resultMap="userResultMap"/>
     </resultMap>
+	
+	<resultMap id="deviceRepairResultMapper" type="deviceRepairModel" >  
+        <id column="dr_id" property="id" />  
+        <result column="dr_repair_date" property="repairDate" />  
+        <result column="dr_comment" property="comment" />
+		<association property="machineTrouble" resultMap="machineTroubleResultMap"/>
+        <association property="device" resultMap="deviceResultMapper"/>
+    </resultMap>
     
-	<select id="queryList" parameterType="deviceModel" resultMap="deviceResultMapper">
-		select d.c_id as d_id,
+    <select id="showRepairInfos" parameterType="deviceRepairModel" resultMap="deviceRepairResultMapper">
+		select dr.c_id as dr_id,
+		       dr.c_repair_date as dr_repair_date,
+		       dr.c_comment as dr_comment,
+		       mt.c_id as mt_id,
+		       mt.c_code as mt_code,
+		       mt.c_comment as mt_coment,
+			   d.c_id as d_id,
 		       d.c_no as d_no,
 		  	   d.c_maitenaced_date as d_maitenaced_date,	
 		  	   d.c_state as d_state,	
@@ -45,65 +66,51 @@
 			   m.c_pn as m_pn,
 			   m.c_name as m_name,
 			   m.c_maitenace_period as m_maitenace_period,
-   		       u.c_id as u_id,
+			   u.c_id as u_id,
    		       u.c_name as u_name,
    		       s.c_id as s_id,
 		       s.c_name as s_name,
 		       p.c_id as p_id,
 		       p.c_name as p_name,
-		       user.c_id as user_id,
-		       user.c_name as user_name
-		from device_tbl as d 
+		       us.c_id as user_id,
+		       us.c_name as user_name 
+		from device_repair_tbl as dr 
+		left join device_tbl as d on d.c_id = dr.c_device_id 
+		left join machine_trouble_tbl as mt on mt.c_id = dr.c_trouble_id 
 		left join machine_tbl as m on d.c_machine_id = m.c_id 
 		left join unit_tbl as u on m.c_unit_id = u.c_id 
 		left join supplier_tbl as s on m.c_supplier_id = s.c_id 
 		left join place_tbl as p on d.c_place_id = p.c_id 
-		left join user_tbl as user on d.c_user_id = user.c_id
+		left join user_tbl as us on d.c_user_id = us.c_id
 		<where>
-			<if test="id > 0">
-				and d.c_id=#{id}
-			</if>
-			<if test="no != null and no != ''">
+			<if test="device != null">
 				<choose>
 	                <when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
-	                   	and d.c_no like '%${no}%'
+	                   	and d.c_no like '%${device.no}%'
 	                </when>
 	                <otherwise>
-						and d.c_no = #{no}
+						and d.c_no = #{device.no}
 	                </otherwise>
 	            </choose>
 			</if>
-			<if test="filterCond.toMaitenaceInDays != null">
-				and DATE_ADD(d.c_maitenaced_date, INTERVAL m.c_maitenace_period DAY) between CURDATE() and DATE_ADD(CURDATE(), INTERVAL #{filterCond.toMaitenaceInDays} DAY)
-			</if>
-
+			
 		</where>
-		order by p.c_name asc, d.c_no asc
+		order by dr.c_id asc
 	</select>
 	
-	<insert id="add" parameterType="deviceModel">
-    	insert into device_tbl (
-    		c_no,
-    		c_machine_id,
-    		c_place_id,
-    		c_user_id)
+	<insert id="add" parameterType="deviceRepairModel" useGeneratedKeys="true" keyProperty="id">
+    	insert into device_repair_tbl (
+    		c_device_id,
+    		c_trouble_id,
+    		c_repair_date,
+    		c_comment
+    		)
     	values (
-    		#{no},
-    		#{machine.id},
-    		#{place.id},
-    		#{user.id}
+    		#{device.id},
+    		#{machineTrouble.id},
+    		#{repairDate},
+    		#{comment}
     	)
-      	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-      		select LAST_INSERT_ID() as id
-      	</selectKey>
     </insert>
-    
-	<update id="update">
-    	update device_tbl
-		set	c_state = #{state}
-    	<where>
-			c_id = #{id}
-		</where>
-    </update>
     
 </mapper>

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.zworks.pdsys.business.beans.DeviceMaitenaceMachinePartsBean;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.DeviceModel;
+import com.zworks.pdsys.models.DeviceRepairModel;
 import com.zworks.pdsys.services.DeviceService;
 
 /**
@@ -54,4 +55,21 @@ public class DeviceController {
 		List<DeviceMaitenaceMachinePartsBean> result = deviceService.getMaitenaceParts(deviceIds);
 		return JSONResponse.success().put("data", result);
 	}
+	
+	@RequestMapping(value= {"/repair"})
+    public String showRepairInfo(DeviceRepairModel deviceRepair, Model model) {
+		List<DeviceRepairModel> list = deviceService.showRepairInfos(deviceRepair);
+		
+		model.addAttribute("deviceRepair", deviceRepair);
+		model.addAttribute("list", list);
+		return "device/repair/list";
+    }
+	
+	@RequestMapping(value= {"/addRepair"})
+	@ResponseBody
+    public JSONResponse addRepair(@RequestBody DeviceRepairModel deviceRepair, Model model) {
+		deviceService.addDeviceRepair(deviceRepair);
+		return JSONResponse.success();
+    }
+	
 }

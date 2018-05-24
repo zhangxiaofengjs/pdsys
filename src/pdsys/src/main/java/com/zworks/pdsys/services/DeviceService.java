@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.business.beans.DeviceMaitenaceMachinePartsBean;
 import com.zworks.pdsys.mappers.DeviceMapper;
+import com.zworks.pdsys.mappers.DeviceRepairMapper;
 import com.zworks.pdsys.models.DeviceModel;
+import com.zworks.pdsys.models.DeviceRepairModel;
 import com.zworks.pdsys.models.MachineMachinePartRelModel;
 import com.zworks.pdsys.models.MachineModel;
 import com.zworks.pdsys.models.MachinePartModel;
@@ -25,12 +27,20 @@ public class DeviceService {
 	@Autowired
     private DeviceMapper deviceMapper;
 	@Autowired
+    private DeviceRepairMapper deviceRepairMapper;
+	@Autowired
     private MachineService machineService;
 	@Autowired
 	private WareHouseMachinePartService wareHouseMachinePartService;
 	
 	public List<DeviceModel> queryList(DeviceModel filterObj) {
 		List<DeviceModel> list = deviceMapper.queryList(filterObj);
+		
+		return list;
+	}
+	
+	public List<DeviceRepairModel> showRepairInfos(DeviceRepairModel deviceRepair) {
+		List<DeviceRepairModel> list = deviceRepairMapper.showRepairInfos(deviceRepair);
 		
 		return list;
 	}
@@ -114,4 +124,8 @@ public class DeviceService {
 		List<DeviceMaitenaceMachinePartsBean> list = new ArrayList<DeviceMaitenaceMachinePartsBean>(machinePartMap.values());
 		return list;
 	}
+	
+    public void addDeviceRepair(DeviceRepairModel deviceRepair) {
+    	deviceRepairMapper.add(deviceRepair);
+    }
 }

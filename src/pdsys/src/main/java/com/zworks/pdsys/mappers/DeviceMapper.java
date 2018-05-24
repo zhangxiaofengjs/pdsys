@@ -18,4 +18,5 @@ public interface DeviceMapper {
 	void update(DeviceModel device);
 
 	void add(DeviceModel device);
+
 }
