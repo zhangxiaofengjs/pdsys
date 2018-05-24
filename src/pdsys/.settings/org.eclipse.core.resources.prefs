@@ -6,6 +6,7 @@ encoding//src/main/resources/templates/common/exception.html=UTF-8
 encoding//src/main/resources/templates/common/footer.html=UTF-8
 encoding//src/main/resources/templates/common/page.html=UTF-8
 encoding//src/main/resources/templates/device/list.html=UTF-8
+encoding//src/main/resources/templates/device/repair/list.html=UTF-8
 encoding//src/main/resources/templates/index.html=UTF-8
 encoding//src/main/resources/templates/login.html=UTF-8
 encoding//src/main/resources/templates/notice/list.html=UTF-8
