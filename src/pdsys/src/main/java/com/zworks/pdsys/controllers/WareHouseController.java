@@ -22,6 +22,7 @@ import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.RequestContextUtils;
+import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
 import com.zworks.pdsys.models.UserModel;
@@ -204,8 +205,22 @@ public class WareHouseController extends BaseController{
 	
 	@RequestMapping("/list/semipn/json")
 	@ResponseBody
-    public JSONResponse listJson(@RequestBody WareHouseSemiPnModel pn, Model model) {
+    public JSONResponse listSemiJson(@RequestBody WareHouseSemiPnModel pn, Model model) {
 		List<WareHouseSemiPnModel> list = wareHouseSemiPnService.queryList(pn);
         return JSONResponse.success().put("semipns", list);
+    }
+	
+	@RequestMapping("/list/bom/json")
+	@ResponseBody
+    public JSONResponse listBOMJson(@RequestBody WareHouseBOMModel bom, Model model) {
+		List<BOMModel> list = wareHouseBOMService.queryList(bom);
+        return JSONResponse.success().put("boms", list);
+    }
+	
+	@RequestMapping("/list/machinepart/json")
+	@ResponseBody
+    public JSONResponse listMPJson(@RequestBody WareHouseMachinePartModel mp, Model model) {
+		List<WareHouseMachinePartModel> list = wareHouseMachinePartService.queryList(mp);
+        return JSONResponse.success().put("machineparts", list);
     }
 }

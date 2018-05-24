@@ -71,19 +71,20 @@ $(document).ready(function(){
 			"options":[],
 			"min":1,
 			"ajax":true,
-			"url":"/bom/list/json",
+			"url":"/warehouse/list/bom/json",
 			"ajaxData":{
-				"id": -1
+				"filterCond":{"minCount": 1}
 			},
 			"convertAjaxData" : function(thisField, data) {
 				//将返回的值转化为Field规格数据,以供重新渲染
 				//做成选择分支
 				thisField.options = [];
 				data.boms.forEach(function(bom, idx) {
+					var wareHouseBOM = bom.wareHouseBOM; 
 					thisField.options.push({
 						"value": bom.id,
 						"caption": M.bomName(bom),
-						"data":bom.unit.name
+						"data": {"unitName":bom.unit.name,"num":(wareHouseBOM==null?"0":wareHouseBOM.num)}
 					});
 				});
 			},
@@ -95,18 +96,25 @@ $(document).ready(function(){
 				//select选择以后刷新品目单位
 				thisElem.change(function() {
 					var selIndex = thisElem[0].selectedIndex;
-					var val = "";
+					var val = null;
 					if(selIndex != -1) {
 						val = self.options[selIndex].data;
 					}
-					dlg.rebuildFieldWithValue("unit.name", val);
+					dlg.rebuildFieldWithValue("wareHouseBomNum", val==null?"":val.num);
+					dlg.rebuildFieldWithValue("unit.name", val==null?"":val.unitName);
 				});
 				thisElem.trigger("change");
 			},
 		},
 		{
+			"name":"wareHouseBomNum",
+			"label":"在库数量",
+			"type":"label",
+			"value":"",
+		},
+		{
 			"name":"num",
-			"label":"数量",
+			"label":"出库数量",
 			"type":"number",
 			"min":1,
 			"value":"",

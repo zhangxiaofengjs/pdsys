@@ -75,9 +75,9 @@ $(document).ready(function(){
 			"options":[],
 			"min":1,
 			"ajax":true,
-			"url":"/machinepart/list/json",
+			"url":"/warehouse/list/machinepart/json",
 			"ajaxData":{
-				"id": -1
+				"filterCond":{"minCount": 1}
 			},
 			"convertAjaxData" : function(thisField, data) {
 				//将返回的值转化为Field规格数据,以供重新渲染
@@ -87,19 +87,50 @@ $(document).ready(function(){
 					"value": -1,
 					"caption":"请选择品番...",
 				});
-				data.machineparts.forEach(function(machinePart, idx) {
+				data.machineparts.forEach(function(whmp, idx) {
+					var machinePart = whmp.machinePart; 
 					thisField.options.push({
 						"value": machinePart.id,
-						"caption": "{0} {1}".format(machinePart.pn, machinePart.name)
+						"caption": "{0} {1}".format(machinePart.pn, machinePart.name),
+						"data": {"unitName":machinePart.unit.name,"num":(whmp==null?"0":whmp.num)}
 					});
 				});
 			},
+			"afterBuild": function() {
+				var self = this;
+				
+				var thisElem = dlg.findFieldElem(self);
+				
+				//select选择以后刷新品目单位
+				thisElem.change(function() {
+					var selIndex = thisElem[0].selectedIndex;
+					var val = null;
+					if(selIndex != -1) {
+						val = self.options[selIndex].data;
+					}
+					dlg.rebuildFieldWithValue("wareHouseNum", val==null?"":val.num);
+					dlg.rebuildFieldWithValue("unitName", val==null?"":val.unitName);
+				});
+				thisElem.trigger("change");
+			},
+		},
+		{
+			"name":"wareHouseNum",
+			"label":"在库数量",
+			"type":"label",
+			"value":"",
 		},
 		{
 			"name":"num",
-			"label":"数量",
+			"label":"出库数量",
 			"type":"number",
 			"min":1,
+			"value":"",
+		},
+		{
+			"name":"unitName",
+			"label":"单位",
+			"type":"label",
 			"value":"",
 		}];
 		

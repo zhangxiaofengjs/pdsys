@@ -66,6 +66,9 @@
 					</choose>
 				</if>
 			</if>
+			<if test="filterCond.minCount != null">
+				wh_bom.c_num<![CDATA[>=]]>#{filterCond.minCount}
+			</if>
 		</where>
 		
 		order by bom.c_type asc, bom.c_pn asc
