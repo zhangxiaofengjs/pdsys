@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.WareHouseHistoryFormBean;
 import com.zworks.pdsys.business.beans.WareHouseListFormBean;
@@ -18,9 +20,11 @@ import com.zworks.pdsys.common.enumClass.PurchaseState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.DateUtils;
+import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.RequestContextUtils;
 import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
+import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
@@ -197,4 +201,11 @@ public class WareHouseController extends BaseController{
 		model.addAttribute("type", type);
 		return "warehouse/history/main";
 	}
+	
+	@RequestMapping("/list/semipn/json")
+	@ResponseBody
+    public JSONResponse listJson(@RequestBody WareHouseSemiPnModel pn, Model model) {
+		List<WareHouseSemiPnModel> list = wareHouseSemiPnService.queryList(pn);
+        return JSONResponse.success().put("semipns", list);
+    }
 }

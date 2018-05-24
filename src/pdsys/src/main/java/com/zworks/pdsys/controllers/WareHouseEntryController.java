@@ -17,6 +17,7 @@ import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.RequestContextUtils;
+import com.zworks.pdsys.common.utils.SecurityContextUtils;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
@@ -223,7 +224,10 @@ public class WareHouseEntryController {
 		entry.setId(id);
 		entry = wareHouseEntryService.queryOne(entry);
 		if(entry == null) {
-			throw new PdsysException("错误参数:/entry/entry/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM); 
+			return JSONResponse.error("不存在单号,请刷新页面。");
+		}
+		if(!SecurityContextUtils.isLoginUser(entry.getUser())) {
+			return JSONResponse.error("当前用户不是登录者");
 		}
 		if(wareHouseEntryService.entry(entry)) {
 			return JSONResponse.success();

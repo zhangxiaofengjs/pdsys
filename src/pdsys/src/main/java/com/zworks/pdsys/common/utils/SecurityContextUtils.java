@@ -32,4 +32,26 @@ public class SecurityContextUtils {
 		}
 		return loginUser;
 	}
+	
+	public static boolean isLoginUser(UserModel user) {
+		PdSysLoginUser lUser = getLoginUser();
+		if(lUser == null) {
+			return false;
+		}
+		UserModel lU = lUser.getUser();
+		if(lU == null) {
+			return false;
+		}
+		if(lU.getId() == user.getId() && user.getId() > 0) {
+			//ID一致且有ID才是一样的
+			return true;
+		}
+		
+		if(lU.getNo().equals(user.getNo()) && !user.getNo().equals("") && user.getNo()!=null) {
+			//ID一致且有ID才是一样的
+			return true;
+		}
+		
+		return false;
+	}
 }

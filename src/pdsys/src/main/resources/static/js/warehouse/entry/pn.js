@@ -137,11 +137,7 @@ $(document).ready(function(){
 					}});
 			},
 			"error": function(data) {
-				var msgDlg = new CommonDlg();
-				msgDlg.showMsgDlg({
-					"target":"msg_div",
-					"type":"ok",
-					"msg":"添加到入库单失败,请联系管理员!"});
+				PdSys.alert(data.msg);
 			}
 		});
 	});
@@ -180,11 +176,7 @@ $(document).ready(function(){
 							}});
 					},
 					"error": function(data) {
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":"删除失败,请联系管理员!"});
+						PdSys.alert(data.msg);
 					}
 				});
 			}
@@ -216,19 +208,11 @@ $(document).ready(function(){
 									PdSys.refresh();
 								}});
 						} else {
-							var msgDlg = new CommonDlg();
-							msgDlg.showMsgDlg({
-								"target":"msg_div",
-								"type":"ok",
-								"msg":data.msg});
+							PdSys.alert(data.msg);
 						}
 					},
 					"error": function(data) {
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":"发生错误,请联系管理员!"});
+						PdSys.alert(data.msg);
 					}
 				});
 			}

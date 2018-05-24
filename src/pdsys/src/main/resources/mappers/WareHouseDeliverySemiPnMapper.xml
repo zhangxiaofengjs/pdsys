@@ -27,8 +27,7 @@
 	<select id="queryList" parameterType="wareHouseDeliverySemiPnModel" resultMap="wareHouseDeliveryPnResultMap">
 		select 
 				d_pn.c_id as d_pn_id,
-				d_pn.c_semi_produced_num as c_semi_produced_num,
-				d_pn.c_produced_num as c_produced_num,
+				d_pn.c_num as d_pn_num,
 				d.c_id as d_id,
 				pn.c_id as pn_id,
 				pn.c_pn as pn_pn,
@@ -48,6 +47,9 @@
 			</if>
 			<if test="pn != null and pn.id > 0">
 				and d_pn.c_pn_id = #{pn.id}
+			</if>
+			<if test="pnClsRel != null and pnClsRel.pnCls != null and pnClsRel.pnCls.id > 0">
+				and d_pn.c_pn_cls_id = #{pnClsRel.pnCls.id}
 			</if>
 		</where>
 		order by pn.c_pn

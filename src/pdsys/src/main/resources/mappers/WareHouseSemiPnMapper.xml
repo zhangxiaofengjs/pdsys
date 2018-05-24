@@ -6,7 +6,6 @@
         <id column="unit_id" property="id"/>  
         <result column="unit_name" property="name"/>  
         <result column="unit_sub_name" property="subName"/>  
-        <result column="unit_ratio" property="ratio"/>  
     </resultMap>
     <resultMap id="pnResultMap" type="pnModel" >  
         <id column="pn_id" property="id" />  
@@ -32,7 +31,7 @@
     
 	<select id="queryList" parameterType="wareHouseSemiPnModel" resultMap="warehouseSemiPnResultMap">
 		select 
-			wh_pn.c_id AS wh_id, 
+			wh_pn.c_id AS wh_id,
 			wh_pn.c_num AS wh_num, 
 			pn.c_id AS pn_id, 
 			pn.c_pn AS pn_pn, 
@@ -42,7 +41,8 @@
 			pnClsRel.c_id AS pn_cls_rel_id, 
 			pnClsRel.c_num AS pn_cls_rel_num, 
 			unit.c_id AS unit_id, 
-			unit.c_name AS unit_name
+			unit.c_name AS unit_name,
+			unit.c_sub_name AS unit_sub_name
 		from warehouse_semi_pn_tbl AS wh_pn
 		left join pn_tbl AS pn on wh_pn.c_pn_id = pn.c_id
 		left join pn_cls_tbl AS pnCls on wh_pn.c_pn_cls_id = pnCls.c_id

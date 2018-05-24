@@ -40,7 +40,7 @@
 			<tbody>
 				<tr th:each="deliveryTgt : ${deliveries}">
 					<td><input type="checkbox" name="select" th:rowid="${deliveryTgt.id}"></td>
-					<td><a th:text="${deliveryTgt.no}" th:href="@{'/warehouse/delivery/main/pn?fuzzyNo=false&no=' +${deliveryTgt.no}}"></a></td>
+					<td><a th:text="${deliveryTgt.no}" th:href="@{'/warehouse/delivery/main/semipn?fuzzyNo=false&no=' +${deliveryTgt.no}}"></a></td>
 					<td th:text="${deliveryTgt.user.name}"></td>
 					<td th:switch="${deliveryTgt.state}">
 			  			<span class="label label-success" th:case="0">计划中</span>
@@ -85,8 +85,8 @@
 			    <tr>
 			    	<th rowspan="2" style="width:20px;"><input type="checkbox" name="selectAll"></th>
 					<th rowspan="2">品目</th>
+					<th rowspan="2">子类</th>
 					<th rowspan="2">单位</th>
-					<th rowspan="2">关联订单</th>
 					<th colspan="2">数量</th>
 			    </tr>
 			    <tr>
@@ -95,23 +95,22 @@
 			    </tr>
 			</thead>
 			<tbody>
-				<tr th:each="wareHouseDeliveryPn : ${deliveryTgt.wareHouseDeliveryPns}"
-					th:with="pn=${wareHouseDeliveryPn.pn},
+				<tr th:each="wareHouseDeliverySemiPn : ${deliveryTgt.wareHouseDeliverySemiPns}"
+					th:with="pn=${wareHouseDeliverySemiPn.pn},
 							 unit=${pn.unit},
-	 						 order=${wareHouseDeliveryPn.order},
-	 						 wareHousePn=${wareHouseDeliveryPn.wareHousePn},
-	 						 wareHousesSemiNum=(${wareHousePn != null}?${wareHousePn.semiProducedNum}:0),
-	 						 wareHouseNum=(${wareHousePn != null}?${wareHousePn.producedNum}:0)"
-							 th:rowid="${wareHouseDeliveryPn.id}">
+	 						 pnCls=${wareHouseDeliverySemiPn.pnClsRel.pnCls},
+	 						 wareHouseSemiPn=${wareHouseDeliverySemiPn.wareHouseSemiPn},
+	 						 wareHouseNum=(${wareHouseSemiPn != null}?${wareHouseSemiPn.num}:0)"
+							 th:rowid="${wareHouseDeliverySemiPn.id}">
 					<td>
-						<input type="checkbox" name="select" th:rowid="${wareHouseDeliveryPn.id}">
+						<input type="checkbox" name="select" th:rowid="${wareHouseDeliverySemiPn.id}">
 					</td>
-					<td th:text="${pn.pn + pn.name}"></td>
-					<td th:text="${unit.name}"></td>
-					<td th:text="${order.no}"></td>
+					<td th:text="${pn.pn + ' ' + pn.name}"></td>
+					<td th:text="${unit.subName==''?unit.name:unit.subName}"></td>
+					<td th:text="${pnCls.name}"></td>
 					<td th:text="${deliveryTgt.state==0?wareHouseNum:'--'}" class="number"></td>
-					<td th:text="${wareHouseDeliveryPn.producedNum}" 
-						th:class="'number ' + (${wareHouseNum < wareHouseDeliveryPn.producedNum}?'text-danger':'')"></td>
+					<td th:text="${wareHouseDeliverySemiPn.num}" 
+						th:class="'number ' + (${wareHouseNum < wareHouseDeliverySemiPn.num}?'text-danger':'')"></td>
 			    </tr>
 			</tbody>
 		</table>
