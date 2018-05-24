@@ -21,9 +21,11 @@ import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.models.WareHouseEntryPnModel;
+import com.zworks.pdsys.models.WareHouseEntrySemiPnModel;
 import com.zworks.pdsys.services.WareHouseEntryBOMService;
 import com.zworks.pdsys.services.WareHouseEntryMachinePartService;
 import com.zworks.pdsys.services.WareHouseEntryPnService;
+import com.zworks.pdsys.services.WareHouseEntrySemiPnService;
 import com.zworks.pdsys.services.WareHouseEntryService;
 
 /**
@@ -37,6 +39,8 @@ public class WareHouseEntryController {
 	WareHouseEntryService wareHouseEntryService;
 	@Autowired
 	WareHouseEntryPnService wareHouseEntryPnService;
+	@Autowired
+	WareHouseEntrySemiPnService wareHouseEntrySemiPnService;
 	@Autowired
 	WareHouseEntryBOMService wareHouseEntryBOMService;
 	@Autowired
@@ -52,7 +56,7 @@ public class WareHouseEntryController {
 		if(type == null) {
 			type = RequestContextUtils.getSessionAttribute(this, "type", "pn");
 		}
-		else if(!(type.equals("bom") || type.equals("pn") || type.equals("machinepart"))) {
+		else if(!(type.equals("bom") || type.equals("pn") || type.equals("semipn") || type.equals("machinepart"))) {
 			throw new PdsysException("错误参数:/entry/type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
 		RequestContextUtils.setSessionAttribute(this, "type", type);
@@ -71,7 +75,10 @@ public class WareHouseEntryController {
 			list = wareHouseEntryService.queryListWithBOM(entry);
 		} else if(type.equals("pn")) {
 			list = wareHouseEntryService.queryListWithPn(entry);
-		} else if(type.equals("machinepart")) {
+		} else if(type.equals("semipn")) {
+			list = wareHouseEntryService.queryListWithSemiPn(entry);
+		} 
+		else if(type.equals("machinepart")) {
 			list = wareHouseEntryService.queryListWithMachinePart(entry);
 		} else {
 			list = new ArrayList<WareHouseEntryModel>();
@@ -92,22 +99,12 @@ public class WareHouseEntryController {
 	@RequestMapping(value="/add/entry")
 	@ResponseBody
     public JSONResponse addEntry(@RequestBody WareHouseEntryModel entry, Model model) {
-		WareHouseEntryModel e = new WareHouseEntryModel();
-		e.setNo(entry.getNo());
-		if(wareHouseEntryService.exists(e)) {
-			return JSONResponse.error("已经存在单号:" + entry.getNo());
+		JSONResponse res = wareHouseEntryService.checkAddable(entry);
+		if(res.isSuccess()) {
+			wareHouseEntryService.add(entry);
+			return JSONResponse.success().put("entry", entry);
 		}
-		
-		e = new WareHouseEntryModel();
-		e.setType(entry.getType());
-		e.setUser(entry.getUser());
-		e.setState(EntryState.PLANNING.ordinal());
-		List<WareHouseEntryModel> es = wareHouseEntryService.queryList(e);
-		if(es.size()!=0) {
-			return JSONResponse.error("当前用户[" + es.get(0).getUser().getName() + "]存在未处理单号:" + es.get(0).getNo());
-		}
-		wareHouseEntryService.add(entry);
-		return JSONResponse.success().put("entry", entry);
+		return res;
     }
 	
 	/**
@@ -123,6 +120,17 @@ public class WareHouseEntryController {
 		}
 		return JSONResponse.success();
     }
+	
+	@RequestMapping(value="/update/semipn")
+	@ResponseBody
+	public JSONResponse updateEntrySemiPn(@RequestBody WareHouseEntrySemiPnModel entryPn, Model model) {
+		if(wareHouseEntrySemiPnService.exist(entryPn)) {
+			wareHouseEntrySemiPnService.update(entryPn);
+		} else {
+			wareHouseEntrySemiPnService.add(entryPn);
+		}
+		return JSONResponse.success();
+	}
 	
 	/**
 	 * 新建入库明细
@@ -162,6 +170,13 @@ public class WareHouseEntryController {
 		return JSONResponse.success();
     }
 	
+	@RequestMapping(value="/delete/semipn")
+	@ResponseBody
+	public JSONResponse deleteEntrySemiPns(@RequestBody List<WareHouseEntrySemiPnModel> entryPns, Model model) {
+		wareHouseEntrySemiPnService.delete(entryPns);
+		return JSONResponse.success();
+	}
+	
 	/**
 	 * 删除入库明细
 	 * */
@@ -191,8 +206,8 @@ public class WareHouseEntryController {
 		WareHouseEntryModel entry = new WareHouseEntryModel();
 		entry.setId(id);
 		entry = wareHouseEntryService.queryOne(entry);
-		if(entry == null) {
-			throw new PdsysException("错误参数:/entry/delete/entry/id=" + id, PdsysExceptionCode.ERROR_REQUEST_PARAM); 
+		if(entry.getState() != EntryState.PLANNING.ordinal()) {
+			return JSONResponse.error("只能删除计划中入库单");
 		}
 		wareHouseEntryService.delete(entry);
 		return JSONResponse.success();

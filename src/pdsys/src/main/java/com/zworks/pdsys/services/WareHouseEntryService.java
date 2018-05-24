@@ -5,17 +5,21 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.enumClass.EntryType;
+import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.mappers.WareHouseEntryMapper;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.models.WareHouseEntryPnModel;
+import com.zworks.pdsys.models.WareHouseEntrySemiPnModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
+import com.zworks.pdsys.models.WareHouseSemiPnModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -28,9 +32,19 @@ public class WareHouseEntryService {
 	@Autowired
 	private WareHousePnService wareHousePnService;
 	@Autowired
+	private WareHouseSemiPnService wareHouseSemiPnService;
+	@Autowired
 	private WareHouseBOMService wareHouseBOMService;
 	@Autowired
 	private WareHouseMachinePartService wareHouseMachinePartService;
+	@Autowired
+	private WareHouseEntryPnService wareHouseEntryPnService;
+	@Autowired
+	private WareHouseEntrySemiPnService wareHouseEntrySemiPnService;
+	@Autowired
+	private WareHouseEntryBOMService wareHouseEntryBOMService;
+	@Autowired
+	private WareHouseEntryMachinePartService wareHouseEntryMachinePartService;
 	
 	public List<WareHouseEntryModel> queryList(WareHouseEntryModel obj) {
 		return wareHouseEntryMapper.queryList(obj);
@@ -53,6 +67,10 @@ public class WareHouseEntryService {
 		return wareHouseEntryMapper.queryListWithPn(obj);
 	}
 	
+	public List<WareHouseEntryModel> queryListWithSemiPn(WareHouseEntryModel entry) {
+		return wareHouseEntryMapper.queryListWithSemiPn(entry);
+	}
+	
 	public List<WareHouseEntryModel> queryListWithBOM(WareHouseEntryModel obj) {
 		return wareHouseEntryMapper.queryListWithBOM(obj);
 	}
@@ -63,6 +81,15 @@ public class WareHouseEntryService {
 	
 	public WareHouseEntryModel queryOneWithPn(WareHouseEntryModel entry) {
 		List<WareHouseEntryModel> entries = this.queryListWithPn(entry);
+		if(entries.size() == 1) {
+			return entries.get(0);
+		}
+		
+		return null;
+	}
+	
+	public WareHouseEntryModel queryOneWithSemiPn(WareHouseEntryModel entry) {
+		List<WareHouseEntryModel> entries = this.queryListWithSemiPn(entry);
 		if(entries.size() == 1) {
 			return entries.get(0);
 		}
@@ -92,11 +119,53 @@ public class WareHouseEntryService {
 		wareHouseEntryMapper.add(obj);
 	}
 	
+	@Transactional
 	public void delete(WareHouseEntryModel entry) {
-		entry.setState(EntryState.DELETE.ordinal());
-		wareHouseEntryMapper.update(entry);
+		if(entry.getType() == EntryType.PN.ordinal()) {
+			WareHouseEntryPnModel ePn = new WareHouseEntryPnModel();
+			ePn.setWareHouseEntry(entry);
+			wareHouseEntryPnService.delete(ePn);
+		}
+		
+		if(entry.getType() == EntryType.SEMIPN.ordinal()) {
+			WareHouseEntrySemiPnModel ePn = new WareHouseEntrySemiPnModel();
+			ePn.setWareHouseEntry(entry);
+			wareHouseEntrySemiPnService.delete(ePn);
+		}
+		
+		if(entry.getType() == EntryType.BOM.ordinal()) {
+			WareHouseEntryBOMModel eBOM = new WareHouseEntryBOMModel();
+			eBOM.setWareHouseEntry(entry);
+			wareHouseEntryBOMService.delete(eBOM);
+		}
+		
+		if(entry.getType() == EntryType.MACHINEPART.ordinal()) {
+			WareHouseEntryMachinePartModel eMp = new WareHouseEntryMachinePartModel();
+			eMp.setWareHouseEntry(entry);
+			wareHouseEntryMachinePartService.delete(eMp);
+		}
+		
+		wareHouseEntryMapper.delete(entry);
 	}
 
+	public JSONResponse checkAddable(WareHouseEntryModel entry) {
+		WareHouseEntryModel e = new WareHouseEntryModel();
+		e.setNo(entry.getNo());
+		if(exists(e)) {
+			return JSONResponse.error("已经存在单号:" + entry.getNo());
+		}
+		
+		e = new WareHouseEntryModel();
+		e.setType(entry.getType());
+		e.setUser(entry.getUser());
+		e.setState(EntryState.PLANNING.ordinal());
+		List<WareHouseEntryModel> es = queryList(e);
+		if(es.size()!=0) {
+			return JSONResponse.error("当前用户[" + es.get(0).getUser().getName() + "]存在未处理单号:" + es.get(0).getNo());
+		}
+		
+		return JSONResponse.success();
+	}
 	public boolean entry(WareHouseEntryModel entry) {
 		if(entry.getType() == EntryType.PN.ordinal()) {
 			entry = queryOneWithPn(entry);
@@ -119,6 +188,26 @@ public class WareHouseEntryService {
 					wareHousePn.setProducedNum(num);
 					
 					wareHousePnService.update(wareHousePn);
+				}
+			}
+		} else if(entry.getType() == EntryType.SEMIPN.ordinal()) {
+			entry = queryOneWithSemiPn(entry);
+			
+			for(WareHouseEntrySemiPnModel entryPn : entry.getWareHouseEntrySemiPns()) {
+				WareHouseSemiPnModel wareHousePn = entryPn.getWareHouseSemiPn();
+				
+				if(wareHousePn == null) {
+					//还没入库过，新建
+					wareHousePn = new WareHouseSemiPnModel();
+					wareHousePn.setPn(entryPn.getPn());
+					wareHousePn.setPnClsRel(entryPn.getPnClsRel());
+					wareHousePn.setNum(entryPn.getNum());
+					wareHouseSemiPnService.add(wareHousePn);
+				} else {
+					float semiNum = wareHousePn.getNum() + entryPn.getNum();
+					wareHousePn.setNum(semiNum);
+					
+					wareHouseSemiPnService.update(wareHousePn);
 				}
 			}
 		} else if(entry.getType() == EntryType.BOM.ordinal()) {

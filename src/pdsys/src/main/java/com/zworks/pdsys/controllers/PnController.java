@@ -75,6 +75,7 @@ public class PnController {
 		pnService.addPnCls(pn);
 		return JSONResponse.success();
     }
+	
 	/**
 	 * 删除子类
 	 * */

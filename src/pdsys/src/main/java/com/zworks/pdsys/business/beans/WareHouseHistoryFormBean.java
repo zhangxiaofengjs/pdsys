@@ -2,10 +2,6 @@ package com.zworks.pdsys.business.beans;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.zworks.pdsys.common.utils.DateJsonDeserializer;
-import com.zworks.pdsys.common.utils.DateJsonSerializer;
 import com.zworks.pdsys.common.utils.DateUtils;
 
 /**

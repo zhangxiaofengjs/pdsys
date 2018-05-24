@@ -18,6 +18,7 @@ public class WareHouseEntryModel extends BaseModel{
 	private int type = -1;
 	private String comment;
 	private List<WareHouseEntryPnModel> wareHouseEntryPns;
+	private List<WareHouseEntrySemiPnModel> wareHouseEntrySemiPns;
 	private List<WareHouseEntryBOMModel> wareHouseEntryBOMs;
 	private List<WareHouseEntryMachinePartModel> wareHouseEntryMachineParts;
 
@@ -94,5 +95,13 @@ public class WareHouseEntryModel extends BaseModel{
 
 	public void setNo(String no) {
 		this.no = no;
+	}
+
+	public List<WareHouseEntrySemiPnModel> getWareHouseEntrySemiPns() {
+		return wareHouseEntrySemiPns;
+	}
+
+	public void setWareHouseEntrySemiPns(List<WareHouseEntrySemiPnModel> wareHouseEntrySemiPns) {
+		this.wareHouseEntrySemiPns = wareHouseEntrySemiPns;
 	}
 }

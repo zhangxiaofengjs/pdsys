@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zworks.pdsys.mappers.WareHouseSemiPnMapper">
+	<resultMap id="unitResultMap" type="unitModel" >  
+        <id column="unit_id" property="id"/>  
+        <result column="unit_name" property="name"/>  
+        <result column="unit_sub_name" property="subName"/>  
+        <result column="unit_ratio" property="ratio"/>  
+    </resultMap>
+    <resultMap id="pnResultMap" type="pnModel" >  
+        <id column="pn_id" property="id" />  
+        <result column="pn_pn" property="pn"/>  
+        <result column="pn_name" property="name"/>  
+        <association property="unit" resultMap="unitResultMap"/>
+    </resultMap>
+    <resultMap id="pnClsResultMap" type="pnClsModel" >  
+        <id column="pn_cls_id" property="id" />  
+        <result column="pn_cls_name" property="name"/>  
+    </resultMap>
+    <resultMap id="pnClsRelResultMap" type="pnPnClsRelModel" >  
+        <id column="pn_cls_rel_id" property="id" />  
+        <result column="pn_cls_rel_num" property="num"/>  
+        <association property="pnCls" resultMap="pnClsResultMap"/>
+    </resultMap>
+	<resultMap id="warehouseSemiPnResultMap" type="wareHouseSemiPnModel" >  
+        <id column="wh_id" property="id" />  
+        <result column="wh_num" property="num" />  
+        <association property="pn" resultMap="pnResultMap"/>
+        <association property="pnClsRel" resultMap="pnClsRelResultMap"/>
+    </resultMap>
+    
+	<select id="queryList" parameterType="wareHouseSemiPnModel" resultMap="warehouseSemiPnResultMap">
+		select 
+			wh_pn.c_id AS wh_id, 
+			wh_pn.c_num AS wh_num, 
+			pn.c_id AS pn_id, 
+			pn.c_pn AS pn_pn, 
+			pn.c_name AS pn_name, 
+			pnCls.c_id AS pn_cls_id, 
+			pnCls.c_name AS pn_cls_name, 
+			pnClsRel.c_id AS pn_cls_rel_id, 
+			pnClsRel.c_num AS pn_cls_rel_num, 
+			unit.c_id AS unit_id, 
+			unit.c_name AS unit_name
+		from warehouse_semi_pn_tbl AS wh_pn
+		left join pn_tbl AS pn on wh_pn.c_pn_id = pn.c_id
+		left join pn_cls_tbl AS pnCls on wh_pn.c_pn_cls_id = pnCls.c_id
+		left join pn_cls_relation_tbl AS pnClsRel on wh_pn.c_pn_id = pnClsRel.c_pn_id and wh_pn.c_pn_cls_id = pnClsRel.c_cls_id
+		left join unit_tbl AS unit on pn.c_unit_id = unit.c_id
+		<where>
+			<if test="pn != null">
+				<if test="pn.id > 0">
+					and pn.c_id=#{pn.id}
+				</if>
+				<if test="pn.pn != null and pn.pn != ''">
+					<choose>
+		                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+							and pn.c_pn like '%${pn.pn}%'
+						</when>
+						 <otherwise>
+		                    and pn.c_pn=#{pn.pn}
+		                </otherwise>
+					</choose>
+				</if>
+			</if>
+		</where>
+		order by pn.c_pn
+		<if test="_parameter != null and filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">
+			for update
+		</if>
+	</select>
+	
+	<insert id="add" parameterType="wareHouseSemiPnModel">
+    	insert into warehouse_semi_pn_tbl (
+    		c_pn_id,
+    		c_pn_cls_id,
+    		c_num)
+    	values (
+    		#{pn.id},
+    		#{pnClsRel.pnCls.id},
+    		#{num}
+    	)
+      	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
+    </insert>
+    
+	<update id="update"  parameterType="wareHouseSemiPnModel">
+    	update warehouse_semi_pn_tbl
+		set	c_num=#{num}
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
+</mapper>

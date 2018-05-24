@@ -2,25 +2,75 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseEntryBOMMapper">
-	<resultMap id="wareHouseEntryBOMResultMap" type="wareHouseEntryBOMModel" >  
+	<resultMap id="unitResultMap" type="unitModel" >  
+        <id column="u_id" property="id" />  
+        <result column="u_name" property="name" />
+    </resultMap>
+	<resultMap id="BOMResultMap" type="BOMModel" >  
+        <id column="bom_id" property="id" />  
+        <result column="bom_pn" property="pn" />
+        <result column="bom_name" property="name" />
+        <result column="bom_type" property="type" />
+        <result column="bom_comment" property="comment" />
+        <association property="unit" resultMap="unitResultMap"/>
+    </resultMap>
+	<resultMap id="wareHouseEntryResultMap" type="wareHouseEntryModel" >  
+        <id column="e_id" property="id" />  
+        <result column="e_time" property="time" />  
+    </resultMap>
+    <resultMap id="wareHouseEntryBOMResultMap" type="wareHouseEntryBOMModel" >  
         <id column="e_bom_id" property="id" />  
-        <result column="e_bom_num" property="num" />  
+        <result column="e_bom_num" property="num" /> 
+        <association property="wareHouseEntry" resultMap="wareHouseEntryResultMap"/>
+        <association property="bom" resultMap="BOMResultMap"/> 
     </resultMap>
 
 	<select id="queryList" parameterType="wareHouseEntryBOMModel" resultMap="wareHouseEntryBOMResultMap">
-		select e_bom.c_id as e_bom_id,
-		       e_bom.c_entry_id as e_bom_entry_id,
-		       e_bom.c_num as e_bom_num
+		select 
+			<if test="filterCond.groupByBOM != null and filterCond.groupByBOM">
+				MAX(e_bom.c_id) as e_bom_id,
+				SUM(e_bom.c_num) as e_bom_num,
+		   		MAX(e.c_id) as e_id,
+		   	</if>	
+			<if test="filterCond.groupByBOM == null or !filterCond.groupByBOM">
+				e_bom.c_id as e_bom_id,
+				e_bom.c_num as e_bom_num,
+				e.c_id as e_id,
+			</if>
+				bom.c_id as bom_id,
+				bom.c_pn as bom_pn,
+				bom.c_name as bom_name,
+				bom.c_type as bom_type,
+				bom.c_comment as bom_comment,
+				u.c_id as u_id,
+				u.c_name as u_name
 		from entry_bom_tbl as e_bom
+		left join entry_tbl as e on e_bom.c_entry_id = e.c_id
+		left join bom_tbl as bom on e_bom.c_ref_id = bom.c_id
+		left join unit_tbl as u on bom.c_unit_id = u.c_id
 		<where>
 			<if test="wareHouseEntry.id > 0">
 				and e_bom.c_entry_id=#{wareHouseEntry.id}
 			</if>
+			<if test="wareHouseEntry != null and wareHouseEntry.state > -1">
+				and e.c_state = #{wareHouseEntry.state}
+			</if>
 			<if test="bom.id > 0">
 				and e_bom.c_ref_id=#{bom.id}
 			</if>
+			<if test="filterCond.entryStart != null">
+				and e.c_entry_time &gt;= #{filterCond.entryStart}
+			</if>
+			<if test="filterCond.entryEnd != null">
+				and e.c_entry_time &lt;= #{filterCond.entryEnd}
+			</if>
 		</where>
+		<if test="filterCond.groupByBOM != null and filterCond.groupByBOM">
+			group by bom.c_id
+		</if>
+		order by bom.c_type, bom.c_pn
 	</select>
+	
 	<insert id="add" parameterType="wareHouseEntryBOMModel">
     	insert into entry_bom_tbl (
     		c_entry_id,
@@ -36,7 +86,7 @@
       	</selectKey>
     </insert>
     
-    <insert id="update" parameterType="wareHouseEntryBOMModel">
+    <update id="update" parameterType="wareHouseEntryBOMModel">
     	update entry_bom_tbl
     	set c_num=#{num}
     	<where>
@@ -50,12 +100,19 @@
 				and c_ref_id=#{bom.id}
 			</if>
 		</where>
-    </insert>
+    </update>
     
     <delete id="delete" parameterType="wareHouseEntryBOMModel">
     	delete from entry_bom_tbl
     	<where>
-			c_id = #{id}
+    		<choose>
+                <when test="id > 0">
+                   	c_id = #{id}
+                </when>
+                <otherwise>
+					c_entry_id = #{wareHouseEntry.id} 
+                </otherwise>
+            </choose>
 		</where>
     </delete>
 </mapper>

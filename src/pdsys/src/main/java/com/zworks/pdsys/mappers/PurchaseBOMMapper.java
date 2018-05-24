@@ -1,5 +1,7 @@
 package com.zworks.pdsys.mappers;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.zworks.pdsys.models.PurchaseBOMModel;
@@ -13,5 +15,9 @@ public interface PurchaseBOMMapper {
 
 	void delete(PurchaseBOMModel purchaseBOM);
 	
-	void addPB(PurchaseBOMModel purchaseBOM);
+	void add(PurchaseBOMModel purchaseBOM);
+
+	void update(PurchaseBOMModel purchaseBom);
+
+	List<PurchaseBOMModel> queryList(PurchaseBOMModel purchaseBom);
 }

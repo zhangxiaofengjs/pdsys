@@ -23,6 +23,7 @@
 			 			</div>
 			 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 			 			<button type="button" class="btn btn-sm btn-info" id="delPurchase">删除</button>
+			 			<button type="button" class="btn btn-sm btn-info" id="entryPurchase">入库</button>
 					</form>
 				</div>
 			</nav>
@@ -55,8 +56,9 @@
    	 	</div>
    	 	<div th:replace="common/footer::copyright"></div>
    	 	<div id="addOrder_div"></div>
-   	 	<div id="msg_div"></div>
    	 	<div id="delete_alert_div"></div>
+   	 	<div id="entry_alert_div"></div>
+   	 	<div id="msg_div"></div>
 	</div>
 	
     <script th:src="@{/js/purchase/list.js}"></script>

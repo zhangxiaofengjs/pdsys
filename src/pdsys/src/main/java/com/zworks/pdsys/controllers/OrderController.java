@@ -62,7 +62,8 @@ public class OrderController {
 		}
 
 		o.setState(OrderState.DELETED.ordinal());
-		orderService.updateOrderState(o);
+		o.getFilterCond().put("update_state", true);
+		orderService.update(o);
 		return JSONResponse.success("删除订单成功！");
 	}
 	
@@ -84,7 +85,11 @@ public class OrderController {
 			return JSONResponse.error("状态为已删除的订单不能修改！");
 		}
 
-		orderService.updateOrder(order);
+		order.getFilterCond().put("update_state", true);
+		order.getFilterCond().put("update_ship_dead_date", true);
+		order.getFilterCond().put("update_comment", true);
+		
+		orderService.update(order);
 		return JSONResponse.success("修改订单成功！");
 	}
 	

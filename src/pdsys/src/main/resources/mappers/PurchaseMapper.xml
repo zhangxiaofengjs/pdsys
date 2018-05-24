@@ -17,7 +17,6 @@
         <result column="b_pn" property="pn"/>  
         <result column="b_name" property="name"/>  
         <association property="unit" resultMap="unitResultMap"/>
-        <collection property="suppliers" ofType="supplierModel" resultMap="supplierResultMap"/>
     </resultMap>
 
     <resultMap id="wareHouseEntryResultMap" type="wareHouseEntryModel" >  
@@ -48,11 +47,11 @@
         <result column="pb_num" property="num"/>  
         <result column="pb_price" property="price"/>
         <association property="bom" resultMap="bomResultMap"/>
-        <association property="supplier" resultMap="supplierResultMap" columnPrefix="s"/>
+        <association property="supplier" resultMap="supplierResultMap"/>
     </resultMap>
 
     <!-- 新增采购单 -->
-	<insert id="savePurchase" parameterType="purchaseModel" useGeneratedKeys="true" keyProperty="id">
+	<insert id="add" parameterType="purchaseModel" useGeneratedKeys="true" keyProperty="id">
 		insert into purchase_tbl
 		(
 		    `c_no`,
@@ -67,102 +66,20 @@
 		)
 	</insert>
 	
-	<!-- 新增采购单详细 -->
-	<insert id="savePurchaseDetail" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
-		insert into purchase_bom_tbl
-		(
-			`c_purchase_id`,
-			`c_bom_id`,
-			`c_num`,
-			`c_price`
-		)
-		values
-	    <foreach collection="list" item="purchaseBom" index="index" separator=",">  
-	        (#{purchaseBom.purchase.id},#{purchaseBom.bom.id},#{purchaseBom.num},#{purchaseBom.price})  
-	    </foreach>
- 
-	</insert>
-	
-   	<delete id="delPurchaseDetail"  parameterType="purchaseBomModel">
-    	delete from purchase_bom_tbl
-    	<where>
-			c_id = #{id}
-		</where>
-    </delete>
-    
-     <delete id="delete"  parameterType="purchaseModel">
+    <delete id="delete"  parameterType="purchaseModel">
     	delete from purchase_tbl
     	<where>
 			c_id = #{id}
 		</where>
     </delete>
-    
-	<!-- 通过采购单详细ID搜索采购单详细 -->
-   	<select id="queryPurchaseBOM" resultMap="purchaseBomResultMap">
-		select pb.c_id as pb_id,
-		       pb.c_bom_id as pb_bom_id,
-			   pb.c_num as pb_num,
-		       pb.c_price as pb_price,
-		       b.c_id as b_id,
-		       b.c_pn as b_pn,
-		       b.c_name as b_name,
-		       s.c_id as s_id,
-		       s.c_name as s_name,
-		       ss.c_id as ss_id,
-		       ss.c_name as ss_name 
-		from purchase_bom_tbl as pb 
-		left join bom_tbl as b on b.c_id = pb.c_bom_id
-		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
-		left join supplier_tbl as s on s.c_id = bs.c_supplier_id
-		left join supplier_tbl as ss on ss.c_id = pb.c_supplier_id
-		<where>
-			<if test="id != null and id !=''">
-				and pb.c_id = #{id}
-			</if>
-		</where>
-	</select>
 	
-	<update id="updatePB" parameterType="purchaseBomModel">
-    	update purchase_bom_tbl
-		set	c_num = #{num},
-			c_price = #{price},
-			c_supplier_id = #{supplier.id}
-    	<where>
-			c_id = #{id}
-		</where>
-    </update>
-    
-    <!-- 通过采购单ID搜索采购单详细 -->
-   	<select id="showPurchaseDetail" resultMap="purchaseBomResultMap">
-		select pb.c_id as pb_id,
-			   pb.c_purchase_id as pb_purchase_id,
-		       pb.c_bom_id as pb_bom_id,
-			   pb.c_num as pb_num,
-		       pb.c_price as pb_price,
-		       pb.c_supplier_id as pb_supplier_id,
-		       ss.c_name as ss_name,
-		       b.c_id as b_id,
-		       b.c_pn as b_pn,
-		       b.c_name as b_name,
-		       s.c_id as s_id,
-		       s.c_name as s_name,
-		       ss.c_id as s_id,
-		       ss.c_name as ss_name 
-		from purchase_bom_tbl as pb 
-		left join bom_tbl as b on b.c_id = pb.c_bom_id
-		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
-		left join supplier_tbl as s on s.c_id = bs.c_supplier_id
-		left join supplier_tbl as ss on ss.c_id = pb.c_supplier_id 
-		<where>
-			<if test="purchase.id != null and purchase.id !=''">
-				and pb.c_purchase_id = #{purchase.id}
-			</if>
-		</where>
-	</select>
-	
-	<update id="updatePurchase" parameterType="purchaseModel">
+	<update id="update" parameterType="purchaseModel">
 		update purchase_tbl 
-		<set> 
+		<set>
+			<if test="wareHouseEntry != null and wareHouseEntry.id > 0">
+				c_entry_id=#{wareHouseEntry.id},
+				c_arrive_date=current_timestamp(), 
+			</if>
 			`c_state` = #{state}, 
 			`c_purchase_date` = #{purchaseDate},
 		</set>
@@ -191,18 +108,14 @@
 		       u.c_id as u_id,
 		       u.c_name as u_name,
 		       s.c_id as s_id,
-		       s.c_name as s_name,
-		       ss.c_id as s_id,
-		       ss.c_name as ss_name
+		       s.c_name as s_name
 		from purchase_tbl as p
 		left join user_tbl as user on p.c_user_id = user.c_id 
 		left join entry_tbl as entry on entry.c_id = p.c_entry_id
 		left join purchase_bom_tbl as pb on p.c_id = pb.c_purchase_id
 		left join bom_tbl as b on b.c_id = pb.c_bom_id
-		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
-		left join supplier_tbl as s on s.c_id = bs.c_supplier_id
 		left join unit_tbl as u on u.c_id = b.c_unit_id
-		left join supplier_tbl as ss on ss.c_id = pb.c_supplier_id
+		left join supplier_tbl as s on s.c_id = pb.c_supplier_id
 		<where>
 			<if test="id > 0">
 				and p.c_id = #{id}

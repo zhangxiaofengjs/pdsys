@@ -44,4 +44,8 @@ public class JSONResponse extends HashMap<String, Object> {
 		super.put(key, value);
 		return this;
 	}
+
+	public boolean isSuccess() {
+		return (boolean) get("success");
+	}
 }

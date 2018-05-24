@@ -1,0 +1,59 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<div th:fragment="content(list)">
+	<script th:src="@{/js/warehouse/list/semipn.js}"></script> 
+	<nav style="border-radius:0px;margin-bottom:-1px;" class="navbar navbar-default">
+		<div class="container-fluid">
+	  		<div class="navbar-header">
+	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
+	  		</div>
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.wareHouseSemiPn}" th:action="@{main?type=semipn}" method="post">
+				 <div class="form-group">
+				   <input type="text" class="form-control" th:field="*{pn.pn}" placeholder="输入品目">
+	 			</div>
+	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
+			</form>
+		</div>
+	</nav>
+	<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
+		<thead>
+		    <tr>
+		    	<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
+				<th>品目</th>
+				<th>名称</th>
+				<th>单位</th>
+				<th>子类</th>
+				<th>单位</th>
+				<th>在库数量</th>
+				<th>可制造成品数量估算</th>
+		    </tr>
+		</thead>
+		<tbody>
+			<th:block th:each="semiPnDetailBean, iterStat1 : ${list}"
+					  th:with="pn=${semiPnDetailBean.pn},
+					  	pnClsDetails=${semiPnDetailBean.pnClsDetails},
+						pnRowSize=${#lists.size(pnClsDetails)}">
+				<th:block th:each="pnClsDetail, iterStat2 : ${pnClsDetails}"
+						  th:with="pnCls=${pnClsDetail.pnCls}">
+						<tr	th:rowid="${pnCls.id}">
+							<td>
+								<input type="checkbox" name="select" th:rowid="${rowId}">
+							</td>
+							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${pn.pn}"></td>
+							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${pn.name}"></td>
+							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${pn.name}"></td>
+							<td th:rowspan="1" th:text="${pnCls.name}"></td>
+							<td th:rowspan="1" th:text="${pnCls.name}"></td>
+							<td th:rowspan="1" th:text="${pnClsDetail.num}" class="number"></td>
+							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${semiPnDetailBean.producableNum}" class="number"></td>
+						</tr>
+				</th:block>
+		    </th:block>
+		</tbody>
+	</table>
+	<div id="checkout_dlg_div"></div>
+	<div id="msg_div"></div>
+</div>
+</body>
+</html>

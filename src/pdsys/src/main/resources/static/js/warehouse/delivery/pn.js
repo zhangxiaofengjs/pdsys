@@ -59,9 +59,9 @@ $(document).ready(function(){
 		var t={};
 		t.headers=[{"text":""}, {"text":"订购"}, {"text":"已出库"}, {"text":"未出库"}, {"text":"在库"}];
 		t.rows=[
-			{
-				"cells":[{"text":"半成品"}, {"text":""}, {"text":""}, {"text":""}, {"text":orderPn.whpn.semiProducedNum}]
-			},
+//			{
+//				"cells":[{"text":"半成品"}, {"text":""}, {"text":""}, {"text":""}, {"text":orderPn.whpn.semiProducedNum}]
+//			},
 			{
 				"cells":[{"text":"成品"}, {"text":orderPn.num}, {"text":orderPn.deliveredNum}, {"text":orderPn.num - orderPn.deliveredNum}, {"text":orderPn.whpn.producedNum}]
 			}
@@ -200,21 +200,13 @@ $(document).ready(function(){
 				
 				thisField.value = getOrderPnTable(orderPn);
 				
-				dlg.fieldByName("semiProducedNum").max = whPn.semiProducedNum;
+				//dlg.fieldByName("semiProducedNum").max = whPn.semiProducedNum;
 				dlg.fieldByName("producedNum").max = whPn.producedNum;
 			},
 		},
 		{
-			"name":"semiProducedNum",
-			"label":"出库(半成品数)",
-			"type":"number",
-			"value":"0",
-			"min":"0",
-			"max":10000000,
-		},
-		{
 			"name":"producedNum",
-			"label":"出库(成品数)",
+			"label":"出库数量",
 			"type":"number",
 			"value":"0",
 			"min":"0",
@@ -227,12 +219,12 @@ $(document).ready(function(){
 			"caption":"添加到出库单",
 			"fields":fields,
 			"valid":function() {
-				if(dlg.fieldVal("semiProducedNum") == 0 &&
-				   dlg.fieldVal("producedNum") == 0) {
-					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
-					dlg.setError("producedNum", "半成品/成品数量都未输入");
-					return false;
-				}
+//				if(dlg.fieldVal("semiProducedNum") == 0 &&
+//				   dlg.fieldVal("producedNum") == 0) {
+//					dlg.setError("semiProducedNum", "半成品/成品数量都未输入");
+//					dlg.setError("producedNum", "半成品/成品数量都未输入");
+//					return false;
+//				}
 				return true;
 			},
 			"url":"/warehouse/delivery/add/pn",
@@ -347,8 +339,12 @@ $(document).ready(function(){
 		});
 	});
 	
-	$("#deleteDelivery").click(function(){
+	$("button[name='deleteDelivery']").click(function(){
 		var self = $(this);
+		var selIds = getSelectedRowId({"checkOne":true, "showMsg":true});
+		if(selIds.length != 1) {
+			return;
+		}
 		
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
@@ -358,7 +354,7 @@ $(document).ready(function(){
 			"msg":"确定删除出库单?",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/warehouse/delivery/delete/delivery/" + $("#delivery_id").val(),
+					"url":"/warehouse/delivery/delete/delivery/" + selIds[0],
 					"success": function(data) {
 						dlg.hide();
 						var msgDlg = new CommonDlg();
@@ -371,11 +367,7 @@ $(document).ready(function(){
 							}});
 					},
 					"error": function(data) {
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":"发生错误,请联系管理员!"});
+						PdSys.alert(data.msg);
 					}
 				});
 			}

@@ -7,8 +7,11 @@
 		<li role="presentation" th:class="(${type}=='pn'? 'active' : '')">
 			<a th:href="@{/warehouse/history/main/pn}">生产出库统计</a>
 		</li>
-		<li role="presentation" th:class="(${type}=='bom'? 'active' : '')">
-			<a th:href="@{/warehouse/history/main/bom}">原包材出库统计</a>
+		<li role="presentation" th:class="(${type}=='entrybom'? 'active' : '')">
+			<a th:href="@{/warehouse/history/main/entrybom}">原包材入库统计</a>
+		</li>
+		<li role="presentation" th:class="(${type}=='deliverybom'? 'active' : '')">
+			<a th:href="@{/warehouse/history/main/deliverybom}">原包材出库统计</a>
 		</li>
 	</ul>
 	

@@ -32,10 +32,15 @@ public class WareHouseDeliveryBOMService {
 	@Transactional
 	public void delete(List<WareHouseDeliveryBOMModel> deliveryBOMs) {
 		for(WareHouseDeliveryBOMModel deliveryBOM : deliveryBOMs) {
-			wareHouseDeliveryBOMMapper.delete(deliveryBOM);
+			delete(deliveryBOM);
 		}
 	}
 
+
+	public void delete(WareHouseDeliveryBOMModel deliveryBOM) {
+		wareHouseDeliveryBOMMapper.delete(deliveryBOM);
+	}
+	
 	public boolean exists(WareHouseDeliveryBOMModel deliveryBOM) {
 		List<WareHouseDeliveryBOMModel> list = queryList(deliveryBOM);
 		return list.size() != 0;

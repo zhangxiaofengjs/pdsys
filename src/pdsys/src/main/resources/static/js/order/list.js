@@ -164,7 +164,7 @@ $(function () {
 				{
 					"name":"shipDeadDate",
 					"type":"date",
-					"label":"下单时间",	
+					"label":"交货预定",	
 				},
 				{
 					"name":"state",

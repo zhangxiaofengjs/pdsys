@@ -5,5 +5,5 @@ package com.zworks.pdsys.common.enumClass;
  * @version: 2018/04/23
  */
 public enum EntryType {
-	PN, BOM, MACHINEPART
+	PN, BOM, MACHINEPART, SEMIPN
 }
