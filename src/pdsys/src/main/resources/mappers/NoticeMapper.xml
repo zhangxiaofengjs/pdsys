@@ -24,20 +24,31 @@
 	</insert>
 	
 	<!-- 通知一览 -->
-	<select id="queryList" parameterType="noticeModel" resultMap="noticeResultMap">
+	<select id="queryList" parameterType="java.util.Map" resultMap="noticeResultMap">
 		select s.c_id as s_id,
 			   s.c_comment as s_comment,
 			   s.c_job_name as s_job_name,
 			   s.c_create_date as s_create_date 
 		from notice_tbl as s 
 		<where>
-			<if test="filterCond.noticeStart != null">
-				and s.c_create_date &gt;= #{filterCond.noticeStart}
+			<if test="notice.filterCond.noticeStart != null">
+				and s.c_create_date &gt;= #{notice.filterCond.noticeStart}
 			</if>
-			<if test="filterCond.noticeEnd != null">
-				and s.c_create_date &lt;= #{filterCond.noticeEnd}
+			<if test="notice.filterCond.noticeEnd != null">
+				and s.c_create_date &lt;= #{notice.filterCond.noticeEnd}
+			</if>
+			<if test="notice.comment != null and notice.comment != ''">
+				and s.c_comment like concat('%',#{notice.comment},'%') 
 			</if>
 		</where>
-		order by s_create_date desc
+		order by s_create_date desc 
+		<if test="page != null">
+			limit #{page.start},#{page.row}
+		</if>
+
 	</select>
+	
+	<select id="selectPageListCount" parameterType="java.util.Map" resultType="int" >
+    	select count(1) from notice_tbl
+    </select>
 </mapper>

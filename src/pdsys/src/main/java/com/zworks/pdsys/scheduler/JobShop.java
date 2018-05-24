@@ -36,8 +36,7 @@ public class JobShop {
 		//设备维护提醒
 		createJob(DeviceMaitenaceJob.class,
 				  "pdsys",
-				  //"0/30 * * * * ? *",//每天00:00执行
-				  "0 0 23 1/1 * ? *",//每天23:00执行
+				  "0 0 0 * * ? *",//每天00:00执行
 				  "设备维护计划Job",
 				  "设备维护计划JobTrigger");
 	}

@@ -11,7 +11,6 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.zworks.pdsys.models.DeviceModel;
-import com.zworks.pdsys.models.MachineModel;
 import com.zworks.pdsys.models.NoticeModel;
 import com.zworks.pdsys.services.DeviceService;
 import com.zworks.pdsys.services.NoticeService;
@@ -33,7 +32,7 @@ public class DeviceMaitenaceJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
 
     	String jobName = context.getJobInstance().getClass().getSimpleName();
-    	//每天凌晨对当天需维护的有故障的机器进行通知
+    	//每天凌晨对接下来的7天内需保养的机器进行通知
     	DeviceModel d = new DeviceModel();
     	d.setMaitenacedDate(new Date());
     	List<DeviceModel> ds = deviceService.queryList(d);
@@ -43,15 +42,19 @@ public class DeviceMaitenaceJob implements Job {
     		for(int i =0;i<ds.size();i++)
     		{
     			DeviceModel dm = ds.get(i);
-    			MachineModel m = dm.getMachine();
-    			String comment = "机器["+m.getPn()+m.getName()+"]有故障，需要维修！";
-    			NoticeModel s = new NoticeModel();
-    			s.setComment(comment);
-    			s.setJobName(jobName);
-    			notices.add(s);
+    			boolean isExist = noticeService.checkIsExit(dm.getNo());
+    			if( isExist == false )
+    			{
+	    			String comment = "机器["+dm.getNo()+"]需要保养！";
+	    			NoticeModel s = new NoticeModel();
+	    			s.setComment(comment);
+	    			s.setJobName(jobName);
+	    			notices.add(s);
+    			}
     		}
     		
-    		noticeService.add(notices);
+    		if( notices.size()>0 )
+    			noticeService.add(notices);
     	}
     }
 }

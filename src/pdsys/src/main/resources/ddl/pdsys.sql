@@ -893,6 +893,23 @@ INSERT INTO `warehouse_pn_tbl` (`c_id`, `c_pn_id`, `c_semi_produced_num`, `c_pro
 	(5, 5, 0, 5);
 /*!40000 ALTER TABLE `warehouse_pn_tbl` ENABLE KEYS */;
 
+--  テーブル pdsys.notice_tbl の構造をダンプしています
+CREATE TABLE IF NOT EXISTS `notice_tbl` (
+  `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `c_comment` varchar(50) NOT NULL COMMENT '内容',
+  `c_job_name` varchar(50) NOT NULL COMMENT '主题',
+  `c_create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `c_isRead` tinyint(1) NOT NULL DEFAULT '0' COMMENT '消息是否已读',
+  PRIMARY KEY (`c_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=629 DEFAULT CHARSET=utf8;
+
+-- テーブル pdsys.notice_tbl: ~543 rows (approximately) のデータをダンプしています
+DELETE FROM `notice_tbl`;
+/*!40000 ALTER TABLE `notice_tbl` DISABLE KEYS */;
+INSERT INTO `notice_tbl` (`c_id`, `c_comment`, `c_job_name`, `c_create_date`, `c_isRead`) VALUES
+	(628, '机器[R02]需要保养！', 'DeviceMaitenaceJob', '2018-05-24 09:52:00', 0);
+/*!40000 ALTER TABLE `notice_tbl` ENABLE KEYS */;
+
 --  テーブル pdsys.warehouse_semi_pn_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `warehouse_semi_pn_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -914,3 +931,5 @@ INSERT INTO `warehouse_semi_pn_tbl` (`c_id`, `c_pn_id`, `c_pn_cls_id`, `c_num`) 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+
+
