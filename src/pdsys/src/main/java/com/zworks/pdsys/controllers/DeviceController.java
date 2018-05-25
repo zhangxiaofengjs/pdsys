@@ -1,5 +1,6 @@
 package com.zworks.pdsys.controllers;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.DeviceMaitenaceMachinePartsBean;
+import com.zworks.pdsys.business.beans.DeviceRepairFormBean;
+import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.JSONResponse;
+import com.zworks.pdsys.common.utils.RequestContextUtils;
 import com.zworks.pdsys.models.DeviceModel;
 import com.zworks.pdsys.models.DeviceRepairModel;
 import com.zworks.pdsys.services.DeviceService;
@@ -21,7 +25,7 @@ import com.zworks.pdsys.services.DeviceService;
  */
 @Controller
 @RequestMapping("/device")
-public class DeviceController {
+public class DeviceController extends BaseController {
 	@Autowired
 	DeviceService deviceService;
 	
@@ -57,10 +61,29 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value= {"/repair"})
-    public String showRepairInfo(DeviceRepairModel deviceRepair, Model model) {
+    public String showRepairInfo(DeviceRepairFormBean deviceRepairFormBean, Model model) {
+		
+		DeviceRepairModel deviceRepair = new DeviceRepairModel();
+		Date s = DateUtils.startOfDay(deviceRepairFormBean.getStart());
+		Date e = DateUtils.endOfDay(deviceRepairFormBean.getEnd());
+		if(s == null) {
+			s = RequestContextUtils.getSessionAttribute(this, "startDeviceRepair", DateUtils.startOfDay(DateUtils.thisMonthStart()));
+			deviceRepairFormBean.setStart(s);
+		}
+		RequestContextUtils.setSessionAttribute(this, "startDeviceRepair", s);
+		if(e == null) {
+			e = RequestContextUtils.getSessionAttribute(this, "endDeviceRepair", DateUtils.endOfDay(DateUtils.now()));
+			deviceRepairFormBean.setEnd(e);
+		}
+		RequestContextUtils.setSessionAttribute(this, "endDeviceRepair", e);
+		
+		deviceRepair.getFilterCond().put("start", s);
+		deviceRepair.getFilterCond().put("end", e);
+		
 		List<DeviceRepairModel> list = deviceService.showRepairInfos(deviceRepair);
 		
 		model.addAttribute("deviceRepair", deviceRepair);
+		model.addAttribute("formBean",deviceRepairFormBean);
 		model.addAttribute("list", list);
 		return "device/repair/list";
     }

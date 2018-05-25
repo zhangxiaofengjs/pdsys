@@ -93,9 +93,15 @@
 	                </otherwise>
 	            </choose>
 			</if>
+			<if test="filterCond.start != null">
+				and dr.c_repair_date &gt;= #{filterCond.start}
+			</if>
+			<if test="filterCond.end != null">
+				and dr.c_repair_date &lt;= #{filterCond.end}
+			</if>
 			
 		</where>
-		order by dr.c_id asc
+		order by mt_code asc,d_no asc,p_name asc,mt_coment asc,dr_comment asc
 	</select>
 	
 	<insert id="add" parameterType="deviceRepairModel" useGeneratedKeys="true" keyProperty="id">

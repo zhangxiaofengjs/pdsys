@@ -194,6 +194,7 @@ $(document).ready(function(){
 			"type":"select",
 			"options":[],
 			"ajax":true,
+			"required":"required",
 			"url":"/machineTrouble/list/json",
 			"convertAjaxData" : function(thisField, data) {
 				data.forEach(function(mt, idx) {
@@ -251,7 +252,8 @@ $(document).ready(function(){
 		{
 			"name":"comment",
 			"type":"text",
-			"label":"备注"
+			"label":"备注",
+			"required":"required"
 		}];
 		
 		var dlg = new CommonDlg();
