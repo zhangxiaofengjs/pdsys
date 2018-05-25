@@ -7,7 +7,7 @@ public class NoticeModel extends BaseModel {
 	private String content;
 	private int type;
 	private int refId;
-	private int isRead;
+	private int state = -1;
 	private UserModel sender;
 	private UserModel receiver;
 	
@@ -29,12 +29,6 @@ public class NoticeModel extends BaseModel {
 	public void setRefId(int refId) {
 		this.refId = refId;
 	}
-	public int getIsRead() {
-		return isRead;
-	}
-	public void setIsRead(int isRead) {
-		this.isRead = isRead;
-	}
 	public UserModel getSender() {
 		return sender;
 	}
@@ -46,5 +40,11 @@ public class NoticeModel extends BaseModel {
 	}
 	public void setReceiver(UserModel receiver) {
 		this.receiver = receiver;
+	}
+	public int getState() {
+		return state;
+	}
+	public void setState(int state) {
+		this.state = state;
 	}
 }
