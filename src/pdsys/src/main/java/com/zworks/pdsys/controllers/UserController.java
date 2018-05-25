@@ -84,6 +84,9 @@ public class UserController {
 		if(u == null) {
 			return JSONResponse.error("该用户不存在");
 		}
+		if("admin".equals(u.getNo())) {
+			return JSONResponse.error("禁止编辑该账号");
+		}
 
 		userService.updateAuth(u, r);
 		return JSONResponse.success();

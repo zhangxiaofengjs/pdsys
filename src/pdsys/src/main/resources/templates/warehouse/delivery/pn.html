@@ -15,7 +15,7 @@
 				   <input type="hidden" class="form-control" name="fuzzyNo" id="fuzzyNo" value="true">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info" name="refresh" th:if="${#lists.size(deliveries) != 1}">查询</button>
-	 			<div sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_DELIVERY_PN)}">
+	 			<div class="form-group" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_DELIVERY_PN)}">
 		 			<button type="button" class="btn btn-sm btn-info" name="addDelivery" th:if="${#lists.size(deliveries) != 1}">新建出库单</button>
 		 			<button type="button" class="btn btn-sm btn-info" name="deleteDelivery" th:if="${#lists.size(deliveries) != 1}">删除出库单</button>
 		 		</div>

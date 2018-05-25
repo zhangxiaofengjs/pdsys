@@ -23,10 +23,10 @@
 			               </select>  
 			 			</div>
 			 			<button type="submit" class="btn btn-sm btn-info">查询</button>
-			 			<div sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_PURCHASE)}">
+			 			<div class="form-group" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_PURCHASE)}">
 				 			<button type="button" class="btn btn-sm btn-info" id="delPurchase">删除</button>
 				 		</div>
-			 			<div sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_ENTRY_BOM)}">
+			 			<div class="form-group" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_ENTRY_BOM)}">
 				 			<button type="button" class="btn btn-sm btn-info" id="entryPurchase">入库</button>
 				 		</div>
 					</form>

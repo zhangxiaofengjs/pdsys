@@ -17,7 +17,7 @@
 						   <input type="text" class="form-control" th:field="*{no}" placeholder="订单编号">  
 			 			</div>
 			 			<button type="submit" class="btn btn-sm btn-info">查询</button>
-			 			<div sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_PURCHASE)}">
+			 			<div class="form-group" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_PURCHASE)}">
 			 				<button type="button" class="btn btn-sm btn-info" id="addPurchase">生成采购单</button>
 			 			</div>
 					</form>

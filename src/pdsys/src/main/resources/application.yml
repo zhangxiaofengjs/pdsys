@@ -57,7 +57,7 @@ mybatis:
 pdsys:
     admin:
         username: admin
-        password: $2a$10$qhZeMeQNJRuZ6bPCRvUOxecqqSMQ81Zs91n/fmyxCiCI6yalyMI2m #pdsys111 $2a$10$GVtgC68Z8s88s24JsqfRNuMAfLgAcPfFDKLNIIweXmI6QFICy5f2i
+        password: $2a$10$qhZeMeQNJRuZ6bPCRvUOxecqqSMQ81Zs91n/fmyxCiCI6yalyMI2m #pdsys123 $2a$10$qbN23rlzj2.OoQv0F7kPfePrOVm7ehvdTzYMTZ54nKxXpYagbhqD.
     upload: 
         location: c:/pdsys/upload/ #上传文件路径
         image-folder: image/ #图形文件夹

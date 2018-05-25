@@ -14,7 +14,7 @@
 				   <input type="text" class="form-control" name="no" id="no" th:value="${entry.no != null ? entry.no:''}" placeholder="入库单号">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info" name="refresh" th:if="${#lists.size(entries) != 1}">查询</button>
-	 			<div sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_ENTRY_BOM)}">
+	 			<div class="form-group" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_ENTRY_BOM)}">
 		 			<button type="button" class="btn btn-sm btn-info" name="addEntry" th:if="${#lists.size(entries) != 1}">新建入库单</button>
 		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntry" th:if="${#lists.size(entries) != 1}">删除入库单</button>
 	 			</div>

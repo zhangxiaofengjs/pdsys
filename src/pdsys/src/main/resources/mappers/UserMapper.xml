@@ -47,6 +47,7 @@
 				and u.c_name = #{name}
 			</if>
 		</where>
+		order by u.c_no, r.c_role
 	</select>
 	
 	<insert id="add" parameterType="userModel">

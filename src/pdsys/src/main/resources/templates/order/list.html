@@ -23,7 +23,7 @@
 			               </select>  
 			 			</div>
 			 			<button type="submit" class="btn btn-sm btn-info">查询</button>
-			 			<div sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_ORDER)}">
+			 			<div class="form-group" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_ORDER)}">
 				 			<button type="button" class="btn btn-sm btn-info" id="addOrder">新增</button>
 				 			<button type="button" class="btn btn-sm btn-info" id="upOrder">修改</button>
 				 			<button type="button" class="btn btn-sm btn-info" id="delOrder">删除</button>

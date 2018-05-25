@@ -15,7 +15,7 @@
 				   <input type="text" class="form-control" name="no" id="no" th:value="${device != null ? device.no :_}" placeholder="编号">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
-	 			<div sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_DEVICE)}">
+	 			<div class="form-group" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_DEVICE)}">
 		 			<button type="button" class="btn btn-sm btn-info" id='addDevice'>添加新设备</button>
 		 			<button type="button" class="btn btn-sm btn-info" id='changeState'>更新状态</button>
 		 			<button type="button" class="btn btn-sm btn-info" id='addDeviceRepair'>故障报备</button>
