@@ -74,9 +74,9 @@
 	                 </a>  
 	                 <ul id="warehousemgr" class="nav nav-list collapse secondmenu" style="height: 0px;">  
 		                <li>
-		                	<a href="#" th:refURL="'warehouse/list/main'" th:displayText="'仓库管理/在库管理'">
+		                	<a href="#" th:refURL="'warehouse/list/main'" th:displayText="'仓库管理/在库查询'">
 		                		<i style="padding-left:20px;" class="glyphicon glyphicon-th-list"></i>
-		                		<span style="margin-left:5px;"><b>在库管理</b></span>
+		                		<span style="margin-left:5px;"><b>在库查询</b></span>
 		                	</a>
 		                </li>  
 		                <li>
@@ -140,7 +140,7 @@
 		                </li>  
 		           	</ul>  
 	       		</li>
-	       		<li sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN)}">
+	       		<li sec:authorize="${hasAnyAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN, T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_USER, T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_MASTER)}">
 	                 <a href="#sysmgr" class="nav-header collapsed" style="margin-right:0px;" data-toggle="collapse">
 	                 	 <i class="glyphicon glyphicon-cog"></i>
 					     <span style="margin-left:5px;">

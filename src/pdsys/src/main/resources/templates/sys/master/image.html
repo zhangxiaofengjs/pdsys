@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head th:include="common/header::header">
 </head>
 
 <body>
 	<div th:fragment="content(${list})">
 		<script th:src="@{/js/sys/master/image.js}"></script>
-		
-		<form id="imageForm" method="post" enctype="multipart/form-data">
-			<input id="uploadfile" name="uploadfile" type="file" multiple="multiple" class="fileloading">
-			<input id = "btn_add" class="btn btn-primary radius" type="button" value="&nbsp;&nbsp;上传&nbsp;&nbsp;"/>
-		</form>
+		<div class="form-group" sec:authorize="${hasAnyAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN, T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_MASTER)}">
+			<form id="imageForm" method="post" enctype="multipart/form-data">
+				<input id="uploadfile" name="uploadfile" type="file" multiple="multiple" class="fileloading">
+				<input id = "btn_add" class="btn btn-primary radius" type="button" value="&nbsp;&nbsp;上传&nbsp;&nbsp;"/>
+			</form>
+		</div>
 		<table class="table table-bordered table-hover table-condensed" contenteditable="false">
 			<tbody>
 				<tr th:each="image : ${list}">

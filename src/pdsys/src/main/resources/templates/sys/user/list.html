@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head th:include="common/header::header">
 </head>
 <body>
@@ -14,9 +15,12 @@
 				   <input type="text" class="form-control" id="no" name="no" th:value="${user!=null?user.no:_}" placeholder="工号">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addUser'>添加</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='editUser'>修改</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='initPwd'>重置密码</button>
+	 			<div class="form-group" sec:authorize="${hasAnyAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN, T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_USER)}">
+		 			<button type="button" class="btn btn-sm btn-info" id='addUser'>添加</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='editUser'>修改</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='initPwd'>重置密码</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='setAuth'>设定权限</button>
+		 		</div>
 			</form>
 		</div>
 	</nav>
@@ -38,17 +42,27 @@
 				<td>
 					<input type="checkbox" name="select" th:rowid="${user.id}">
 				</td>
-				<td th:text="${user.no}"></td>
-				<td th:text="${user.name}"></td>
-				<td th:text="${user.phone}"></td>
-				<td th:text="${user.address}"></td>
-				<td >
+				<td width=100px th:text="${user.no}"></td>
+				<td width=100px th:text="${user.name}"></td>
+				<td width=130px th:text="${user.phone}"></td>
+				<td width=200px th:text="${user.address}"></td>
+				<td>
 					<span th:if="${#lists.isEmpty(user.roles)}" th:text="'无'"></span>
 					<th:block th:each="role : ${user.roles}">
-						<span th:switch="${role.role}">
-							<i th:case="'admin'">管理员</i>
-							<i th:case="'device'">设备管理</i>
-						</span>
+						<div th:switch="${role.role}" style="font-size:9px;margin-top: 5px;display:inline-block;">
+							<span class="label label-danger" th:case="${T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN}">管理员</span>
+							<span class="label label-primary" th:case="${T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_ORDER}">订单编辑</span>
+							<span class="label label-primary" th:case="${T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_PURCHASE}">采购编辑</span>
+							<span class="label label-primary" th:case="${T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_ENTRY_PN}">生产入库</span>
+							<span class="label label-primary" th:case="${T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_ENTRY_BOM}">原包材入库</span>
+							<span class="label label-primary" th:case="${T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_ENTRY_DEVICE}">设备零件入库</span>
+							<span class="label label-primary" th:case="${T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_DELIVERY_PN}">生产出库</span>
+							<span class="label label-primary" th:case="${T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_DELIVERY_BOM}">原包材出库</span>
+							<span class="label label-primary" th:case="${T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_DELIVERY_DEVICE}">设备零件出库</span>
+							<span class="label label-primary" th:case="${T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_DEVICE}">设备编辑</span>
+							<span class="label label-danger" th:case="${T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_USER}">用户编辑</span>
+							<span class="label label-danger" th:case="${T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_MASTER}">定义表编辑</span>
+						</div>
 					</th:block>
 				</td>
 		    </tr>

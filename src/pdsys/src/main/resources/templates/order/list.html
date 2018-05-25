@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 	<meta th:include="common/header::header">
 </head>
@@ -22,9 +23,11 @@
 			               </select>  
 			 			</div>
 			 			<button type="submit" class="btn btn-sm btn-info">查询</button>
-			 			<button type="button" class="btn btn-sm btn-info" id="addOrder">新增</button>
-			 			<button type="button" class="btn btn-sm btn-info" id="upOrder">修改</button>
-			 			<button type="button" class="btn btn-sm btn-info" id="delOrder">删除</button>
+			 			<div sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_ORDER)}">
+				 			<button type="button" class="btn btn-sm btn-info" id="addOrder">新增</button>
+				 			<button type="button" class="btn btn-sm btn-info" id="upOrder">修改</button>
+				 			<button type="button" class="btn btn-sm btn-info" id="delOrder">删除</button>
+			 			</div>
 					</form>
 				</div>
 			</nav>

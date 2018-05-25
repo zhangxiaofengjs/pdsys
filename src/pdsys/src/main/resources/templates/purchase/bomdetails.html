@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 	<meta th:include="common/header::header">
 </head>
@@ -16,7 +17,9 @@
 						   <input type="text" class="form-control" th:field="*{no}" placeholder="订单编号">  
 			 			</div>
 			 			<button type="submit" class="btn btn-sm btn-info">查询</button>
-			 			<button type="button" class="btn btn-sm btn-info" id="addPurchase">生成采购单</button>
+			 			<div sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_PURCHASE)}">
+			 				<button type="button" class="btn btn-sm btn-info" id="addPurchase">生成采购单</button>
+			 			</div>
 					</form>
 				</div>
 			</nav>

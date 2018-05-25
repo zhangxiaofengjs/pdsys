@@ -1,4 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head></head>
 <body>
 <div th:fragment="content(entries)">
@@ -14,10 +15,12 @@
 				   <input type="hidden" class="form-control" name="fuzzyNo" id="fuzzyNo" value="true">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info" name="refresh" th:if="${#lists.size(entries) != 1}">查询</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="addEntry" th:if="${#lists.size(entries) != 1}">新建入库单</button>
-	 			<button type="button" class="btn btn-sm btn-info" name="deleteEntry" th:if="${#lists.size(entries) != 1}">删除入库单</button>
+	 			<div sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_ENTRY_PN)}">
+		 			<button type="button" class="btn btn-sm btn-info" name="addEntry" th:if="${#lists.size(entries) != 1}">新建入库单</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntry" th:if="${#lists.size(entries) != 1}">删除入库单</button>
+	 			</div>
 	 			<button type="button" class="btn btn-sm btn-info" name="entryList" th:if="${#lists.size(entries) == 1}">入库单一览</button>
-	 			<div style="display:inline-block;" th:if="${entry.id >0 }  and ${entry.state == 0}">
+	 			<div style="display:inline-block;" th:if="${entry.id >0 }  and ${entry.state == 0}" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_ENTRY_PN)}">
 	 				<button type="button" class="btn btn-sm btn-info" name="addEntryPn">增加入库项目</button>
 		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntryPn" >删除入库项目</button>
 		 			<button type="button" class="btn btn-sm btn-info" name="doEntry" th:if="${!#lists.isEmpty(entry.wareHouseEntrySemiPns)}">入库</button>

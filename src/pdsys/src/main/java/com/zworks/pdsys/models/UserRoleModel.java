@@ -9,9 +9,18 @@ import org.apache.ibatis.type.Alias;
 @Alias("userRoleModel")
 public class UserRoleModel extends BaseModel {
 	private String role;
-
+	private UserModel user;
+	
 	public String getRole() {
 		return role;
+	}
+
+	public UserModel getUser() {
+		return user;
+	}
+
+	public void setUser(UserModel user) {
+		this.user = user;
 	}
 
 	public void setRole(String role) {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head th:include="common/header::header">
 </head>
 <body>
@@ -17,10 +18,12 @@
 				   <input type="text" class="form-control" id="pn" name="pn" th:field="*{pn}" placeholder="品目">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addBOM'>添加</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='editBOM'>修改</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addBOMSupplier'>追加供应商</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='deleteBOMSupplier'>删除供应商</button>
+	 			<div class="form-group" sec:authorize="${hasAnyAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN, T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_MASTER)}">
+		 			<button type="button" class="btn btn-sm btn-info" id='addBOM'>添加</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='editBOM'>修改</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='addBOMSupplier'>追加供应商</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='deleteBOMSupplier'>删除供应商</button>
+		 		</div>
 			</form>
 		</div>
 	</nav>

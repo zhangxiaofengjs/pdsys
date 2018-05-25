@@ -1,5 +1,6 @@
 package com.zworks.pdsys.controllers;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,19 @@ public class UserController {
 			return JSONResponse.error("该工号姓名用户不存在。");
 		}
 		userService.update(user);
+		return JSONResponse.success();
+	}
+	
+	@RequestMapping("/setauth")
+	@ResponseBody
+	public JSONResponse setAuth(@RequestBody HashMap<String, String> r, Model model) {
+		int id = Integer.valueOf(r.get("id"));
+		UserModel u = userService.queryById(id);
+		if(u == null) {
+			return JSONResponse.error("该用户不存在");
+		}
+
+		userService.updateAuth(u, r);
 		return JSONResponse.success();
 	}
 	

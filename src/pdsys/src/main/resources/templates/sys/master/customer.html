@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head th:include="common/header::header">
 </head>
 <body>
@@ -11,9 +12,11 @@
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/sys/master/main/customer}" method="post">
-	 			<button type="submit" class="btn btn-sm btn-info">刷新</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addCustomer'>添加</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='editCustomer'>修改</button>
+	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
+	 			<div class="form-group" sec:authorize="${hasAnyAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN, T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_MASTER)}">
+		 			<button type="button" class="btn btn-sm btn-info" id='addCustomer'>添加</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='editCustomer'>修改</button>
+	 			</div>
 			</form>
 		</div>
 	</nav>

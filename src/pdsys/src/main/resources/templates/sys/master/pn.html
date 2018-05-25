@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head th:include="common/header::header">
 </head>
 <body>
@@ -16,13 +17,15 @@
 				   <input type="text" class="form-control" id="pn" name="pn" th:field="*{pn}" placeholder="品目">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addPn'>添加品目</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='editPn'>修改品目</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addPnCls'>添加子类</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='deletePnCls'>删除子类</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addBOM'>添加原材</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='addBOM1'>添加包材</button>
-	 			<button type="button" class="btn btn-sm btn-info" id='deleteBOM'>删除原包材</button>
+	 			<div class="form-group" sec:authorize="${hasAnyAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN, T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_MASTER)}">
+		 			<button type="button" class="btn btn-sm btn-info" id='addPn'>添加品目</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='editPn'>修改品目</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='addPnCls'>添加子类</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='deletePnCls'>删除子类</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='addBOM'>添加原材</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='addBOM1'>添加包材</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='deleteBOM'>删除原包材</button>
+		 		</div>
 			</form>
 		</div>
 	</nav>

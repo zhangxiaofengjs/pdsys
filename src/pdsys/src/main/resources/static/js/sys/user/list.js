@@ -146,4 +146,74 @@ $(document).ready(function(){
 			}
 		});
 	});
+	
+	$("#setAuth").click(function(){
+		var self = $(this);
+		var selIds = getSelectedRowId({"checkOne":true, "showMsg":true});
+		if(selIds.length != 1) {
+			return;
+		}
+		
+		var id = selIds[0];
+		
+		var fields = [
+			{
+				"name":"id",
+				"type":"hidden",
+				"value":selIds[0]
+			},
+			{
+				"name":"auth",
+				"label":"权限设定",
+				"type":"label",
+				"value": '<table class="table table-bordered table-condensed">\
+							<tr>\
+								<td colspan=3><input type="checkbox" name="admin"><span style="color:red;"><b> 管理员</b></span></td>\
+							</tr>\
+							<tr>\
+								<td colspan=3><input type="checkbox" name="e_order"> 订单编辑</td>\
+							</tr>\
+							<tr>\
+								<td colspan=3><input type="checkbox" name="e_purchase"> 采购编辑</td>\
+							</tr>\
+							<tr>\
+								<td><input type="checkbox" name="e_warehouse_entry_pn"> 生产入库</td>\
+								<td><input type="checkbox" name="e_warehouse_entry_bom"> 原包材入库</td>\
+								<td><input type="checkbox" name="e_warehouse_entry_device"> 设备零件入库</td>\
+							</tr>\
+							<tr>\
+								<td><input type="checkbox" name="e_warehouse_delivery_pn"> 生产出库</td>\
+								<td><input type="checkbox" name="e_warehouse_delivery_bom"> 原包材出库</td>\
+								<td><input type="checkbox" name="e_warehouse_delivery_device"> 设备零件出库</td>\
+							</tr>\
+							<tr>\
+								<td colspan=3><input type="checkbox" name="e_device"> 设备编辑</td>\
+							</tr>\
+							<tr>\
+								<td><input type="checkbox" name="e_user"> 用户编辑</td>\
+								<td colspan=2><input type="checkbox" name="e_master"> 定义表编辑</td>\
+							</tr>\
+						</table>',
+			},
+		];
+		
+		var dlg = new CommonDlg();
+		dlg.showFormDlg({
+			"target":"dlg_div",
+			"caption":"设定用户权限",
+			"fields":fields,
+			"url":"/user/setauth",
+			"success": function(data) {
+				dlg.hide();
+				PdSys.success({
+					"ok" : function() {
+						PdSys.refresh();
+					}
+				});
+			},
+			"error": function(data) {
+				PdSys.alert(data.msg);
+			}
+		});
+	});
 });
