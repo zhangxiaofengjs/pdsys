@@ -3,10 +3,12 @@ package com.zworks.pdsys.business.beans;
 import java.util.Date;
 
 import com.zworks.pdsys.common.utils.DateUtils;
+import com.zworks.pdsys.models.NoticeModel;
 
 public class NoticeFormBean {
 	private Date start;
 	private Date end;
+	private NoticeModel notice;
 	
 	public void normalizeStartEnd() {
 		start = DateUtils.startOfDay(start);
@@ -25,5 +27,13 @@ public class NoticeFormBean {
 	}
 	public void setEnd(Date end) {
 		this.end = end;
+	}
+
+	public NoticeModel getNotice() {
+		return notice;
+	}
+
+	public void setNotice(NoticeModel notice) {
+		this.notice = notice;
 	}
 }

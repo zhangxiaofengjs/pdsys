@@ -10,7 +10,7 @@
         <id column="s_id" property="id"/> 
         <result column="s_type" property="type"/>
         <result column="s_content" property="content"/>  
-        <result column="s_is_read" property="isRead"/>
+        <result column="s_state" property="state"/>
         <result column="s_ref_id" property="refId"/>
         <result column="s_create_time" property="createTime"/>
         <association property="sender" resultMap="userResultMap"/>
@@ -41,7 +41,7 @@
 		select s.c_id as s_id,
 			   s.c_type as s_type,
 			   s.c_content as s_content,
-			   s.c_is_read as s_is_read,
+			   s.c_state as s_state,
 			   s.c_ref_id as s_ref_id,
 			   s.c_create_time as s_create_time,
 			   ifnull(u.c_id,0) as u_id,
@@ -54,6 +54,9 @@
 		<where>
 			<if test="id > 0">
 				and s.c_id=#{id}
+			</if>
+			<if test="state &gt;= 0">
+				and s.c_state=#{state}
 			</if>
 			<if test="filterCond.start != null">
 				and s.c_create_time &gt;= #{filterCond.start}
@@ -68,7 +71,7 @@
 				and (s.c_receiver_id=#{receiver.id} or s.c_receiver_id=0)
 			</if>
 		</where>
-		order by s.c_is_read asc, s.c_create_time desc 
+		order by s.c_state asc, s.c_create_time desc 
 		<if test="page != null">
 			limit #{page.start},#{page.row}
 		</if>
@@ -81,7 +84,7 @@
     <update id="update" parameterType="noticeModel">
 		update notice_tbl
 		<set>
-			c_is_read = #{isRead},
+			c_state = #{state},
 		</set>
 		where c_id = #{id}
 	</update>

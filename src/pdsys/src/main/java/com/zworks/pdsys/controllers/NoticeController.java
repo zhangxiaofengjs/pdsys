@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.NoticeFormBean;
+import com.zworks.pdsys.common.enumClass.NoticeState;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.RequestContextUtils;
@@ -28,23 +29,26 @@ public class NoticeController extends BaseController {
 	@RequestMapping("/list")
     public Object showNoticelist(@RequestParam(value="pageon",defaultValue="1")int pageon,
     		                     NoticeFormBean formBean, Model model) {
-		
-		NoticeModel notice = new NoticeModel();
-		Date s = DateUtils.startOfDay(formBean.getStart());
-		Date e = DateUtils.endOfDay(formBean.getEnd());
-		if(s == null) {
-			s = RequestContextUtils.getSessionAttribute(this, "startNotice", DateUtils.startOfDay(DateUtils.thisMonthStart()));
-			formBean.setStart(s);
+		NoticeModel notice = formBean.getNotice();
+		if(notice == null) {
+			formBean = RequestContextUtils.getSessionAttribute(this, "formBean", new NoticeFormBean());
+			if(formBean.getStart() == null) {
+				formBean.setStart(DateUtils.thisMonthStart());
+			}
+			if(formBean.getEnd() == null) {
+				formBean.setEnd(DateUtils.getCurrentDate());
+			}
+			if(formBean.getNotice() == null) {
+				NoticeModel n = new NoticeModel();
+				n.setState(0);
+				formBean.setNotice(n);
+			}
+			notice = formBean.getNotice();
 		}
-		RequestContextUtils.setSessionAttribute(this, "startNotice", s);
-		if(e == null) {
-			e = RequestContextUtils.getSessionAttribute(this, "endNotice", DateUtils.endOfDay(DateUtils.now()));
-			formBean.setEnd(e);
-		}
-		RequestContextUtils.setSessionAttribute(this, "endNotice", e);
-		
-		notice.getFilterCond().put("start", s);
-		notice.getFilterCond().put("end", e);
+		RequestContextUtils.setSessionAttribute(this, "formBean", formBean);
+
+		notice.getFilterCond().put("start", DateUtils.startOfDay(formBean.getStart()));
+		notice.getFilterCond().put("end", DateUtils.endOfDay(formBean.getEnd()));
 
 		//只显示发送给自己的
 		notice.setReceiver(SecurityContextUtils.getLoginUser().getUser());
@@ -59,7 +63,18 @@ public class NoticeController extends BaseController {
 	@RequestMapping(value="/toggleread")
 	@ResponseBody
     public JSONResponse toggleRead(@RequestBody NoticeModel notice, Model model) {
-		noticeService.toggleRead(notice);
+		noticeService.toggleState(notice);
+		return JSONResponse.success();
+    }
+	
+	@RequestMapping(value="/getcount")
+	@ResponseBody
+    public JSONResponse getCount(Model model) {
+		NoticeModel notice = new NoticeModel();
+		notice.setState(NoticeState.Unread.ordinal());
+		notice.setReceiver(SecurityContextUtils.getLoginUser().getUser());
+
+		List<NoticeModel> list = noticeService.queryList(notice);
 		return JSONResponse.success();
     }
 }

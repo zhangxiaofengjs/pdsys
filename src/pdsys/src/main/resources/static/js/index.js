@@ -99,6 +99,17 @@ function showPage(pATag)
 	$("#nav_title").html("主页 > " + menuDisplay);
 }
 
+function updateIndexNoticeCount() {
+	PdSys.ajax({
+		"url":"/notice/getcount",
+		"success": function(data) {
+			
+		},
+		"error": function(data) {
+		}
+	});
+}
+
 function initContentHeight(h, framWin) 
 {
 	if(h<$(document).height()) {

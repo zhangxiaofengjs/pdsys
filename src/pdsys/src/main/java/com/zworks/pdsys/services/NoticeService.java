@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zworks.pdsys.common.enumClass.NoticeState;
 import com.zworks.pdsys.mappers.NoticeMapper;
 import com.zworks.pdsys.models.NoticeModel;
 import com.zworks.pdsys.models.PageModel;
@@ -48,12 +49,13 @@ public class NoticeService {
 		return false;
 	}
 
-	public void toggleRead(NoticeModel notice) {
+	public void toggleState(NoticeModel notice) {
 		NoticeModel n = queryOne(notice);
-		if(n.getIsRead() == 0) {
-			n.setIsRead(1);
+		
+		if(n.getState() == NoticeState.Read.ordinal()) {
+			n.setState(NoticeState.Unread.ordinal());
 		} else {
-			n.setIsRead(0);
+			n.setState(NoticeState.Read.ordinal());
 		}
 		
 		noticeMapper.update(n);
