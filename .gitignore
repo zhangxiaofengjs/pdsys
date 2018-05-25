@@ -3,5 +3,9 @@ doc/~$fd.xlsx
 download/*
 env/*
 doc/~$env.xlsx
+doc/temp/*
 src/pdsys/target/classes/*
 src/pdsys/target/classes/
+src/pdsys/target/maven-status/*
+src/pdsys/target/maven-archiver/*
+src/pdsys/target/generated-sources/*
