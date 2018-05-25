@@ -1,176 +1,105 @@
 $(document).ready(function(){
-//	$("#changeState").click(function(){
-//		var self = $(this);
-//		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
-//		if(selIds.length != 1) {
-//			return;
-//		}
-//		
-//		var dlg = new CommonDlg();
-//		dlg.showFormDlg({
-//			"target":"dlg_div",
-//			"caption":"选择设备状态",
-//			"fields":[
-//				{
-//					"name":"id",
-//					"type":"hidden",
-//					"value":selIds[0]
-//				},
-//				{
-//					"name":"state",
-//					"label":"设备状态",
-//					"type":"select",
-//					"options":[
-//						{ 'value': 0, "caption" : "运行中"},
-//						{ 'value': 1, "caption" : "维护中"},
-//						{ 'value': 2, "caption" : "故障"},
-//					],
-//				}
-//			],
-//	    	url : "/device/update",
-//	        success : function(data) {
-//	        	PdSys.refresh();
-//	        },
-//	        error: function(data) {
-//	        	PdSys.sysError();
-//	        }
-//	    });
-//	});
 	
-	$("#addDeviceRepair").click(function(){
-		var self = $(this);
+	//排序
+	function CellSort(tableId)
+	{
+		var table =document.getElementById(tableId);
+		var rows = table.rows.length;
+		//除去表头和列名所在行
+		for (i=1;i<rows-1;i++)
+		{
+			k=i;
+			for (j=i+1;j<rows;j++)
+			{
+			 
+				if (table.rows[k].cells[0].innerHTML>table.rows[j].cells[0].innerHTML)
+					k=j;
+			}
+			if (k>i)
+			{
+				tmp=table.rows[i].cells[0].innerHTML;
+				table.rows[i].cells[0].innerHTML=table.rows[k].cells[0].innerHTML;
+				table.rows[k].cells[0].innerHTML=tmp;
+			}
+		}
+	}
+	
+	//调用排序
+	CellSort('table2');
 
-		var fields = [
-		{
-			"name":"no",
-			"label":"编号",
-			"type":"text",
-			"value":'',
-			"required":"required"
-		},
-		{
-			"name":"machine.id",
-			"label":"机器设备",
-			"type":"select",
-			"options":[],
-			"ajax":true,
-			"url":"/machine/list/json",
-			"convertAjaxData" : function(thisField, data) {
-				data.forEach(function(machine, idx) {
-					thisField.options.push({
-						"value": machine.id,
-						"caption":"{0} {1}".format(machine.pn, machine.name),
-					});
-				});
-			},
-		},
-		{
-			"name":"place.id",
-			"label":"使用地点",
-			"type":"select",
-			"options":[],
-			"ajax":true,
-			"url":"/place/list/json",
-			"convertAjaxData" : function(thisField, data) {
-				data.forEach(function(place, idx) {
-					thisField.options.push({
-						"value": place.id,
-						"caption": place.name,
-					});
-				});
-			},
-			"groupButtons":[{
-				"name":"addPlace",
-				"text":"+",
-				"click": function(dlg) {
-					var dlgPlace = new CommonDlg();
-					dlgPlace.showFormDlg({
-						"target":"place_dlg_div",
-						"caption":"添加地点",
-						"fields":[
-							{
-								"name":"name",
-								"label":"地点",
-								"type":"text",
-								"value":"",
-								"required":"required",
-							}
-						],
-						"url":"/place/add",
-						"success" : function(data) {
-							dlgPlace.hide();
-							dlg.rebuildFieldWithValue("place.id", data.place.id);
-						},
-						"error": function(data) {
-							PdSys.alert(data.msg);
-						}
-					});
-				}
-			}],
-		},
-		{
-			"name":"user.id",
-			"label":"负责人",
-			"type":"select",
-			"options":[],
-			"ajax":true,
-			"url":"/user/list/json",
-			"convertAjaxData" : function(thisField, data) {
-				data.forEach(function(user, idx) {
-					thisField.options.push({
-						"value": user.id,
-						"caption": user.name,
-					});
-				});
-			},
-		},
-		];
-		
-		var dlg = new CommonDlg();
-		dlg.showFormDlg({
-			"target":"dlg_div",
-			"caption":"追加新设备",
-			"fields":fields,
-			"url":"/device/add",
-			"success": function(data) {
-				dlg.hide();
-				PdSys.success({
-					"ok" : function() {
-						PdSys.refresh();
-					}
-				});
-			},
-			"error": function(data) {
-				PdSys.sysError();
-			}
-		});
-	});
+	function mergeCell(table, startRow, endRow, col) {  
+        var tb = document.getElementById(table);  
+        if (col >= tb.rows[0].cells.length) {  
+            return;  
+        }  
+        if (col == 0) { endRow = tb.rows.length-1; }  
+        for (var i = startRow; i < endRow; i++) {
+
+            if (tb.rows[startRow].cells[col].innerHTML == tb.rows[i + 1].cells[col].innerHTML) {  
+            	tb.rows[i + 1].cells[col].style.display='none';
+            	tb.rows[i + 1].cells[7].style.display='none';
+                tb.rows[startRow].cells[col].rowSpan = (tb.rows[startRow].cells[col].rowSpan | 0) + 1;
+                
+                if( table=="table1" )
+                {
+                	if(col ==1)
+                	{
+                		tb.rows[startRow].cells[7].rowSpan = tb.rows[startRow].cells[7].rowSpan + 1;
+                		tb.rows[i].cells[7].innerHTML = tb.rows[startRow].cells[7].rowSpan;
+                	}
+                	
+                }
+                else if( table=="table2" )
+                {
+                	if(col==0)
+                	{
+                		tb.rows[startRow].cells[7].rowSpan = tb.rows[startRow].cells[7].rowSpan + 1;
+                		tb.rows[i].cells[7].innerHTML = tb.rows[startRow].cells[7].rowSpan;
+                	}
+                }
+                if (i == endRow - 1 && startRow != endRow) {  
+                	mergeCell(table, startRow, endRow, col + 1);  
+                }  
+            } else {
+            	mergeCell(table, startRow, i + 0, col + 1);  
+                startRow = i + 1;  
+            }
+        }
+    }
 	
-	//选择后合计维护备件表
-	$("input[name^='select']").click(function(){
-		var selIds = getSelectedRowId({"showMsg":false});
-		
-		PdSys.ajax({
-			"url":"/device/machineparts",
-			"data":selIds,
-			"success": function(data) {
-				var bodyHtml = "";
-				data.data.forEach(function(obj, idx) {
-					var machineStr = "";
-					obj.machines.forEach(function(machine, idx2) {
-						machineStr += machine.pn + " " + machine.name + "</br>";
-					});
-					bodyHtml += "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td class='number'>{4}</td><td class='number'>{5}</td></tr>".format(
-						obj.machinePart.pn, obj.machinePart.name, machineStr, obj.machinePart.unit.name, obj.maitenaceNum, obj.wareHouseNum
-					);
-				});
-				var body = $('#machineParts');
-				body.children().remove();
-				body.append(bodyHtml);
-			},
-			"error": function(data) {
-				PdSys.alert("查询备件库发生错误，请刷新后重试。");
-			}
-		});
-	});
+	mergeCell('table1',1,0,0)
+	mergeCell('table2',1,0,0)
+	
+	//radio相关
+	$("input[name='mode']").each(function(){
+	    if($(this).attr("checked"))
+	    {
+	        if(this.value=='0')
+	        {
+	        	document.getElementById('table2').style.display='none';
+	        	document.getElementById('table1').style.display='';
+	        }
+	        else if(this.value=='1')
+	        {
+	        	document.getElementById('table1').style.display='none';
+	        	document.getElementById('table2').style.display='';
+	        }
+	    }
+	})
+	
+	$("input[name='mode']").click(function() {
+        $("#abc").html(this.value);
+        if(this.value=='0')
+        {
+        	document.getElementById('table2').style.display='none';
+        	document.getElementById('table1').style.display='';
+        }
+        else if(this.value=='1')
+        {
+        	document.getElementById('table1').style.display='none';
+        	document.getElementById('table2').style.display='';
+        }
+    });
+	
+	
 });

@@ -31,8 +31,7 @@ public class MachineTroubleService {
 	}
 	
 	public boolean exists(MachineTroubleModel machineTrouble) {
-		MachineTroubleModel m = new MachineTroubleModel();
-		return queryOne(m) != null;
+		return queryOne(machineTrouble) != null;
 	}
 
 }
