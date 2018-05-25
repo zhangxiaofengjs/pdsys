@@ -68,7 +68,7 @@ public class PurchaseController {
 		model.addAttribute("boms", list);
 		model.addAttribute("order", order);
 
-        return "/purchase/bomdetails";
+        return "purchase/bomdetails";
     }
 	
 	/**
@@ -159,7 +159,7 @@ public class PurchaseController {
 		model.addAttribute("purchase", p);
 		model.addAttribute("formBean", formBean);
 		
-        return "/purchase/purchasebomlist";
+        return "purchase/purchasebomlist";
 	}
 	
 	/**

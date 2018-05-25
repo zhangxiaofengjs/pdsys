@@ -51,7 +51,7 @@ public class UserController {
 		List<UserModel> list = userService.queryList(user);
 		model.addAttribute("user", user);
 		model.addAttribute("list", list);
-		return "/sys/user/list";
+		return "sys/user/list";
 	}
 	
 	@RequestMapping("/add")

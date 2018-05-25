@@ -17,7 +17,7 @@
 			<a th:href="@{/warehouse/list/main?type=machinepart}">设备备件库</a>
 		</li>
 	</ul>
-<div th:replace="/warehouse/list/__${type}__::content(${list})"></div>
+<div th:replace="warehouse/list/__${type}__::content(${list})"></div>
 <div th:replace="common/footer::copyright"></div>
 </body>
 </html>

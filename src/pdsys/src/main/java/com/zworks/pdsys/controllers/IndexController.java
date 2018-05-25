@@ -53,11 +53,11 @@ public class IndexController {
 	
 	@RequestMapping("/403")
     public String err403(Model model) {
-        return "/403.html";
+        return "403";
     }
 	
 	@RequestMapping("/404")
     public String err404(Model model) {
-        return "/404.html";
+        return "404";
     }
 }

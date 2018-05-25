@@ -30,7 +30,7 @@ public class PdsysExceptionHandler {
 		JSONResponse res = JSONResponse.error(e.getMessage()).put("code", e.getCode());
 		model.addAttribute("error", res);
 		
-		return "/common/exception";
+		return "common/exception";
 	}
 
 //	@ExceptionHandler(DuplicateKeyException.class)
@@ -48,7 +48,7 @@ public class PdsysExceptionHandler {
 		JSONResponse res = JSONResponse.error(msg).put("code", PdsysExceptionCode.ERROR_SERVER_INTERNAL_ERROR);
 		model.addAttribute("error", res);
 		
-		return "/common/exception";
+		return "common/exception";
 	}
 	
 	@ExceptionHandler(Throwable.class)
@@ -58,7 +58,7 @@ public class PdsysExceptionHandler {
         String errorMessage = (throwable != null ? throwable.getMessage() : "Unknown error");
         JSONResponse res = JSONResponse.error(errorMessage).put("code", 0);
 		model.addAttribute("error", res);
-		return "/common/exception";
+		return "common/exception";
     }
 	
 	private String makeErrorMessage(HttpServletRequest request, HttpServletResponse response, Exception e) {
