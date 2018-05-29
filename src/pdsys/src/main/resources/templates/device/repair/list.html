@@ -45,7 +45,7 @@
 				    </tr>
 				</thead>
 				<tbody>
-					<tr th:each="deviceRepair : ${list}"
+					<tr th:each="deviceRepair : ${list1}"
 						th:with="device=(${deviceRepair.device}),
 								 machineTro=(${deviceRepair.machineTrouble}),
 								 machine=(${device.machine}),
@@ -76,7 +76,7 @@
 				    </tr>
 				</thead>
 				<tbody>
-					<tr th:each="deviceRepair : ${list}"
+					<tr th:each="deviceRepair : ${list2}"
 						th:with="device=(${deviceRepair.device}),
 								 machineTro=(${deviceRepair.machineTrouble}),
 								 machine=(${device.machine}),
