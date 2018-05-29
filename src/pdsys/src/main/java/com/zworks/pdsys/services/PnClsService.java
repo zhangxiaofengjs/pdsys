@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zworks.pdsys.common.utils.ListUtils;
 import com.zworks.pdsys.mappers.PnClsMapper;
 import com.zworks.pdsys.models.PnClsBOMRelModel;
 import com.zworks.pdsys.models.PnClsModel;
@@ -39,7 +40,9 @@ public class PnClsService {
 	public void delete(PnClsModel pnCls) {
 		PnClsModel pnClsTmp = queryOne(pnCls);
 		//删除关联的BOMRel
-		pnClsMapper.deleteBOM(pnClsTmp);
+		if(!ListUtils.isNullOrEmpty(pnClsTmp.getPnClsBOMRels())) {
+			pnClsMapper.deleteBOM(pnClsTmp);
+		}
 		pnClsMapper.delete(pnClsTmp);
 	}
 	

@@ -2,6 +2,7 @@ package com.zworks.pdsys.common.utils;
 
 import java.util.List;
 
+import com.zworks.pdsys.models.PnBOMRelModel;
 import com.zworks.pdsys.models.PnClsBOMRelModel;
 import com.zworks.pdsys.models.PnClsModel;
 import com.zworks.pdsys.models.PnModel;
@@ -14,14 +15,19 @@ import com.zworks.pdsys.models.UnitModel;
  */
 public class ModelUtils {
 	public static int pnRowSize(PnModel pn) {
+		List<PnBOMRelModel> pnBOMRels = pn.getPnBOMRels();
 		List<PnPnClsRelModel> pnClsRels = pn.getPnClsRels();
 		
 		if(ListUtils.isNullOrEmpty(pnClsRels)) {
-			//无子类，自己占一行
-			return 1;
+			if(ListUtils.isNullOrEmpty(pnBOMRels)) {
+				//无子类,共通材，自己占一行
+				return 1;
+			}
+			
+			return pnBOMRels.size();
 		}
 		
-		int count = 0;
+		int count = ListUtils.isNullOrEmpty(pnBOMRels)?1:pnBOMRels.size();
 		for(PnPnClsRelModel pnClsRel : pnClsRels) {
 			PnClsModel pnCls = pnClsRel.getPnCls();
 			List<PnClsBOMRelModel> bomRels = pnCls.getPnClsBOMRels();

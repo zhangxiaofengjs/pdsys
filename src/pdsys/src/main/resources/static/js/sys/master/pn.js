@@ -213,6 +213,10 @@ $(document).ready(function(){
 		}
 		var pnId = selIdArr[0];
 		var clsId = selIdArr[1];
+		if(clsId == -1) {
+			PdSys.alert("共通的子类不可删除");
+			return;
+		}
 		var dlg = new CommonDlg();
 		
 		dlg.showMsgDlg({
@@ -261,18 +265,15 @@ $(document).ready(function(){
 		}
 		var pnId = selIdArr[0];
 		var clsId = selIdArr[1];
-		
+		var url = (clsId==-1?"/pn/addBOM":"/pncls/addBOM");
+		var bomIdName = (clsId==-1?"pnBOMRels[0].bom.id":"pnClsBOMRels[0].bom.id");
+		var useNumName = (clsId==-1?"pnBOMRels[0].useNum":"pnClsBOMRels[0].useNum");
 		var dlg = new CommonDlg();
 		var fields = [
 			{
 				"name":"id",
 				"type":"hidden",
-				"value":pnId
-			},
-			{
-				"name":"id",
-				"type":"hidden",
-				"value":clsId
+				"value":(clsId==-1?pnId:clsId)
 			},
 			{
 				"name":"bomType",
@@ -291,16 +292,16 @@ $(document).ready(function(){
 					fieldElm.change(function() {
 						var selIndex = fieldElm[0].selectedIndex;
 						var type = self.options[selIndex].value;
-						var fieldBom = dlg.fieldByName("pnClsBOMRels[0].bom.id");
+						var fieldBom = dlg.fieldByName(bomIdName);
 						fieldBom.ajaxData = {"type":type};
-						dlg.rebuildField("pnClsBOMRels[0].bom.id");
+						dlg.rebuildField(fieldBom);
 					});
 					
 					fieldElm.trigger("change");
 				},
 			},
 			{
-				"name":"pnClsBOMRels[0].bom.id",
+				"name":bomIdName,
 				"label": "使用原包材",
 				"type":"select",
 				"value":"",
@@ -313,8 +314,8 @@ $(document).ready(function(){
 					data.boms.forEach(function(bom, idx) {
 						thisField.options.push({
 							"value": bom.id,
-							"caption":bom.pn + " " + bom.name + "(" + bom.comment + ")",
-							"data":bom.unit.name
+							"caption":bom.pn + " " + bom.name + (bom.comment != "" ? "(" + bom.comment + ")" :""),
+							"data":M.unitName(bom.unit)
 						});
 					});
 				},
@@ -327,21 +328,21 @@ $(document).ready(function(){
 					fieldElm.change(function() {
 						var selIndex = fieldElm[0].selectedIndex;
 						var val = self.options[selIndex].data;
-						dlg.rebuildFieldWithValue("pnClsBOMRels[0].bom.unit.name", val);
+						dlg.rebuildFieldWithValue("unitName", val);
 					});
 					
 					fieldElm.trigger("change");
 				},
 			},
 			{
-				"name":"pnClsBOMRels[0].useNum",
+				"name":useNumName,
 				"label":"使用数量",
 				"type":"number",
 				"value":"0",
 				"min":"0.00000000000000001"
 			},
 			{
-				"name":"pnClsBOMRels[0].bom.unit.name",
+				"name":"unitName",
 				"label":"单位",
 				"type":"label",
 				"value":""
@@ -352,7 +353,7 @@ $(document).ready(function(){
 			"target":"dlg_div",
 			"caption":"添加使用原包材",
 			"fields":fields,
-			"url":"/pncls/addBOM",
+			"url":url,
 			"success": function(data) {
 				dlg.hide();
 				PdSys.success({
@@ -381,6 +382,22 @@ $(document).ready(function(){
 		var pnId = selIdArr[0];
 		var clsId = selIdArr[1];
 		var bomId = selIdArr[2];
+		var url = (clsId==-1?"/pn/deleteBOM":"/pncls/deleteBOM");
+		var bomIdName = (clsId==-1?"pnBOMRels[0].bom.id":"pnClsBOMRels[0].bom.id");
+		var useNumName = (clsId==-1?"pnBOMRels[0].useNum":"pnClsBOMRels[0].useNum");
+		var delAjaxData;
+		if(clsId==-1) {
+			delAjaxData = {
+				"id":pnId,
+				"pnBOMRels":[{"bom":{"id":bomId}}]
+			};
+		} else {
+			delAjaxData = {
+					"id":pnId,
+					"pnClsBOMRels":[{"bom":{"id":bomId}}]
+				};	
+		}
+	
 		var dlg = new CommonDlg();
 		
 		dlg.showMsgDlg({
@@ -390,13 +407,8 @@ $(document).ready(function(){
 			"type": "yesno",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/pncls/deleteBOM",
-					"data": {
-						"id":clsId,
-						"pnClsBOMRels":[{
-											"bom":{"id":bomId}
-										}]
-					},
+					"url":url,
+					"data": delAjaxData,
 					"success": function(data) {
 						dlg.hide();
 						PdSys.success({
