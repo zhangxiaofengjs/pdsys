@@ -262,11 +262,6 @@ $(document).ready(function(){
 		var pnId = selIdArr[0];
 		var clsId = selIdArr[1];
 		
-		var type = 0;
-		if(self.attr("id") == "addBOM1") {
-			type = 1;
-		}
-		
 		var dlg = new CommonDlg();
 		var fields = [
 			{
@@ -275,17 +270,43 @@ $(document).ready(function(){
 				"value":pnId
 			},
 			{
-				"name":"pnClsRels[0].pnCls.id",
+				"name":"id",
 				"type":"hidden",
 				"value":clsId
 			},
 			{
-				"name":"pnClsRels[0].pnCls.pnClsBOMRels[0].bom.id",
-				"label": type == 0 ? "使用原材":"使用包材",
+				"name":"bomType",
+				"label": "种类",
+				"type":"select",
+				"options":[{
+					"value":0,
+					"caption":"原材"
+				},{
+					"value":1,
+					"caption":"包材"
+				}],
+				"afterBuild":function() {
+					var self = this;
+					var fieldElm = dlg.findFieldElem(self);
+					fieldElm.change(function() {
+						var selIndex = fieldElm[0].selectedIndex;
+						var type = self.options[selIndex].value;
+						var fieldBom = dlg.fieldByName("pnClsBOMRels[0].bom.id");
+						fieldBom.ajaxData = {"type":type};
+						dlg.rebuildField("pnClsBOMRels[0].bom.id");
+					});
+					
+					fieldElm.trigger("change");
+				},
+			},
+			{
+				"name":"pnClsBOMRels[0].bom.id",
+				"label": "使用原包材",
 				"type":"select",
 				"value":"",
 				"ajax": true,
-				"ajaxData":{"type":type},
+				"depend":true,
+				"ajaxData":{"type":0},
 				"url":"/bom/list/json",
 				"convertAjaxData" : function(thisField, data) {
 					thisField.options = [];
@@ -297,27 +318,30 @@ $(document).ready(function(){
 						});
 					});
 				},
-				"afterBuild":function() {
+				"afterBuild":function(t) {
+					if(t != "ajax") {
+						return;
+					}
 					var self = this;
 					var fieldElm = dlg.findFieldElem(self);
 					fieldElm.change(function() {
 						var selIndex = fieldElm[0].selectedIndex;
 						var val = self.options[selIndex].data;
-						dlg.rebuildFieldWithValue("pnClsRels[0].pnCls.pnClsBOMRels[0].bom.unit.name", val);
+						dlg.rebuildFieldWithValue("pnClsBOMRels[0].bom.unit.name", val);
 					});
 					
 					fieldElm.trigger("change");
 				},
 			},
 			{
-				"name":"pnClsRels[0].pnCls.pnClsBOMRels[0].useNum",
+				"name":"pnClsBOMRels[0].useNum",
 				"label":"使用数量",
 				"type":"number",
 				"value":"0",
 				"min":"0.00000000000000001"
 			},
 			{
-				"name":"pnClsRels[0].pnCls.pnClsBOMRels[0].bom.unit.name",
+				"name":"pnClsBOMRels[0].bom.unit.name",
 				"label":"单位",
 				"type":"label",
 				"value":""
@@ -328,7 +352,7 @@ $(document).ready(function(){
 			"target":"dlg_div",
 			"caption":"添加使用原包材",
 			"fields":fields,
-			"url":"/pn/addBOM",
+			"url":"/pncls/addBOM",
 			"success": function(data) {
 				dlg.hide();
 				PdSys.success({
@@ -366,23 +390,12 @@ $(document).ready(function(){
 			"type": "yesno",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/pn/deleteBOM",
+					"url":"/pncls/deleteBOM",
 					"data": {
-						"id":pnId,
-						"pnClsRels":[ 
-							{
-								"pnCls": {
-									"id":clsId,
-									"pnClsBOMRels":[
-										{
-											"bom":{
-												"id":bomId
-											}
-										}
-									]
-								}
-							}
-						]
+						"id":clsId,
+						"pnClsBOMRels":[{
+											"bom":{"id":bomId}
+										}]
 					},
 					"success": function(data) {
 						dlg.hide();

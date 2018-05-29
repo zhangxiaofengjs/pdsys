@@ -134,25 +134,6 @@
 			</where>
         </foreach>
 	</delete>
-	
-	<insert id="addBOM" parameterType="pnModel" keyProperty="id">
-		<foreach collection ="pnClsRels" item="pnClsRel" index= "index" separator =";">
-			<foreach collection ="pnClsRel.pnCls.pnClsBOMRels" item="pnClsBOMRel" index= "index2" separator =";">
-				insert into pn_cls_bom_relation_tbl
-				(
-					c_cls_id, 
-					c_bom_id,
-					c_use_num
-				)
-				values
-		        (
-			        #{pnClsRel.pnCls.id},
-		            #{pnClsBOMRel.bom.id},
-		            #{pnClsBOMRel.useNum}
-		        )
-		    </foreach>
-        </foreach>
-	</insert>
 
 	<update id="update">
     	update pn_tbl
@@ -163,16 +144,4 @@
 			c_id = #{id}
 		</where>
     </update>
-
-	<delete id="deleteBOM" parameterType="pnModel">
-		<foreach collection ="pnClsRels" item="pnClsRel" index= "index" separator =";">
-			<foreach collection ="pnClsRel.pnCls.pnClsBOMRels" item="pnClsBOMRel" index= "index2" separator =";">
-				delete from pn_cls_bom_relation_tbl
-				<where>
-					c_cls_id=#{pnClsRel.pnCls.id} and
-					c_bom_id=#{pnClsBOMRel.bom.id}
-				</where>
-		    </foreach>
-        </foreach>
-    </delete>
 </mapper>

@@ -18,4 +18,8 @@ public interface PnClsMapper {
 	void add(PnClsModel pnCls);
 
 	void delete(PnClsModel pnCls);
+
+	void addBOM(PnClsModel pnCls);
+
+	void deleteBOM(PnClsModel pnCls);
 }

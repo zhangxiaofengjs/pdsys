@@ -148,6 +148,10 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 	this.option.fields.forEach(function(f, idx) {//各种Field的ajax
 		if(f.ajax && !f.depend) { //需要ajax并且不依赖其他ajaxDepend的项目之间初始化
 			self.buildAjaxField(f);
+		} else {
+			if(f.afterBuild) {
+				(f.afterBuild)('afterInit');
+			}
 		}
 		
 		if(f.groupButtons) {

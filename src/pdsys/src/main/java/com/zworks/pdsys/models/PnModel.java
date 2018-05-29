@@ -14,6 +14,7 @@ public class PnModel extends BaseModel{
 	private String name;
 	private UnitModel unit;
 	private List<PnPnClsRelModel> pnClsRels;
+	private List<PnBOMRelModel> pnBOMRels;
 
 	public String getPn() {
 		return pn;
@@ -45,5 +46,13 @@ public class PnModel extends BaseModel{
 
 	public void setPnClsRels(List<PnPnClsRelModel> pnClsRels) {
 		this.pnClsRels = pnClsRels;
+	}
+
+	public List<PnBOMRelModel> getPnBOMRels() {
+		return pnBOMRels;
+	}
+
+	public void setPnBOMRels(List<PnBOMRelModel> pnBOMRels) {
+		this.pnBOMRels = pnBOMRels;
 	}
 }

@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.mappers.PnClsMapper;
+import com.zworks.pdsys.models.PnClsBOMRelModel;
 import com.zworks.pdsys.models.PnClsModel;
+import com.zworks.pdsys.models.PnModel;
 
 @Service
 public class PnClsService {
@@ -16,6 +18,14 @@ public class PnClsService {
 	public List<PnClsModel> queryList(PnClsModel pnClsModel) {
 		return pnClsMapper.queryList(pnClsModel);
 	}
+	
+	public PnClsModel queryOne(PnClsModel pnClsModel) {
+		List<PnClsModel> list = pnClsMapper.queryList(pnClsModel);
+		if(list.size()==1) {
+			return list.get(0);
+		}
+		return null;
+	}
 
 	public void add(PnClsModel pnCls) {
 		pnClsMapper.add(pnCls);
@@ -24,5 +34,41 @@ public class PnClsService {
 	public boolean exists(PnClsModel pnCls) {
 		List<PnClsModel> list = queryList(pnCls);
 		return list.size() != 0;
+	}
+
+	public void delete(PnClsModel pnCls) {
+		PnClsModel pnClsTmp = queryOne(pnCls);
+		//删除关联的BOMRel
+		pnClsMapper.deleteBOM(pnClsTmp);
+		pnClsMapper.delete(pnClsTmp);
+	}
+	
+	public void addBOM(PnClsModel pnCls) {
+		pnClsMapper.addBOM(pnCls);
+	}
+
+	public void deleteBOM(PnClsModel pnCls) {
+		pnClsMapper.deleteBOM(pnCls);
+	}
+	
+	public boolean existsBOM(PnClsModel pnCls) {
+		PnClsModel targetPnCls = queryOne(pnCls);
+		if(targetPnCls == null) {
+			return false;
+		}
+		
+		List<PnClsBOMRelModel> bomRels = pnCls.getPnClsBOMRels();
+		List<PnClsBOMRelModel> targetBomRels = targetPnCls.getPnClsBOMRels();
+		
+		for(PnClsBOMRelModel bomRel : bomRels) {
+			for(PnClsBOMRelModel bRel : targetBomRels) {
+				if(bomRel.getBom().getId() == bRel.getBom().getId()) {
+					//同样子类下有同样的BOM
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 }

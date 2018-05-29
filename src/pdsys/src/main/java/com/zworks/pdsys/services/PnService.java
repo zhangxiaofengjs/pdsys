@@ -20,7 +20,7 @@ public class PnService {
 	@Autowired
     private PnMapper pnMapper;
 	@Autowired
-	private PnClsMapper pnClsMapper;
+	private PnClsService pnClsService;
 	
 	public List<PnModel> queryList(PnModel pn) {
 		return pnMapper.queryList(pn);
@@ -47,7 +47,7 @@ public class PnService {
 		List<PnPnClsRelModel> clsRels = pn.getPnClsRels();
 		for(PnPnClsRelModel pnClsRel : clsRels) {
 			PnClsModel pnCls = pnClsRel.getPnCls();
-			pnClsMapper.add(pnCls);
+			pnClsService.add(pnCls);
 		}
 		
 		pnMapper.addPnCls(pn);
@@ -82,7 +82,7 @@ public class PnService {
 		List<PnPnClsRelModel> clsRels = pn.getPnClsRels();
 		for(PnPnClsRelModel pnClsRel : clsRels) {
 			PnClsModel pnCls = pnClsRel.getPnCls();
-			pnClsMapper.delete(pnCls);
+			pnClsService.delete(pnCls);
 		}
 		pnMapper.deletePnCls(pn);
 	}
