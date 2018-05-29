@@ -8,11 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
-import com.zworks.pdsys.mappers.PnClsMapper;
 import com.zworks.pdsys.mappers.PnMapper;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.PnBOMRelModel;
-import com.zworks.pdsys.models.PnClsBOMRelModel;
 import com.zworks.pdsys.models.PnClsModel;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.PnPnClsRelModel;
@@ -50,8 +48,9 @@ public class PnService {
 		for(PnPnClsRelModel pnClsRel : clsRels) {
 			PnClsModel pnCls = pnClsRel.getPnCls();
 			pnClsService.add(pnCls);
+			pnClsService.addBOM(pnCls);
 		}
-		
+
 		pnMapper.addPnCls(pn);
 	}
 

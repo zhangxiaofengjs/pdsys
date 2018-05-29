@@ -9,7 +9,6 @@ import com.zworks.pdsys.common.utils.ListUtils;
 import com.zworks.pdsys.mappers.PnClsMapper;
 import com.zworks.pdsys.models.PnClsBOMRelModel;
 import com.zworks.pdsys.models.PnClsModel;
-import com.zworks.pdsys.models.PnModel;
 
 @Service
 public class PnClsService {
