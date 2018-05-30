@@ -35,7 +35,7 @@ public class OrderPnService {
 		return null;
 	}
 	
-	public List<OrderPnModel> queryOrderPnList( OrderModel order ) {
+	public List<OrderPnModel> queryList( OrderModel order ) {
 		return orderPnMapper.queryList( order );
 	}
 	
