@@ -82,13 +82,6 @@ public class WareHouseController extends BaseController{
 			}
 			whbom.getFilterCond().put("fuzzyPnSearch", true);
 			
-			//搜寻已经下单的对象
-			PurchaseBOMModel purchaseBOM = new PurchaseBOMModel();
-			whbom.setPurchaseBOM(purchaseBOM);
-			PurchaseModel purchase = new PurchaseModel();
-			purchaseBOM.setPurchase(purchase);
-			purchase.setState(PurchaseState.ORDERED.ordinal());
-			
 			List<?> list = wareHouseBOMService.queryList(whbom);
 			model.addAttribute("list", list);
 			RequestContextUtils.setSessionAttribute(this, "whbom", whbom);
@@ -213,8 +206,8 @@ public class WareHouseController extends BaseController{
 	@RequestMapping("/list/bom/json")
 	@ResponseBody
     public JSONResponse listBOMJson(@RequestBody WareHouseBOMModel bom, Model model) {
-		List<BOMModel> list = wareHouseBOMService.queryList(bom);
-        return JSONResponse.success().put("boms", list);
+		List<WareHouseBOMModel> list = wareHouseBOMService.queryList(bom);
+        return JSONResponse.success().put("warehouseboms", list);
     }
 	
 	@RequestMapping("/list/machinepart/json")

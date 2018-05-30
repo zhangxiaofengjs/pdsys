@@ -10,7 +10,6 @@ import org.apache.ibatis.type.Alias;
 public class WareHouseBOMModel extends BaseModel{
 	private float num;
 	private BOMModel bom;
-	private PurchaseBOMModel purchaseBOM;
 	
 	public WareHouseBOMModel() {
 		this.bom = new BOMModel();
@@ -30,13 +29,5 @@ public class WareHouseBOMModel extends BaseModel{
 
 	public void setNum(float num) {
 		this.num = num;
-	}
-
-	public PurchaseBOMModel getPurchaseBOM() {
-		return purchaseBOM;
-	}
-
-	public void setPurchaseBOM(PurchaseBOMModel purchaseBOM) {
-		this.purchaseBOM = purchaseBOM;
 	}
 }

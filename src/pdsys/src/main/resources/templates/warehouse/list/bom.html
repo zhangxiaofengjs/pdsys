@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<div th:fragment="content(boms)">
+<div th:fragment="content(warehouseboms)">
 	<script th:src="@{/js/warehouse/list/bom.js}"></script> 
 	<nav style="border-radius:0px;margin-bottom:-1px;" class="navbar navbar-default">
 		<div class="container-fluid">
@@ -25,14 +25,12 @@
 				<th>名称</th>
 				<th>单位</th>
 				<th>在库数量</th>
-				<th>已下单数量</th>
 		    </tr>
 		</thead>
 		<tbody>
-		<tr th:each="bom : ${boms}"
-			th:with="whBom=${bom.wareHouseBOM},
-					 unit=${bom.unit},
-					 purchaseBom=${whBom != null?whBom.purchaseBOM:null}"
+		<tr th:each="whbom : ${warehouseboms}"
+			th:with="bom=${whbom.bom},
+					 unit=${bom.unit}"
 			th:rowid="${bom.id}">
 			<td>
 				<input type="checkbox" name="select" th:rowid="${bom.id}">
@@ -44,8 +42,7 @@
 			<td th:text="${bom.pn}"></td>
 			<td th:text="${bom.name + (bom.comment!=null and bom.comment!='' ? '(' + bom.comment + ')' :'')}"></td>
 			<td th:text="${unit.name}"></td>
-			<td th:text="${whBom != null ? whBom.num:'0'}" class="number"></td>
-			<td th:text="${purchaseBom != null ? purchaseBom.num:'0'}" class="number"></td>
+			<td th:text="${whbom.num}" class="number"></td>
 	    </tr>
 	  </tbody>
 	</table>

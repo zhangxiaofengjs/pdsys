@@ -26,9 +26,13 @@ public class PurchaseService {
 	private WareHouseEntryService wareHouseEntryService;
 	@Autowired
 	private WareHouseEntryBOMService wareHouseEntryBOMService;
+	@Autowired
+	PurchaseBOMService purchaseBOMService;
 	
+	@Transactional
 	public void add(PurchaseModel purchase) {
 		purchaseMapper.add( purchase );
+		purchaseBOMService.add(purchase.getPurchaseBOMs());
 	}
 	
 	@Transactional
