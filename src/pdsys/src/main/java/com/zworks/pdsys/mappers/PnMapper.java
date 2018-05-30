@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.zworks.pdsys.models.PnBOMRelModel;
 import com.zworks.pdsys.models.PnModel;
+import com.zworks.pdsys.models.PnPnClsRelModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -17,9 +19,9 @@ public interface PnMapper {
 	void add(PnModel pn);
 	void update(PnModel pn);
 
-	void addPnCls(PnModel pn);
+	void addPnCls(PnPnClsRelModel pn);
 	void deletePnCls(PnModel pn);
 
-	void addBOM(PnModel pn);
+	void addBOM(PnBOMRelModel bomRel);
 	void deleteBOM(PnModel pn);
 }

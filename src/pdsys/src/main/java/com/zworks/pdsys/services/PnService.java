@@ -49,9 +49,10 @@ public class PnService {
 			PnClsModel pnCls = pnClsRel.getPnCls();
 			pnClsService.add(pnCls);
 			pnClsService.addBOM(pnCls);
+			
+			pnClsRel.getFilterCond().put("pnId", pn.getId());
+			pnMapper.addPnCls(pnClsRel);
 		}
-
-		pnMapper.addPnCls(pn);
 	}
 
 	public boolean existsPnCls(PnModel pn) {
@@ -122,7 +123,10 @@ public class PnService {
 	}
 
 	public void addBOM(PnModel pn) {
-		pnMapper.addBOM(pn);
+		for(PnBOMRelModel bomRel : pn.getPnBOMRels()) {
+			bomRel.getFilterCond().put("pnId", pn.getId());
+			pnMapper.addBOM(bomRel);
+		}
 	}
 
 	public void deleteBOM(PnModel pn) {

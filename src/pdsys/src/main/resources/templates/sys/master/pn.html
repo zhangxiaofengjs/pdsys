@@ -36,11 +36,11 @@
 				<th rowspan="2">品目</th>
 				<th rowspan="2">名称</th>
 				<th rowspan="2">单位</th>
-				<th rowspan="2">子类</th>
+				<th rowspan="2">本体</th>
 				<th colspan="5">使用原包材</th>
 		    </tr>
 		    <tr>
-				<th>种类</th>
+				<th>K</th>
 				<th>名称</th>
 				<th>单位</th>
 				<th>使用数量</th>
@@ -82,8 +82,8 @@
 						<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pn.unit)}"></td>
 						<td th:rowspan="${#lists.size(pnBOMRels)}" th:if="${iterStat11.index == 0}">---</td>
 						<td th:switch="${bom != null ? bom.type : ''}">
-		    				<span th:case="0">原材</span>
-				  			<span th:case="1">包材</span>
+		    				<span th:case="0">原</span>
+				  			<span th:case="1">包</span>
 						</td>
 						<td th:text="${bom != null} ? ${bom.pn + ' ' + bom.name} : ''"></td>
 						<td th:text="${bom != null} ? ${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(bom.unit)} : ''"></td>
@@ -123,8 +123,8 @@
 							</td>
 							<td th:rowspan="${clsBomSize}" th:if="${iterStat3.index == 0}" th:text="${pnCls.name + '(' + pnClsRel.num + pn.unit.subName + ')'}"></td>
 							<td th:switch="${bom != null ? bom.type : ''}">
-			    				<span th:case="0">原材</span>
-					  			<span th:case="1">包材</span>
+			    				<span th:case="0">原</span>
+					  			<span th:case="1">包</span>
 							</td>
 							<td th:text="${bom != null} ? ${bom.pn + ' ' + bom.name} : ''"></td>
 							<td th:text="${bom != null} ? ${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(bom.unit)} : ''"></td>

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.zworks.pdsys.models.PnClsBOMRelModel;
 import com.zworks.pdsys.models.PnClsModel;
 
 /**
@@ -19,7 +20,7 @@ public interface PnClsMapper {
 
 	void delete(PnClsModel pnCls);
 
-	void addBOM(PnClsModel pnCls);
+	void addBOM(PnClsBOMRelModel bomRel);
 
 	void deleteBOM(PnClsModel pnCls);
 }

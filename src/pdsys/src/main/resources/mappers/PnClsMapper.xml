@@ -73,21 +73,19 @@
       	</selectKey>
 	</insert>
 	
-	<insert id="addBOM" parameterType="pnClsModel">
-		<foreach collection ="pnClsBOMRels" item="pnClsBOMRel" index= "index2" separator =";">
-			insert into pn_cls_bom_relation_tbl
-			(
-				c_cls_id, 
-				c_bom_id,
-				c_use_num
-			)
-			values
-	        (
-		        #{id},
-	            #{pnClsBOMRel.bom.id},
-	            #{pnClsBOMRel.useNum}
-	        )
-	    </foreach>
+	<insert id="addBOM" parameterType="pnClsBOMRelModel">
+		insert into pn_cls_bom_relation_tbl
+		(
+			c_cls_id, 
+			c_bom_id,
+			c_use_num
+		)
+		values
+        (
+	        #{filterCond.pnClsId},
+            #{bom.id},
+            #{useNum}
+        )
 	</insert>
 	
 	<delete id="deleteBOM" parameterType="pnClsModel">

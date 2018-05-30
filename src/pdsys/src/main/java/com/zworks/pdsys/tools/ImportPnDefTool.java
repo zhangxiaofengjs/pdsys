@@ -9,16 +9,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zworks.pdsys.mappers.PnMapper;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.PnBOMRelModel;
 import com.zworks.pdsys.models.PnClsBOMRelModel;
@@ -33,6 +34,7 @@ import com.zworks.pdsys.services.SupplierService;
 import com.zworks.pdsys.services.UnitService;
 
 @Component
+@Scope("prototype")
 public class ImportPnDefTool {
 	@Autowired
     private UnitService unitService;
@@ -49,13 +51,11 @@ public class ImportPnDefTool {
 	private Map<String, BOMModel> boms = new HashMap<String, BOMModel>();
 	private Map<String, SupplierModel> suppliers = new HashMap<String, SupplierModel>();
 
-	@Transactional
-	public boolean execute(String filePath){
-		if(!read(filePath)) {
-			return false;
-		}
+	@Transactional(rollbackFor=Exception.class)
+	public boolean execute(String filePath) throws InvalidFormatException, IOException{
+		read(filePath);
 		
-		try {
+//		try {//此处不可try 否则事务会不能正确回滚，应把exception交给spring
 			//import unit
 			for(String key : units.keySet()) {
 				unitService.add(units.get(key));
@@ -68,7 +68,9 @@ public class ImportPnDefTool {
 					
 			//import boms
 			for(String key : boms.keySet()) {
-				bomService.add(boms.get(key));
+				BOMModel bom = boms.get(key);
+				bomService.add(bom);
+				bomService.addSupplier(bom);
 			}
 			
 			//import pns
@@ -78,144 +80,129 @@ public class ImportPnDefTool {
 				pnService.addBOM(pn);
 				pnService.addPnCls(pn);
 			}
-		} catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//			return false;
+//		}
 		return true;
 	}
 	
-	public boolean read(String filePath){
+	public void read(String filePath) throws InvalidFormatException, IOException{
 		InputStream is = null;
-		try {
-			is = new FileInputStream(filePath);  
-		             
-			Workbook wb = WorkbookFactory.create(is);
-			Sheet sheet = wb.getSheet("data");
-			
-			PnModel pnObj = null;
-			for(int i = 3; i <= sheet.getLastRowNum(); i++) {
-				Row row = sheet.getRow(i);
-	  
-				int idx = 0;
-	           	String pn = getCellValue(row.getCell(idx++));
-	           	String name = getCellValue(row.getCell(idx++));
-	            String cls = getCellValue(row.getCell(idx++));
-	            String unitName = getCellValue(row.getCell(idx++));
-	            String unitSubName = getCellValue(row.getCell(idx++));
-	            String unitRatio = getCellValue(row.getCell(idx++));
-	            String clsUseNum = getCellValue(row.getCell(idx++));
-	            String bomType = getCellValue(row.getCell(idx++));
-	            String bomPn = getCellValue(row.getCell(idx++));
-	            String bomName = getCellValue(row.getCell(idx++));
-	            String bomUnitName = getCellValue(row.getCell(idx++));
-	            String bomUnitSubName = getCellValue(row.getCell(idx++));
-	            String bomUnitRatio = getCellValue(row.getCell(idx++));
-	            String clsBomUseNum = getCellValue(row.getCell(idx++));
-	            String bomPrice = getCellValue(row.getCell(idx++));
-	            String bomSupplier = getCellValue(row.getCell(idx++));
-	            
-	            //pn-unit
-	            UnitModel unit = null;
-	            if(!"".equals(unitName)) {
-		            unit = new UnitModel();
-		            unit.setName(unitName);
-		            unit.setSubName(unitSubName);
-		            unit.setRatio(Float.parseFloat(unitRatio));
-		            unit = addUnit(unit);
-	            }
-	            
-	            //bom-unit
-	            UnitModel bomUnit = new UnitModel();
-	            bomUnit.setName(bomUnitName);
-	            bomUnit.setSubName(bomUnitSubName);
-	            bomUnit.setRatio(Float.parseFloat(bomUnitRatio));
-	            bomUnit = addUnit(bomUnit);
-	
-	            //供应商
-	            SupplierModel supplier = new SupplierModel();
-	            supplier.setName(bomSupplier);
-	            supplier = addSuppliers(supplier);
-	            
-	            //BOM
-	            BOMModel bom = new BOMModel();
-	            if("原".equals(bomType)) {
-	            	bom.setType(0);
-	            } else if("包".equals(bomType)) {
-	            	bom.setType(1);
-	            } else {
-	            	throw new Exception(i + "行原包类型错误");
-	            }
-	            bom.setPn(bomPn);
-	            bom.setName(bomName);
-	            bom.setUnit(bomUnit);
-	            bom.setPrice(Float.parseFloat(bomPrice));
-	            List<SupplierModel> suppliers = new  ArrayList<SupplierModel>();
-	            suppliers.add(supplier);
-	            bom.setSuppliers(suppliers);
-	            bom = addBoms(bom);
-	            
-	            if(pn != null && !"".equals(pn) ) {
-	            	pnObj = new PnModel();
-	            	pnObj.setPn(pn);
-	            	pnObj.setName(name);
-	            	pnObj.setUnit(unit);
-	            }
-	            pnObj = addPns(pnObj); 
-	            
-	            if("--".equals(cls)) {
-	            	//共通包材
-	            	List<PnBOMRelModel> pnBOMRels = pnObj.getPnBOMRels();
-	            	if(pnBOMRels == null) {
-	            		pnBOMRels = new ArrayList<PnBOMRelModel>();
-	            		pnObj.setPnBOMRels(pnBOMRels);
-	            	}
-	
-	            	PnBOMRelModel pnBomRel = new PnBOMRelModel();
-	            	pnBomRel.setBom(bom);
-	            	pnBOMRels.add(pnBomRel);
-	            } else {
-	            	List<PnPnClsRelModel> pnClsRels = pnObj.getPnClsRels();
-	            	if(pnClsRels == null) {
-	            		pnClsRels = new ArrayList<PnPnClsRelModel>();
-	            		pnObj.setPnClsRels(pnClsRels);
-	            	}
-	            	
-	            	PnClsModel pnCls = new PnClsModel();
-	            	pnCls.setName(cls);
-	            	
-	            	PnPnClsRelModel pnClsRel = new PnPnClsRelModel();
-	            	pnClsRel.setNum(Float.parseFloat(clsUseNum));
-	            	pnClsRel.setPnCls(pnCls);
-	            	pnClsRel = addCls(pnClsRel, pnClsRels);
-	            	pnCls = pnClsRel.getPnCls();
-	            	
-	            	List<PnClsBOMRelModel> pnClsBomRels = pnCls.getPnClsBOMRels();
-	            	if(pnClsBomRels == null) {
-	            		pnClsBomRels = new ArrayList<PnClsBOMRelModel>();
-	            		pnCls.setPnClsBOMRels(pnClsBomRels);
-	            	}
-	            	
-	            	PnClsBOMRelModel pnClsBomRel = new PnClsBOMRelModel();
-	            	pnClsBomRel.setUseNum(Float.parseFloat(clsBomUseNum));
-	            	pnClsBomRel.setBom(bom);
-	            	pnClsBomRels.add(pnClsBomRel);
-	            }
-	        }
-		} catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		} finally {
-			if(is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-					return false;
-				}
-			}
-		}
-		return true;
+		
+		is = new FileInputStream(filePath);  
+	             
+		Workbook wb = WorkbookFactory.create(is);
+		Sheet sheet = wb.getSheet("data");
+		
+		PnModel pnObj = null;
+		for(int i = 3; i <= sheet.getLastRowNum(); i++) {
+			Row row = sheet.getRow(i);
+  
+			int idx = 0;
+           	String pn = getCellValue(row.getCell(idx++));
+           	String name = getCellValue(row.getCell(idx++));
+            String cls = getCellValue(row.getCell(idx++));
+            String unitName = getCellValue(row.getCell(idx++));
+            String unitSubName = getCellValue(row.getCell(idx++));
+            String unitRatio = getCellValue(row.getCell(idx++));
+            String clsNum = getCellValue(row.getCell(idx++));
+            String bomType = getCellValue(row.getCell(idx++));
+            String bomPn = getCellValue(row.getCell(idx++));
+            String bomName = getCellValue(row.getCell(idx++));
+            String bomUnitName = getCellValue(row.getCell(idx++));
+            String bomUnitSubName = getCellValue(row.getCell(idx++));
+            String bomUnitRatio = getCellValue(row.getCell(idx++));
+            String bomUseNum = getCellValue(row.getCell(idx++));
+            String bomPrice = getCellValue(row.getCell(idx++));
+            String bomSupplier = getCellValue(row.getCell(idx++));
+            
+            //pn-unit
+            UnitModel unit = null;
+            if(!"".equals(unitName)) {
+	            unit = new UnitModel();
+	            unit.setName(unitName);
+	            unit.setSubName(unitSubName);
+	            unit.setRatio(Float.parseFloat(unitRatio));
+	            unit = addUnit(unit);
+            }
+            
+            //bom-unit
+            UnitModel bomUnit = new UnitModel();
+            bomUnit.setName(bomUnitName);
+            bomUnit.setSubName(bomUnitSubName);
+            bomUnit.setRatio(Float.parseFloat(bomUnitRatio));
+            bomUnit = addUnit(bomUnit);
+
+            //供应商
+            SupplierModel supplier = new SupplierModel();
+            supplier.setName(bomSupplier);
+            supplier = addSuppliers(supplier);
+            
+            //BOM
+            BOMModel bom = new BOMModel();
+            if("原".equals(bomType)) {
+            	bom.setType(0);
+            } else {
+            	bom.setType(1);
+            }
+            bom.setPn(bomPn);
+            bom.setName(bomName);
+            bom.setUnit(bomUnit);
+            bom.setPrice(Float.parseFloat(bomPrice));
+            List<SupplierModel> suppliers = new  ArrayList<SupplierModel>();
+            suppliers.add(supplier);
+            bom.setSuppliers(suppliers);
+            bom = addBoms(bom);
+            
+            if(pn != null && !"".equals(pn) ) {
+            	pnObj = new PnModel();
+            	pnObj.setPn(pn);
+            	pnObj.setName(name);
+            	pnObj.setUnit(unit);
+            }
+            pnObj = addPns(pnObj); 
+            
+            if("--".equals(cls)) {
+            	//共通包材
+            	List<PnBOMRelModel> pnBOMRels = pnObj.getPnBOMRels();
+            	if(pnBOMRels == null) {
+            		pnBOMRels = new ArrayList<PnBOMRelModel>();
+            		pnObj.setPnBOMRels(pnBOMRels);
+            	}
+
+            	PnBOMRelModel pnBomRel = new PnBOMRelModel();
+            	pnBomRel.setUseNum(Float.parseFloat(bomUseNum));
+            	pnBomRel.setBom(bom);
+            	pnBOMRels.add(pnBomRel);
+            } else {
+            	List<PnPnClsRelModel> pnClsRels = pnObj.getPnClsRels();
+            	if(pnClsRels == null) {
+            		pnClsRels = new ArrayList<PnPnClsRelModel>();
+            		pnObj.setPnClsRels(pnClsRels);
+            	}
+            	
+            	PnClsModel pnCls = new PnClsModel();
+            	pnCls.setName(cls);
+            	
+            	PnPnClsRelModel pnClsRel = new PnPnClsRelModel();
+            	pnClsRel.setNum(Float.parseFloat(clsNum));
+            	pnClsRel.setPnCls(pnCls);
+            	pnClsRel = addCls(pnClsRel, pnClsRels);
+            	pnCls = pnClsRel.getPnCls();
+            	
+            	List<PnClsBOMRelModel> pnClsBomRels = pnCls.getPnClsBOMRels();
+            	if(pnClsBomRels == null) {
+            		pnClsBomRels = new ArrayList<PnClsBOMRelModel>();
+            		pnCls.setPnClsBOMRels(pnClsBomRels);
+            	}
+            	
+            	PnClsBOMRelModel pnClsBomRel = new PnClsBOMRelModel();
+            	pnClsBomRel.setUseNum(Float.parseFloat(bomUseNum));
+            	pnClsBomRel.setBom(bom);
+            	pnClsBomRels.add(pnClsBomRel);
+            }
+        }
 	}
 	
 	private PnModel addPns(PnModel pnObj) {

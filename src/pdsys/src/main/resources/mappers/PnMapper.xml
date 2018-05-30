@@ -37,8 +37,8 @@
         <association property="pnCls" resultMap="pnClsResultMap"/>
     </resultMap>
    	<resultMap id="pnBOMRelationResultMap" type="pnBOMRelModel" >
-        <id column="pn_bom_id" property="id" />
-        <result column="pn_bom_num" property="num" />    
+        <id column="pn_bom_rel_id" property="id" />
+        <result column="pn_bom_rel_use_num" property="useNum" />    
         <association property="bom" resultMap="bomResultMap" columnPrefix="pn_"/>
     </resultMap>
     
@@ -126,9 +126,12 @@
 			#{name},
 			#{unit.id}
 		)
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
 	</insert>
 	
-	<insert id="addPnCls" parameterType="pnModel" keyProperty="id">
+	<insert id="addPnCls" parameterType="pnPnClsRelModel" keyProperty="id">
 		insert into pn_cls_relation_tbl
 		(
 			c_pn_id, 
@@ -136,13 +139,11 @@
 			c_num
 		)
 		values
-		<foreach collection ="pnClsRels" item="pnClsRel" index= "index" separator =",">
         (
-	        #{id},
-            #{pnClsRel.pnCls.id},
-            #{pnClsRel.num}
+	        #{filterCond.pnId},
+            #{pnCls.id},
+            #{num}
         )
-        </foreach >
 	</insert>
 	
 	<delete id="deletePnCls" parameterType="pnModel">
@@ -155,21 +156,19 @@
         </foreach>
 	</delete>
 
-	<insert id="addBOM" parameterType="pnModel">
-		<foreach collection ="pnBOMRels" item="pnBOMRel" index= "index2" separator =";">
-			insert into pn_bom_relation_tbl
-			(
-				c_pn_id, 
-				c_bom_id,
-				c_use_num
-			)
-			values
-	        (
-		        #{id},
-	            #{pnBOMRel.bom.id},
-	            #{pnBOMRel.useNum}
-	        )
-	    </foreach>
+	<insert id="addBOM" parameterType="pnBOMRelModel">
+		insert into pn_bom_relation_tbl
+		(
+			c_pn_id, 
+			c_bom_id,
+			c_use_num
+		)
+		values
+        (
+	        #{filterCond.pnId},
+            #{bom.id},
+            #{useNum}
+        )
 	</insert>
 	
 	<delete id="deleteBOM" parameterType="pnModel">
