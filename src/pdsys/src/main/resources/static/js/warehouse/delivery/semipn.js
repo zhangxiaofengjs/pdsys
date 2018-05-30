@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	$("button[name='deliveryList']").click(function(){
 		var self = $(this);
-		PdSys.refresh('/warehouse/delivery/main/semipn?no=');
+		PdSys.refresh('/warehouse/delivery/main/semipn?no=&content=list');
 	});
 	
 	//新建出库单
@@ -22,7 +22,7 @@ $(document).ready(function(){
 					"name":"no",
 					"label":"出库单号",
 					"type":"text",
-					"value":"0-" + dateYYYYMMDD() + "-",
+					"value":"3-" + dateYYYYMMDD() + "-",
 					"required":"required"
 				},
 				{
@@ -52,7 +52,7 @@ $(document).ready(function(){
 			],
 	    	url : "/warehouse/delivery/add/delivery",
 	        success : function(data) {
-	        	$(location).attr('href', PdSys.url('/warehouse/delivery/main/semipn?no=' + data.delivery.no));
+	        	$(location).attr('href', PdSys.url('/warehouse/delivery/main/semipn?no=' + data.delivery.no+'&content=one'));
 	        },
 	        error: function(data) {
     			PdSys.alert(data.msg);
