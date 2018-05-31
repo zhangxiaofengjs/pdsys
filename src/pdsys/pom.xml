@@ -110,6 +110,13 @@
 		    <artifactId>spring-boot-configuration-processor</artifactId>  
 		    <optional>true</optional>  
 		</dependency>  
+
+        <!-- 支持 Excel操作 -->  
+		<dependency>  
+		    <groupId>org.apache.poi</groupId>  
+		    <artifactId>poi-ooxml</artifactId>  
+		    <version>3.9</version>  
+		</dependency>
 	</dependencies>
 
 	<build>

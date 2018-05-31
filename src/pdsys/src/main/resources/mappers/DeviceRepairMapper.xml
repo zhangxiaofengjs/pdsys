@@ -83,16 +83,6 @@
 		left join place_tbl as p on d.c_place_id = p.c_id 
 		left join user_tbl as us on d.c_user_id = us.c_id
 		<where>
-			<if test="device != null">
-				<choose>
-	                <when test="filterCond.fuzzyNoSearch != null and filterCond.fuzzyNoSearch">
-	                   	and d.c_no like '%${device.no}%'
-	                </when>
-	                <otherwise>
-						and d.c_no = #{device.no}
-	                </otherwise>
-	            </choose>
-			</if>
 			<if test="filterCond.start != null">
 				and dr.c_repair_date &gt;= #{filterCond.start}
 			</if>
@@ -101,7 +91,16 @@
 			</if>
 			
 		</where>
-		order by mt_code asc,d_no asc,p_name asc,mt_coment asc,dr_comment asc
+		order by 
+        <choose>
+	        <when test="filterCond.radioState!=null and filterCond.radioState=='1'.toString()">
+	           d_no asc,mt_code asc,p_name asc,mt_coment asc,dr_comment asc
+	        </when>
+	        <otherwise>
+	           mt_code asc,d_no asc,p_name asc,mt_coment asc,dr_comment asc
+	        </otherwise>
+	     </choose>
+		
 	</select>
 	
 	<insert id="add" parameterType="deviceRepairModel" useGeneratedKeys="true" keyProperty="id">

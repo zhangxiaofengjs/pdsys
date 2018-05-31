@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	$("button[name='entryList']").click(function(){
 		var self = $(this);
-		PdSys.refresh('/warehouse/entry/main/bom?no=');
+		PdSys.refresh('/warehouse/entry/main/bom?no=&content=list');
 	});
 
 	//新建入库单
@@ -52,7 +52,7 @@ $(document).ready(function(){
 			],
 	    	url : "/warehouse/entry/add/entry",
 	        success : function(data) {
-	        	$(location).attr('href', PdSys.url('/warehouse/entry/main/bom?no=' + data.entry.no));
+	        	$(location).attr('href', PdSys.url('/warehouse/entry/main/bom?no=' + data.entry.no+'&content=one'));
 	        },
 	        error: function(data) {
     			PdSys.alert(data.msg);

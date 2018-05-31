@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
-import com.zworks.pdsys.mappers.PnClsMapper;
 import com.zworks.pdsys.mappers.PnMapper;
-import com.zworks.pdsys.models.PnClsBOMRelModel;
+import com.zworks.pdsys.models.BOMModel;
+import com.zworks.pdsys.models.PnBOMRelModel;
 import com.zworks.pdsys.models.PnClsModel;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.PnPnClsRelModel;
@@ -20,7 +20,7 @@ public class PnService {
 	@Autowired
     private PnMapper pnMapper;
 	@Autowired
-	private PnClsMapper pnClsMapper;
+	private PnClsService pnClsService;
 	
 	public List<PnModel> queryList(PnModel pn) {
 		return pnMapper.queryList(pn);
@@ -47,10 +47,12 @@ public class PnService {
 		List<PnPnClsRelModel> clsRels = pn.getPnClsRels();
 		for(PnPnClsRelModel pnClsRel : clsRels) {
 			PnClsModel pnCls = pnClsRel.getPnCls();
-			pnClsMapper.add(pnCls);
+			pnClsService.add(pnCls);
+			pnClsService.addBOM(pnCls);
+			
+			pnClsRel.getFilterCond().put("pnId", pn.getId());
+			pnMapper.addPnCls(pnClsRel);
 		}
-		
-		pnMapper.addPnCls(pn);
 	}
 
 	public boolean existsPnCls(PnModel pn) {
@@ -82,7 +84,7 @@ public class PnService {
 		List<PnPnClsRelModel> clsRels = pn.getPnClsRels();
 		for(PnPnClsRelModel pnClsRel : clsRels) {
 			PnClsModel pnCls = pnClsRel.getPnCls();
-			pnClsMapper.delete(pnCls);
+			pnClsService.delete(pnCls);
 		}
 		pnMapper.deletePnCls(pn);
 	}
@@ -93,38 +95,26 @@ public class PnService {
 		p = queryOne(pn);
 		
 		if(p == null) {
-			throw new PdsysException("品番的ID或者品番未指定！", PdsysExceptionCode.ERROR_PARAM);
+			return false;
 		}
 
-		List<PnPnClsRelModel> clsRels = p.getPnClsRels();
-		List<PnPnClsRelModel> targetClsRels = pn.getPnClsRels();
+		List<PnBOMRelModel> bomRels = p.getPnBOMRels();
+		if(bomRels == null) {
+			return false;
+		}
+		List<PnBOMRelModel> targetBomRels = pn.getPnBOMRels();
+		if(targetBomRels == null) {
+			return false;
+		}
 		
-		for(PnPnClsRelModel clsRel : clsRels) {
-			PnClsModel pnCls = clsRel.getPnCls();
+		for(PnBOMRelModel bomRel : bomRels) {
+			BOMModel bom = bomRel.getBom();
 			
-			//寻找同样的子类
-			PnClsModel targetPnCls = null;
-			for(PnPnClsRelModel pnClsRel : targetClsRels) {
-				PnClsModel tmpPnCls = pnClsRel.getPnCls();
-				if(pnCls.getId() ==  tmpPnCls.getId()) {
-					targetPnCls = tmpPnCls;
-					break;
-				}
-			}
-			
-			if(targetPnCls == null) {
-				continue;//没有同样的子类，那么肯定没有一样的BOM
-			}
-			
-			List<PnClsBOMRelModel> bomRels = pnCls.getPnClsBOMRels();
-			List<PnClsBOMRelModel> targetBomRels = targetPnCls.getPnClsBOMRels();
-			
-			for(PnClsBOMRelModel bomRel : bomRels) {
-				for(PnClsBOMRelModel bRel : targetBomRels) {
-					if(bomRel.getBom().getId() == bRel.getBom().getId()) {
-						//同样子类下有同样的BOM
-						return true;
-					}
+			//寻找同样的
+			for(PnBOMRelModel tgtbomRel : targetBomRels) {
+				BOMModel tmpbom = tgtbomRel.getBom();
+				if(bom.getId() ==  tmpbom.getId()) {
+					return true;
 				}
 			}
 		}
@@ -133,7 +123,10 @@ public class PnService {
 	}
 
 	public void addBOM(PnModel pn) {
-		pnMapper.addBOM(pn);
+		for(PnBOMRelModel bomRel : pn.getPnBOMRels()) {
+			bomRel.getFilterCond().put("pnId", pn.getId());
+			pnMapper.addBOM(bomRel);
+		}
 	}
 
 	public void deleteBOM(PnModel pn) {

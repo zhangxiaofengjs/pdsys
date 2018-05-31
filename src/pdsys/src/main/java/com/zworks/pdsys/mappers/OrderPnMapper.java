@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.zworks.pdsys.business.beans.BOMDetailModel;
+import com.zworks.pdsys.business.beans.BOMUseNumBean;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
 
@@ -19,7 +19,7 @@ public interface OrderPnMapper {
 	
 	void delete(OrderPnModel orderPn);
 	
-	List<BOMDetailModel> queryBomList(OrderModel order);
+	List<BOMUseNumBean> queryBomList(OrderModel order);
 	
 	List<OrderPnModel> queryOrderPns(OrderPnModel orderPn);
 }

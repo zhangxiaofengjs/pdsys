@@ -138,9 +138,8 @@ public class OrderController {
 		model.addAttribute("order", order);
 		
 		List<OrderPnModel> list = null;
-		if( order!=null )
-		{
-			list = orderPnService.queryOrderPnList(order);
+		if( order!=null ) {
+			list = orderPnService.queryList(order);
 		}
 		model.addAttribute("orderPns", list);
 

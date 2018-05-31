@@ -31,7 +31,7 @@ public class OrderPnController {
 	@RequestMapping("/list/json")
 	@ResponseBody
 	public JSONResponse listJson(@RequestBody OrderModel order) {
-		List<OrderPnModel> list = orderPnService.queryOrderPnList(order);
+		List<OrderPnModel> list = orderPnService.queryList(order);
 		return JSONResponse.success().put("orderPns", list);
 	}
 	

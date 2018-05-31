@@ -29,16 +29,16 @@ public class JobShop {
 		//备份数据库
 		createJob(DataBaseBackupJob.class,
 				  "pdsys",
-				  "0 0 1 * * ?",//每天1:00执行
+				  "0 0 12 * * ?",//每天12:00执行
 				  "数据库备份计划Job",
 				  "数据库备份计划JobTrigger");
 		
 		//设备维护提醒
 		createJob(DeviceMaitenaceJob.class,
 				  "pdsys",
-				  "0 0 0 * * ? *",//每天00:00执行
-				  "设备维护计划Job",
-				  "设备维护计划JobTrigger");
+				  "0 0 10 * * ? *",//每天10:00执行
+				  "设备维护提醒计划Job",
+				  "设备维护提醒计划JobTrigger");
 	}
 	
 	private void createJob(Class<? extends Job> jobClass, String jobGroup, String cronExpression, String jobDescription, String triggerDescription) {

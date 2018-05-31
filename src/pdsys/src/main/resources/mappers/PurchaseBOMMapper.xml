@@ -28,8 +28,21 @@
     </resultMap>
 
 	<select id="queryList" resultMap="purchaseBomResultMap">
-		select pb.c_id as pb_id,
-		       pb.c_bom_id as pb_bom_id,
+		select 
+			<if test="filterCond.groupByBOM != null and filterCond.groupByBOM">
+			   MAX(pb.c_id) as pb_id,
+			   SUM(pb.c_num) as pb_num,
+		       MAX(pb.c_price) as pb_price,
+		       b.c_id as b_id,
+		       b.c_pn as b_pn,
+		       b.c_name as b_name,
+		       MAX(s.c_id) as s_id,
+		       MAX(s.c_name) as s_name,
+		       MAX(ss.c_id) as ss_id,
+		       MAX(ss.c_name) as ss_name
+			</if>
+			<if test="filterCond.groupByBOM == null or filterCond.groupByBOM==false">
+			   pb.c_id as pb_id,
 			   pb.c_num as pb_num,
 		       pb.c_price as pb_price,
 		       b.c_id as b_id,
@@ -39,7 +52,9 @@
 		       s.c_name as s_name,
 		       ss.c_id as ss_id,
 		       ss.c_name as ss_name
-		from purchase_bom_tbl as pb 
+		    </if>
+		from purchase_bom_tbl as pb
+		left join purchase_tbl as p on pb.c_purchase_id = p.c_id
 		left join bom_tbl as b on b.c_id = pb.c_bom_id
 		left join bom_supplier_tbl as bs on bs.c_bom_id = pb.c_bom_id
 		left join supplier_tbl as s on s.c_id = bs.c_supplier_id
@@ -48,7 +63,16 @@
 			<if test="id != null and id !=''">
 				and pb.c_id = #{id}
 			</if>
+			<if test="purchase != null and purchase.state > 0">
+				and p.c_state = #{purchase.state}
+			</if>
+			<if test="bom != null and bom.id > 0">
+				and b.c_id = #{bom.id}
+			</if>
 		</where>
+		<if test="filterCond.groupByBOM != null and filterCond.groupByBOM">
+			group by b.c_id
+		</if>
 	</select>
 	
    	<delete id="delete"  parameterType="purchaseBomModel">

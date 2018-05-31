@@ -36,6 +36,11 @@
         <result column="pn_pn_cls_num" property="num" />    
         <association property="pnCls" resultMap="pnClsResultMap"/>
     </resultMap>
+   	<resultMap id="pnBOMRelationResultMap" type="pnBOMRelModel" >
+        <id column="pn_bom_rel_id" property="id" />
+        <result column="pn_bom_rel_use_num" property="useNum" />    
+        <association property="bom" resultMap="bomResultMap" columnPrefix="pn_"/>
+    </resultMap>
     
 	<resultMap id="pnResultMap" type="pnModel" >
         <id column="pn_id" property="id" />  
@@ -43,6 +48,7 @@
         <result column="pn_name" property="name" />
         <association property="unit" resultMap="utResultMap"/>    
         <collection property="pnClsRels" ofType="pnPnClsRelModel" resultMap="pnPnClsRelationResultMap" />  
+        <collection property="pnBOMRels" ofType="pnBOMRelModel" resultMap="pnBOMRelationResultMap" />  
     </resultMap>
     
 	<select id="queryList" parameterType="pnModel" resultMap="pnResultMap">
@@ -53,6 +59,17 @@
 			   ut.c_name as ut_name,
 			   ut.c_sub_name as ut_sub_name,
 			   ut.c_ratio as ut_ratio,
+			   pn_bom_rel.c_id as pn_bom_rel_id,
+			   pn_bom_rel.c_use_num as pn_bom_rel_use_num,
+			   pn_bom.c_id as pn_bom_id,
+			   pn_bom.c_pn as pn_bom_pn,
+			   pn_bom.c_name as pn_bom_name,
+			   pn_bom.c_type as pn_bom_type,
+			   pn_bom.c_price as pn_bom_price,
+			   pn_bom_unit.c_id as pn_bom_ut_id,
+			   pn_bom_unit.c_name as pn_bom_ut_name,
+			   pn_bom_unit.c_sub_name as pn_bom_ut_sub_name,
+			   pn_bom_unit.c_ratio as pn_bom_ut_ratio,
 			   pn_pn_cls.c_id as pn_pn_cls_id,
 			   pn_pn_cls.c_num as pn_pn_cls_num,
 			   pn_cls.c_id as pn_cls_id,
@@ -70,6 +87,9 @@
 			   bom_unit.c_ratio as bom_ut_ratio
 		from pn_tbl as pn 
 	    left join unit_tbl as ut on pn.c_unit_id = ut.c_id
+	    left join pn_bom_relation_tbl as pn_bom_rel on pn.c_id = pn_bom_rel.c_pn_id
+	    left join bom_tbl as pn_bom on pn_bom_rel.c_bom_id = pn_bom.c_id
+	    left join unit_tbl as pn_bom_unit on pn_bom.c_unit_id = pn_bom_unit.c_id
 	    left join pn_cls_relation_tbl as pn_pn_cls on pn.c_id = pn_pn_cls.c_pn_id
 	    left join pn_cls_tbl as pn_cls on pn_pn_cls.c_cls_id = pn_cls.c_id
 	    left join pn_cls_bom_relation_tbl as pn_cls_bom_rel on pn_cls.c_id = pn_cls_bom_rel.c_cls_id
@@ -106,9 +126,12 @@
 			#{name},
 			#{unit.id}
 		)
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      		select LAST_INSERT_ID() as id
+      	</selectKey>
 	</insert>
 	
-	<insert id="addPnCls" parameterType="pnModel" keyProperty="id">
+	<insert id="addPnCls" parameterType="pnPnClsRelModel" keyProperty="id">
 		insert into pn_cls_relation_tbl
 		(
 			c_pn_id, 
@@ -116,13 +139,11 @@
 			c_num
 		)
 		values
-		<foreach collection ="pnClsRels" item="pnClsRel" index= "index" separator =",">
         (
-	        #{id},
-            #{pnClsRel.pnCls.id},
-            #{pnClsRel.num}
+	        #{filterCond.pnId},
+            #{pnCls.id},
+            #{num}
         )
-        </foreach >
 	</insert>
 	
 	<delete id="deletePnCls" parameterType="pnModel">
@@ -134,26 +155,32 @@
 			</where>
         </foreach>
 	</delete>
-	
-	<insert id="addBOM" parameterType="pnModel" keyProperty="id">
-		<foreach collection ="pnClsRels" item="pnClsRel" index= "index" separator =";">
-			<foreach collection ="pnClsRel.pnCls.pnClsBOMRels" item="pnClsBOMRel" index= "index2" separator =";">
-				insert into pn_cls_bom_relation_tbl
-				(
-					c_cls_id, 
-					c_bom_id,
-					c_use_num
-				)
-				values
-		        (
-			        #{pnClsRel.pnCls.id},
-		            #{pnClsBOMRel.bom.id},
-		            #{pnClsBOMRel.useNum}
-		        )
-		    </foreach>
-        </foreach>
-	</insert>
 
+	<insert id="addBOM" parameterType="pnBOMRelModel">
+		insert into pn_bom_relation_tbl
+		(
+			c_pn_id, 
+			c_bom_id,
+			c_use_num
+		)
+		values
+        (
+	        #{filterCond.pnId},
+            #{bom.id},
+            #{useNum}
+        )
+	</insert>
+	
+	<delete id="deleteBOM" parameterType="pnModel">
+		delete from pn_bom_relation_tbl
+		<where>
+			c_pn_id=#{id} and c_bom_id in
+			<foreach collection ="pnBOMRels" item="pnBOMRel" index= "index2" separator ="," open="(" close=")">
+				#{pnBOMRel.bom.id}
+			</foreach>
+		</where>
+    </delete>
+    
 	<update id="update">
     	update pn_tbl
 		set	c_pn = #{pn},
@@ -163,16 +190,4 @@
 			c_id = #{id}
 		</where>
     </update>
-
-	<delete id="deleteBOM" parameterType="pnModel">
-		<foreach collection ="pnClsRels" item="pnClsRel" index= "index" separator =";">
-			<foreach collection ="pnClsRel.pnCls.pnClsBOMRels" item="pnClsBOMRel" index= "index2" separator =";">
-				delete from pn_cls_bom_relation_tbl
-				<where>
-					c_cls_id=#{pnClsRel.pnCls.id} and
-					c_bom_id=#{pnClsBOMRel.bom.id}
-				</where>
-		    </foreach>
-        </foreach>
-    </delete>
 </mapper>

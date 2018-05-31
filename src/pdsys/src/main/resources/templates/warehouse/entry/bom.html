@@ -10,15 +10,16 @@
 	  			<span class="navbar-brand glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/entry/main/bom}" method="post">
-	 			<div class="form-group" th:if="${#lists.size(entries) != 1}">
+	 			<div class="form-group" th:if="${content=='list'}">
 				   <input type="text" class="form-control" name="no" id="no" th:value="${entry.no != null ? entry.no:''}" placeholder="入库单号">
+	 			   <input type="hidden" class="form-control" name="content" id="content" value="list">
 	 			</div>
-	 			<button type="submit" class="btn btn-sm btn-info" name="refresh" th:if="${#lists.size(entries) != 1}">查询</button>
+	 			<button type="submit" class="btn btn-sm btn-info" name="refresh" th:if="${content=='list'}">查询</button>
 	 			<div class="form-group" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_ENTRY_BOM)}">
-		 			<button type="button" class="btn btn-sm btn-info" name="addEntry" th:if="${#lists.size(entries) != 1}">新建入库单</button>
-		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntry" th:if="${#lists.size(entries) != 1}">删除入库单</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="addEntry" th:if="${content=='list'}">新建入库单</button>
+		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntry" th:if="${content=='list'}">删除入库单</button>
 	 			</div>
-	 			<button type="button" class="btn btn-sm btn-info" name="entryList" th:if="${#lists.size(entries) == 1}">入库单一览</button>
+	 			<button type="button" class="btn btn-sm btn-info" name="entryList" th:if="${content!='list'}">入库单一览</button>
 	 			<div style="display:inline-block;" th:if="${entry.id >0 }  and ${entry.state == 0}" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_ENTRY_BOM)}">
 	 				<button type="button" class="btn btn-sm btn-info" name="addEntryBOM">增加入库项目</button>
 		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntryBOM" >删除入库项目</button>
@@ -27,7 +28,7 @@
 			</form>
 		</div>
 	</nav>
-	<th:block th:if="${#lists.size(entries) != 1}">
+	<th:block th:if="${content=='list'}">
 		<!-- 显示一览 -->
 		<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
 			<thead>
@@ -43,7 +44,7 @@
 			<tbody>
 				<tr th:each="entryTgt : ${entries}">
 					<td><input type="checkbox" name="select" th:rowid="${entryTgt.id}"></td>
-					<td><a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/bom?fuzzyNo=false&no=' +${entryTgt.no}}"></a></td>
+					<td><a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/bom?content=one&no=' +${entryTgt.no}}"></a></td>
 					<td th:text="${entryTgt.user.name}"></td>
 					<td th:switch="${entryTgt.state}">
 			  			<span class="label label-success" th:case="0">计划中</span>
@@ -55,7 +56,7 @@
 			</tbody>
 		</table>
 	</th:block>
-	<th:block th:if="${#lists.size(entries) == 1}" th:each="entryTgt : ${entries}">
+	<th:block th:if="${content!='list'}" th:each="entryTgt : ${entries}">
 		<!-- 显示明细 -->
 		<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
 			<thead>

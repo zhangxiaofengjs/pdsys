@@ -22,8 +22,7 @@
 		 			<button type="button" class="btn btn-sm btn-info" id='editPn'>修改品目</button>
 		 			<button type="button" class="btn btn-sm btn-info" id='addPnCls'>添加子类</button>
 		 			<button type="button" class="btn btn-sm btn-info" id='deletePnCls'>删除子类</button>
-		 			<button type="button" class="btn btn-sm btn-info" id='addBOM'>添加原材</button>
-		 			<button type="button" class="btn btn-sm btn-info" id='addBOM1'>添加包材</button>
+		 			<button type="button" class="btn btn-sm btn-info" id='addBOM'>添加原包材</button>
 		 			<button type="button" class="btn btn-sm btn-info" id='deleteBOM'>删除原包材</button>
 		 		</div>
 			</form>
@@ -37,11 +36,11 @@
 				<th rowspan="2">品目</th>
 				<th rowspan="2">名称</th>
 				<th rowspan="2">单位</th>
-				<th rowspan="2">子类</th>
+				<th rowspan="2">本体</th>
 				<th colspan="5">使用原包材</th>
 		    </tr>
 		    <tr>
-				<th>种类</th>
+				<th>K</th>
 				<th>名称</th>
 				<th>单位</th>
 				<th>使用数量</th>
@@ -50,19 +49,20 @@
 		</thead>
 		<tbody>
 			<th:block th:each="pn, iterStat1: ${list}"
-				th:with="pnClsRels=${pn.pnClsRels},
-						pnRowSize=${T(com.zworks.pdsys.common.utils.ModelUtils).pnRowSize(pn)},
-						rowId=${pn.id}">
-				<!-- 未设定子类时,直接输出品目即可 -->
-				<th:block th:if="${#lists.isEmpty(pnClsRels)}">
-					<tr	th:rowid="${rowId}">
+				th:with="pnBOMRels=${pn.pnBOMRels},
+						pnClsRels=${pn.pnClsRels},
+						pnRowSize=${T(com.zworks.pdsys.common.utils.ModelUtils).pnRowSize(pn)}">
+				<!-- 先输出共通类 -->
+				<!-- 未设定共通类原包材，直接略 -->
+				<th:block th:if="${#lists.isEmpty(pnBOMRels)}">
+					<tr	th:rowid="${pn.id+'_-1'}">
 						<td>
-							<input type="checkbox" name="select" th:rowid="${rowId}">
+							<input type="checkbox" name="select" th:rowid="${pn.id+'_-1'}">
 						</td>
-						<td th:text="${pn.pn}"></td>
-						<td th:text="${pn.name}"></td>
-						<td th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pn.unit)}"></td>
-						<td></td>
+						<td th:rowspan="${pnRowSize}" th:text="${pn.pn}"></td>
+						<td th:rowspan="${pnRowSize}" th:text="${pn.name}"></td>
+						<td th:rowspan="${pnRowSize}" th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pn.unit)}"></td>
+						<td>----</td>
 						<td></td>
 						<td></td>
 						<td></td>
@@ -70,6 +70,29 @@
 						<td></td>
 					</tr>
 				</th:block>
+				<!-- 设定共通类原包材，输出共通类原包材 -->
+				<th:block th:each="pnBOMRel, iterStat11 : ${pnBOMRels}",
+						th:with="bom=${pnBOMRel.bom}">
+					<tr	th:rowid="${pn.id+'_-1_'+ bom.id}">
+						<td>
+							<input type="checkbox" name="select" th:rowid="${pn.id+'_-1_'+ bom.id}">
+						</td>
+						<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${pn.pn}"></td>
+						<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${pn.name}"></td>
+						<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pn.unit)}"></td>
+						<td th:rowspan="${#lists.size(pnBOMRels)}" th:if="${iterStat11.index == 0}">---</td>
+						<td th:switch="${bom != null ? bom.type : ''}">
+		    				<span th:case="0">原</span>
+				  			<span th:case="1">包</span>
+						</td>
+						<td th:text="${bom != null} ? ${bom.pn + ' ' + bom.name} : ''"></td>
+						<td th:text="${bom != null} ? ${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(bom.unit)} : ''"></td>
+						<td th:text="${#numbers.formatDecimal(pnBOMRel.useNum,1,3)}" class="number"></td>
+						<td th:text="${#numbers.formatDecimal(bom.price,1,3)}" class="number"></td>
+					</tr>
+				</th:block>
+				
+				<!-- 输出子类信息 -->
 				<th:block th:each="pnClsRel, iterStat2 : ${pnClsRels}"
 						th:with="pnCls=${pnClsRel.pnCls},
 								pnClsSize=${#lists.size(pnClsRels)},
@@ -81,9 +104,6 @@
 							<td>
 								<input type="checkbox" name="select" th:rowid="${rowId}">
 							</td>
-							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${pn.pn}"></td>
-							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${pn.name}"></td>
-							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pn.unit)}"></td>
 							<td th:text="${pnCls.name + '(' + pnClsRel.num + pn.unit.subName + ')'}"></td>
 							<td></td>
 							<td></td>
@@ -101,13 +121,10 @@
 							<td>
 								<input type="checkbox" name="select" th:rowid="${rowId}">
 							</td>
-							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0 and iterStat3.index == 0}" th:text="${pn.pn}"></td>
-							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0 and iterStat3.index == 0}" th:text="${pn.name}"></td>
-							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0 and iterStat3.index == 0}" th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pn.unit)}"></td>
 							<td th:rowspan="${clsBomSize}" th:if="${iterStat3.index == 0}" th:text="${pnCls.name + '(' + pnClsRel.num + pn.unit.subName + ')'}"></td>
 							<td th:switch="${bom != null ? bom.type : ''}">
-			    				<span th:case="0">原材</span>
-					  			<span th:case="1">包材</span>
+			    				<span th:case="0">原</span>
+					  			<span th:case="1">包</span>
 							</td>
 							<td th:text="${bom != null} ? ${bom.pn + ' ' + bom.name} : ''"></td>
 							<td th:text="${bom != null} ? ${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(bom.unit)} : ''"></td>

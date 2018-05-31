@@ -52,6 +52,7 @@ public class WareHouseDeliveryController {
     		@PathVariable(name="type" ,required=false)String type,
     		@RequestParam(name="no", required=false)String no,
     		@RequestParam(name="fuzzyNo", required=false)String fuzzyNo,
+    		@RequestParam(name="content", required=false)String content,
     		Model model) {
 
 		if(type == null) {
@@ -66,9 +67,14 @@ public class WareHouseDeliveryController {
 		}
 		RequestContextUtils.setSessionAttribute(this, "no" + type, no);
 		
+		if(content == null) {
+			content = RequestContextUtils.getSessionAttribute(this, "content" + content, "list");
+		}
+		RequestContextUtils.setSessionAttribute(this, "content" + content, content);
+		
 		List<?> list = null;
 		WareHouseDeliveryModel delivery = new WareHouseDeliveryModel();
-		delivery.getFilterCond().put("fuzzyNoSearch", !"false".equals(fuzzyNo));
+		delivery.getFilterCond().put("fuzzyNoSearch", content.equals("list"));
 		delivery.setNo(no);
 			
 		if(type.equals("pn")) {
@@ -83,13 +89,14 @@ public class WareHouseDeliveryController {
 			list = new ArrayList<WareHouseDeliveryModel>();
 		}
 		
-		if(list.size() == 1) {
+		if(!content.equals("list")&& list.size()>0) {
 			delivery = (WareHouseDeliveryModel)list.get(0);
 		}
 		
 		model.addAttribute("delivery", delivery);
 		model.addAttribute("deliveries", list);
 		model.addAttribute("type", type);
+		model.addAttribute("content", content);
 		return "warehouse/delivery/main";
     }
 	

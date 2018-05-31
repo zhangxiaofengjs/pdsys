@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.zworks.pdsys.business.beans.BOMDetailModel;
+import com.zworks.pdsys.business.beans.BOMUseNumBean;
 import com.zworks.pdsys.business.beans.PurchaseBOMListFromBean;
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.enumClass.PurchaseState;
@@ -57,15 +57,8 @@ public class PurchaseController {
 		//只计算生产中
 		order.setState(OrderState.PRODUCTING.ordinal());
 
-		List<BOMDetailModel> list = orderPnService.queryBomList(order);
-		//删除不需要显示的
-		for(int i = list.size()-1; i>-1;i--) {
-			BOMDetailModel bd = list.get(i);
-			if(bd.getBomNum() <= 0) {
-				list.remove(i);
-			}
-		}
-		model.addAttribute("boms", list);
+		List<BOMUseNumBean> list = orderPnService.queryBOMUseNumList(order);
+		model.addAttribute("list", list);
 		model.addAttribute("order", order);
 
         return "purchase/bomdetails";
@@ -77,58 +70,39 @@ public class PurchaseController {
 	@RequestMapping("/save")
 	@ResponseBody
 	public JSONResponse savePurchase(@RequestBody PurchaseModel purchase,
-									 @RequestParam(name="bomIds", required=false) int[] bomIds,
+									 @RequestParam(name="bomIds", required=false) Integer[] bomIds,
 									 @RequestParam(name="orderNo", required=false)String orderNo,Model model) {
 
 		JSONResponse JR = ValidatorUtils.doValidate(purchase);
 		if( JR!=null )
 			return JR;
 		
-		purchaseService.add(purchase);
-		int purchaseId = purchase.getId();
-		
 		//新增采购单详细
 		List<PurchaseBOMModel> purchaseBoms = new ArrayList<PurchaseBOMModel>();
 		OrderModel order = new OrderModel();
 		order.setNo(orderNo);
-		List<BOMDetailModel> list = orderPnService.queryBomList(order);
-		for(int i =0;i<list.size();i++)
-		{
-			BOMDetailModel BOMDetail = list.get(i);
-			for(int j =0;j<bomIds.length;j++)
-			{
-				int bomId = bomIds[j];
-				if(BOMDetail.getBomId()==bomId)
-				{
-					PurchaseBOMModel purchaseBom = new PurchaseBOMModel();
-					PurchaseModel p = new PurchaseModel();
-					p.setId(purchaseId);
-					//采购单号
-					purchaseBom.setPurchase(p);
-
-					BOMModel bom = bomService.queryById(bomId);
-					if(bom == null) {
-						bom = new BOMModel();
-					}
-					//原包材
-					purchaseBom.setBom(bom);
-					//数量
-					purchaseBom.setNum(BOMDetail.getBomNum());
-					//单价
-					purchaseBom.setPrice(BOMDetail.getBomPrice());
-					
-					//追加一条采购单详细的记录
-					purchaseBoms.add(purchaseBom);
-				}
-			}
+		order.setState(OrderState.PRODUCTING.ordinal());
+		order.getFilterCond().put("bomIds", bomIds);
+		List<BOMUseNumBean> list = orderPnService.queryBOMUseNumList(order);
+		for(int i =0;i<list.size();i++) {
+			BOMUseNumBean BOMDetail = list.get(i);
+			PurchaseBOMModel purchaseBom = new PurchaseBOMModel();
+			//采购单号
+			purchaseBom.setPurchase(purchase);
+			//原包材
+			purchaseBom.setBom(BOMDetail.getBom());
+			//数量
+			purchaseBom.setNum(BOMDetail.getUseNum());
+			//单价
+			purchaseBom.setPrice(BOMDetail.getBom().getPrice());
+			
+			//追加一条采购单详细的记录
+			purchaseBoms.add(purchaseBom);
 		}
+		purchase.setPurchaseBOMs(purchaseBoms);
+		purchaseService.add(purchase);
 		
-		if( purchaseBoms.size() > 0 ) {
-			purchaseBOMService.add(purchaseBoms);
-		}
-		
-		return JSONResponse.success("采购单追加成功！").put("purchaseId", purchaseId);
-
+		return JSONResponse.success("采购单追加成功！").put("purchaseId", purchase.getId());
 	}
 	
 	/**

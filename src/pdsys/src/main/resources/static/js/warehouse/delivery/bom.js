@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	$("button[name='deliveryList']").click(function(){
 		var self = $(this);
-		PdSys.refresh('/warehouse/delivery/main/bom?no=');
+		PdSys.refresh('/warehouse/delivery/main/bom?no=&content=list');
 	});
 	
 	//新建出库单
@@ -52,7 +52,7 @@ $(document).ready(function(){
 			],
 	    	url : "/warehouse/delivery/add/delivery",
 	        success : function(data) {
-	        	$(location).attr('href', PdSys.url('/warehouse/delivery/main/bom?no=' + data.delivery.no));
+	        	$(location).attr('href', PdSys.url('/warehouse/delivery/main/bom?no=' + data.delivery.no+'&content=one'));
 	        },
 	        error: function(data) {
     			PdSys.alert(data.msg);
@@ -84,12 +84,12 @@ $(document).ready(function(){
 				//将返回的值转化为Field规格数据,以供重新渲染
 				//做成选择分支
 				thisField.options = [];
-				data.boms.forEach(function(bom, idx) {
-					var wareHouseBOM = bom.wareHouseBOM; 
+				data.warehouseboms.forEach(function(whbom, idx) {
+					var bom = whbom.bom; 
 					thisField.options.push({
 						"value": bom.id,
 						"caption": M.bomName(bom),
-						"data": {"unitName":bom.unit.name,"num":(wareHouseBOM==null?"0":wareHouseBOM.num)}
+						"data": {"unitName":bom.unit.name,"num":whbom.num}
 					});
 				});
 			},

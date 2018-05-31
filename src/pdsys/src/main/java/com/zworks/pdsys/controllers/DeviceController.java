@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.DeviceMaitenaceMachinePartsBean;
@@ -61,7 +62,9 @@ public class DeviceController extends BaseController {
 	}
 	
 	@RequestMapping(value= {"/repair"})
-    public String showRepairInfo(DeviceRepairFormBean deviceRepairFormBean, Model model) {
+    public String showRepairInfo(@RequestParam(name="radioState", required=false)String radioState,
+    							 DeviceRepairFormBean deviceRepairFormBean, Model model)
+	{
 		
 		DeviceRepairModel deviceRepair = new DeviceRepairModel();
 		Date s = DateUtils.startOfDay(deviceRepairFormBean.getStart());
@@ -80,11 +83,25 @@ public class DeviceController extends BaseController {
 		deviceRepair.getFilterCond().put("start", s);
 		deviceRepair.getFilterCond().put("end", e);
 		
-		List<DeviceRepairModel> list = deviceService.showRepairInfos(deviceRepair);
+		//默认同故障统计
+		if(radioState == null) {
+			radioState = RequestContextUtils.getSessionAttribute(this, "radioState", "0");
+		}
+		RequestContextUtils.setSessionAttribute(this, "radioState", radioState);
+		
+		//同故障统计
+		deviceRepair.getFilterCond().put("radioState", radioState);
+		List<DeviceRepairModel> list1 = deviceService.showRepairInfos(deviceRepair);
 		
 		model.addAttribute("deviceRepair", deviceRepair);
 		model.addAttribute("formBean",deviceRepairFormBean);
-		model.addAttribute("list", list);
+		model.addAttribute("list1", list1);
+		
+		//同机器统计
+		deviceRepair.getFilterCond().put("radioState", "1");
+		List<DeviceRepairModel> list2 = deviceService.showRepairInfos(deviceRepair);
+		model.addAttribute("list2", list2);
+		
 		return "device/repair/list";
     }
 	

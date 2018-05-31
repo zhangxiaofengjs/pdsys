@@ -213,6 +213,10 @@ $(document).ready(function(){
 		}
 		var pnId = selIdArr[0];
 		var clsId = selIdArr[1];
+		if(clsId == -1) {
+			PdSys.alert("共通的子类不可删除");
+			return;
+		}
 		var dlg = new CommonDlg();
 		
 		dlg.showMsgDlg({
@@ -261,63 +265,84 @@ $(document).ready(function(){
 		}
 		var pnId = selIdArr[0];
 		var clsId = selIdArr[1];
-		
-		var type = 0;
-		if(self.attr("id") == "addBOM1") {
-			type = 1;
-		}
-		
+		var url = (clsId==-1?"/pn/addBOM":"/pncls/addBOM");
+		var bomIdName = (clsId==-1?"pnBOMRels[0].bom.id":"pnClsBOMRels[0].bom.id");
+		var useNumName = (clsId==-1?"pnBOMRels[0].useNum":"pnClsBOMRels[0].useNum");
 		var dlg = new CommonDlg();
 		var fields = [
 			{
 				"name":"id",
 				"type":"hidden",
-				"value":pnId
+				"value":(clsId==-1?pnId:clsId)
 			},
 			{
-				"name":"pnClsRels[0].pnCls.id",
-				"type":"hidden",
-				"value":clsId
-			},
-			{
-				"name":"pnClsRels[0].pnCls.pnClsBOMRels[0].bom.id",
-				"label": type == 0 ? "使用原材":"使用包材",
+				"name":"bomType",
+				"label": "种类",
 				"type":"select",
-				"value":"",
-				"ajax": true,
-				"ajaxData":{"type":type},
-				"url":"/bom/list/json",
-				"convertAjaxData" : function(thisField, data) {
-					thisField.options = [];
-					data.boms.forEach(function(bom, idx) {
-						thisField.options.push({
-							"value": bom.id,
-							"caption":bom.pn + " " + bom.name + "(" + bom.comment + ")",
-							"data":bom.unit.name
-						});
-					});
-				},
+				"options":[{
+					"value":0,
+					"caption":"原材"
+				},{
+					"value":1,
+					"caption":"包材"
+				}],
 				"afterBuild":function() {
 					var self = this;
 					var fieldElm = dlg.findFieldElem(self);
 					fieldElm.change(function() {
 						var selIndex = fieldElm[0].selectedIndex;
-						var val = self.options[selIndex].data;
-						dlg.rebuildFieldWithValue("pnClsRels[0].pnCls.pnClsBOMRels[0].bom.unit.name", val);
+						var type = self.options[selIndex].value;
+						var fieldBom = dlg.fieldByName(bomIdName);
+						fieldBom.ajaxData = {"type":type};
+						dlg.rebuildField(fieldBom);
 					});
 					
 					fieldElm.trigger("change");
 				},
 			},
 			{
-				"name":"pnClsRels[0].pnCls.pnClsBOMRels[0].useNum",
+				"name":bomIdName,
+				"label": "使用原包材",
+				"type":"select",
+				"value":"",
+				"ajax": true,
+				"depend":true,
+				"ajaxData":{"type":0},
+				"url":"/bom/list/json",
+				"convertAjaxData" : function(thisField, data) {
+					thisField.options = [];
+					data.boms.forEach(function(bom, idx) {
+						thisField.options.push({
+							"value": bom.id,
+							"caption":bom.pn + " " + bom.name + (bom.comment != "" ? "(" + bom.comment + ")" :""),
+							"data":M.unitName(bom.unit)
+						});
+					});
+				},
+				"afterBuild":function(t) {
+					if(t != "ajax") {
+						return;
+					}
+					var self = this;
+					var fieldElm = dlg.findFieldElem(self);
+					fieldElm.change(function() {
+						var selIndex = fieldElm[0].selectedIndex;
+						var val = self.options[selIndex].data;
+						dlg.rebuildFieldWithValue("unitName", val);
+					});
+					
+					fieldElm.trigger("change");
+				},
+			},
+			{
+				"name":useNumName,
 				"label":"使用数量",
 				"type":"number",
 				"value":"0",
 				"min":"0.00000000000000001"
 			},
 			{
-				"name":"pnClsRels[0].pnCls.pnClsBOMRels[0].bom.unit.name",
+				"name":"unitName",
 				"label":"单位",
 				"type":"label",
 				"value":""
@@ -328,7 +353,7 @@ $(document).ready(function(){
 			"target":"dlg_div",
 			"caption":"添加使用原包材",
 			"fields":fields,
-			"url":"/pn/addBOM",
+			"url":url,
 			"success": function(data) {
 				dlg.hide();
 				PdSys.success({
@@ -357,6 +382,22 @@ $(document).ready(function(){
 		var pnId = selIdArr[0];
 		var clsId = selIdArr[1];
 		var bomId = selIdArr[2];
+		var url = (clsId==-1?"/pn/deleteBOM":"/pncls/deleteBOM");
+		var bomIdName = (clsId==-1?"pnBOMRels[0].bom.id":"pnClsBOMRels[0].bom.id");
+		var useNumName = (clsId==-1?"pnBOMRels[0].useNum":"pnClsBOMRels[0].useNum");
+		var delAjaxData;
+		if(clsId==-1) {
+			delAjaxData = {
+				"id":pnId,
+				"pnBOMRels":[{"bom":{"id":bomId}}]
+			};
+		} else {
+			delAjaxData = {
+					"id":pnId,
+					"pnClsBOMRels":[{"bom":{"id":bomId}}]
+				};	
+		}
+	
 		var dlg = new CommonDlg();
 		
 		dlg.showMsgDlg({
@@ -366,24 +407,8 @@ $(document).ready(function(){
 			"type": "yesno",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/pn/deleteBOM",
-					"data": {
-						"id":pnId,
-						"pnClsRels":[ 
-							{
-								"pnCls": {
-									"id":clsId,
-									"pnClsBOMRels":[
-										{
-											"bom":{
-												"id":bomId
-											}
-										}
-									]
-								}
-							}
-						]
-					},
+					"url":url,
+					"data": delAjaxData,
 					"success": function(data) {
 						dlg.hide();
 						PdSys.success({

@@ -35,4 +35,20 @@ public class PnClsController {
 		pnClsService.add(pnCls);
 		return JSONResponse.success().put("pnCls", pnCls);
     }
+	
+	@RequestMapping(value="/addBOM")
+	@ResponseBody
+    public JSONResponse addBOM(@RequestBody PnClsModel pnCls) {
+		if(pnClsService.existsBOM(pnCls)) {
+			return JSONResponse.error("已经存在该原包材");
+		}
+		pnClsService.addBOM(pnCls);
+		return JSONResponse.success();
+    }
+	@RequestMapping(value="/deleteBOM")
+	@ResponseBody
+	public JSONResponse deleteBOM(@RequestBody PnClsModel pnCls) {
+		pnClsService.deleteBOM(pnCls);
+		return JSONResponse.success();
+	}
 }

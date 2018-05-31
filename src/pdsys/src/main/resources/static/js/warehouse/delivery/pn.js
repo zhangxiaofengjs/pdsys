@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	$("button[name='deliveryList']").click(function(){
 		var self = $(this);
-		PdSys.refresh('/warehouse/delivery/main/pn?no=');
+		PdSys.refresh('/warehouse/delivery/main/pn?no=&content=list');
 	});
 	
 	//新建出库单
@@ -52,7 +52,7 @@ $(document).ready(function(){
 			],
 	    	url : "/warehouse/delivery/add/delivery",
 	        success : function(data) {
-	        	$(location).attr('href', PdSys.url('/warehouse/delivery/main/pn?no=' + data.delivery.no));
+	        	$(location).attr('href', PdSys.url('/warehouse/delivery/main/pn?no=' + data.delivery.no+'&content=one'));
 	        },
 	        error: function(data) {
     			PdSys.alert(data.msg);

@@ -51,7 +51,7 @@ public class WareHouseEntryController {
     public String entryMain(
     		@PathVariable(name="type" ,required=false)String type,
     		@RequestParam(name="no", required=false)String no,
-    		@RequestParam(name="fuzzyNo", required=false)String fuzzyNo,
+    		@RequestParam(name="content", required=false)String content,
     		Model model) {
 
 		if(type == null) {
@@ -66,11 +66,16 @@ public class WareHouseEntryController {
 			no = RequestContextUtils.getSessionAttribute(this, "no" + type, null);
 		}
 		RequestContextUtils.setSessionAttribute(this, "no" + type, no);
+		
+		if(content == null) {
+			content = RequestContextUtils.getSessionAttribute(this, "content" + content, "list");
+		}
+		RequestContextUtils.setSessionAttribute(this, "content" + content, content);
 
 		List<?> list = null;
 		WareHouseEntryModel entry = new WareHouseEntryModel();
 		entry.setNo(no);
-		entry.getFilterCond().put("fuzzyNoSearch", !"false".equals(fuzzyNo));
+		entry.getFilterCond().put("fuzzyNoSearch", content.equals("list"));
 		
 		if(type.equals("bom")) {
 			list = wareHouseEntryService.queryListWithBOM(entry);
@@ -85,12 +90,13 @@ public class WareHouseEntryController {
 			list = new ArrayList<WareHouseEntryModel>();
 		}
 
-		if(list.size() == 1) {
+		if(!content.equals("list") && list.size()>0) {
 			entry = (WareHouseEntryModel)list.get(0);
 		}
 		model.addAttribute("entry", entry);
 		model.addAttribute("entries", list);
 		model.addAttribute("type", type);
+		model.addAttribute("content", content);
 		return "warehouse/entry/main";
     }
 	
