@@ -179,7 +179,7 @@ $(document).ready(function(){
 			"label":"出库数量",
 			"type":"number",
 			"value":"0",
-			"min":"0",
+			"min":"1",
 			"max":10000000,
 		},
 		{

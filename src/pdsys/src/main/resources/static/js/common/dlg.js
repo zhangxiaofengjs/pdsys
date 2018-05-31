@@ -149,7 +149,7 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 		if(f.ajax && !f.depend) { //需要ajax并且不依赖其他ajaxDepend的项目之间初始化
 			self.buildAjaxField(f);
 		} else {
-			if(f.afterBuild) {
+			if(!f.depend && f.afterBuild) {
 				(f.afterBuild)('afterInit');
 			}
 		}

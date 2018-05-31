@@ -114,7 +114,7 @@ $(document).ready(function(){
 					}
 				});
 			},
-			"afterBuild": function() {
+			"afterBuild": function(type) {
 				var self = this;
 				
 				var thisElem = dlg.fieldElem(self.type, self.name);
@@ -159,7 +159,10 @@ $(document).ready(function(){
 					});
 				});
 			},
-			"afterBuild": function() {
+			"afterBuild": function(type) {
+				if(type != "ajax")
+					return;
+				
 				var self = this;
 				
 				var orderElem = dlg.fieldElem(self.type, self.name);
@@ -213,7 +216,7 @@ $(document).ready(function(){
 			"name":"producedNum",
 			"label":"出库数量",
 			"type":"number",
-			"value":"0",
+			"value":"1",
 			"min":"0",
 			"max":10000000,
 		}];

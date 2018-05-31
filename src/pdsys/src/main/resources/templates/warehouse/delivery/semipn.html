@@ -48,7 +48,7 @@
 					<td th:text="${deliveryTgt.user.name}"></td>
 					<td th:switch="${deliveryTgt.state}">
 			  			<span class="label label-success" th:case="0">计划中</span>
-			  			<span class="label label-default" th:case="1">已入库</span>
+			  			<span class="label label-default" th:case="1">已出库</span>
 				    </td>
 					<td th:text="${#dates.format(deliveryTgt.deliveryTime,'yyyy-MM-dd')}"></td>
 					<td th:text="${deliveryTgt.comment}"></td>
@@ -71,7 +71,7 @@
 						<i th:if="${deliveryTgt.state == 2}" th:text="已删除" class="text-muted"></i>
 						<input type="hidden" id="delivery_id" name="delivery_id" th:value="${deliveryTgt.id}">
 						<span class="label label-success" th:if="${deliveryTgt.state==0}">计划中</span>
-			  			<span class="label label-default" th:if="${deliveryTgt.state==1}">已入库</span>
+			  			<span class="label label-default" th:if="${deliveryTgt.state==1}">已出库</span>
 					</th>
 					<th th:colspan="1">出库日期:&nbsp;<b th:text="((${deliveryTgt.deliveryTime} != null) ? ${#dates.format(deliveryTgt.deliveryTime, 'yyyy-MM-dd')} : '')"></b></th>
 					<th th:colspan="9">提交人:&nbsp;

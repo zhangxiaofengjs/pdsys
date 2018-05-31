@@ -46,7 +46,11 @@ public class PnClsService {
 	}
 	
 	public void addBOM(PnClsModel pnCls) {
-		for(PnClsBOMRelModel bomRel : pnCls.getPnClsBOMRels()) {
+		List<PnClsBOMRelModel> pnClsBOMRels = pnCls.getPnClsBOMRels();
+		if(pnClsBOMRels == null) {
+			return;
+		}
+		for(PnClsBOMRelModel bomRel : pnClsBOMRels) {
 			bomRel.getFilterCond().put("pnClsId", pnCls.getId());
 			pnClsMapper.addBOM(bomRel);
 		}
