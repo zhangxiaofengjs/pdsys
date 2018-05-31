@@ -19,6 +19,7 @@ USE `pdsys`;
 --  テーブル pdsys.bom_supplier_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `bom_supplier_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_bom_id` int(11) NOT NULL DEFAULT '0' COMMENT '原包材ID',
   `c_supplier_id` int(11) NOT NULL DEFAULT '0' COMMENT '供应商ID',
   PRIMARY KEY (`c_id`)
@@ -32,12 +33,13 @@ DELETE FROM `bom_supplier_tbl`;
 --  テーブル pdsys.bom_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `bom_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_pn` varchar(50) NOT NULL COMMENT 'BOM品番',
   `c_name` varchar(50) NOT NULL COMMENT 'BOM名',
   `c_unit_id` int(11) NOT NULL COMMENT '单位ID',
   `c_price` float NOT NULL DEFAULT '0' COMMENT '单价',
   `c_type` int(11) NOT NULL DEFAULT '0' COMMENT '原材(0) 包材(1)',
-  `c_comment` varchar(50) NOT NULL COMMENT '说明',
+  `c_comment` varchar(50) DEFAULT NULL COMMENT '说明',
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='BOM定义表';
 
@@ -49,6 +51,7 @@ DELETE FROM `bom_tbl`;
 --  テーブル pdsys.customer_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `customer_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_name` varchar(50) NOT NULL COMMENT '顾客名',
   `c_address` varchar(50) DEFAULT NULL COMMENT '地址',
   `c_phone` varchar(50) DEFAULT NULL COMMENT '联系方式',
@@ -63,20 +66,24 @@ DELETE FROM `customer_tbl`;
 --  テーブル pdsys.delivery_bom_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `delivery_bom_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_delivery_id` int(11) NOT NULL COMMENT '出库单ID',
   `c_ref_id` int(11) NOT NULL COMMENT '出库品目ID bom_tbl::c_id',
   `c_num` float NOT NULL DEFAULT '0' COMMENT '数量',
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='出库单表';
 
--- テーブル pdsys.delivery_bom_tbl: ~0 rows (約) のデータをダンプしています
+-- テーブル pdsys.delivery_bom_tbl: ~1 rows (約) のデータをダンプしています
 DELETE FROM `delivery_bom_tbl`;
 /*!40000 ALTER TABLE `delivery_bom_tbl` DISABLE KEYS */;
+INSERT INTO `delivery_bom_tbl` (`c_id`, `c_update_time`, `c_delivery_id`, `c_ref_id`, `c_num`) VALUES
+	(1, '2018-05-30 16:10:48', 3, 7, 2);
 /*!40000 ALTER TABLE `delivery_bom_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.delivery_machine_part_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `delivery_machine_part_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_delivery_id` int(11) NOT NULL COMMENT '出库单ID',
   `c_ref_id` int(11) NOT NULL COMMENT '出库品目ID',
   `c_num` float NOT NULL DEFAULT '0' COMMENT '数量',
@@ -91,6 +98,7 @@ DELETE FROM `delivery_machine_part_tbl`;
 --  テーブル pdsys.delivery_pn_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `delivery_pn_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_delivery_id` int(11) NOT NULL COMMENT '出库单ID',
   `c_ref_id` int(11) NOT NULL COMMENT '出库品目ID pn_tbl::c_id',
   `c_order_id` int(11) NOT NULL COMMENT '出库订单ID',
@@ -107,6 +115,7 @@ DELETE FROM `delivery_pn_tbl`;
 --  テーブル pdsys.delivery_semi_pn_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `delivery_semi_pn_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_delivery_id` int(11) NOT NULL COMMENT '出库单ID',
   `c_pn_id` int(11) NOT NULL COMMENT '出库品目ID pn_tbl::c_id',
   `c_pn_cls_id` int(11) NOT NULL COMMENT '出库子类ID',
@@ -143,6 +152,7 @@ DELETE FROM `delivery_tbl`;
 --  テーブル pdsys.device_repair_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `device_repair_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_device_id` int(11) NOT NULL COMMENT '设备ID',
   `c_trouble_id` int(11) NOT NULL COMMENT '故障ID',
   `c_repair_date` datetime DEFAULT NULL COMMENT '维修日期',
@@ -158,6 +168,7 @@ DELETE FROM `device_repair_tbl`;
 --  テーブル pdsys.device_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `device_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_no` varchar(50) DEFAULT NULL COMMENT '编号',
   `c_machine_id` int(11) DEFAULT NULL COMMENT '机器设备ID',
   `c_place_id` int(11) DEFAULT NULL COMMENT '使用地点',
@@ -175,6 +186,7 @@ DELETE FROM `device_tbl`;
 --  テーブル pdsys.entry_bom_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `entry_bom_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_entry_id` int(11) NOT NULL COMMENT '入库单ID',
   `c_ref_id` int(11) NOT NULL COMMENT '入库品目ID bom_tbl::c_id',
   `c_num` float NOT NULL DEFAULT '0' COMMENT '数量',
@@ -190,6 +202,7 @@ DELETE FROM `entry_bom_tbl`;
 --  テーブル pdsys.entry_machine_part_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `entry_machine_part_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_entry_id` int(11) NOT NULL COMMENT '入库单ID',
   `c_ref_id` int(11) NOT NULL COMMENT '入库品目ID machine_part_tbl::c_id',
   `c_num` float NOT NULL DEFAULT '0' COMMENT '数量',
@@ -204,6 +217,7 @@ DELETE FROM `entry_machine_part_tbl`;
 --  テーブル pdsys.entry_pn_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `entry_pn_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_entry_id` int(11) NOT NULL COMMENT '入库单ID',
   `c_ref_id` int(11) NOT NULL COMMENT '入库品目ID',
   `c_semi_produced_num` float NOT NULL DEFAULT '0' COMMENT '半成品数量(暂时没用，准备废弃）',
@@ -220,6 +234,7 @@ DELETE FROM `entry_pn_tbl`;
 --  テーブル pdsys.entry_semi_pn_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `entry_semi_pn_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_entry_id` int(11) NOT NULL COMMENT '入库单ID',
   `c_pn_id` int(11) NOT NULL COMMENT '入库品目ID',
   `c_pn_cls_id` int(11) NOT NULL COMMENT '入库品目子类ID',
@@ -257,6 +272,7 @@ DELETE FROM `entry_tbl`;
 --  テーブル pdsys.image_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `image_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT,
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_name` varchar(50) DEFAULT NULL,
   `c_url` varchar(50) DEFAULT NULL,
   `c_alt` varchar(50) DEFAULT NULL,
@@ -273,6 +289,7 @@ DELETE FROM `image_tbl`;
 --  テーブル pdsys.machine_part_relation_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `machine_part_relation_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT,
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_machine_id` int(11) NOT NULL COMMENT '设备ID',
   `c_machine_part_id` int(11) NOT NULL COMMENT '零件ID',
   `c_maitenace_part_num` float NOT NULL DEFAULT '0' COMMENT '保养所需备件数量',
@@ -289,6 +306,7 @@ DELETE FROM `machine_part_relation_tbl`;
 --  テーブル pdsys.machine_part_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `machine_part_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_pn` varchar(50) NOT NULL COMMENT '零件品番',
   `c_name` varchar(50) NOT NULL COMMENT '名称',
   `c_supplier_id` int(11) DEFAULT NULL COMMENT '供应商ID',
@@ -304,6 +322,7 @@ DELETE FROM `machine_part_tbl`;
 --  テーブル pdsys.machine_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `machine_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT,
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_pn` varchar(50) DEFAULT NULL,
   `c_name` varchar(50) DEFAULT NULL,
   `c_unit_id` int(11) DEFAULT NULL,
@@ -320,6 +339,7 @@ DELETE FROM `machine_tbl`;
 --  テーブル pdsys.machine_trouble_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `machine_trouble_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_code` varchar(50) NOT NULL COMMENT '故障CODE',
   `c_comment` varchar(50) NOT NULL COMMENT '故障描述',
   PRIMARY KEY (`c_id`),
@@ -334,6 +354,7 @@ DELETE FROM `machine_trouble_tbl`;
 --  テーブル pdsys.notice_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `notice_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_type` int(11) NOT NULL COMMENT '种类 设备保养(0) 采购单承认(1)',
   `c_content` varchar(200) NOT NULL COMMENT '内容',
   `c_create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -352,6 +373,7 @@ DELETE FROM `notice_tbl`;
 --  テーブル pdsys.order_pn_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `order_pn_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_order_id` int(11) NOT NULL COMMENT '订单号',
   `c_pn_id` int(11) NOT NULL COMMENT '品番ID',
   `c_num` float NOT NULL COMMENT '数量',
@@ -367,6 +389,7 @@ DELETE FROM `order_pn_tbl`;
 --  テーブル pdsys.order_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `order_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_no` varchar(50) NOT NULL COMMENT '订单编号',
   `c_order_date` date DEFAULT NULL COMMENT '下单时间',
   `c_ship_dead_date` date DEFAULT NULL COMMENT '交货期限',
@@ -387,6 +410,7 @@ DELETE FROM `order_tbl`;
 --  テーブル pdsys.place_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `place_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT,
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='地点';
@@ -396,12 +420,28 @@ DELETE FROM `place_tbl`;
 /*!40000 ALTER TABLE `place_tbl` DISABLE KEYS */;
 /*!40000 ALTER TABLE `place_tbl` ENABLE KEYS */;
 
+--  テーブル pdsys.pn_bom_relation_tbl の構造をダンプしています
+CREATE TABLE IF NOT EXISTS `pn_bom_relation_tbl` (
+  `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
+  `c_pn_id` int(11) NOT NULL COMMENT '制品ID',
+  `c_bom_id` int(11) NOT NULL COMMENT '原包材ID',
+  `c_use_num` float NOT NULL COMMENT '单位使用原包材量',
+  PRIMARY KEY (`c_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='pn，bom的关联表';
+
+-- テーブル pdsys.pn_bom_relation_tbl: ~0 rows (約) のデータをダンプしています
+DELETE FROM `pn_bom_relation_tbl`;
+/*!40000 ALTER TABLE `pn_bom_relation_tbl` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pn_bom_relation_tbl` ENABLE KEYS */;
+
 --  テーブル pdsys.pn_cls_bom_relation_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `pn_cls_bom_relation_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_cls_id` int(11) NOT NULL COMMENT '制品分类ID',
   `c_bom_id` int(11) NOT NULL COMMENT '原包材ID',
-  `c_use_num` float NOT NULL COMMENT '单位使用原包材量',
+  `c_use_num` float NOT NULL COMMENT 'PN子类个数所需使用原包材量',
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='pn，bom的关联表';
 
@@ -413,6 +453,7 @@ DELETE FROM `pn_cls_bom_relation_tbl`;
 --  テーブル pdsys.pn_cls_relation_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `pn_cls_relation_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_pn_id` int(11) NOT NULL COMMENT '品目ID',
   `c_cls_id` int(11) NOT NULL COMMENT '子类ID',
   `c_num` float NOT NULL DEFAULT '0' COMMENT '子类每单位数量',
@@ -427,6 +468,7 @@ DELETE FROM `pn_cls_relation_tbl`;
 --  テーブル pdsys.pn_cls_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `pn_cls_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_name` varchar(50) NOT NULL COMMENT '名称',
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='品番子分类';
@@ -439,6 +481,7 @@ DELETE FROM `pn_cls_tbl`;
 --  テーブル pdsys.pn_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `pn_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_pn` varchar(50) NOT NULL COMMENT '品番',
   `c_name` varchar(50) NOT NULL COMMENT '名称',
   `c_unit_id` int(11) NOT NULL COMMENT '单位ID',
@@ -453,6 +496,7 @@ DELETE FROM `pn_tbl`;
 --  テーブル pdsys.purchase_bom_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `purchase_bom_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_purchase_id` int(11) NOT NULL COMMENT '采购单号',
   `c_bom_id` int(11) NOT NULL COMMENT '原包材ID',
   `c_num` float NOT NULL COMMENT '数量',
@@ -469,6 +513,7 @@ DELETE FROM `purchase_bom_tbl`;
 --  テーブル pdsys.purchase_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `purchase_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_no` varchar(50) NOT NULL COMMENT '采购单号',
   `c_user_id` int(11) NOT NULL COMMENT '采购人',
   `c_state` int(11) NOT NULL COMMENT '状态 计划(0) 下单(1) 到货入库(2)',
@@ -487,6 +532,7 @@ DELETE FROM `purchase_tbl`;
 --  テーブル pdsys.supplier_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `supplier_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_name` varchar(50) NOT NULL COMMENT '供应商名',
   `c_address` varchar(100) DEFAULT NULL COMMENT '地址',
   `c_phone` varchar(50) DEFAULT NULL COMMENT '联系方式',
@@ -501,6 +547,7 @@ DELETE FROM `supplier_tbl`;
 --  テーブル pdsys.unit_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `unit_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_name` varchar(50) NOT NULL COMMENT '单位 例：箱',
   `c_sub_name` varchar(50) NOT NULL DEFAULT '0' COMMENT '子单位 例：个',
   `c_ratio` float NOT NULL DEFAULT '0' COMMENT '和子单位的换算，如1箱=100个',
@@ -515,21 +562,23 @@ DELETE FROM `unit_tbl`;
 --  テーブル pdsys.user_role_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `user_role_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT,
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_user_id` int(11) DEFAULT NULL COMMENT '用户ID',
   `c_role` char(50) DEFAULT NULL COMMENT '权限',
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户权限表';
 
--- テーブル pdsys.user_role_tbl: ~14 rows (約) のデータをダンプしています
+-- テーブル pdsys.user_role_tbl: ~1 rows (約) のデータをダンプしています
 DELETE FROM `user_role_tbl`;
 /*!40000 ALTER TABLE `user_role_tbl` DISABLE KEYS */;
-INSERT INTO `user_role_tbl` (`c_id`, `c_user_id`, `c_role`) VALUES
-	(1, 1, 'admin');
+INSERT INTO `user_role_tbl` (`c_id`, `c_update_time`, `c_user_id`, `c_role`) VALUES
+	(1, '2018-05-30 11:11:17', 1, 'admin');
 /*!40000 ALTER TABLE `user_role_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.user_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `user_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_no` varchar(50) NOT NULL COMMENT '工番',
   `c_name` varchar(50) NOT NULL COMMENT '名字',
   `c_password` varchar(100) DEFAULT NULL COMMENT '密码',
@@ -538,16 +587,17 @@ CREATE TABLE IF NOT EXISTS `user_tbl` (
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户定义表';
 
--- テーブル pdsys.user_tbl: ~3 rows (約) のデータをダンプしています
+-- テーブル pdsys.user_tbl: ~1 rows (約) のデータをダンプしています
 DELETE FROM `user_tbl`;
 /*!40000 ALTER TABLE `user_tbl` DISABLE KEYS */;
-INSERT INTO `user_tbl` (`c_id`, `c_no`, `c_name`, `c_password`, `c_phone`, `c_address`) VALUES
-	(1, 'admin', 'admin', '$2a$10$qbN23rlzj2.OoQv0F7kPfePrOVm7ehvdTzYMTZ54nKxXpYagbhqD.', NULL, NULL);
+INSERT INTO `user_tbl` (`c_id`, `c_update_time`, `c_no`, `c_name`, `c_password`, `c_phone`, `c_address`) VALUES
+	(1, '2018-05-30 11:11:23', 'admin', 'admin', '$2a$10$qbN23rlzj2.OoQv0F7kPfePrOVm7ehvdTzYMTZ54nKxXpYagbhqD.', NULL, NULL);
 /*!40000 ALTER TABLE `user_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.warehouse_bom_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `warehouse_bom_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_bom_id` int(11) NOT NULL DEFAULT '0' COMMENT 'BOMID',
   `c_num` float NOT NULL DEFAULT '0' COMMENT '数量',
   PRIMARY KEY (`c_id`)
@@ -561,6 +611,7 @@ DELETE FROM `warehouse_bom_tbl`;
 --  テーブル pdsys.warehouse_machine_part_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `warehouse_machine_part_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_machine_part_id` int(11) NOT NULL DEFAULT '0' COMMENT '机器备件ID',
   `c_num` float NOT NULL DEFAULT '0' COMMENT '数量',
   PRIMARY KEY (`c_id`)
@@ -574,6 +625,7 @@ DELETE FROM `warehouse_machine_part_tbl`;
 --  テーブル pdsys.warehouse_pn_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `warehouse_pn_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_pn_id` int(11) DEFAULT NULL COMMENT '订单条目ID',
   `c_semi_produced_num` float NOT NULL DEFAULT '0' COMMENT '半成品数量(暂时没用，准备废弃）',
   `c_produced_num` float NOT NULL DEFAULT '0' COMMENT '成品数量',
@@ -588,6 +640,7 @@ DELETE FROM `warehouse_pn_tbl`;
 --  テーブル pdsys.warehouse_semi_pn_tbl の構造をダンプしています
 CREATE TABLE IF NOT EXISTS `warehouse_semi_pn_tbl` (
   `c_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `c_update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日',
   `c_pn_id` int(11) NOT NULL COMMENT '订单条目ID',
   `c_pn_cls_id` int(11) NOT NULL DEFAULT '0' COMMENT '子类ID',
   `c_num` float NOT NULL DEFAULT '0' COMMENT '数量',
