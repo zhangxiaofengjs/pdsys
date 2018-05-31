@@ -11,7 +11,7 @@
 	  		</div>
 	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/entry/main/machinepart}" method="post">
 	 			<div class="form-group" th:if="${#lists.size(entries) != 1}">
-				   <input type="text" class="form-control" name="no" id="no" th:value="${entry.no != 0 ? entry.no:_}" placeholder="入库单号">
+				   <input type="text" class="form-control" name="no" id="no" th:value="${entry.no != null ? entry.no:''}" placeholder="入库单号">
 				   <input type="hidden" class="form-control" name="fuzzyNo" id="fuzzyNo" value="true">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info" name="refresh" th:if="${#lists.size(entries) != 1}">查询</button>

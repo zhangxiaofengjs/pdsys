@@ -54,7 +54,7 @@ $(document).ready(function(){
 	        success : function(data) {
 	        	if(data.success)
 	        	{
-	        		$(location).attr('href', PdSys.url('/warehouse/entry/main/machinepart?no=' + data.no));
+	        		$(location).attr('href', PdSys.url('/warehouse/entry/main/machinepart?no=' + data.entry.no));
 	        	}
 	        	else
 	        	{

@@ -22,7 +22,7 @@ $(document).ready(function(){
 					"name":"no",
 					"label":"出库单号",
 					"type":"text",
-					"value":"0-" + dateYYYYMMDD() + "-",
+					"value":"3-" + dateYYYYMMDD() + "-",
 					"required":"required"
 				},
 				{

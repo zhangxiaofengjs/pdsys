@@ -54,6 +54,7 @@ $(document).ready(function(){
 				"name":"supplier.id",
 				"label":"供应商",
 				"type":"select",
+				"required":"required",
 				"groupButtons": createSupplierGroupButtons({
 					"target":"supplier_dlg_div",
 					"success": function(action, data) {

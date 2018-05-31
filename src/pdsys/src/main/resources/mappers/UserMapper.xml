@@ -54,11 +54,13 @@
     	insert into user_tbl (
     		c_no,
     		c_name,
+    		c_password,
     		c_phone,
     		c_address)
     	values (
     		#{no},
     		#{name},
+    		#{password},
     		#{phone},
     		#{address}
     	)

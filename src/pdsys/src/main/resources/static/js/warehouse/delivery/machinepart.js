@@ -53,7 +53,7 @@ $(document).ready(function(){
 	    	url : "/warehouse/delivery/add/delivery",
 	        success : function(data) {
 	        	if(data.success) {
-	        		$(location).attr('href', PdSys.url('/warehouse/delivery/main/machinepart?no=' + data.no));
+	        		$(location).attr('href', PdSys.url('/warehouse/delivery/main/machinepart?no=' + data.delivery.no));
 	        	} else {
 	        		PdSys.alert(data.msg);
 	        	}

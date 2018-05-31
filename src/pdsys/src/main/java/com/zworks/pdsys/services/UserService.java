@@ -32,6 +32,7 @@ public class UserService {
 		return userMapper.queryList(filterObj);
 	}
 	public void add(UserModel filterObj) {
+		filterObj.setPassword(encoder.encode("123"));
 		userMapper.add(filterObj);
 	}
 	public void update(UserModel filterObj) {

@@ -16,6 +16,12 @@ $(document).ready(function(){
 				"required":"required",
 			},
 			{
+				"name":"password",
+				"label":"初始密码",
+				"type":"label",
+				"value":"123",
+			},
+			{
 				"name":"phone",
 				"label":"手机",
 				"type":"text",
