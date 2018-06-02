@@ -11,6 +11,9 @@ import org.apache.ibatis.type.Alias;
 @Alias("approvalNodeModel")
 public class ApprovalNodeModel extends BaseModel {
 	private ApprovalNodeModel nextNode;
+	private String name;
+	private List<UserModel> approvalUsers;
+	
 	public ApprovalNodeModel getNextNode() {
 		return nextNode;
 	}
@@ -23,13 +26,10 @@ public class ApprovalNodeModel extends BaseModel {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public List<UserModel> getUsers() {
-		return users;
+	public List<UserModel> getApprovalUsers() {
+		return approvalUsers;
 	}
-	public void setUsers(List<UserModel> users) {
-		this.users = users;
+	public void setApprovalUsers(List<UserModel> approvalUsers) {
+		this.approvalUsers = approvalUsers;
 	}
-	private String name;
-	private List<UserModel> users;
-
 }

@@ -262,5 +262,34 @@ $(function () {
 			}
 		});
 	});
-
+	
+	//提交审批
+	$("#approvalPurchase").click(function(){
+		var purchaseId = $('#purchaseId').val();
+		if(purchaseId < 1) {
+			return;
+		}
+		
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"msg_div",
+			"caption":"提交审批",
+			"type":"yesno",
+			"msg":"确定提交审批?",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/purchase/approval",
+					"data":{"id":purchaseId},
+					"success": function(data) {
+						dlg.hide();
+						PdSys.refresh();
+					},
+					"error": function(data) {
+						dlg.hide();
+						PdSys.alert(data.msg);
+					}
+				});
+			}
+		});
+	});
 });

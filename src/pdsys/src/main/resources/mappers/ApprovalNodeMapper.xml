@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.zworks.pdsys.mappers.ApprovalMapper">
+<mapper namespace="com.zworks.pdsys.mappers.ApprovalNodeMapper">
 	<resultMap id="userResultMap" type="userModel" >  
         <id column="u_id" property="id"/>  
         <result column="u_name" property="name"/>  
@@ -19,7 +19,13 @@
 			u.c_id as u_id,
 			u.c_name as u_name
 		from approval_node_tbl as an
-		left join approval_node_user_relation_tbl as an_u_rel on an.c_user_id=an_u_rel.c_node_id	
+		left join approval_node_user_relation_tbl as an_u_rel on an.c_id=an_u_rel.c_node_id	
 		left join user_tbl as u on an_u_rel.c_user_id=u.c_id	
+		<where>
+			<if test="id > 0">
+				and an.c_id = #{id}
+			</if>
+		</where>
 	</select>
+	
 </mapper>

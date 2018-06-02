@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.BOMUseNumBean;
 import com.zworks.pdsys.business.beans.PurchaseBOMListFromBean;
+import com.zworks.pdsys.common.enumClass.ApprovalState;
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.enumClass.PurchaseState;
 import com.zworks.pdsys.common.utils.DateUtils;
@@ -25,6 +26,8 @@ import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
 import com.zworks.pdsys.models.SupplierModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
+import com.zworks.pdsys.services.ApprovalInfoService;
+import com.zworks.pdsys.services.ApprovalService;
 import com.zworks.pdsys.services.BOMService;
 import com.zworks.pdsys.services.OrderPnService;
 import com.zworks.pdsys.services.PurchaseBOMService;
@@ -49,6 +52,8 @@ public class PurchaseController {
 
 	@Autowired
 	private WareHouseEntryService wareHouseEntryService;
+	@Autowired
+	private ApprovalInfoService approvalInfoService;
 	/**
 	 * 采购管理
 	 */
@@ -318,6 +323,9 @@ public class PurchaseController {
 		if(p.getState() != PurchaseState.ORDERED.ordinal()) {
 			return JSONResponse.error("该采购单还未下单");
 		}
+		if(approvalInfoService.needApproval(p.getApprovalInfo())) {
+			return JSONResponse.error("该采购单还未审批通过");
+		}
 		
 		WareHouseEntryModel entry = purchase.getWareHouseEntry();
 		JSONResponse res = wareHouseEntryService.checkAddable(entry);
@@ -329,4 +337,17 @@ public class PurchaseController {
 		purchaseService.entry(p);
 		return JSONResponse.success();
     }
+	
+	/**
+	 * 提交审批
+	 * @param purchase
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/approval")
+	@ResponseBody
+    public JSONResponse approval(@RequestBody PurchaseModel purchase, Model model) {
+		
+		return JSONResponse.success();
+	}
 }

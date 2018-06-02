@@ -7,6 +7,10 @@
         <result column="s_name" property="name"/>  
     </resultMap>
     
+	<resultMap id="approvalInfoResultMap" type="approvalInfoModel" >  
+        <id column="ai_id" property="id"/>  
+    </resultMap>
+    
     <resultMap id="unitResultMap" type="unitModel">
         <id column="u_id" property="id"/>
         <result column="u_name" property="name"/>
@@ -37,8 +41,10 @@
         <result column="p_purchase_date" property="purchaseDate"/> 
         <result column="p_arrive_date" property="arriveDate"/>  
         <result column="p_state" property="state"/> 
+        <result column="p_approval_state" property="approvalState"/> 
         <association property="user" resultMap="userResultMap"/>  
         <association property="wareHouseEntry" resultMap="wareHouseEntryResultMap"/>
+        <association property="approvalInfo" resultMap="approvalInfoResultMap"/>
         <collection property="purchaseBOMs" ofType="purchaseBOMModel" resultMap="purchaseBomResultMap" />
     </resultMap>
     
@@ -56,13 +62,13 @@
 		(
 		    `c_no`,
 			`c_user_id`,
-			`c_state`
+			c_approval_info_id
 		)
 		values
 		(
 		    #{no},
 			#{user.id},
-			0
+			#{approvalInfo.id}
 		)
 	</insert>
 	
@@ -108,7 +114,8 @@
 		       u.c_id as u_id,
 		       u.c_name as u_name,
 		       s.c_id as s_id,
-		       s.c_name as s_name
+		       s.c_name as s_name,
+		       ai.c_id as ai_id
 		from purchase_tbl as p
 		left join user_tbl as user on p.c_user_id = user.c_id 
 		left join entry_tbl as entry on entry.c_id = p.c_entry_id
@@ -116,6 +123,7 @@
 		left join bom_tbl as b on b.c_id = pb.c_bom_id
 		left join unit_tbl as u on u.c_id = b.c_unit_id
 		left join supplier_tbl as s on s.c_id = pb.c_supplier_id
+		left join approval_info_tbl as ai on ai.c_id = p.c_approval_info_id
 		<where>
 			<if test="id > 0">
 				and p.c_id = #{id}

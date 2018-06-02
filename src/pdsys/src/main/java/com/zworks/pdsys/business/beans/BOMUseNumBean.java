@@ -5,7 +5,8 @@ import org.apache.ibatis.type.Alias;
 import com.zworks.pdsys.models.BOMModel;
 
 /**
- * @author: ZHAI
+ * @author: zhangxiaofengjs@163.com
+ * @version: 2018/05/31
  */
 @Alias("bomUseNumBean")
 public class BOMUseNumBean {

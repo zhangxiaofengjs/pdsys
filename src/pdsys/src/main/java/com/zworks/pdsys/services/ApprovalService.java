@@ -1,32 +1,39 @@
 package com.zworks.pdsys.services;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zworks.pdsys.mappers.ApprovalMapper;
-import com.zworks.pdsys.mappers.BOMMapper;
+import com.zworks.pdsys.common.enumClass.ApprovalState;
+import com.zworks.pdsys.mappers.ApprovalNodeMapper;
 import com.zworks.pdsys.models.ApprovalNodeModel;
-import com.zworks.pdsys.models.BOMModel;
-import com.zworks.pdsys.models.SupplierModel;
 
 @Service
 public class ApprovalService {
 	@Autowired
-    private ApprovalMapper approvalMapper;
+    private ApprovalNodeMapper approvalMapper;
+	private Map<Integer, ApprovalNodeModel> approvalCacheMap = new HashMap<Integer, ApprovalNodeModel>();
 
-	public ApprovalNodeModel queryOne(ApprovalNodeModel node) {
-		List<ApprovalNodeModel> list = queryList(node);
-		//TODO 现在默认数据库只设定一条数据，所以正常工作
-		if(list.size() == 1) {
-			return list.get(0);
+	public ApprovalNodeModel queryById(Integer id) {
+		ApprovalNodeModel node = approvalCacheMap.get(id);
+		if(node == null) {
+			node = new ApprovalNodeModel();
+			node.setId(id);
+			List<ApprovalNodeModel> list = queryList(node);
+			if(list.size() == 1) {
+				node = list.get(0);
+				approvalCacheMap.put(id, node);
+			}
 		}
-		return null;
+		return node;
 	}
 	
 	public List<ApprovalNodeModel> queryList(ApprovalNodeModel node) {
-		return approvalMapper.queryList(node);
+		//TODO 后续的节点也应该一下子搜索出来
+		List<ApprovalNodeModel> list = approvalMapper.queryList(node);
+		return list;
 	}
-	
 }

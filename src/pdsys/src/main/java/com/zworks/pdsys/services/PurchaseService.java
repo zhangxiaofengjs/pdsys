@@ -7,10 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zworks.pdsys.common.annotations.ResetApprovalInfo;
+import com.zworks.pdsys.common.enumClass.ApprovalState;
 import com.zworks.pdsys.common.enumClass.PurchaseState;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.mappers.PurchaseBOMMapper;
 import com.zworks.pdsys.mappers.PurchaseMapper;
+import com.zworks.pdsys.models.ApprovalInfoModel;
+import com.zworks.pdsys.models.ApprovalNodeModel;
 import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
@@ -30,11 +34,20 @@ public class PurchaseService {
 	PurchaseBOMService purchaseBOMService;
 	@Autowired
 	ApprovalService approvalService;
+	@Autowired
+	ApprovalInfoService approvalInfoService;
 	
 	@Transactional
 	public void add(PurchaseModel purchase) {
 		//TODO 现在默认设定为仅有的一条批复节点，以后其他需要承认需要界面设定
-		purchase.setApprovalNode(approvalService.queryOne(null));
+		ApprovalNodeModel node = approvalService.queryList(null).get(0);
+		
+		ApprovalInfoModel info = new ApprovalInfoModel();
+		info.setNode(node);
+		info.setState(ApprovalState.WORKING.ordinal());
+		approvalInfoService.add(info);
+
+		purchase.setApprovalInfo(info);
 		purchaseMapper.add( purchase );
 		purchaseBOMService.add(purchase.getPurchaseBOMs());
 	}
@@ -51,6 +64,7 @@ public class PurchaseService {
 		}
 	}
 
+	@ResetApprovalInfo
 	public PurchaseModel queryOne(PurchaseModel purchase) {
 		List<PurchaseModel> ps = queryList(purchase);
 		if(ps.size() == 1) {
@@ -62,7 +76,8 @@ public class PurchaseService {
 	public void update(PurchaseModel purchase) {
 		purchaseMapper.update(purchase);
 	}
-	
+
+	@ResetApprovalInfo
 	public List<PurchaseModel> queryList(PurchaseModel purchase) {
 		List<PurchaseModel> purchases = purchaseMapper.queryList(purchase);
 		return purchases;
