@@ -20,7 +20,7 @@ import com.zworks.pdsys.services.OrderService;
 
 @Controller
 @RequestMapping("/order")
-public class OrderController {
+public class OrderController extends BaseController{
 	
 	@Autowired
 	OrderService orderService;

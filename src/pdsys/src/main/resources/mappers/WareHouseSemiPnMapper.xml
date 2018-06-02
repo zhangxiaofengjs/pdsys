@@ -5,6 +5,7 @@
 	<resultMap id="unitResultMap" type="unitModel" >  
         <id column="unit_id" property="id"/>  
         <result column="unit_name" property="name"/>  
+        <result column="unit_ratio" property="ratio"/>  
         <result column="unit_sub_name" property="subName"/>  
     </resultMap>
     <resultMap id="pnResultMap" type="pnModel" >  
@@ -42,6 +43,7 @@
 			pnClsRel.c_num AS pn_cls_rel_num, 
 			unit.c_id AS unit_id, 
 			unit.c_name AS unit_name,
+			unit.c_ratio AS unit_ratio,
 			unit.c_sub_name AS unit_sub_name
 		from warehouse_semi_pn_tbl AS wh_pn
 		left join pn_tbl AS pn on wh_pn.c_pn_id = pn.c_id
