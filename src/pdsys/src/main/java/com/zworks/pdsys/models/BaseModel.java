@@ -17,6 +17,8 @@ public class BaseModel {
 	private Date updateTime;
 	private HashMap<String, Object> filterCond = new HashMap<String, Object>();
 	private PageModel page;
+	private ApprovalNodeModel approvalNode;
+	private int approvalState;
 	
 	public Date getUpdateTime() {
 		return updateTime;
@@ -74,5 +76,21 @@ public class BaseModel {
 
 	public void setPage(PageModel page) {
 		this.page = page;
+	}
+
+	public ApprovalNodeModel getApprovalNode() {
+		return approvalNode;
+	}
+
+	public void setApprovalNode(ApprovalNodeModel approvalNode) {
+		this.approvalNode = approvalNode;
+	}
+
+	public int getApprovalState() {
+		return approvalState;
+	}
+
+	public void setApprovalState(int approvalState) {
+		this.approvalState = approvalState;
 	}
 }

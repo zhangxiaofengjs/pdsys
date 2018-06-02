@@ -28,9 +28,13 @@ public class PurchaseService {
 	private WareHouseEntryBOMService wareHouseEntryBOMService;
 	@Autowired
 	PurchaseBOMService purchaseBOMService;
+	@Autowired
+	ApprovalService approvalService;
 	
 	@Transactional
 	public void add(PurchaseModel purchase) {
+		//TODO 现在默认设定为仅有的一条批复节点，以后其他需要承认需要界面设定
+		purchase.setApprovalNode(approvalService.queryOne(null));
 		purchaseMapper.add( purchase );
 		purchaseBOMService.add(purchase.getPurchaseBOMs());
 	}
