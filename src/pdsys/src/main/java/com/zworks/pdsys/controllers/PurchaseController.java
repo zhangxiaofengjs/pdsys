@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ import com.zworks.pdsys.common.enumClass.PurchaseState;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
+import com.zworks.pdsys.models.ApprovalInfoModel;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.PurchaseBOMModel;
@@ -27,7 +29,6 @@ import com.zworks.pdsys.models.PurchaseModel;
 import com.zworks.pdsys.models.SupplierModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.services.ApprovalInfoService;
-import com.zworks.pdsys.services.ApprovalService;
 import com.zworks.pdsys.services.BOMService;
 import com.zworks.pdsys.services.OrderPnService;
 import com.zworks.pdsys.services.PurchaseBOMService;
@@ -195,27 +196,6 @@ public class PurchaseController {
     }
 	
 	/**
-	 * 下单
-	 */
-	@RequestMapping("/updateState")
-	@ResponseBody
-	public JSONResponse updatePurchaseState(@RequestBody PurchaseModel purchase) {
-		PurchaseModel p = purchaseService.queryOne(purchase);
-		if(p == null) {
-			return JSONResponse.error("采购单不存在！");
-		}
-
-		if( purchaseService.checkSupplierIdIsNull(p) )
-		{
-			return JSONResponse.error("请先进行修改操作，选择一个供应商！");
-		}
-		p.setState(PurchaseState.ORDERED.ordinal());
-		p.setPurchaseDate(DateUtils.getCurrentDate());
-		purchaseService.update(p);
-		return JSONResponse.success("下单成功！");
-	}
-	
-	/**
 	 * 原包材
 	 */
 	@RequestMapping("/get/purchasebom")
@@ -323,9 +303,6 @@ public class PurchaseController {
 		if(p.getState() != PurchaseState.ORDERED.ordinal()) {
 			return JSONResponse.error("该采购单还未下单");
 		}
-		if(approvalInfoService.needApproval(p.getApprovalInfo())) {
-			return JSONResponse.error("该采购单还未审批通过");
-		}
 		
 		WareHouseEntryModel entry = purchase.getWareHouseEntry();
 		JSONResponse res = wareHouseEntryService.checkAddable(entry);
@@ -344,10 +321,58 @@ public class PurchaseController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/approval")
+	@RequestMapping("/approval/request")
 	@ResponseBody
-    public JSONResponse approval(@RequestBody PurchaseModel purchase, Model model) {
+    public JSONResponse approvalRequest(@RequestBody PurchaseModel purchase, Model model) {
+		PurchaseModel p = purchaseService.queryOne(purchase);
+		if(p == null) {
+			return JSONResponse.error("该采购单不存在，请刷新重试");
+		}
+		if( purchaseService.checkSupplierIdIsNull(p) )
+		{
+			return JSONResponse.error("请先进行修改操作，选择一个供应商！");
+		}
+		if(p.getState() != PurchaseState.PLANNING.ordinal()) {
+			return JSONResponse.error("该采购单不是在计划中状态");
+		}
+		ApprovalInfoModel approvalInfo = p.getApprovalInfo();
+		if(approvalInfo.getState() != ApprovalState.WORKING.ordinal() &&
+				approvalInfo.getState() != ApprovalState.NG.ordinal()) {
+			return JSONResponse.error("该采购单已经提交过或者已经批复");
+		}
 		
+		approvalInfoService.requestApproval(approvalInfo);
 		return JSONResponse.success();
+	}
+	
+	/**
+	 * 审批后下单
+	 */
+	@RequestMapping("/approval/response/{result}")
+	@ResponseBody
+	public JSONResponse approvalResponse(@PathVariable(name="result" ,required=true)String result, @RequestBody PurchaseModel purchase) {
+		PurchaseModel p = purchaseService.queryOne(purchase);
+		if(p == null) {
+			return JSONResponse.error("采购单不存在！");
+		}
+		
+		if(p.getState() != PurchaseState.PLANNING.ordinal()) {
+			return JSONResponse.error("该采购单不是在计划中状态");
+		}
+		ApprovalInfoModel approvalInfo = p.getApprovalInfo();
+		if(!approvalInfoService.needApproval(approvalInfo)) {
+			return JSONResponse.error("该采购单已经提交过或者已经批复/驳回");
+		}
+		if(!approvalInfoService.isLoginUserApprovalable(approvalInfo)) {
+			return JSONResponse.error("您没有权限进行审批");
+		}
+		
+		if(approvalInfoService.responseApproval(approvalInfo, "ok".equals(result))) {
+			p.setState(PurchaseState.ORDERED.ordinal());
+			p.setPurchaseDate(DateUtils.getCurrentDate());
+			purchaseService.update(p);
+			return JSONResponse.success("审批并且下单成功！");
+		}
+		return JSONResponse.success("操作成功！");
 	}
 }

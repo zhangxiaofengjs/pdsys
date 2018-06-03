@@ -1,6 +1,7 @@
 package com.zworks.pdsys.models;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import org.apache.ibatis.type.Alias;
 
@@ -11,10 +12,13 @@ import org.apache.ibatis.type.Alias;
 @Alias("approvalInfoModel")
 public class ApprovalInfoModel {
 	private int id;
+	private int type;
 	private ApprovalNodeModel node;
 	private UserModel approvalUser;
+	private UserModel requestUser;
 	private Date updateTime;
 	private int state;
+	private HashMap<String, Object> filterCond = new HashMap<String, Object>();
 	
 	public ApprovalNodeModel getNode() {
 		return node;
@@ -45,5 +49,23 @@ public class ApprovalInfoModel {
 	}
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+	public HashMap<String, Object> getFilterCond() {
+		return filterCond;
+	}
+	public void setFilterCond(HashMap<String, Object> filterCond) {
+		this.filterCond = filterCond;
+	}
+	public UserModel getRequestUser() {
+		return requestUser;
+	}
+	public void setRequestUser(UserModel requestUser) {
+		this.requestUser = requestUser;
+	}
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
 	}
 }

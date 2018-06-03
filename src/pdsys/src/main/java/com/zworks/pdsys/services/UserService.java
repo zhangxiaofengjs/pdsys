@@ -12,6 +12,7 @@ import com.zworks.pdsys.common.enumClass.ROLE;
 import com.zworks.pdsys.common.security.PdSysPasswordEncoder;
 import com.zworks.pdsys.mappers.UserMapper;
 import com.zworks.pdsys.mappers.UserRoleMapper;
+import com.zworks.pdsys.models.ApprovalNodeModel;
 import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.models.UserRoleModel;
 
@@ -27,6 +28,10 @@ public class UserService {
 	private UserRoleMapper userRoleMapper;
 	@Autowired
 	PdSysPasswordEncoder encoder;
+	@Autowired
+	ApprovalInfoService approvalInfoService;
+	@Autowired
+	ApprovalService approvalNodeService;
 	
 	public List<UserModel> queryList(UserModel filterObj) {
 		return userMapper.queryList(filterObj);
@@ -88,5 +93,24 @@ public class UserService {
 		}
 
 		update(u);
+		
+		//TODO 目前批准者没有设定的地方，在这里设定,以后多节点或者有设定批准流程的地方，应该改动到那边
+		List<ApprovalNodeModel> list = approvalNodeService.queryList(null);
+		ApprovalNodeModel node = null;
+		if(list == null || list.size() == 0) {
+			node = new ApprovalNodeModel();
+			node.setName("采购单批复");
+			approvalNodeService.add(node);
+		} else {
+			node = list.get(0);
+		}
+		
+		List<UserModel> users = new ArrayList<UserModel>();
+		users.add(u);
+		node.setApprovalUsers(users);
+		approvalNodeService.deleteApprovalUser(node);
+		if("on".equals(r.get(ROLE.APPROVAL_PURCHASE))) {
+			approvalNodeService.addApprovalUser(node);
+		}
 	}
 }

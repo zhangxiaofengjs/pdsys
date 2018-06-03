@@ -10,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.zworks.pdsys.models.ApprovalInfoModel;
-import com.zworks.pdsys.models.ApprovalNodeModel;
 import com.zworks.pdsys.models.BaseModel;
 import com.zworks.pdsys.services.ApprovalInfoService;
-import com.zworks.pdsys.services.ApprovalService;
 
 /**
  * 对查询的Model,函数返回值进行批复信息的重新设置切面

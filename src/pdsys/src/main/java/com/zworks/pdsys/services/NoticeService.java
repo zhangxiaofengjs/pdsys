@@ -1,8 +1,6 @@
 package com.zworks.pdsys.services;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.zworks.pdsys.common.enumClass.NoticeState;
 import com.zworks.pdsys.mappers.NoticeMapper;
 import com.zworks.pdsys.models.NoticeModel;
-import com.zworks.pdsys.models.PageModel;
 
 @Service
 public class NoticeService {

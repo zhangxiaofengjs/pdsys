@@ -14,4 +14,10 @@ import com.zworks.pdsys.models.ApprovalNodeModel;
 public interface ApprovalNodeMapper {
 
 	List<ApprovalNodeModel> queryList(ApprovalNodeModel node);
+
+	void add(ApprovalNodeModel node);
+
+	void deleteApprovalUser(ApprovalNodeModel node);
+
+	void addApprovalUser(ApprovalNodeModel node);
 }

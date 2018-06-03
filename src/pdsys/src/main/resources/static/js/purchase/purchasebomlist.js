@@ -228,8 +228,8 @@ $(function () {
 
 	});
 	
-	//下单
-	$("#placePurchase").click(function(){
+	//提交审批
+	$("#requestApprovalPurchase").click(function(){
 		var purchaseId = $('#purchaseId').val();
 		if(purchaseId < 1) {
 			return;
@@ -237,13 +237,13 @@ $(function () {
 		
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
-			"target":"msg_div",
-			"caption":"下单",
+			"target":"appPurchase_div",
+			"caption":"提交下单审批",
 			"type":"yesno",
-			"msg":"确定下单?",
+			"msg":"确定提交下单审批?",
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/purchase/updateState",
+					"url":"/purchase/approval/request",
 					"data":{"id":purchaseId},
 					"success": function(data) {
 						dlg.hide();
@@ -251,34 +251,34 @@ $(function () {
 					},
 					"error": function(data) {
 						dlg.hide();
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"err_div",
-							"type":"ok",
-							"msg":data.msg
-						});
+						PdSys.alert(data.msg);
 					}
 				});
 			}
 		});
 	});
 	
-	//提交审批
-	$("#approvalPurchase").click(function(){
+	//下单
+	$("button[id^=responseApprovalPurchase]").click(function(){
+		var self = this;
 		var purchaseId = $('#purchaseId').val();
 		if(purchaseId < 1) {
 			return;
 		}
+		var result = "ng";
+		if(self.id == "responseApprovalPurchaseOK") {
+			result = "ok";
+		}
 		
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
-			"target":"msg_div",
-			"caption":"提交审批",
+			"target":"appPurchase_div",
+			"caption":"审批",
 			"type":"yesno",
-			"msg":"确定提交审批?",
+			"msg": (result == "ok" ? "<span style='color:green;'>确定通过该审批请求?</span>" : "<span style='color:red;'>确定不同意该审批请求?</span>"),
 			"yes": function() {
 				PdSys.ajax({
-					"url":"/purchase/approval",
+					"url":"/purchase/approval/response/" + result,
 					"data":{"id":purchaseId},
 					"success": function(data) {
 						dlg.hide();

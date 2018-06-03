@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.common.annotations.ResetApprovalInfo;
 import com.zworks.pdsys.common.enumClass.ApprovalState;
+import com.zworks.pdsys.common.enumClass.ApprovalType;
 import com.zworks.pdsys.common.enumClass.PurchaseState;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.mappers.PurchaseBOMMapper;
@@ -45,6 +46,7 @@ public class PurchaseService {
 		ApprovalInfoModel info = new ApprovalInfoModel();
 		info.setNode(node);
 		info.setState(ApprovalState.WORKING.ordinal());
+		info.setType(ApprovalType.PURCHASE.ordinal());
 		approvalInfoService.add(info);
 
 		purchase.setApprovalInfo(info);

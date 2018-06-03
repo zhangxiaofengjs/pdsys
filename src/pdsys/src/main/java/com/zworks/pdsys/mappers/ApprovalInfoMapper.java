@@ -16,4 +16,8 @@ public interface ApprovalInfoMapper {
 	List<ApprovalInfoModel> queryList(ApprovalInfoModel info);
 
 	void add(ApprovalInfoModel info);
+
+	void update(ApprovalInfoModel approvalInfo);
+
+	void delete(ApprovalInfoModel appInfo);
 }

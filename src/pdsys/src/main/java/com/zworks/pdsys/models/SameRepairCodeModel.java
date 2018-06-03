@@ -2,8 +2,6 @@ package com.zworks.pdsys.models;
 
 import java.util.List;
 
-import org.apache.ibatis.type.Alias;
-
 /**
  * @author: zhai
  */

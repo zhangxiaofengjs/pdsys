@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zworks.pdsys.common.enumClass.ApprovalState;
 import com.zworks.pdsys.mappers.ApprovalNodeMapper;
 import com.zworks.pdsys.models.ApprovalNodeModel;
 
@@ -35,5 +34,17 @@ public class ApprovalService {
 		//TODO 后续的节点也应该一下子搜索出来
 		List<ApprovalNodeModel> list = approvalMapper.queryList(node);
 		return list;
+	}
+
+	public void add(ApprovalNodeModel node) {
+		approvalMapper.add(node);
+	}
+
+	public void deleteApprovalUser(ApprovalNodeModel node) {
+		approvalMapper.deleteApprovalUser(node);
+	}
+
+	public void addApprovalUser(ApprovalNodeModel node) {
+		approvalMapper.addApprovalUser(node);
 	}
 }

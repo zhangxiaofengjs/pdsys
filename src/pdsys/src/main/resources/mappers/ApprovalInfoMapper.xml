@@ -13,30 +13,36 @@
     </resultMap>
 	<resultMap id="approvalInfoResultMap" type="approvalInfoModel" >  
         <id column="ai_id" property="id"/>  
+        <id column="ai_state" property="state"/>  
         <result column="ai_update_time" property="updateTime"/>  
         <collection property="node" ofType="approvalNodeModel" resultMap="approvalNodeResultMap" />
         <collection property="approvalUser" ofType="userModel" resultMap="userResultMap" />
+        <collection property="requestUser" ofType="userModel" resultMap="userResultMap" columnPrefix="request_"/>
     </resultMap>
     
-	<select id="queryList" resultMap="approvalInfoResultMap">
+	<select id="queryList" parameterType="approvalInfoModel" resultMap="approvalInfoResultMap">
 		select
 			ai.c_id as ai_id,
+			ai.c_type as ai_type,
 			ai.c_state as ai_state,
 			ai.c_update_time as ai_update_time,
 			u.c_id as u_id,
 			u.c_name as u_name,
+			request_u.c_id as request_u_id,
+			request_u.c_name as request_u_name,
 			an.c_id as an_id,
 			an.c_name as an_name,
 			an_u.c_id as an_u_id,
 			an_u.c_name as an_u_name
 		from approval_info_tbl as ai
 		left join user_tbl as u on ai.c_approval_user_id=u.c_id	
+		left join user_tbl as request_u on ai.c_request_user_id=request_u.c_id	
 		left join approval_node_tbl as an on ai.c_node_id = an.c_id
 		left join approval_node_user_relation_tbl as an_u_rel on an.c_id=an_u_rel.c_node_id	
 		left join user_tbl as an_u on an_u_rel.c_user_id=an_u.c_id	
 		<where>
 			<if test="id > 0">
-				and an.c_id = #{id}
+				and ai.c_id = #{id}
 			</if>
 		</where>
 	</select>
@@ -44,14 +50,35 @@
 	<insert id="add" parameterType="approvalInfoModel">
     	insert into approval_info_tbl (
     		c_node_id,
-    		c_approval_user_id
+    		c_type
     		)
     	values (
     		#{node.id},
-    		#{approvalUser.id}
+    		#{type}
     	)
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
       	</selectKey>
     </insert>
+    
+    <update id="update">
+    	update approval_info_tbl
+    	<set>
+    		<if test="filterCond.updateState != null and filterCond.updateState">
+				c_state = #{state},
+			</if>
+			<if test="filterCond.updateRequestUser != null and filterCond.updateRequestUser">
+				c_request_user_id = #{requestUser.id},
+			</if>
+			<if test="filterCond.updateApprovalUser != null and filterCond.updateApprovalUser">
+				c_approval_user_id = #{approvalUser.id},
+			</if>
+			<if test="filterCond.updateNode != null and filterCond.updateNode">
+				c_node_id = #{node.id},
+			</if>
+    	</set>
+    	<where>
+			c_id = #{id}
+		</where>
+    </update>
 </mapper>

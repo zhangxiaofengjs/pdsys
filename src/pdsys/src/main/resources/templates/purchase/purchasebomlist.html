@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 	<meta th:include="common/header::header">
 </head>
@@ -19,11 +20,14 @@
 			 			</div>
 			 			<button type="submit" class="btn btn-sm btn-info" id="search">查找</button>
 			 			<div class="form-group" style="display:inline-block;" th:if="${purchase.state == 0}" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_PURCHASE)}">
-			 				<button type="button" class="btn btn-sm btn-info" id="delPurchaseDetail">删除</button>
-			 			    <button type="button" class="btn btn-sm btn-info" id="addPurchaseDetail">追加</button>
-				 			<button type="button" class="btn btn-sm btn-info" id="upPurchaseDetail">修改</button>
-				 			<button type="button" class="btn btn-sm btn-info" id="approvalPurchase">提交审批</button>
-				 			<button type="button" class="btn btn-sm btn-info" id="placePurchase">下单</button>
+			 				<button type="button" class="btn btn-sm btn-info" id="delPurchaseDetail" th:if="${purchase.state==0 && (purchase.approvalInfo.state==0 || purchase.approvalInfo.state==2)}">删除</button>
+			 			    <button type="button" class="btn btn-sm btn-info" id="addPurchaseDetail" th:if="${purchase.state==0 && (purchase.approvalInfo.state==0 || purchase.approvalInfo.state==2)}">追加</button>
+				 			<button type="button" class="btn btn-sm btn-info" id="upPurchaseDetail" th:if="${purchase.state==0 && (purchase.approvalInfo.state==0 || purchase.approvalInfo.state==2)}">修改</button>
+				 			<button type="button" class="btn btn-sm btn-warning" id="requestApprovalPurchase" th:if="${purchase.state==0 && (purchase.approvalInfo.state==0 || purchase.approvalInfo.state==2)}">请求下单</button>
+				 			<div class="btn-group" th:if="${purchase.state==0 && (purchase.approvalInfo.state==1)}">
+					 			<button type="button" class="btn btn-sm btn-success" id="responseApprovalPurchaseOK">审批通过</button>
+					 			<button type="button" class="btn btn-sm btn-danger" id="responseApprovalPurchaseNG">审批驳回</button>
+				 			</div>
 			 			</div>
 					</form>
 				</div>
@@ -40,11 +44,19 @@
 						<th th:colspan="1">下单日期:&nbsp;<b th:text="((${purchase.purchaseDate} != null) ? ${#dates.format(purchase.purchaseDate, 'yyyy-MM-dd')} : '未定')"></b></th>
 						<th th:colspan="7">提交人:&nbsp;
 							<span th:text="${purchase.user!=null?purchase.user.name:''}"></span>
-							<i class="pull-right" th:switch="${purchase.state}">状态：&nbsp;
-					  		  <span class="label label-primary" th:case="0">计划中</span>
-					  		  <span class="label label-success" th:case="1">已下单</span>
-					  		  <span class="label label-default" th:case="2">已入库</span>
-							</i>
+							<div class="pull-right">
+								<th:block th:switch="${purchase.state}">
+						  		  <span class="label label-primary" th:case="0">计划中</span>
+						  		  <span class="label label-success" th:case="1">已下单</span>
+						  		  <span class="label label-default" th:case="2">已入库</span>
+								</th:block>
+								<th:block th:if="${purchase.state==0}" th:switch="${purchase.approvalInfo.state}">
+						  		  <span class="label label-default" th:case="0">未请求审批</span>
+						  		  <span class="label label-primary" th:case="1">等待审批</span>
+						  		  <span class="label label-danger" th:case="2">审批驳回</span>
+						  		  <span class="label label-success" th:case="3">审批通过</span>
+								</th:block>
+							</div>
 						</th>
 					</tr>
 					<tr>
@@ -74,6 +86,7 @@
    	 	<div id="upPurchase_div"></div>
    	 	<div id="upPurchaseBom_div"></div>
    	 	<div id="delPurchase_div"></div>
+   	 	<div id="appPurchase_div"></div>
    	 	<div id="msg_div"></div>
    	 	<div id="err_div"></div>
    	 	<div th:replace="common/footer::copyright"></div>

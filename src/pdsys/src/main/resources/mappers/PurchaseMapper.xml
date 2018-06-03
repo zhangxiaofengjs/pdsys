@@ -60,8 +60,8 @@
 	<insert id="add" parameterType="purchaseModel" useGeneratedKeys="true" keyProperty="id">
 		insert into purchase_tbl
 		(
-		    `c_no`,
-			`c_user_id`,
+		    c_no,
+			c_user_id,
 			c_approval_info_id
 		)
 		values
