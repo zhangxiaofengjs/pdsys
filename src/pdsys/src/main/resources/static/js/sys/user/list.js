@@ -138,17 +138,27 @@ $(document).ready(function(){
 		}
 		
 		var id = selIds[0];
-		
-		PdSys.ajax({
-			"url":"/user/initpwd",
-			"data": {
-				"id": id
-			},
-			"success": function() {
-				PdSys.alert("重置为[123]成功，请用户及时修改密码确保安全。");
-			},
-			"error": function() {
-				PdSys.alert("重置密码失败");
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"dlg_initPwd_div",
+			"caption":"重置密码",
+			"msg": "确定重置该用户密码?",
+			"type": "yesno",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/user/initpwd",
+					"data": {
+						"id": id
+					},
+					"success": function() {
+						dlg.hide();
+						PdSys.alert("重置为[123]成功，请用户及时修改密码确保安全。");
+					},
+					"error": function() {
+						dlg.hide();
+						PdSys.alert("重置密码失败");
+					}
+				});
 			}
 		});
 	});
