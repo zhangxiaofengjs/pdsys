@@ -3,19 +3,22 @@ package com.zworks.pdsys.services;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.common.enumClass.ApprovalState;
+import com.zworks.pdsys.common.enumClass.NoticeType;
 import com.zworks.pdsys.common.utils.SecurityContextUtils;
 import com.zworks.pdsys.mappers.ApprovalInfoMapper;
 import com.zworks.pdsys.models.ApprovalInfoModel;
 import com.zworks.pdsys.models.ApprovalNodeModel;
+import com.zworks.pdsys.models.NoticeModel;
 import com.zworks.pdsys.models.UserModel;
 
 @Service
 public class ApprovalInfoService {
 	@Autowired
     private ApprovalInfoMapper approvalInfoMapper;
-
+	
 	public ApprovalInfoModel queryById(Integer id) {
 		ApprovalInfoModel info = new ApprovalInfoModel();
 		info.setId(id);
@@ -56,11 +59,13 @@ public class ApprovalInfoService {
 		approvalInfoMapper.add(info);
 	}
 
+	@Transactional
 	public void requestApproval(ApprovalInfoModel approvalInfo) {
 		approvalInfo.getFilterCond().put("updateState", true);
 		approvalInfo.getFilterCond().put("updateRequestUser", true);
 		approvalInfo.setState(ApprovalState.WAIT.ordinal());
-		approvalInfo.setRequestUser(SecurityContextUtils.getLoginUser().getUser());
+		UserModel user = SecurityContextUtils.getLoginUser().getUser();
+		approvalInfo.setRequestUser(user);
 		approvalInfoMapper.update(approvalInfo);
 	}
 
