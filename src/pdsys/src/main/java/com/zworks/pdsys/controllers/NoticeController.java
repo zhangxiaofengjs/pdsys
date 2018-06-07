@@ -75,6 +75,6 @@ public class NoticeController extends BaseController {
 		notice.setReceiver(SecurityContextUtils.getLoginUser().getUser());
 
 		List<NoticeModel> list = noticeService.queryList(notice);
-		return JSONResponse.success();
+		return JSONResponse.success().put("count", list.size());
     }
 }
