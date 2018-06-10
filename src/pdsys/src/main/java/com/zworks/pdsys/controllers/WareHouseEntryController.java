@@ -233,7 +233,7 @@ public class WareHouseEntryController {
 			return JSONResponse.error("不存在单号,请刷新页面。");
 		}
 		if(!SecurityContextUtils.isLoginUser(entry.getUser())) {
-			return JSONResponse.error("当前用户不是登录者");
+			return JSONResponse.error("当前用户不是提交者");
 		}
 		if(wareHouseEntryService.entry(entry)) {
 			return JSONResponse.success();

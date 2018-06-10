@@ -126,9 +126,24 @@ $(document).ready(function(){
 					thisField.options.push({
 						"value": pnCls.id,
 						"caption": pnCls.name,
+						"data": pnCls.unit.name,
 					});
 				});
-			}
+			},
+			"afterBuild": function() {
+				var self = this;
+				
+				var thisElem = dlg.findFieldElem(self);
+				
+				//select选择以后刷新品目单位
+				thisElem.change(function() {
+					var selIndex = thisElem[0].selectedIndex;
+					var pnId = self.options[selIndex].value;
+					var unitname = self.options[selIndex].data;
+					dlg.rebuildFieldWithValue("unit.name", unitname);
+				});
+				thisElem.trigger("change");
+			},
 		},
 		{
 			"name":"num",

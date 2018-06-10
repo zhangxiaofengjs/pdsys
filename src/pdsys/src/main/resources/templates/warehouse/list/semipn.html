@@ -31,11 +31,12 @@
 		<tbody>
 			<th:block th:each="semiPnDetailBean, iterStat1 : ${list}"
 					  th:with="pn=${semiPnDetailBean.pn},
+					  	pnUnit=${pn.unit},
 					  	pnClsDetails=${semiPnDetailBean.pnClsDetails},
-					  	unit=${pn.unit},
 						pnRowSize=${#lists.size(pnClsDetails)}">
 				<th:block th:each="pnClsDetail, iterStat2 : ${pnClsDetails}"
-						  th:with="pnCls=${pnClsDetail.pnCls}">
+						  th:with="pnCls=${pnClsDetail.pnCls},
+						  			unit=${pnCls.unit}">
 						<tr	th:rowid="${pnCls.id}">
 							<td>
 								<input type="checkbox" name="select" th:rowid="${rowId}">
@@ -43,7 +44,7 @@
 							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${pn.pn}"></td>
 							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${pn.name}"></td>
 							<td th:rowspan="1" th:text="${pnCls.name}"></td>
-							<td th:rowspan="1" th:text="${pnClsDetail.unitNum + unit.subName + '/' + unit.name}"></td>
+							<td th:rowspan="1" th:text="${pnClsDetail.unitNum + ' ' + unit.name + '/' + pnUnit.name}"></td>
 							<td th:rowspan="1" th:text="${pnClsDetail.num}" class="number"></td>
 							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${semiPnDetailBean.producableNum}" class="number"></td>
 						</tr>

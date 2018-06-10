@@ -245,7 +245,7 @@ public class WareHouseDeliveryController {
 			return JSONResponse.error("不存在单号,请刷新页面。");
 		}
 		if(!SecurityContextUtils.isLoginUser(delivery.getUser())) {
-			return JSONResponse.error("当前用户不是登录者");
+			return JSONResponse.error("当前用户不是提交者");
 		}
 		if(wareHouseDeliveryService.delivery(delivery)) {
 			return JSONResponse.success();

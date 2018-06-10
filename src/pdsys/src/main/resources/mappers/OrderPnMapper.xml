@@ -25,8 +25,9 @@
         <collection property="suppliers" ofType="supplierModel" resultMap="supplierResultMap" />
     </resultMap>
    	<resultMap id="pnClsResultMap" type="pnClsModel" >  
-        <id column="od_pn_cls_id" property="id"/>
-        <result column="od_pn_cls_name" property="name"/>
+        <id column="pn_cls_id" property="id"/>
+        <result column="pn_cls_name" property="name"/>
+        <association property="unit" resultMap="unitResultMap" columnPrefix="pn_cls_"/>
         <collection property="pnClsBOMRels" ofType="pnClsBOMRelModel" javaType="list"> 
          	<id column="bom_rel_id" property="id"/>
 	        <result column="bom_rel_use_num" property="useNum" />
@@ -87,8 +88,12 @@
    		       pn_bom_ut.c_ratio as pn_bom_ut_ratio,
    		       pn_cls_relation.c_id as pn_cls_relation_id,
    		       pn_cls_relation.c_num as pn_cls_relation_num,
-   		       pn_cls.c_id as od_pn_cls_id,
-		       pn_cls.c_name as od_pn_cls_name,
+   		       pn_cls.c_id as pn_cls_id,
+		       pn_cls.c_name as pn_cls_name,
+		       pn_cls_ut.c_id as pn_cls_ut_id,
+		       pn_cls_ut.c_name as pn_cls_ut_name,
+   		       pn_cls_ut.c_sub_name as pn_cls_ut_sub_name,
+   		       pn_cls_ut.c_ratio as pn_cls_ut_ratio,
 		       bom.c_id as bom_id,
 		       bom.c_pn as bom_pn,
 		       bom.c_name as bom_name,
@@ -118,6 +123,7 @@
 		left join unit_tbl as pn_bom_ut on pn_bom.c_unit_id = pn_bom_ut.c_id 
 		left join pn_cls_relation_tbl as pn_cls_relation on pn_cls_relation.c_pn_id = pn.c_id 
 		left join pn_cls_tbl as pn_cls on pn_cls_relation.c_cls_id = pn_cls.c_id 
+		left join unit_tbl as pn_cls_ut on pn_cls.c_unit_id = pn_cls_ut.c_id 
 		left join pn_cls_bom_relation_tbl as pn_cls_bom_relation on pn_cls_bom_relation.c_cls_id = pn_cls.c_id 
 		left join bom_tbl as bom on pn_cls_bom_relation.c_bom_id = bom.c_id 
 		left join unit_tbl as bom_ut on bom.c_unit_id = bom_ut.c_id 

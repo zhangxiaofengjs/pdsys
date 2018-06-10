@@ -99,7 +99,7 @@
 				<tr th:each="wareHouseEntrySemiPn : ${entryTgt.wareHouseEntrySemiPns}"
 					th:with="pn=${wareHouseEntrySemiPn.pn},
 							 pnCls=${wareHouseEntrySemiPn.pnClsRel.pnCls},
-							 unit=${pn.unit}"
+							 unit=${pnCls.unit}"
 							 th:rowid="${wareHouseEntrySemiPn.id}">
 					<td>
 						<input type="checkbox" name="select" th:rowid="${wareHouseEntrySemiPn.id}">
@@ -107,7 +107,7 @@
 					<td th:text="${pn.pn}"></td>
 					<td th:text="${pn.name}"></td>
 					<td th:text="${pnCls.name}"></td>
-					<td th:text="${unit.subName==null?unit.name:unit.subName}"></td>
+					<td th:text="${unit.name}"></td>
 					<td th:text="${wareHouseEntrySemiPn.num}" class="number"></td>
 			    </tr>
 			</tbody>

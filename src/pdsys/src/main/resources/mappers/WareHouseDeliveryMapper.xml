@@ -47,7 +47,8 @@
     </resultMap>
     <resultMap id="pnClsResultMap" type="pnClsModel" >  
         <id column="pn_cls_id" property="id" />  
-        <result column="pn_cls_name" property="name" />  
+        <result column="pn_cls_name" property="name" />
+        <association property="unit" resultMap="unitResultMap" columnPrefix="cls_"/>
     </resultMap>
     <resultMap id="machinePartResultMap" type="machinePartModel" >  
         <id column="mp_id" property="id" />  
@@ -234,9 +235,9 @@
 		       pn_cls_rel.c_num as pn_cls_rel_num,
 		       pn_cls.c_id as pn_cls_id,
 		       pn_cls.c_name as pn_cls_name,
-		       unit.c_id as unit_id,
-		       unit.c_name as unit_name,
-		       unit.c_sub_name as unit_sub_name,
+		       cls_unit.c_id as cls_unit_id,
+		       cls_unit.c_name as cls_unit_name,
+		       cls_unit.c_sub_name as cls_unit_sub_name,
 		       wh_pn.c_id as wh_pn_id,
 		       wh_pn.c_num as wh_pn_num
 		from delivery_tbl as delivery
@@ -246,7 +247,7 @@
 		left join pn_tbl as pn on d_pn.c_pn_id = pn.c_id
 		left join pn_cls_tbl as pn_cls on d_pn.c_pn_cls_id = pn_cls.c_id
 		left join pn_cls_relation_tbl as pn_cls_rel on d_pn.c_pn_cls_id = pn_cls_rel.c_cls_id and d_pn.c_pn_id = pn_cls_rel.c_pn_id
-		left join unit_tbl as unit on pn.c_unit_id = unit.c_id
+		left join unit_tbl as cls_unit on pn_cls.c_unit_id = cls_unit.c_id
 		left join warehouse_semi_pn_tbl as wh_pn on pn.c_id = wh_pn.c_pn_id and pn_cls.c_id = wh_pn.c_pn_cls_id
 		<where>
 			delivery.c_type=3

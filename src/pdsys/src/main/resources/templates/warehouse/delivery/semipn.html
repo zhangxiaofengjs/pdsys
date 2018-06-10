@@ -101,8 +101,8 @@
 			<tbody>
 				<tr th:each="wareHouseDeliverySemiPn : ${deliveryTgt.wareHouseDeliverySemiPns}"
 					th:with="pn=${wareHouseDeliverySemiPn.pn},
-							 unit=${pn.unit},
 	 						 pnCls=${wareHouseDeliverySemiPn.pnClsRel.pnCls},
+							 unit=${pnCls.unit},
 	 						 wareHouseSemiPn=${wareHouseDeliverySemiPn.wareHouseSemiPn},
 	 						 wareHouseNum=(${wareHouseSemiPn != null}?${wareHouseSemiPn.num}:0)"
 							 th:rowid="${wareHouseDeliverySemiPn.id}">
@@ -110,8 +110,8 @@
 						<input type="checkbox" name="select" th:rowid="${wareHouseDeliverySemiPn.id}">
 					</td>
 					<td th:text="${pn.pn + ' ' + pn.name}"></td>
-					<td th:text="${unit.subName==''?unit.name:unit.subName}"></td>
 					<td th:text="${pnCls.name}"></td>
+					<td th:text="${unit.name}"></td>
 					<td th:text="${deliveryTgt.state==0?wareHouseNum:'--'}" class="number"></td>
 					<td th:text="${wareHouseDeliverySemiPn.num}" 
 						th:class="'number ' + (${wareHouseNum < wareHouseDeliverySemiPn.num}?'text-danger':'')"></td>

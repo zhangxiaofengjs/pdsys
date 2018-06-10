@@ -11,12 +11,13 @@
     <resultMap id="pnResultMap" type="pnModel" >  
         <id column="pn_id" property="id" />  
         <result column="pn_pn" property="pn"/>  
-        <result column="pn_name" property="name"/>  
+        <result column="pn_name" property="name"/>
         <association property="unit" resultMap="unitResultMap"/>
     </resultMap>
     <resultMap id="pnClsResultMap" type="pnClsModel" >  
         <id column="pn_cls_id" property="id" />  
-        <result column="pn_cls_name" property="name"/>  
+        <result column="pn_cls_name" property="name"/>
+        <association property="unit" resultMap="unitResultMap" columnPrefix="cls_"/>
     </resultMap>
     <resultMap id="pnClsRelResultMap" type="pnPnClsRelModel" >  
         <id column="pn_cls_rel_id" property="id" />  
@@ -38,7 +39,11 @@
 			pn.c_pn AS pn_pn, 
 			pn.c_name AS pn_name, 
 			pnCls.c_id AS pn_cls_id, 
-			pnCls.c_name AS pn_cls_name, 
+			pnCls.c_name AS pn_cls_name,
+			cls_unit.c_id AS cls_unit_id, 
+			cls_unit.c_name AS cls_unit_name,
+			cls_unit.c_ratio AS cls_unit_ratio,
+			cls_unit.c_sub_name AS cls_unit_sub_name,
 			pnClsRel.c_id AS pn_cls_rel_id, 
 			pnClsRel.c_num AS pn_cls_rel_num, 
 			unit.c_id AS unit_id, 
@@ -48,8 +53,9 @@
 		from warehouse_semi_pn_tbl AS wh_pn
 		left join pn_tbl AS pn on wh_pn.c_pn_id = pn.c_id
 		left join pn_cls_tbl AS pnCls on wh_pn.c_pn_cls_id = pnCls.c_id
-		left join pn_cls_relation_tbl AS pnClsRel on wh_pn.c_pn_id = pnClsRel.c_pn_id and wh_pn.c_pn_cls_id = pnClsRel.c_cls_id
 		left join unit_tbl AS unit on pn.c_unit_id = unit.c_id
+		left join pn_cls_relation_tbl AS pnClsRel on wh_pn.c_pn_id = pnClsRel.c_pn_id and wh_pn.c_pn_cls_id = pnClsRel.c_cls_id
+		left join unit_tbl AS cls_unit on pnCls.c_unit_id = cls_unit.c_id
 		<where>
 			<if test="pn != null">
 				<if test="pn.id > 0">

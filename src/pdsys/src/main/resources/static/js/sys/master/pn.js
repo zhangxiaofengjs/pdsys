@@ -173,6 +173,31 @@ $(document).ready(function(){
 				"required": true,
 			},
 			{
+				"name":"pnClsRels[0].pnCls.unit.id",
+				"label":"单位",
+				"type":"select",
+				"value":"",
+				"groupButtons": createUnitGroupButtons({
+					"target":"unit_dlg_div",
+					"success": function(action, data) {
+						if(action == "add") {
+							dlg.rebuildFieldWithValue("pnClsRels[0].pnCls.unit.id", data.unit.id);
+						}
+					}
+				}),
+				"ajax": true,
+				"url":"/unit/list/json",
+				"convertAjaxData" : function(thisField, data) {
+					thisField.options = [];
+					data.units.forEach(function(unit, idx) {
+						thisField.options.push({
+							"value": unit.id,
+							"caption":"{0}({1}{2})".format(unit.name, unit.ratio, unit.subName),
+						});
+					});
+				}
+			},
+			{
 				"name":"pnClsRels[0].num",
 				"label":"单位配比",
 				"type":"number",

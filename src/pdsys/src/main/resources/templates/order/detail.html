@@ -93,7 +93,7 @@
 									<td>
 										<input type="checkbox" name="select" th:rowid="${rowId}">
 									</td>
-									<td th:rowspan="${clsBomSize}" th:if="${iterStat3.index == 0}" th:text="${pnCls.name + '(' + pnClsRel.num + orderPn.pn.unit.subName + ')'}"></td>
+									<td th:rowspan="${clsBomSize}" th:if="${iterStat3.index == 0}" th:text="${pnCls.name + '(' + pnClsRel.num + pnCls.unit.name + ')'}"></td>
 									<td th:switch="${bom != null ? bom.type : ''}">
 					    				<span th:case="0">原</span>
 							  			<span th:case="1">包</span>

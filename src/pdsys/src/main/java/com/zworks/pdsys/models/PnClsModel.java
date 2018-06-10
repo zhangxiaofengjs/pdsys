@@ -12,6 +12,8 @@ import org.apache.ibatis.type.Alias;
 public class PnClsModel extends BaseModel{
 	private String name;
 	private List<PnClsBOMRelModel> pnClsBOMRels;
+	private UnitModel unit;
+	
 	public String getName() {
 		return name;
 	}
@@ -26,5 +28,13 @@ public class PnClsModel extends BaseModel{
 
 	public void setPnClsBOMRels(List<PnClsBOMRelModel> pnClsBOMRels) {
 		this.pnClsBOMRels = pnClsBOMRels;
+	}
+
+	public UnitModel getUnit() {
+		return unit;
+	}
+
+	public void setUnit(UnitModel unit) {
+		this.unit = unit;
 	}
 }

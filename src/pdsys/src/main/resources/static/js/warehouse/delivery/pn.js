@@ -109,6 +109,7 @@ $(document).ready(function(){
 						thisField.options.push({
 							"value": pn.id,
 							"caption": "{0} {1}".format(pn.pn, pn.name),
+							"data":pn.unit.name,
 						});
 						pnIdArr.push(pn.id);
 					}
@@ -123,8 +124,10 @@ $(document).ready(function(){
 				thisElem.change(function() {
 					var selIndex = thisElem[0].selectedIndex;
 					var val = -1;
+					var unitName = "";
 					if(selIndex != -1) {
 						val = self.options[selIndex].value;
+						unitName = self.options[selIndex].data;
 					}
 					var fieldOrder = dlg.fieldByName("order.id");
 					fieldOrder.ajaxData={
@@ -132,6 +135,8 @@ $(document).ready(function(){
 						"orderPns":[{"pn":{"id":val}}]//关联该订单
 					};
 					dlg.buildAjaxField(fieldOrder);
+					
+					dlg.rebuildFieldWithValue("unitName", unitName);
 				});
 				thisElem.trigger("change");
 			}
@@ -219,6 +224,12 @@ $(document).ready(function(){
 			"value":"1",
 			"min":"0",
 			"max":10000000,
+		},
+		{
+			"name":"unitName",
+			"label":"单位",
+			"type":"label",
+			"value":"",
 		}];
 		
 		var dlg = new CommonDlg();

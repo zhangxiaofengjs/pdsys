@@ -27,6 +27,7 @@
 	<resultMap id="pnClsResultMap" type="pnClsModel" >
         <id column="c_id" property="id" />  
         <result column="c_name" property="name" />
+        <association property="unit" resultMap="utResultMap" columnPrefix="cls_"/>
         <collection property="pnClsBOMRels" ofType="pnClsBOMRelModel" resultMap="pnClsBOMRelationResultMap" />  
     </resultMap>
     
@@ -35,6 +36,10 @@
 			   pn_cls.c_name as c_name,
 			   pn_cls_bom_rel.c_id as pn_cls_bom_rel_id,
 			   pn_cls_bom_rel.c_use_num as pn_cls_bom_rel_use_num,
+			   cls_unit.c_id as cls_ut_id,
+			   cls_unit.c_name as cls_ut_name,
+			   cls_unit.c_sub_name as cls_ut_sub_name,
+			   cls_unit.c_ratio as cls_ut_ratio,
 			   bom.c_id as bom_id,
 			   bom.c_pn as bom_pn,
 			   bom.c_name as bom_name,
@@ -45,6 +50,7 @@
 			   bom_unit.c_sub_name as bom_ut_sub_name,
 			   bom_unit.c_ratio as bom_ut_ratio
 		from pn_cls_tbl as pn_cls
+	    left join unit_tbl as cls_unit on pn_cls.c_unit_id = cls_unit.c_id
 		left join pn_cls_bom_relation_tbl as pn_cls_bom_rel on pn_cls.c_id = pn_cls_bom_rel.c_cls_id
 	    left join bom_tbl as bom on pn_cls_bom_rel.c_bom_id = bom.c_id
 	    left join unit_tbl as bom_unit on bom.c_unit_id = bom_unit.c_id
@@ -62,11 +68,13 @@
 	<insert id="add" parameterType="pnClsModel" keyProperty="id">
 		insert into pn_cls_tbl
 		(
-			c_name
+			c_name,
+			c_unit_id
 		)
 		values
 		(
-			#{name}
+			#{name},
+			#{unit.id}
 		)
 		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
@@ -100,7 +108,8 @@
     
 	<update id="update">
     	update pn_cls_tbl
-		set	c_name = #{name}
+		set	c_name = #{name},
+			c_unit_id=#{unit.id}
     	<where>
 			c_id = #{id}
 		</where>

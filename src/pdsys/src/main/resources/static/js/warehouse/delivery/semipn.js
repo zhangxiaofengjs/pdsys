@@ -140,12 +140,12 @@ $(document).ready(function(){
 			"convertAjaxData" : function(thisField, data) {
 				thisField.options = [];
 				data.semipns.forEach(function(semipn, idx) {
-					var unit = semipn.pn.unit;
 					var pnCls = semipn.pnClsRel.pnCls;
+					var unit = pnCls.unit;
 					thisField.options.push({
 						"value": pnCls.id,
 						"caption": pnCls.name,
-						"data": {"num":semipn.num,"unitName":(unit.subName!=""?unit.subName:unit.name)}
+						"data": {"num":semipn.num,"unitName":unit.name}
 					});
 				});
 			},
