@@ -37,7 +37,9 @@ PdSys.ajax = function(option) {
         	}
         },
         error: function(data) {
-        	PdSys.sysError();
+        	if(option.disableSysError) {
+        		PdSys.sysError();
+        	}
         }
      };
     

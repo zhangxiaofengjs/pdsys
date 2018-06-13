@@ -106,6 +106,7 @@ function showPage(pATag)
 function updateIndexNoticeCount() {
 	PdSys.ajax({
 		"url":"/notice/getcount",
+		"disableSysError": true,
 		"success": function(data) {
 			$('#noticeCount').html(data.count==0?'':data.count);
 		},
