@@ -230,7 +230,7 @@ public class ImportPnDefTool {
 	            	
 	            	PnClsModel pnCls = new PnClsModel();
 	            	pnCls.setName(cls);
-	            	
+	            	pnCls.setUnit(unit);
 	            	PnPnClsRelModel pnClsRel = new PnPnClsRelModel();
 	            	pnClsRel.setNum(Float.parseFloat(clsNum));
 	            	pnClsRel.setPnCls(pnCls);
