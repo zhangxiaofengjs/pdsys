@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `approval_node_tbl` (
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='承认节点表';
 
--- テーブル pdsys.approval_node_tbl: ~1 rows (約) のデータをダンプしています
+-- テーブル pdsys.approval_node_tbl: ~0 rows (約) のデータをダンプしています
 DELETE FROM `approval_node_tbl`;
 /*!40000 ALTER TABLE `approval_node_tbl` DISABLE KEYS */;
 INSERT INTO `approval_node_tbl` (`c_id`, `c_next_id`, `c_name`) VALUES
@@ -615,7 +615,7 @@ CREATE TABLE IF NOT EXISTS `user_role_tbl` (
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户权限表';
 
--- テーブル pdsys.user_role_tbl: ~1 rows (約) のデータをダンプしています
+-- テーブル pdsys.user_role_tbl: ~12 rows (約) のデータをダンプしています
 DELETE FROM `user_role_tbl`;
 /*!40000 ALTER TABLE `user_role_tbl` DISABLE KEYS */;
 INSERT INTO `user_role_tbl` (`c_id`, `c_update_time`, `c_user_id`, `c_role`) VALUES
@@ -645,12 +645,12 @@ CREATE TABLE IF NOT EXISTS `user_tbl` (
   PRIMARY KEY (`c_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户定义表';
 
--- テーブル pdsys.user_tbl: ~1 rows (約) のデータをダンプしています
+-- テーブル pdsys.user_tbl: ~0 rows (約) のデータをダンプしています
 DELETE FROM `user_tbl`;
 /*!40000 ALTER TABLE `user_tbl` DISABLE KEYS */;
 INSERT INTO `user_tbl` (`c_id`, `c_update_time`, `c_no`, `c_name`, `c_password`, `c_phone`, `c_address`) VALUES
 	(1, '2018-05-30 11:11:23', 'admin', 'admin', '$2a$10$qbN23rlzj2.OoQv0F7kPfePrOVm7ehvdTzYMTZ54nKxXpYagbhqD.', NULL, NULL),
-	(2, '2018-06-13 14:14:58', 'demo', 'demo', '$2a$10$k7AbmkK2t7pdvDHEGyeVxutyAhifNZLROMx5iLrzTmSJMk2XIss3O', '', 'PDSYS業務管理用アカウント');
+	(2, '2018-06-14 17:30:35', 'demo', 'demo', '$2a$10$/VjqB37xJJXDGZVke1Tq8em7zqQ05uig0sO7LVfnqiQzwJZMNr3K6', '', 'PDSYS業務管理用アカウント');
 /*!40000 ALTER TABLE `user_tbl` ENABLE KEYS */;
 
 --  テーブル pdsys.warehouse_bom_tbl の構造をダンプしています
