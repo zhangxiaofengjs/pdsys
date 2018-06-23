@@ -32,7 +32,7 @@
 		<thead>
 		    <tr>
 		    	<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
-				<th>种类</th>
+				<th>K</th>
 				<th>品番</th>
 				<th>名称</th>
 				<th>单位</th>
@@ -49,8 +49,8 @@
 					<input type="checkbox" name="select" th:rowid="${bom.id}">
 				</td>
 				<td th:switch="${bom.type}">
-    				<span th:case="0">原材</span>
-		  			<span th:case="1">包材</span>
+    				<span th:case="0">原</span>
+		  			<span th:case="1">包</span>
 				</td>
 				<td th:text="${bom.pn}"></td>
 				<td th:text="${bom.name}"></td>

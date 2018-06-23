@@ -339,7 +339,7 @@ $(document).ready(function(){
 					data.boms.forEach(function(bom, idx) {
 						thisField.options.push({
 							"value": bom.id,
-							"caption":bom.pn + " " + bom.name + (bom.comment != "" ? "(" + bom.comment + ")" :""),
+							"caption":bom.pn + " " + bom.name,
 							"data":M.unitName(bom.unit)
 						});
 					});

@@ -114,7 +114,9 @@ public class ImportPnDefTool {
 		             
 			Workbook wb = WorkbookFactory.create(is);
 			Sheet sheet = wb.getSheet("data");
-			
+			if(sheet == null) {
+				throw new PdsysException("没找到data sheet");
+			}
 			PnModel pnObj = null;
 			for(rowNo = 3; rowNo <= sheet.getLastRowNum(); rowNo++) {
 				Row row = sheet.getRow(rowNo);
@@ -278,6 +280,9 @@ public class ImportPnDefTool {
 				return rel;
 			}
 		}
+		if(pnClsRel.getPnCls().getUnit() == null) {
+        	throw new PdsysException("未设定单位" + pnClsRel.getPnCls().getName());
+        }
 		pnClsRels.add(pnClsRel);
 		return pnClsRel;
 	}
