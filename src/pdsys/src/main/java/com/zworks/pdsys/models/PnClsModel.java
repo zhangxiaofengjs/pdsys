@@ -13,7 +13,6 @@ public class PnClsModel extends BaseModel{
 	private String name;
 	private List<PnClsBOMRelModel> pnClsBOMRels;
 	private UnitModel unit;
-	
 	public String getName() {
 		return name;
 	}

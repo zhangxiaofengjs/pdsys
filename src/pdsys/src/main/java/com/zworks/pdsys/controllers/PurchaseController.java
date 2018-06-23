@@ -92,16 +92,20 @@ public class PurchaseController {
 		List<BOMUseNumBean> list = orderPnService.queryBOMUseNumList(order);
 		for(int i =0;i<list.size();i++) {
 			BOMUseNumBean BOMDetail = list.get(i);
+			BOMModel bom = BOMDetail.getBom();
+			bom = bomService.queryById(bom.getId());
+
 			PurchaseBOMModel purchaseBom = new PurchaseBOMModel();
 			//采购单号
 			purchaseBom.setPurchase(purchase);
 			//原包材
-			purchaseBom.setBom(BOMDetail.getBom());
+			purchaseBom.setBom(bom);
 			//数量
 			purchaseBom.setNum(BOMDetail.getUseNum());
 			//单价
-			purchaseBom.setPrice(BOMDetail.getBom().getPrice());
-			
+			purchaseBom.setPrice(bom.getPrice());
+			//默认取第一个供应商
+			purchaseBom.setSupplier(bom.getSuppliers().get(0));
 			//追加一条采购单详细的记录
 			purchaseBoms.add(purchaseBom);
 		}
@@ -337,11 +341,11 @@ public class PurchaseController {
 		}
 		ApprovalInfoModel approvalInfo = p.getApprovalInfo();
 		if(approvalInfo.getState() != ApprovalState.WORKING.ordinal() &&
-				approvalInfo.getState() != ApprovalState.NG.ordinal()) {
+			approvalInfo.getState() != ApprovalState.NG.ordinal()) {
 			return JSONResponse.error("该采购单已经提交过或者已经批复");
 		}
 		
-		approvalInfoService.requestApproval(approvalInfo);
+		purchaseService.requestApproval(p);
 		return JSONResponse.success();
 	}
 	
@@ -367,10 +371,7 @@ public class PurchaseController {
 			return JSONResponse.error("您没有权限进行审批");
 		}
 		
-		if(approvalInfoService.responseApproval(approvalInfo, "ok".equals(result))) {
-			p.setState(PurchaseState.ORDERED.ordinal());
-			p.setPurchaseDate(DateUtils.getCurrentDate());
-			purchaseService.update(p);
+		if(purchaseService.responseApproval(p, "ok".equals(result))) {
 			return JSONResponse.success("审批并且下单成功！");
 		}
 		return JSONResponse.success("操作成功！");
