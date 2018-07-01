@@ -131,7 +131,9 @@ public class OrderController extends BaseController{
 	 * 订单信息
 	 */
 	@RequestMapping("/detail")
-	public String showOrderInfo(@RequestParam(name="id") int id, Model model) {
+	public String showOrderInfo(@RequestParam(name="id") int id,
+			@RequestParam(name="showDetail", required=false)boolean showDetail,
+			Model model) {
 		OrderModel order = new OrderModel();
 		order.setId(id);
 		order = orderService.queryOne(order);
@@ -142,7 +144,8 @@ public class OrderController extends BaseController{
 			list = orderPnService.queryList(order);
 		}
 		model.addAttribute("orderPns", list);
-
+		model.addAttribute("showDetail", showDetail);
+		
         return "order/detail";
     }
 }

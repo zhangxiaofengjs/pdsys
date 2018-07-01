@@ -12,20 +12,23 @@
 			  			<span class="navbar-brand glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 			  		</div>
 			  		<form class="navbar-form navbar-left" style="padding-left:0px;">
-		 		    <button type="button" class="btn btn-sm btn-primary" id="reback">
-		 		    	<span class="glyphicon glyphicon-chevron-left"></span>返回
-		 		    </button>
-		 		    <div style="display:inline-block;" th:if="${order!=null}">
-			 			<button type="button" class="btn btn-sm btn-info" id="addPn">添加品目</button>
-			 			<button type="button" class="btn btn-sm btn-info" id="UpdatePn">修改品目</button>
-			 			<button type="button" class="btn btn-sm btn-info" id="delPn">删除品目</button>
-	 				</div>
+			 		    <button type="button" class="btn btn-sm btn-primary" id="reback">
+			 		    	<span class="glyphicon glyphicon-chevron-left"></span>返回
+			 		    </button>
+			 		    <input type="hidden" name="id" id="id" th:value="${order.id}">
+			 		    <div style="display:inline-block;" th:if="${order!=null}">
+				 			<button type="button" class="btn btn-sm btn-info" id="addPn">添加品目</button>
+				 			<button type="button" class="btn btn-sm btn-info" id="UpdatePn">修改品目</button>
+				 			<button type="button" class="btn btn-sm btn-info" id="delPn">删除品目</button>
+		 				</div>
+			 		    <input type="checkbox" id="showDetail" name="showDetail">显示详细
+			 		    <button type="submit" class="btn btn-sm btn-info">刷新</button>
 		 			</form>
 				</div>
 			</nav>
 			订单号：<b><span th:if="${order!=null}" th:text="${order.no}" style="font-weight:bold;color:#0489B1;"></span></b>
 			<input type="hidden" id="order_id" name="order_id" th:if="${order!=null}" th:value="${order.id}">
-			<table class="table table-bordered table-hover table-condensed" >
+			<table th:if="${showDetail}" class="table table-bordered table-hover table-condensed" >
 				<thead>
 					<tr>
 						<th rowspan='3' style="width:20px;"><input type="checkbox" name="selectAll" /></th>
@@ -107,7 +110,37 @@
 			    </th:block>
 				</tbody>
 			</table>
-
+			<table th:if="${showDetail == false}" class="table table-bordered table-hover table-condensed" >
+				<thead>
+					<tr>
+						<th style="width:20px;"><input type="checkbox" name="selectAll" /></th>
+						<th>品目</th>
+						<th>名称</th>
+						<th>单位</th>
+						<th>订购数量</th>
+						<th>已出库数量</th>
+					</tr>
+				</thead>
+ 				<tbody>
+	 				<th:block th:each="orderPn: ${orderPns}"
+							th:with="pn=${orderPn.pn},
+									pnClsRels=${pn.pnClsRels},
+									pnBOMRels=${pn.pnBOMRels},
+									pnRowSize=${T(com.zworks.pdsys.common.utils.ModelUtils).pnRowSize(orderPn.pn)},
+									rowId=${orderPn.id}">
+						<tr	th:rowid="${rowId}">
+							<td>
+								<input type="checkbox" name="select" th:rowid="${rowId}">
+							</td>
+							<td th:text="${pn.pn}"></td>
+							<td th:text="${pn.name}"></td>
+							<td th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pn.unit)}"></td>
+							<td th:text="${orderPn.num}" class="number"></td>
+							<td th:text="${orderPn.deliveredNum}" class="number"></td>
+						</tr>
+			    </th:block>
+				</tbody>
+			</table>
    	 	</div>
    	 	<div th:replace="common/footer::copyright"></div>
    	 	<div id="addOrUpPn_div"></div>
