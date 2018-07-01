@@ -154,6 +154,9 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 			}
 		}
 		
+		//bootstrap-select 搜索框必须刷新才能显示
+		self.refreshSelectPickField(f);
+		
 		if(f.groupButtons) {
 			$("#" + f.groupButtons[0].name).click(function(){
 				if(f.groupButtons[0].hasOwnProperty("click")) {
@@ -190,8 +193,15 @@ CommonDlg.prototype.rebuildField = function(fieldOrName) {
 
 	var fieldElm = self.findFieldElem(field);
 	var fieldElmParent = fieldElm.parent();
-	fieldElm.remove();
+	
+	if(field.type=='select') {
+		//bootstrap-select 会产生一些其他元素，先一并删除，否则等下refresh会产生多余元素
+		fieldElmParent.children().remove();
+	} else {
+		fieldElm.remove();
+	}
 	fieldElmParent.prepend(strFieldHtml);
+	self.refreshSelectPickField(field);
 	
 	if(field.afterBuild) {
 		(field.afterBuild)('ajax');
@@ -219,7 +229,7 @@ CommonDlg.prototype.buildField = function(field) {
 	var strFormHtml = "";
 
 	if(field.type == "select") {
-		strFormHtml += '<select class="form-control" name="{0}" id="{0}" onblur=\"CommonDlg.onFieldBlur(\'{1}\', \'{0}\');\" {2}>'.
+		strFormHtml += '<select class="form-control selectpicker show-tick" data-live-search="true" data-live-search-placeholder="输入搜索字符" name="{0}" id="{0}" onblur=\"CommonDlg.onFieldBlur(\'{1}\', \'{0}\');\" {2}>'.
 			format(field.name, this.id(), field.disabled || '');
 		field.options.forEach(function(fo, idxo) {
 			strFormHtml += '<option value ="{0}" data="{3}" {2}>{1}</option>'.
@@ -295,9 +305,19 @@ CommonDlg.prototype.buildAjaxField = function(field) {
 		success: function(response) {
 			field.convertAjaxData(field, response);
 			var strFieldHtml = self.buildField(field);
-			$(this).parent().prepend(strFieldHtml);
-			$(this).remove();
 			
+			var thisFiledElemParent = $(this).parent();
+			if(field.type=='select') {
+				//bootstrap-select 会产生一些其他元素，先一并删除，否则等下refresh会产生多余元素
+				thisFiledElemParent.children().remove();
+			} else {
+				$(this).remove();
+			}
+			thisFiledElemParent.prepend(strFieldHtml);
+			
+			//bootstrap-select 搜索框必须刷新才能显示
+			self.refreshSelectPickField(field);
+
 			if(field.afterBuild) {
 				(field.afterBuild)('ajax');
 			}
@@ -307,6 +327,18 @@ CommonDlg.prototype.buildAjaxField = function(field) {
 			$(this).append('<img src="{0}" height="16px" /><span class="text-danger">&nbsp;取得信息失败!!</span>'.format(PdSys.url("/icons/error.png")));
 		}
 	});
+};
+
+CommonDlg.prototype.refreshSelectPickField = function(fieldOrName) {
+	var field = fieldOrName;
+	if(typeof(field)=="string"){
+		field = this.fieldByName(field);
+	}
+	if(field.type!='select') {
+		return;
+	}
+	
+	$(("#"+field.name).safeJqueryId()).selectpicker('refresh');
 };
 
 CommonDlg.prototype.fieldElem = function(type, name) {

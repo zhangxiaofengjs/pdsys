@@ -90,7 +90,6 @@ $(function () {
 						});
 						
 						dlg.rebuildField(f);
-						
 					}
 				},
 				{
@@ -103,7 +102,6 @@ $(function () {
 					"label":"供应商",
 					"type":"select",
 					"options":[],
-
 				},
 				{
 					"name":"price",

@@ -14,8 +14,8 @@
 			  		</div>
 			  		<form class="navbar-form navbar-left" role="form" th:object="${order}" th:action="@{/order/list}" method="post">
 						<div class="form-group">
-						   <input type="text" class="form-control" th:field="*{no}" placeholder="订单编号">
-   			               <select id="orderState" class="selectpicker show-tick form-control" th:field="*{state}">  
+						   <input type="text" class="form-control" th:field="*{no}" list="browsers" placeholder="订单编号">
+   			               <select id="orderState" class="form-control" th:field="*{state}">  
 			                  <option value="-2">--订单状态--</option>
 			                  <option value="0">生产中</option>
 			                  <option value="1">已完成</option>

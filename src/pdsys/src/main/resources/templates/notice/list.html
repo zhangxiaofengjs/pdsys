@@ -18,7 +18,7 @@
 						   <input type="date" class="form-control" name="end" th:value="${#dates.format(formBean.end, 'yyyy-MM-dd')}" placeholder="结束日期">
 			 			</div>
 			 			<div class="form-group">
-   			               <select id="orderState" class="selectpicker show-tick form-control" th:field="${formBean.notice.state}">  
+   			               <select id="orderState" class="form-control" th:field="${formBean.notice.state}">  
 			                  <option value="-1">--状态--</option>
 			                  <option value="0">未读</option>
 			                  <option value="1">已读</option>
