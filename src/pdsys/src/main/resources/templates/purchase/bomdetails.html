@@ -46,8 +46,8 @@
 				    			 bomToBuyNum=${bean.useNum - bean.purchasedNum - bean.wareHouseNum}">
 				      <td><input type="checkbox" name="select" th:rowid="${bom.id}"/></td>
 				      <td th:switch="${bom.type}">
-						  <span th:case="0">原材</span>
-						  <span th:case="*">包材</span>
+						  <span th:case="0">原</span>
+						  <span th:case="*">包</span>
 				      </td>
    				      <td th:text="${bom.pn + ' ' + bom.name}"></td>
 				      <td th:text="${bom.unit.name}"></td>

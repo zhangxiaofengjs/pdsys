@@ -113,6 +113,7 @@
 			<table th:if="${showDetail == false}" class="table table-bordered table-hover table-condensed" >
 				<thead>
 					<tr>
+						<th style="width:40px;">No.</th>
 						<th style="width:20px;"><input type="checkbox" name="selectAll" /></th>
 						<th>品目</th>
 						<th>名称</th>
@@ -122,13 +123,14 @@
 					</tr>
 				</thead>
  				<tbody>
-	 				<th:block th:each="orderPn: ${orderPns}"
+	 				<th:block th:each="orderPn, iterStat11: ${orderPns}"
 							th:with="pn=${orderPn.pn},
 									pnClsRels=${pn.pnClsRels},
 									pnBOMRels=${pn.pnBOMRels},
 									pnRowSize=${T(com.zworks.pdsys.common.utils.ModelUtils).pnRowSize(orderPn.pn)},
 									rowId=${orderPn.id}">
 						<tr	th:rowid="${rowId}">
+							<td th:text="${'#' + (iterStat11.index+1)}" class="blue-font"></td>
 							<td>
 								<input type="checkbox" name="select" th:rowid="${rowId}">
 							</td>
