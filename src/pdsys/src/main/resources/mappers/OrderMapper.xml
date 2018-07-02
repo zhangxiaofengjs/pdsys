@@ -7,6 +7,10 @@
         <id column="o_pn_num" property="num"/> 
         <id column="o_pn_delivered_num" property="deliveredNum"/> 
     </resultMap>
+    <resultMap id="userResultMap" type="userModel" >
+        <id column="u_id" property="id"/> 
+        <result column="u_name" property="name"/>
+    </resultMap>
 	<resultMap id="orderResultMap" type="orderModel" >
         <id column="o_id" property="id"/> 
         <result column="o_no" property="no"/>
@@ -15,6 +19,7 @@
         <result column="o_ship_date" property="shipDate"/>  
         <result column="o_state" property="state"/>  
         <result column="o_comment" property="comment"/>
+        <association property="user" resultMap="userResultMap"/>
         <collection property="orderPns" ofType="orderPnModel" resultMap="orderPnResultMap" />
     </resultMap>
     
@@ -28,9 +33,12 @@
 			   o.c_comment as o_comment,
 			   o_pn.c_id as o_pn_id,
 			   o_pn.c_num as o_pn_num,
-			   o_pn.c_delivered_num as o_pn_delivered_num
+			   o_pn.c_delivered_num as o_pn_delivered_num,
+			   u.c_id as u_id,
+			   u.c_name as u_name
 		from order_tbl as o
-		left join order_pn_tbl as o_pn on o.c_id=o_pn.c_order_id 
+		left join order_pn_tbl as o_pn on o.c_id=o_pn.c_order_id
+		left join user_tbl as u on o.c_user_id = u.c_id 
 		<where>
 			<if test="id > 0">
 				and o.c_id = #{id}
@@ -55,7 +63,7 @@
 			    </foreach> 
 			</if>
 		</where>
-		order by c_state asc, c_order_date asc, c_ship_dead_date asc, c_no asc
+		order by o.c_state asc, o.c_order_date asc, o.c_ship_dead_date asc, o.c_no asc
 	</select>
 	
 	<update id="update" parameterType="orderModel">
@@ -81,7 +89,7 @@
 			`c_customer_id`,
 			`c_order_date`, 
 			`c_ship_dead_date`,
-			`c_master_id`,
+			`c_user_id`,
 			`c_comment`,
 			`c_state`
 			

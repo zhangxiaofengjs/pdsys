@@ -29,7 +29,7 @@ public class CustomerController {
 	@RequestMapping("/get")
 	@ResponseBody
 	public JSONResponse get(@RequestBody CustomerModel customer, Model model) {
-		CustomerModel c = customerService.queryById(customer.getId());
+		CustomerModel c = customerService.queryOne(customer);
 		if(c == null) {
 			return JSONResponse.error("客户不存在。");
 		}
@@ -50,7 +50,7 @@ public class CustomerController {
 	@RequestMapping("/update")
 	@ResponseBody
 	public JSONResponse update(@RequestBody CustomerModel customer, Model model) {
-		CustomerModel u = customerService.queryById(customer.getId());
+		CustomerModel u = customerService.queryOne(customer);
 		if(u == null) {
 			return JSONResponse.error("该客户名已经不存在。");
 		}

@@ -23,6 +23,14 @@ public class StringUtils {
 		return list;
     }
 
+	public static Float toFloat(String str) {
+		try {
+			return Float.valueOf(str);
+		} catch (NumberFormatException e) {
+		    return 0.0f;
+		}
+    }
+	
 	public static boolean isNullOrEmpty(String subName) {
 		if(subName == null || subName.equals("")) {
 			return true;

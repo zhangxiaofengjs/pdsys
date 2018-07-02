@@ -89,7 +89,7 @@ $(function () {
 		
 		var dlg = new CommonDlg();
 		dlg.showMsgDlg({
-			"target":"msg_div",
+			"target":"deleteOrder_div",
 			"caption":"删除订单",
 			"type":"yesno",
 			"msg":"确定删除已选订单?",
@@ -99,22 +99,14 @@ $(function () {
 					"data":{"id":orderIds[0]},
 					"success": function(data) {
 						dlg.hide();
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":data.msg,
+						PdSys.success({
 							"ok":function(){
 								PdSys.refresh();
 							}});
 					},
 					"error": function(data) {
 						dlg.hide();
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":data.msg});
+						PdSys.alert(data.msg);
 					}
 				});
 			}
@@ -123,7 +115,7 @@ $(function () {
 	});
 	
 	//修改订单
-	$("#upOrder").click(function(){
+	$("#updateOrder").click(function(){
 		var self = $(this);
 		var caption = "修改订单";
 		var option = {
@@ -137,7 +129,7 @@ $(function () {
 		
 		var dlg = new CommonDlg();
 		dlg.showFormDlg({
-			"target":"upOrder_div",
+			"target":"updateOrder_div",
 			"caption":caption,
 			"fields":[
 				{
@@ -210,4 +202,32 @@ $(function () {
 	    });
 	});
 
+	$("#importOrder").click(function(){
+		var dlg = new CommonDlg();
+		var myDate = new Date(); 
+		dlg.showFormDlg({
+			"target":"importOrder_div",
+			"caption":"导入订单",
+			"enctype":"multipart/form-data",
+			"method":"post",
+			"fields":[
+				{
+					"name":"file",
+					"type":"file",
+					"label":'选择导入订单文件',
+				}],
+			"url":"/order/import",
+			"success": function(data) {
+				dlg.hide();
+				var msgDlg = new CommonDlg();
+				PdSys.success({
+					"ok":function(){
+						PdSys.refresh();
+					}});
+			},
+			"error": function(data) {
+				PdSys.alert(data.msg);
+			}
+		});
+	});
 });

@@ -58,5 +58,15 @@
     "name": "pdsys.upload.image-folder",
     "type": "java.lang.String",
     "description": "A description for 'pdsys.upload.image-folder'"
+  },
+  {
+    "name": "pdsys.upload.order-import-folder",
+    "type": "java.lang.String",
+    "description": "A description for 'pdsys.upload.order-import-folder'"
+  },
+  {
+    "name": "pdsys.upload.temp-folder",
+    "type": "java.lang.String",
+    "description": "A description for 'pdsys.upload.temp-folder'"
   }
 ]}

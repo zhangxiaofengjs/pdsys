@@ -36,8 +36,8 @@ public class OrderPnService {
 	@Autowired
 	private WareHouseBOMService wareHouseBOMService;
 	
-	public void save(OrderPnModel orderPn) {
-		orderPnMapper.save( orderPn );
+	public void add(OrderPnModel orderPn) {
+		orderPnMapper.add( orderPn );
 	}
 	
 	public void delete(OrderPnModel orderPn) {

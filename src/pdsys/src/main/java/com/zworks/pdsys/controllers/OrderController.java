@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.utils.JSONResponse;
+import com.zworks.pdsys.common.utils.SecurityContextUtils;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
@@ -61,6 +63,10 @@ public class OrderController extends BaseController{
 			return JSONResponse.error("已选订单不存在！");
 		}
 
+		if(!SecurityContextUtils.isLoginUser(o.getUser())) {
+			return JSONResponse.error("登录用户不是订单责任者！");
+		}
+
 		o.setState(OrderState.DELETED.ordinal());
 		o.getFilterCond().put("update_state", true);
 		orderService.update(o);
@@ -94,6 +100,15 @@ public class OrderController extends BaseController{
 	}
 	
 	/**
+	 * 修改订单
+	 */
+	@RequestMapping("/import")
+	@ResponseBody
+	public JSONResponse importFile(@RequestParam("file") MultipartFile[] files) {
+		return orderService.importFile(files);
+	}
+	
+	/**
 	 * 通过ID获取订单
 	 */
 	@RequestMapping("/get")
@@ -123,7 +138,7 @@ public class OrderController extends BaseController{
 			String errMsg = "订单已存在,订单号为："+order.getNo();
 			return JSONResponse.error(errMsg);
 		}
-		orderService.save(order);
+		orderService.add(order);
 		return JSONResponse.success("新增订单成功!");
 	}
 	

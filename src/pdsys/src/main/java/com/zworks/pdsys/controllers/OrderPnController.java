@@ -50,7 +50,7 @@ public class OrderPnController {
 		if( isExist )
 			return JSONResponse.error("该品目已经存在！");
 
-		orderPnService.save(orderPn);
+		orderPnService.add(orderPn);
 		return JSONResponse.success();
     }
 	

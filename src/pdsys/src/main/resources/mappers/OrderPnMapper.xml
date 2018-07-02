@@ -203,7 +203,7 @@
 		</where>
     </update>
     
-   	<insert id="save" parameterType="OrderPnModel" keyProperty="id">
+   	<insert id="add" parameterType="OrderPnModel" keyProperty="id">
 		insert into order_pn_tbl
 		(
 			`c_order_id`,

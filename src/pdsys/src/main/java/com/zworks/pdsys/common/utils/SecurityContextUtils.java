@@ -34,6 +34,10 @@ public class SecurityContextUtils {
 	}
 	
 	public static boolean isLoginUser(UserModel user) {
+		if(user == null) {
+			return false;
+		}
+		
 		PdSysLoginUser lUser = getLoginUser();
 		if(lUser == null) {
 			return false;

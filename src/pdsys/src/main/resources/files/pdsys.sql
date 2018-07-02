@@ -441,7 +441,7 @@ CREATE TABLE IF NOT EXISTS `order_tbl` (
   `c_ship_date` date DEFAULT NULL COMMENT '交货时间',
   `c_state` int(11) DEFAULT NULL COMMENT '状态 0：计划中 1：生产中 2：已完成 3：已删除',
   `c_comment` varchar(100) DEFAULT NULL COMMENT '备注',
-  `c_master_id` int(11) DEFAULT NULL COMMENT '负责人ID',
+  `c_user_id` int(11) DEFAULT NULL COMMENT '负责人ID',
   `c_customer_id` int(11) DEFAULT NULL COMMENT '顾客ID',
   PRIMARY KEY (`c_id`),
   UNIQUE KEY `c_no` (`c_no`)

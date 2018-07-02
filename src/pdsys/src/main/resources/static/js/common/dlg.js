@@ -76,7 +76,11 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 //	var dlgId = this.option.target + "_dlg";
 	var dlgId = this.id();
 	
-	var strFormHtml = '<form class="form-horizontal" id="{0}" action="{1}" enctype="application/x-www-form-urlencoded">'.format(this.option.target + "_dlg_form", PdSys.url(this.option.url));
+	var strFormHtml = '<form class="form-horizontal" id="{0}" action="{1}" enctype="{2}" method="3">'.format(
+			this.option.target + "_dlg_form", 
+			PdSys.url(this.option.url),
+			this.option.enctype || 'application/x-www-form-urlencoded',
+			this.option.method || 'post');
 	this.option.fields.forEach(function(f, idx) {
 		
 		//hidden不需要单独占行
@@ -245,7 +249,7 @@ CommonDlg.prototype.buildField = function(field) {
 	} else {
 		var strAttrHtml = "";
 		strAttrHtml += ' type="{0}"'.format(field.type);
-		strAttrHtml += ' class="form-control {0}"'.format(field.class || '');
+		strAttrHtml += ' class="{0} form-control {1}"'.format(field.type=='file'?'no-boder-form-control':'' , field.class || '');
 		strAttrHtml += ' name="{0}"'.format(field.name);
 		strAttrHtml += ' id="{0}"'.format(field.name);
 		strAttrHtml += (field.value ? ' value="{0}"'.format(field.value) : '');
@@ -520,17 +524,25 @@ CommonDlg.ajaxSubmitForm = function(dlgId) {
 		return;
 	}
 	var option = dlg.option;
-	var formJson = CommonDlg.encodeFormJson("#"+dlg.formId());
-	//	var ff = new FormData();//FormData不好用，暂用json代替
-	
+	var formData;
+	var contentType;
+	if(option.enctype == "multipart/form-data") {
+		formData = new FormData($("#"+dlg.formId().safeJqueryId())[0]);
+		contentType = false;
+	} else {
+		var formJson = CommonDlg.encodeFormJson("#"+dlg.formId());
+		//	var ff = new FormData();//FormData不好用，暂用json代替
+		formData = JSON.stringify(formJson);
+		contentType = "application/json;charset=UTF-8";
+	}
 	var args = {
     	url : PdSys.url(option.url),
         type : 'post',
         dataType : 'json',//接受服务端数据类型
-        contentType:"application/json;charset=UTF-8",
+        contentType:contentType,
         processData: false,
         cache: false,
-        data: JSON.stringify(formJson),
+        data: formData,
         success : function(data) {
         	if(data.success)
         	{

@@ -15,7 +15,7 @@ public interface OrderPnMapper {
 	
 	void update(OrderPnModel orderPnModel);
 	
-	void save(OrderPnModel orderPn);
+	void add(OrderPnModel orderPn);
 	
 	void delete(OrderPnModel orderPn);
 	

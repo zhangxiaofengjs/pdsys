@@ -13,7 +13,7 @@ public interface OrderMapper {
 	
 	void updateOrderState(OrderModel orderModel);
 	
-	void save(OrderModel orderModel);
+	void add(OrderModel orderModel);
 	
 	void update(OrderModel orderModel);
 }

@@ -17,9 +17,7 @@ public class CustomerService {
 		return customerMapper.queryList(customer);
 	}
 
-	public CustomerModel queryById(int id) {
-		CustomerModel c = new CustomerModel();
-		c.setId(id);
+	public CustomerModel queryOne(CustomerModel c) {
 		List<CustomerModel> cs = queryList(c);
 		
 		if(cs.size() ==1) {

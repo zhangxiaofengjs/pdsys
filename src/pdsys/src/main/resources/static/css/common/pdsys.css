@@ -3,4 +3,10 @@
 .number {
 	text-align: right;
 	font-style: italic;
-} 
+}
+
+.no-boder-form-control {
+	box-shadow:0 1px 1px rgba(0, 0, 0, 0);
+	border-width:0px;
+	padding-left:0px;
+}

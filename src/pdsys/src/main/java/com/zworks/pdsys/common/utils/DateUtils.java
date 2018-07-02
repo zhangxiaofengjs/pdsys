@@ -32,6 +32,17 @@ public class DateUtils {
         return null;
     }
     
+    public static Date parse(String strDate) {
+	    try {
+	    	SimpleDateFormat df = new SimpleDateFormat(DATE_TIME_PATTERN);
+	        Date date= df.parse(strDate);
+	        return date;
+	    } catch(ParseException px) {
+	        px.printStackTrace();
+	    }
+	    return null;
+    }
+    
     public static Date addDay(Date date, int days) {
     	if(date == null) {
     		return null;
