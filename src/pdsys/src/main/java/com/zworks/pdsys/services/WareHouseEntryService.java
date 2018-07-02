@@ -6,10 +6,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.enumClass.EntryType;
 import com.zworks.pdsys.common.utils.JSONResponse;
+import com.zworks.pdsys.common.utils.SecurityContextUtils;
 import com.zworks.pdsys.mappers.WareHouseEntryMapper;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
@@ -20,6 +22,7 @@ import com.zworks.pdsys.models.WareHouseEntrySemiPnModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.models.WareHouseSemiPnModel;
+import com.zworks.pdsys.tools.EntryTemplateReader;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -45,6 +48,10 @@ public class WareHouseEntryService {
 	private WareHouseEntryBOMService wareHouseEntryBOMService;
 	@Autowired
 	private WareHouseEntryMachinePartService wareHouseEntryMachinePartService;
+	@Autowired
+    private UploadService uploadService;
+	@Autowired
+	EntryTemplateReader reader;
 	
 	public List<WareHouseEntryModel> queryList(WareHouseEntryModel obj) {
 		return wareHouseEntryMapper.queryList(obj);
@@ -257,5 +264,50 @@ public class WareHouseEntryService {
 		
 		wareHouseEntryMapper.update(entry);
 		return true;
+	}
+
+	public JSONResponse importEntry(MultipartFile[] files) {
+		if(files == null || files.length != 1) {
+			return JSONResponse.error("请选定一个文件进行导入");
+		}
+		
+		MultipartFile mpFile = files[0];
+        if(mpFile.isEmpty()) {
+        	return JSONResponse.error("选定的文件为空");
+        }
+
+        String tempPath = uploadService.saveTemp(mpFile);
+        WareHouseEntryModel entry = null;
+        try {
+        	entry = reader.readBOM(tempPath);
+        } catch(Exception e) {
+        	return JSONResponse.error(e.getMessage());
+        }
+
+        if(!SecurityContextUtils.isLoginUser(entry.getUser())) {
+			return JSONResponse.error("登录用户不是提交者！");
+		}
+        
+        WareHouseEntryModel e = new WareHouseEntryModel();
+        e.setNo(entry.getNo());
+        e.setType(entry.getType());
+        if(queryOne(e) != null) {
+        	return JSONResponse.error("已经存在的入库单编号");
+        }
+        
+        List<WareHouseEntryBOMModel> eboms = entry.getWareHouseEntryBOMs();
+        
+        add(entry);
+
+        //这边要重新new一个order，赋予OrderId，否则发生Exception
+        e = new WareHouseEntryModel();
+        e.setId(entry.getId());
+        
+        for(WareHouseEntryBOMModel ebom : eboms) {
+        	ebom.setWareHouseEntry(e);
+    		wareHouseEntryBOMService.add(ebom);
+        }
+ 
+        return JSONResponse.success().put("entry", entry);
 	}
 }

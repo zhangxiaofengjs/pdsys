@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.exception.PdsysException;
@@ -218,6 +219,15 @@ public class WareHouseEntryController {
 		}
 		wareHouseEntryService.delete(entry);
 		return JSONResponse.success();
+	}
+	
+	/**
+	 * 导入入库单
+	 * */
+	@RequestMapping(value="/import/entry")
+	@ResponseBody
+	public JSONResponse importEntry(@RequestParam("file") MultipartFile[] files) {
+		return wareHouseEntryService.importEntry(files);
 	}
 	
 	/**

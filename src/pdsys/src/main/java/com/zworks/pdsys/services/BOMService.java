@@ -18,10 +18,8 @@ public class BOMService {
 		return bomMapper.queryList(bomModel);
 	}
 
-	public BOMModel queryById(int id) {
-		BOMModel c = new BOMModel();
-		c.setId(id);
-		List<BOMModel> cs = queryList(c);
+	public BOMModel queryOne(BOMModel b) {
+		List<BOMModel> cs = queryList(b);
 		
 		if(cs.size() ==1) {
 			return cs.get(0);

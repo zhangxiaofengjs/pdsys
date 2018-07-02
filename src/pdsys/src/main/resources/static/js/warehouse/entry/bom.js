@@ -276,4 +276,32 @@ $(document).ready(function(){
 			}
 		});
 	});
+	
+	$("#importEntry").click(function(){
+		var dlg = new CommonDlg();
+		var myDate = new Date(); 
+		dlg.showFormDlg({
+			"target":"dlg_div",
+			"caption":"导入入库单",
+			"enctype":"multipart/form-data",
+			"method":"post",
+			"fields":[
+				{
+					"name":"file",
+					"type":"file",
+					"label":'选择导入入库单',
+				}],
+			"url":"/warehouse/entry/import/entry",
+			"success": function(data) {
+				dlg.hide();
+				PdSys.success({
+					"ok":function(){
+						PdSys.refresh();
+					}});
+			},
+			"error": function(data) {
+				PdSys.alert(data.msg);
+			}
+		});
+	});
 });

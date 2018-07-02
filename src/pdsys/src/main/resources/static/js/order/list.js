@@ -219,7 +219,6 @@ $(function () {
 			"url":"/order/import",
 			"success": function(data) {
 				dlg.hide();
-				var msgDlg = new CommonDlg();
 				PdSys.success({
 					"ok":function(){
 						PdSys.refresh();

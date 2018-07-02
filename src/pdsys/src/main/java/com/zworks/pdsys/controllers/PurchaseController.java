@@ -93,7 +93,7 @@ public class PurchaseController {
 		for(int i =0;i<list.size();i++) {
 			BOMUseNumBean BOMDetail = list.get(i);
 			BOMModel bom = BOMDetail.getBom();
-			bom = bomService.queryById(bom.getId());
+			bom = bomService.queryOne(bom);
 
 			PurchaseBOMModel purchaseBom = new PurchaseBOMModel();
 			//采购单号

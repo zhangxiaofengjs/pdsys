@@ -44,7 +44,9 @@ public class BOMController {
 	@RequestMapping("/get")
 	@ResponseBody
 	public JSONResponse get(@RequestBody BOMModel bom, Model model) {
-		BOMModel b = bomService.queryById(bom.getId());
+		BOMModel b = new BOMModel();
+		b.setId(bom.getId());
+		b = bomService.queryOne(b);
 		if(b == null) {
 			return JSONResponse.error("该品番不存在");
 		}
@@ -54,8 +56,10 @@ public class BOMController {
 	@RequestMapping("/update")
 	@ResponseBody
 	public JSONResponse update(@RequestBody BOMModel bom, Model model) {
-		BOMModel u = bomService.queryById(bom.getId());
-		if(u == null) {
+		BOMModel b = new BOMModel();
+		b.setId(bom.getId());
+		b = bomService.queryOne(b);
+		if(b == null) {
 			return JSONResponse.error("该品番不存在");
 		}
 		bomService.update(bom);
@@ -65,7 +69,9 @@ public class BOMController {
 	@RequestMapping("/addsupplier")
 	@ResponseBody
 	public JSONResponse addSupplier(@RequestBody BOMModel bom, Model model) {
-		BOMModel b = bomService.queryById(bom.getId());
+		BOMModel b = new BOMModel();
+		b.setId(bom.getId());
+		b = bomService.queryOne(b);
 		if(b == null) {
 			return JSONResponse.error("该品番不存在");
 		}
@@ -80,7 +86,9 @@ public class BOMController {
 	@RequestMapping("/deletesupplier")
 	@ResponseBody
 	public JSONResponse deleteSupplier(@RequestBody BOMModel bom, Model model) {
-		BOMModel b = bomService.queryById(bom.getId());
+		BOMModel b = new BOMModel();
+		b.setId(bom.getId());
+		b = bomService.queryOne(b);
 		if(b == null) {
 			return JSONResponse.error("该品番不存在");
 		}
