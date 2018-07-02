@@ -4,7 +4,10 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -47,6 +50,7 @@ public class OrderTemplateReader {
 			
 			OrderModel order = new OrderModel();
 			List<OrderPnModel> orderPns = new ArrayList<OrderPnModel>();
+			Set<String> pnSet = new HashSet<String>();
 			boolean lastRow = false;
 			for(rowNo = 0; rowNo <= sheet.getLastRowNum() && !lastRow; rowNo++) {
 				Row row = sheet.getRow(rowNo);
@@ -118,6 +122,9 @@ public class OrderTemplateReader {
 						lastRow = true;
 						break;
 					}
+					if(!pnSet.add(strPn)) {
+						throw new PdsysException("重复JAN");
+					}
 					Float num = StringUtils.toFloat(ExcelUtils.getCellValue(row.getCell(2)));
 					if(StringUtils.isNullOrEmpty(strPn) || num == 0){
 						throw new PdsysException("JAN或者订购量不正确");
@@ -127,7 +134,7 @@ public class OrderTemplateReader {
 					pn.setPn(strPn);
 					pn = pnService.queryOne(pn);
 					if(pn == null) {
-						throw new PdsysException("Jan不存在:" + strPn);
+						throw new PdsysException("JAN不存在:" + strPn);
 					}
 					
 					OrderPnModel oPn = new OrderPnModel();
