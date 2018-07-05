@@ -25,6 +25,7 @@
 				<th>名称</th>
 				<th>单位</th>
 				<th>在库数量</th>
+				<th>现场数量</th>
 		    </tr>
 		</thead>
 		<tbody>
@@ -43,6 +44,7 @@
 			<td th:text="${bom.name + (bom.comment!=null and bom.comment!='' ? '(' + bom.comment + ')' :'')}"></td>
 			<td th:text="${unit.name}"></td>
 			<td th:text="${whbom.num}" class="number"></td>
+			<td th:text="${whbom.deliveryRemainingNum}" class="number"></td>
 	    </tr>
 	  </tbody>
 	</table>

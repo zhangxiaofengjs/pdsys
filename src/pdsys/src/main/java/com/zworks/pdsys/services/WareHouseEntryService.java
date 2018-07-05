@@ -1,18 +1,23 @@
 package com.zworks.pdsys.services;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.zworks.pdsys.business.beans.BOMUseNumBean;
 import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.enumClass.EntryType;
+import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.SecurityContextUtils;
 import com.zworks.pdsys.mappers.WareHouseEntryMapper;
+import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryMachinePartModel;
@@ -48,6 +53,8 @@ public class WareHouseEntryService {
 	private WareHouseEntryBOMService wareHouseEntryBOMService;
 	@Autowired
 	private WareHouseEntryMachinePartService wareHouseEntryMachinePartService;
+	@Autowired
+    private PnService pnService;
 	@Autowired
     private UploadService uploadService;
 	@Autowired
@@ -173,31 +180,10 @@ public class WareHouseEntryService {
 		
 		return JSONResponse.success();
 	}
-	public boolean entry(WareHouseEntryModel entry) {
-		if(entry.getType() == EntryType.PN.ordinal()) {
-			entry = queryOneWithPn(entry);
-			
-			for(WareHouseEntryPnModel entryPn : entry.getWareHouseEntryPns()) {
-				WareHousePnModel wareHousePn = entryPn.getWareHousePn();
-				
-				if(wareHousePn == null) {
-					//还没入库过，新建
-					wareHousePn = new WareHousePnModel();
-					wareHousePn.setPn(entryPn.getPn());
-					wareHousePn.setProducedNum(entryPn.getProducedNum());
-					wareHousePn.setSemiProducedNum(entryPn.getSemiProducedNum());
-					wareHousePnService.add(wareHousePn);
-				} else {
-					float semiNum = wareHousePn.getSemiProducedNum() + entryPn.getSemiProducedNum();
-					wareHousePn.setSemiProducedNum(semiNum);
-					
-					float num = wareHousePn.getProducedNum() + entryPn.getProducedNum();
-					wareHousePn.setProducedNum(num);
-					
-					wareHousePnService.update(wareHousePn);
-				}
-			}
-		} else if(entry.getType() == EntryType.SEMIPN.ordinal()) {
+	
+	@Transactional
+	public void entry(WareHouseEntryModel entry) {
+		if(entry.getType() == EntryType.SEMIPN.ordinal()) {
 			entry = queryOneWithSemiPn(entry);
 			
 			for(WareHouseEntrySemiPnModel entryPn : entry.getWareHouseEntrySemiPns()) {
@@ -232,7 +218,7 @@ public class WareHouseEntryService {
 				} else {
 					float num = wareHouseBOM.getNum() + entryBOM.getNum();
 					wareHouseBOM.setNum(num);
-					
+					wareHouseBOM.getFilterCond().put("UPDATE_NUM", true);
 					wareHouseBOMService.update(wareHouseBOM);
 				}
 			}
@@ -256,24 +242,96 @@ public class WareHouseEntryService {
 				}
 			}
 		} else {
-			return false;
+			throw new PdsysException("未想定入库种类");
 		}
 		
 		entry.setEntryTime(new Date());
 		entry.setState(EntryState.ENTRIED.ordinal());
 		
 		wareHouseEntryMapper.update(entry);
-		return true;
 	}
 
-	public JSONResponse importEntry(MultipartFile[] files) {
+	@Transactional
+	public void entryPn(WareHouseEntryModel e) {
+		WareHouseEntryModel entry = queryOneWithPn(e);
+		
+		Map<Integer, BOMUseNumBean> calcUsedBOMs = new HashMap<Integer, BOMUseNumBean>();
+				
+		for(WareHouseEntryPnModel entryPn : entry.getWareHouseEntryPns()) {
+			WareHousePnModel wareHousePn = entryPn.getWareHousePn();
+			
+			float pnum = entryPn.getProducedNum();
+			if(wareHousePn == null) {
+				//还没入库过，新建
+				wareHousePn = new WareHousePnModel();
+				wareHousePn.setPn(entryPn.getPn());
+				wareHousePn.setProducedNum(pnum);
+				wareHousePnService.add(wareHousePn);
+			} else {
+				wareHousePn.setProducedNum(wareHousePn.getProducedNum() + pnum);
+				wareHousePnService.update(wareHousePn);
+			}
+
+			//マージする
+			Map<Integer, BOMUseNumBean> tmpCalcUsedBOMs = pnService.calcUsedBOM(entryPn.getPn(), pnum);
+			for(Integer bomId : tmpCalcUsedBOMs.keySet()) {
+				BOMUseNumBean tmpBean = tmpCalcUsedBOMs.get(bomId);
+				
+				BOMUseNumBean bean = calcUsedBOMs.get(bomId);
+				if(bean == null) {
+					calcUsedBOMs.put(bomId, tmpBean);
+				} else {
+					bean.setUseNum(bean.getUseNum() + tmpBean.getUseNum());
+				}
+			}
+		}
+		
+		//更新原包材现场数据
+		
+		for(Integer bomId : calcUsedBOMs.keySet()) {
+			BOMUseNumBean bean = calcUsedBOMs.get(bomId);
+			BOMModel bom = bean.getBom();
+			
+			WareHouseBOMModel whBOM = new WareHouseBOMModel();
+			whBOM.setBom(bom);
+			whBOM = wareHouseBOMService.queryOne(whBOM);
+			float whNum = 0;
+			float remainNum = -1;
+			if(whBOM != null) {
+				whNum = whBOM.getDeliveryRemainingNum();
+			}
+			remainNum = whNum - bean.getUseNum();
+			if(remainNum < 0) {
+				//生产所耗BOM居然比之前出库的多，出库有问题，做错误处理
+				String msg = String.format("检测到该入库产品的原包材领料不足，请检查近期原包材出库单。<hr>原包材:%s %s<br>现场库存:%.2f %s<br>预计损耗:%.2f %s",
+						bom.getPn(),
+						bom.getName(),
+						whNum,
+						bom.getUnit().getName(),
+						bean.getUseNum(),
+						bom.getUnit().getName());
+				throw new PdsysException(msg);
+			}
+			whBOM.getFilterCond().put("UPDATE_DELIVERYREMAINNUM", true);
+			whBOM.setDeliveryRemainingNum(remainNum);
+			wareHouseBOMService.update(whBOM);
+		}
+		
+		entry.setEntryTime(new Date());
+		entry.setState(EntryState.ENTRIED.ordinal());
+		
+		wareHouseEntryMapper.update(entry);
+	}
+	
+	@Transactional
+	public void importEntry(MultipartFile[] files) {
 		if(files == null || files.length != 1) {
-			return JSONResponse.error("请选定一个文件进行导入");
+			throw new PdsysException("请选定一个文件进行导入");
 		}
 		
 		MultipartFile mpFile = files[0];
         if(mpFile.isEmpty()) {
-        	return JSONResponse.error("选定的文件为空");
+        	throw new PdsysException("选定的文件为空");
         }
 
         String tempPath = uploadService.saveTemp(mpFile);
@@ -281,18 +339,18 @@ public class WareHouseEntryService {
         try {
         	entry = reader.readBOM(tempPath);
         } catch(Exception e) {
-        	return JSONResponse.error(e.getMessage());
+        	throw new PdsysException(e.getMessage());
         }
 
         if(!SecurityContextUtils.isLoginUser(entry.getUser())) {
-			return JSONResponse.error("登录用户不是提交者！");
+        	throw new PdsysException("登录用户不是提交者！");
 		}
         
         WareHouseEntryModel e = new WareHouseEntryModel();
         e.setNo(entry.getNo());
         e.setType(entry.getType());
         if(queryOne(e) != null) {
-        	return JSONResponse.error("已经存在的入库单编号");
+        	throw new PdsysException("已经存在的入库单编号");
         }
         
         List<WareHouseEntryBOMModel> eboms = entry.getWareHouseEntryBOMs();
@@ -307,7 +365,5 @@ public class WareHouseEntryService {
         	ebom.setWareHouseEntry(e);
     		wareHouseEntryBOMService.add(ebom);
         }
- 
-        return JSONResponse.success().put("entry", entry);
 	}
 }

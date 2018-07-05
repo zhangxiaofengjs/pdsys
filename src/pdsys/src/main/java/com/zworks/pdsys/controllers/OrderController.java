@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zworks.pdsys.common.enumClass.OrderState;
+import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.SecurityContextUtils;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
@@ -105,7 +106,12 @@ public class OrderController extends BaseController{
 	@RequestMapping("/import")
 	@ResponseBody
 	public JSONResponse importFile(@RequestParam("file") MultipartFile[] files) {
-		return orderService.importFile(files);
+		try {
+			orderService.importFile(files);
+			return JSONResponse.success();
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
+		}
 	}
 	
 	/**

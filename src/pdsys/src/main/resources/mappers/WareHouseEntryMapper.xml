@@ -5,7 +5,6 @@
 	<resultMap id="wareHousePnResultMap" type="wareHousePnModel" >  
         <id column="wh_pn_id" property="id" />
         <result column="wh_pn_produced_num" property="producedNum" />  
-        <result column="wh_pn_semi_produced_num" property="semiProducedNum" />  
     </resultMap>
 	<resultMap id="wareHouseSemiPnResultMap" type="wareHouseSemiPnModel" >  
         <id column="wh_pn_id" property="id" />
@@ -55,7 +54,6 @@
 	<resultMap id="wareHouseEntryPnResultMap" type="wareHouseEntryPnModel">  
         <id column="e_pn_id" property="id" />  
         <result column="e_pn_produced_num" property="producedNum" />  
-        <result column="e_pn_semi_produced_num" property="semiProducedNum" />  
         <association property="pn" resultMap="pnResultMap" />
         <association property="wareHousePn" resultMap="wareHousePnResultMap" />
     </resultMap>
@@ -161,15 +159,13 @@
 		       upt_user.c_name as upt_user_name,
 		       e_pn.c_id as e_pn_id,
 		       e_pn.c_produced_num as e_pn_produced_num,
-		       e_pn.c_semi_produced_num as e_pn_semi_produced_num,
 		       pn.c_id as pn_id,
 		       pn.c_pn as pn_pn,
 		       pn.c_name as pn_name,
 		       unit.c_id as unit_id,
 		       unit.c_name as unit_name,
 		       wh_pn.c_id as wh_pn_id,
-		       wh_pn.c_produced_num as wh_pn_produced_num,
-		       wh_pn.c_semi_produced_num as wh_pn_semi_produced_num
+		       wh_pn.c_produced_num as wh_pn_produced_num
 		from entry_tbl as entry
 		left join user_tbl as user on entry.c_user_id = user.c_id
 		left join user_tbl as upt_user on entry.c_update_user_id = upt_user.c_id

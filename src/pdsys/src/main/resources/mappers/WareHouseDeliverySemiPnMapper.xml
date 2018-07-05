@@ -18,7 +18,6 @@
     </resultMap>
 	<resultMap id="wareHouseDeliveryPnResultMap" type="wareHouseDeliverySemiPnModel" >  
         <id column="d_pn_id" property="id" />  
-        <result column="d_pn_semi_produced_num" property="semiProducedNum" />  
         <result column="d_pn_produced_num" property="producedNum" />  
         <association property="wareHouseDelivery" resultMap="wareHouseDeliveryResultMap"/>
         <association property="pn" resultMap="pnResultMap"/>

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.enumClass.DeliveryState;
+import com.zworks.pdsys.common.enumClass.DeliveryType;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
@@ -247,10 +248,17 @@ public class WareHouseDeliveryController {
 		if(!SecurityContextUtils.isLoginUser(delivery.getUser())) {
 			return JSONResponse.error("当前用户不是提交者");
 		}
-		if(wareHouseDeliveryService.delivery(delivery)) {
+		
+		try {
+			if(delivery.getType() == DeliveryType.BOM.ordinal()) {
+				wareHouseDeliveryService.deliveryBOM(delivery);
+			}
+			else {
+				wareHouseDeliveryService.delivery(delivery);
+			}
 			return JSONResponse.success();
-		} else {
-			return JSONResponse.error("库存不足,请刷新页面。");
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
 		}
     }
 }

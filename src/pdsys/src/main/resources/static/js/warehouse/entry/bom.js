@@ -212,30 +212,14 @@ $(document).ready(function(){
 					"url":"/warehouse/entry/entry/" + $("#entry_id").val(),
 					"success": function(data) {
 						dlg.hide();
-						
-						if(data.success) {
-							var msgDlg = new CommonDlg();
-							msgDlg.showMsgDlg({
-								"target":"msg_div",
-								"type":"ok",
-								"msg":"入库成功!",
-								"ok": function(){
-									PdSys.refresh();
-								}});
-						} else {
-							var msgDlg = new CommonDlg();
-							msgDlg.showMsgDlg({
-								"target":"msg_div",
-								"type":"ok",
-								"msg":data.msg});
-						}
+						PdSys.success({
+							"ok": function(){
+								PdSys.refresh();
+						}});
 					},
 					"error": function(data) {
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":"发生错误,请联系管理员!"});
+						dlg.hide();
+						PdSys.alert(data.msg);
 					}
 				});
 			}

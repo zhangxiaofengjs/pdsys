@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zworks.pdsys.common.enumClass.EntryState;
+import com.zworks.pdsys.common.enumClass.EntryType;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.JSONResponse;
@@ -227,7 +228,12 @@ public class WareHouseEntryController {
 	@RequestMapping(value="/import/entry")
 	@ResponseBody
 	public JSONResponse importEntry(@RequestParam("file") MultipartFile[] files) {
-		return wareHouseEntryService.importEntry(files);
+		try {
+			wareHouseEntryService.importEntry(files);
+			return JSONResponse.success();
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
+		}
 	}
 	
 	/**
@@ -245,10 +251,16 @@ public class WareHouseEntryController {
 		if(!SecurityContextUtils.isLoginUser(entry.getUser())) {
 			return JSONResponse.error("当前用户不是提交者");
 		}
-		if(wareHouseEntryService.entry(entry)) {
+		
+		try {
+			if(entry.getType() == EntryType.PN.ordinal()) {
+				wareHouseEntryService.entryPn(entry);
+			} else {
+				wareHouseEntryService.entry(entry);
+			}
 			return JSONResponse.success();
-		} else {
-			return JSONResponse.error();
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
 		}
     }
 }

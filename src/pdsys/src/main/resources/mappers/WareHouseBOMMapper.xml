@@ -17,12 +17,14 @@
 	<resultMap id="warehouseBOMResultMap" type="wareHouseBOMModel" >  
         <id column="wh_id" property="id" />  
         <result column="wh_num" property="num" />  
+        <result column="wh_drnum" property="deliveryRemainingNum" />  
         <association property="bom" resultMap="bomResultMap"/>
     </resultMap>
     
 	<select id="queryList" parameterType="wareHouseBOMModel" resultMap="warehouseBOMResultMap">
 		select  wh_bom.c_id as wh_id,
 				wh_bom.c_num as wh_num,
+				wh_bom.c_delivery_remaining_num as wh_drnum,
 				bom.c_id as bom_id,
 				bom.c_pn as bom_pn,
 				bom.c_name as bom_name,
@@ -69,7 +71,14 @@
     
 	<update id="update"  parameterType="wareHouseBOMModel">
     	update warehouse_bom_tbl
-		set	c_num=#{num}
+		<set>
+	    	<if test="filterCond.UPDATE_NUM != null and filterCond.UPDATE_NUM">
+				c_num=#{num},
+			</if>
+			<if test="filterCond.UPDATE_DELIVERYREMAINNUM != null and filterCond.UPDATE_DELIVERYREMAINNUM">
+				c_delivery_remaining_num=#{deliveryRemainingNum},
+			</if>
+		</set>
     	<where>
 			c_id = #{id}
 		</where>

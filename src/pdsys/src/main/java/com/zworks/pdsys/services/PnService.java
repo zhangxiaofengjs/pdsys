@@ -1,16 +1,21 @@
 package com.zworks.pdsys.services;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zworks.pdsys.business.beans.BOMUseNumBean;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.mappers.PnMapper;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.PnBOMRelModel;
+import com.zworks.pdsys.models.PnClsBOMRelModel;
 import com.zworks.pdsys.models.PnClsModel;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.PnPnClsRelModel;
@@ -131,5 +136,44 @@ public class PnService {
 
 	public void deleteBOM(PnModel pn) {
 		pnMapper.deleteBOM(pn);
+	}
+	
+	public Map<Integer, BOMUseNumBean> calcUsedBOM(PnModel p, float count) {
+		PnModel pn = queryOne(p);
+		
+		Map<Integer, BOMUseNumBean> bomMap = new HashMap<Integer, BOMUseNumBean>();
+		
+		List<PnBOMRelModel> pnBOMRels = pn.getPnBOMRels();
+		for(PnBOMRelModel pnBOMRel : pnBOMRels) {
+			BOMModel bom = pnBOMRel.getBom();
+			float useNum = pnBOMRel.getUseNum() * count;
+			
+			addUserBOM(bomMap, bom, useNum);
+		}
+		
+		List<PnPnClsRelModel> pnClsRels = pn.getPnClsRels();
+		for(PnPnClsRelModel pnClsRel : pnClsRels) {
+			PnClsModel pnCls = pnClsRel.getPnCls();
+			List<PnClsBOMRelModel> pnClsBOMRels = pnCls.getPnClsBOMRels();
+			for(PnClsBOMRelModel pnClsBOMRel : pnClsBOMRels) {
+				BOMModel bom = pnClsBOMRel.getBom();
+				float useNum = pnClsBOMRel.getUseNum() * count;
+				
+				addUserBOM(bomMap, bom, useNum);
+			}
+		}
+		
+		return bomMap;
+	}
+
+	private void addUserBOM(Map<Integer, BOMUseNumBean> bomMap, BOMModel bom, float useNum) {
+		BOMUseNumBean bean = bomMap.get(bom.getId());
+		if(bean == null)
+		{
+			bean = new BOMUseNumBean();
+			bean.setBom(bom);
+			bomMap.put(bom.getId(), bean);
+		}
+		bean.setUseNum(bean.getUseNum() + useNum);
 	}
 }

@@ -54,7 +54,6 @@
     <resultMap id="whpnResultMap" type="wareHousePnModel" >  
         <id column="wh_pn_id" property="id" />
         <result column="wh_pn_produced_num" property="producedNum" />
-        <result column="wh_pn_semi_produced_num" property="semiProducedNum" />
     </resultMap>
 	<resultMap id="orderPnMapper" type="orderPnModel" >  
         <id column="order_pn_id" property="id" />  
@@ -112,8 +111,7 @@
    		       supplier.c_address as supplier_address,
    		       supplier.c_phone as supplier_phone,
 		       wh_pn.c_id as wh_pn_id,
-			   wh_pn.c_produced_num as wh_pn_produced_num,
-			   wh_pn.c_semi_produced_num as wh_pn_semi_produced_num
+			   wh_pn.c_produced_num as wh_pn_produced_num
 		from order_pn_tbl as order_pn 
 		left join order_tbl on order_tbl.c_id = order_pn.c_order_id 
 		left join pn_tbl as pn on order_pn.c_pn_id = pn.c_id 
@@ -146,7 +144,7 @@
 			</if>
 			<if test="filterCond.inWareHouse != null and filterCond.inWareHouse">
 				<!-- 查询还有库存的 -->
-				and (wh_pn.c_produced_num &gt; 0 or wh_pn.c_semi_produced_num &gt; 0)
+				and wh_pn.c_produced_num &gt; 0
 			</if>
 		</where>
 		order by pn.c_pn, pn_cls.c_name, bom.c_type, bom.c_pn
@@ -162,8 +160,7 @@
 			   ut.c_id as ut_id,
 			   ut.c_name as ut_name,
 			   wh_pn.c_id as wh_pn_id,
-			   wh_pn.c_produced_num as wh_pn_produced_num,
-			   wh_pn.c_semi_produced_num as wh_pn_semi_produced_num
+			   wh_pn.c_produced_num as wh_pn_produced_num
 		from order_pn_tbl order_pn 
 		left join pn_tbl as pn on order_pn.c_pn_id = pn.c_id 
 	    left join unit_tbl as ut on pn.c_unit_id = ut.c_id 

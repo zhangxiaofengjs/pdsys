@@ -202,21 +202,13 @@ $(document).ready(function(){
 					"url":"/warehouse/entry/entry/" + $("#entry_id").val(),
 					"success": function(data) {
 						dlg.hide();
-						
-						if(data.success) {
-							var msgDlg = new CommonDlg();
-							msgDlg.showMsgDlg({
-								"target":"msg_div",
-								"type":"ok",
-								"msg":"入库成功!",
-								"ok": function(){
-									PdSys.refresh();
-								}});
-						} else {
-							PdSys.alert(data.msg);
-						}
+						PdSys.success({
+							"ok": function(){
+								PdSys.refresh();
+							}});
 					},
 					"error": function(data) {
+						dlg.hide();
 						PdSys.alert(data.msg);
 					}
 				});

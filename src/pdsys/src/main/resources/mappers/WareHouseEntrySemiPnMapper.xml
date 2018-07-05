@@ -5,7 +5,6 @@
 	<resultMap id="wareHouseEntryPnResultMap" type="wareHouseEntrySemiPnModel" >  
         <id column="e_pn_id" property="id" />  
         <result column="e_pn_produced_num" property="producedNum" />  
-        <result column="e_pn_semi_produced_num" property="semiProducedNum" />  
     </resultMap>
 
 	<select id="queryList" parameterType="wareHouseEntrySemiPnModel" resultMap="wareHouseEntryPnResultMap">

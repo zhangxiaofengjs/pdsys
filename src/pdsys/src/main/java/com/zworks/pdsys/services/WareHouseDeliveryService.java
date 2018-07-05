@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.enumClass.DeliveryType;
 import com.zworks.pdsys.common.enumClass.OrderState;
+import com.zworks.pdsys.common.exception.PdsysException;
+import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.mappers.WareHouseDeliveryMapper;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
@@ -148,16 +150,15 @@ public class WareHouseDeliveryService {
 	}
 	
 	@Transactional
-	public boolean delivery(WareHouseDeliveryModel delivery) {
+	public void delivery(WareHouseDeliveryModel delivery) {
 		delivery.getFilterCond().put("LOCKUPDATE", true);
 		
 		if(delivery.getType() == (int)DeliveryType.PN.ordinal()) {
 			delivery = this.queryOneWithPn(delivery);
 			if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
 				//已经被其他人出库过
-				return false;
+				throw new PdsysException("已经出库，刷新再试");
 			}
-			Map<Integer, Float> pnDeliverySemiNumMap = new HashMap<Integer, Float>(); 
 			Map<Integer, Float> pnDeliveryNumMap = new HashMap<Integer, Float>(); 
 			Map<Integer, OrderModel> orderMap = new HashMap<Integer, OrderModel>();
 			
@@ -166,11 +167,7 @@ public class WareHouseDeliveryService {
 				PnModel pn = deliveryPn.getPn();
 				int pnId = pn.getId();
 				
-				float semiNum = 0, num = 0;
-				if(pnDeliverySemiNumMap.containsKey(pnId)) {
-					semiNum = pnDeliverySemiNumMap.get(pnId);
-				}
-				pnDeliverySemiNumMap.put(pnId, semiNum + deliveryPn.getSemiProducedNum());
+				float num = 0;
 				
 				if(pnDeliveryNumMap.containsKey(pnId)) {
 					num = pnDeliveryNumMap.get(pnId);
@@ -195,22 +192,20 @@ public class WareHouseDeliveryService {
 			WareHousePnModel whPn = new WareHousePnModel();
 			whPn.setPn(pn);
 			whPn.getFilterCond().put("LOCKUPDATE", true);
-			for (Integer pnId : pnDeliverySemiNumMap.keySet()) {
+			for (Integer pnId : pnDeliveryNumMap.keySet()) {
 				pn.setId(pnId);
 				WareHousePnModel wareHousePn = wareHousePnService.queryOne(whPn);
 				if(wareHousePn == null) {
-					return false;//库存不够
+					throw new PdsysException("库存不足，刷新再试");//库存不够
 				}
 				
-				float semiNum = wareHousePn.getSemiProducedNum() - pnDeliverySemiNumMap.get(pnId);
 				float num = wareHousePn.getProducedNum() - pnDeliveryNumMap.get(pnId);
-				if(num < 0 || semiNum < 0) {
+				if(num < 0) {
 					//库存不足
-					return false;
+					throw new PdsysException("库存不足，刷新再试");//库存不够
 				}
 				
 				wareHousePn.setProducedNum(num);
-				wareHousePn.setSemiProducedNum(semiNum);
 				wareHousePnService.update(wareHousePn);
 			}
 			
@@ -228,7 +223,7 @@ public class WareHouseDeliveryService {
 			delivery = this.queryOneWithSemiPn(delivery);
 			if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
 				//已经被其他人出库过
-				return false;
+				throw new PdsysException("已经出库，刷新再试");
 			}
 			for(WareHouseDeliverySemiPnModel deliveryPn : delivery.getWareHouseDeliverySemiPns()) {
 				WareHouseSemiPnModel wareHousePn = deliveryPn.getWareHouseSemiPn();
@@ -240,39 +235,17 @@ public class WareHouseDeliveryService {
 				
 				if(num < 0) {
 					//库存不足
-					return false;
+					throw new PdsysException("库存不足，刷新再试");//库存不够
 				}
 				wareHousePn.setNum(num);
 				
 				wareHouseSemiPnService.update(wareHousePn);
 			}
-		} else if(delivery.getType() == (int)DeliveryType.BOM.ordinal()) {
-			delivery = this.queryOneWithBOM(delivery);
-			if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
-				//已经被其他人出库过
-				return false;
-			}
-			for(WareHouseDeliveryBOMModel deliveryBOM : delivery.getWareHouseDeliveryBOMs()) {
-				WareHouseBOMModel wareHouseBOM = deliveryBOM.getWareHouseBOM();
-				
-				float num = -1;
-				if(wareHouseBOM != null) {
-					num = wareHouseBOM.getNum() - deliveryBOM.getNum();
-				}
-				
-				if(num < 0) {
-					//库存不足
-					return false;
-				}
-				wareHouseBOM.setNum(num);
-				
-				wareHouseBOMService.update(wareHouseBOM);
-			}
 		} else if(delivery.getType() == (int)DeliveryType.MACHINEPART.ordinal()) {
 			delivery = this.queryOneWithMachinePart(delivery);
 			if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
 				//已经被其他人出库过
-				return false;
+				throw new PdsysException("已经出库，刷新再试");
 			}
 			for(WareHouseDeliveryMachinePartModel deliveryMp : delivery.getWareHouseDeliveryMachineParts()) {
 				WareHouseMachinePartModel wareHouseMP = deliveryMp.getWareHouseMachinePart();
@@ -284,20 +257,55 @@ public class WareHouseDeliveryService {
 				
 				if(num < 0) {
 					//库存不足
-					return false;
+					throw new PdsysException("库存不足，刷新再试");//库存不够
 				}
 				wareHouseMP.setNum(num);
 				
 				wareHouseMachinePartService.update(wareHouseMP);
 			}
 		} else {
-			return false;
+			throw new PdsysException("未设定处理");
 		}
 		
 		delivery.setDeliveryTime(new Date());
 		delivery.setState(DeliveryState.DELIVERIED.ordinal());
 		
 		wareHouseDeliveryMapper.update(delivery);
-		return true;
+	}
+	
+	@Transactional
+	public void deliveryBOM(WareHouseDeliveryModel d) {
+		d.getFilterCond().put("LOCKUPDATE", true);
+		WareHouseDeliveryModel delivery = this.queryOneWithBOM(d);
+
+		if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
+			//已经被其他人出库过
+			throw new PdsysException("已经出库，刷新再试");
+		}
+		for(WareHouseDeliveryBOMModel deliveryBOM : delivery.getWareHouseDeliveryBOMs()) {
+			WareHouseBOMModel wareHouseBOM = deliveryBOM.getWareHouseBOM();
+			if(wareHouseBOM == null) {
+				//库存不足
+				throw new PdsysException("库存不足，刷新再试");
+			}
+			float num = wareHouseBOM.getNum() - deliveryBOM.getNum();
+			float deliveryRemainingNum = wareHouseBOM.getDeliveryRemainingNum() + deliveryBOM.getNum();
+			
+			if(num < 0) {
+				//库存不足
+				throw new PdsysException("库存不足，刷新再试");
+			}
+			
+			wareHouseBOM.setNum(num);
+			wareHouseBOM.setDeliveryRemainingNum(deliveryRemainingNum);
+			wareHouseBOM.getFilterCond().put("UPDATE_NUM", true);
+			wareHouseBOM.getFilterCond().put("UPDATE_DELIVERYREMAINNUM", true);
+			wareHouseBOMService.update(wareHouseBOM);
+		}
+		
+		delivery.setDeliveryTime(new Date());
+		delivery.setState(DeliveryState.DELIVERIED.ordinal());
+		
+		wareHouseDeliveryMapper.update(delivery);
 	}
 }
