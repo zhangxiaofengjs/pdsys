@@ -255,7 +255,10 @@ public class WareHouseEntryController {
 		try {
 			if(entry.getType() == EntryType.PN.ordinal()) {
 				wareHouseEntryService.entryPn(entry);
-			} else {
+			} else if(entry.getType() == EntryType.SEMIPN.ordinal()) {
+				wareHouseEntryService.entrySemiPn(entry);
+			}
+			else {
 				wareHouseEntryService.entry(entry);
 			}
 			return JSONResponse.success();

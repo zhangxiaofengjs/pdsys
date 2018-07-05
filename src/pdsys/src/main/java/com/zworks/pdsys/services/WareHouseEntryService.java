@@ -183,27 +183,7 @@ public class WareHouseEntryService {
 	
 	@Transactional
 	public void entry(WareHouseEntryModel entry) {
-		if(entry.getType() == EntryType.SEMIPN.ordinal()) {
-			entry = queryOneWithSemiPn(entry);
-			
-			for(WareHouseEntrySemiPnModel entryPn : entry.getWareHouseEntrySemiPns()) {
-				WareHouseSemiPnModel wareHousePn = entryPn.getWareHouseSemiPn();
-				
-				if(wareHousePn == null) {
-					//还没入库过，新建
-					wareHousePn = new WareHouseSemiPnModel();
-					wareHousePn.setPn(entryPn.getPn());
-					wareHousePn.setPnClsRel(entryPn.getPnClsRel());
-					wareHousePn.setNum(entryPn.getNum());
-					wareHouseSemiPnService.add(wareHousePn);
-				} else {
-					float semiNum = wareHousePn.getNum() + entryPn.getNum();
-					wareHousePn.setNum(semiNum);
-					
-					wareHouseSemiPnService.update(wareHousePn);
-				}
-			}
-		} else if(entry.getType() == EntryType.BOM.ordinal()) {
+		if(entry.getType() == EntryType.BOM.ordinal()) {
 			entry = queryOneWithBOM(entry);
 			
 			for(WareHouseEntryBOMModel entryBOM : entry.getWareHouseEntryBOMs()) {
@@ -272,22 +252,68 @@ public class WareHouseEntryService {
 				wareHousePnService.update(wareHousePn);
 			}
 
-			//マージする
-			Map<Integer, BOMUseNumBean> tmpCalcUsedBOMs = pnService.calcUsedBOM(entryPn.getPn(), pnum);
-			for(Integer bomId : tmpCalcUsedBOMs.keySet()) {
-				BOMUseNumBean tmpBean = tmpCalcUsedBOMs.get(bomId);
-				
-				BOMUseNumBean bean = calcUsedBOMs.get(bomId);
-				if(bean == null) {
-					calcUsedBOMs.put(bomId, tmpBean);
-				} else {
-					bean.setUseNum(bean.getUseNum() + tmpBean.getUseNum());
-				}
-			}
+			Map<Integer, BOMUseNumBean> tmpCalcUsedBOMs = pnService.calcUsedBOM(entryPn.getPn(), null, false, pnum);
+			MergeBOMUsedMap(calcUsedBOMs, tmpCalcUsedBOMs);
 		}
 		
-		//更新原包材现场数据
+		UpdateRemainingBOM(calcUsedBOMs);
 		
+		entry.setEntryTime(new Date());
+		entry.setState(EntryState.ENTRIED.ordinal());
+		
+		wareHouseEntryMapper.update(entry);
+	}
+
+	private void MergeBOMUsedMap(Map<Integer, BOMUseNumBean> calcUsedBOMs, Map<Integer, BOMUseNumBean> tmpCalcUsedBOMs) {
+		//マージする
+		for(Integer bomId : tmpCalcUsedBOMs.keySet()) {
+			BOMUseNumBean tmpBean = tmpCalcUsedBOMs.get(bomId);
+			
+			BOMUseNumBean bean = calcUsedBOMs.get(bomId);
+			if(bean == null) {
+				calcUsedBOMs.put(bomId, tmpBean);
+			} else {
+				bean.setUseNum(bean.getUseNum() + tmpBean.getUseNum());
+			}
+		}
+	}
+	
+	@Transactional
+	public void entrySemiPn(WareHouseEntryModel e) {
+		WareHouseEntryModel entry = queryOneWithSemiPn(e);
+		
+		Map<Integer, BOMUseNumBean> calcUsedBOMs = new HashMap<Integer, BOMUseNumBean>();
+		for(WareHouseEntrySemiPnModel entryPn : entry.getWareHouseEntrySemiPns()) {
+			WareHouseSemiPnModel wareHousePn = entryPn.getWareHouseSemiPn();
+
+			float semiNum = entryPn.getNum();
+			if(wareHousePn == null) {
+				//还没入库过，新建
+				wareHousePn = new WareHouseSemiPnModel();
+				wareHousePn.setPn(entryPn.getPn());
+				wareHousePn.setPnClsRel(entryPn.getPnClsRel());
+				wareHousePn.setNum(semiNum);
+				wareHouseSemiPnService.add(wareHousePn);
+			} else {
+				wareHousePn.setNum(semiNum + wareHousePn.getNum());
+				wareHouseSemiPnService.update(wareHousePn);
+			}
+			
+			//マージする
+			Map<Integer, BOMUseNumBean> tmpCalcUsedBOMs = pnService.calcUsedBOM(entryPn.getPn(), entryPn.getPnClsRel(), true, semiNum);
+			MergeBOMUsedMap(calcUsedBOMs, tmpCalcUsedBOMs);
+		}
+		
+		UpdateRemainingBOM(calcUsedBOMs);
+		
+		entry.setEntryTime(new Date());
+		entry.setState(EntryState.ENTRIED.ordinal());
+		
+		wareHouseEntryMapper.update(entry);
+	}
+
+	private void UpdateRemainingBOM(Map<Integer, BOMUseNumBean> calcUsedBOMs) {
+		//更新原包材现场数据
 		for(Integer bomId : calcUsedBOMs.keySet()) {
 			BOMUseNumBean bean = calcUsedBOMs.get(bomId);
 			BOMModel bom = bean.getBom();
@@ -303,7 +329,7 @@ public class WareHouseEntryService {
 			remainNum = whNum - bean.getUseNum();
 			if(remainNum < 0) {
 				//生产所耗BOM居然比之前出库的多，出库有问题，做错误处理
-				String msg = String.format("检测到该入库产品的原包材领料不足，请检查近期原包材出库单。<hr>原包材:%s %s<br>现场库存:%.2f %s<br>预计损耗:%.2f %s",
+				String msg = String.format("检测到该入库产品的原包材领料不足，请检查近期原包材出库单。<hr>原包材:%s %s<br>现场库存:%.2f %s<br>预计消耗:%.2f %s",
 						bom.getPn(),
 						bom.getName(),
 						whNum,
@@ -316,11 +342,6 @@ public class WareHouseEntryService {
 			whBOM.setDeliveryRemainingNum(remainNum);
 			wareHouseBOMService.update(whBOM);
 		}
-		
-		entry.setEntryTime(new Date());
-		entry.setState(EntryState.ENTRIED.ordinal());
-		
-		wareHouseEntryMapper.update(entry);
 	}
 	
 	@Transactional

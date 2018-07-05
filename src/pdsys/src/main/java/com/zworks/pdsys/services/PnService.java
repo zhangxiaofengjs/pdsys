@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.business.beans.BOMUseNumBean;
+import com.zworks.pdsys.common.enumClass.BOMType;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.mappers.PnMapper;
@@ -138,35 +139,63 @@ public class PnService {
 		pnMapper.deleteBOM(pn);
 	}
 	
-	public Map<Integer, BOMUseNumBean> calcUsedBOM(PnModel p, float count) {
+	public Map<Integer, BOMUseNumBean> calcUsedBOM(PnModel p, PnPnClsRelModel pnClsRel, boolean isSemi, float count) {
 		PnModel pn = queryOne(p);
 		
 		Map<Integer, BOMUseNumBean> bomMap = new HashMap<Integer, BOMUseNumBean>();
 		
+		//特有材计算
+		PnPnClsRelModel pnClsRelTgt = null;
+		List<PnPnClsRelModel> pnClsRels = pn.getPnClsRels();
+		for(PnPnClsRelModel pnClsRelTmp : pnClsRels) {
+			PnClsModel pnClsTmp = pnClsRelTmp.getPnCls();
+
+			//指定子类时，只计算指定子类的半成品
+			if(pnClsRel != null) {
+				PnClsModel pnCls = pnClsRel.getPnCls();
+				if(pnCls.getId() != pnClsTmp.getId()) {
+					continue;
+				}
+			}
+			
+			List<PnClsBOMRelModel> pnClsBOMRels = pnClsTmp.getPnClsBOMRels();
+			for(PnClsBOMRelModel pnClsBOMRel : pnClsBOMRels) {
+				BOMModel bom = pnClsBOMRel.getBom();
+				if(!isSemi) {
+					float useNum = pnClsBOMRel.getUseNum() * count;
+					addUsedBOM(bomMap, bom, useNum);
+				}
+				else if(isSemi && bom.getType() == BOMType.RAW.ordinal()) {
+					float useNum = pnClsBOMRel.getUseNum() / pnClsRelTmp.getNum() * count;
+					addUsedBOM(bomMap, bom, useNum);
+				}
+			}
+			
+			pnClsRelTgt = pnClsRelTmp;
+		}
+		
+		//每箱中包含子类的个数
+		float countByBox = pnClsRelTgt.getNum();
+		
+		//共通材计算
 		List<PnBOMRelModel> pnBOMRels = pn.getPnBOMRels();
 		for(PnBOMRelModel pnBOMRel : pnBOMRels) {
 			BOMModel bom = pnBOMRel.getBom();
-			float useNum = pnBOMRel.getUseNum() * count;
 			
-			addUserBOM(bomMap, bom, useNum);
-		}
-		
-		List<PnPnClsRelModel> pnClsRels = pn.getPnClsRels();
-		for(PnPnClsRelModel pnClsRel : pnClsRels) {
-			PnClsModel pnCls = pnClsRel.getPnCls();
-			List<PnClsBOMRelModel> pnClsBOMRels = pnCls.getPnClsBOMRels();
-			for(PnClsBOMRelModel pnClsBOMRel : pnClsBOMRels) {
-				BOMModel bom = pnClsBOMRel.getBom();
-				float useNum = pnClsBOMRel.getUseNum() * count;
-				
-				addUserBOM(bomMap, bom, useNum);
+			if(!isSemi) {
+				float useNum = pnBOMRel.getUseNum() * count;
+				addUsedBOM(bomMap, bom, useNum);
+			}
+			else if(isSemi && bom.getType() == BOMType.RAW.ordinal()) {
+				float useNum = pnBOMRel.getUseNum() / countByBox * count;
+				addUsedBOM(bomMap, bom, useNum);
 			}
 		}
 		
 		return bomMap;
 	}
 
-	private void addUserBOM(Map<Integer, BOMUseNumBean> bomMap, BOMModel bom, float useNum) {
+	private void addUsedBOM(Map<Integer, BOMUseNumBean> bomMap, BOMModel bom, float useNum) {
 		BOMUseNumBean bean = bomMap.get(bom.getId());
 		if(bean == null)
 		{

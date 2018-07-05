@@ -8,10 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zworks.pdsys.common.exception.PdsysException;
-import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.SecurityContextUtils;
-import com.zworks.pdsys.common.utils.UploadFileUtils;
-import com.zworks.pdsys.config.UploadConfig;
 import com.zworks.pdsys.mappers.OrderMapper;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
