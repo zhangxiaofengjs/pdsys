@@ -108,12 +108,13 @@ public class WareHouseEntryController {
 	@RequestMapping(value="/add/entry")
 	@ResponseBody
     public JSONResponse addEntry(@RequestBody WareHouseEntryModel entry, Model model) {
-		JSONResponse res = wareHouseEntryService.checkAddable(entry);
-		if(res.isSuccess()) {
-			wareHouseEntryService.add(entry);
-			return JSONResponse.success().put("entry", entry);
+		try {
+			wareHouseEntryService.checkAddable(entry);
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
 		}
-		return res;
+		wareHouseEntryService.add(entry);
+		return JSONResponse.success().put("entry", entry);
     }
 	
 	/**

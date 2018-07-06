@@ -21,28 +21,28 @@ import com.zworks.pdsys.services.ApprovalInfoService;
  */
 @Aspect
 @Component
-public class ResetApprovalInfoAspect {
+public class SetApprovalInfoAspect {
 	@Autowired
 	ApprovalInfoService approvalInfoService;
 	
-	@Pointcut("@annotation(com.zworks.pdsys.common.annotations.ResetApprovalInfo)")
-	public void resetApprovalInfoPointCut() {
+	@Pointcut("@annotation(com.zworks.pdsys.common.annotations.SetApprovalInfo)")
+	public void setApprovalInfoPointCut() {
 	}
 
-	@Around("resetApprovalInfoPointCut()")
+	@Around("setApprovalInfoPointCut()")
 	public Object adviceAnnoLog(ProceedingJoinPoint point) throws Throwable {
 		Object result = point.proceed();
 		if(result instanceof BaseModel) {
-			resetApprovalInfo(result);
+			setApprovalInfo(result);
 		} else if(result instanceof List<?>) {
 			for(Object obj : (List<?>)result) {
-				resetApprovalInfo(obj);
+				setApprovalInfo(obj);
 			}
 		}
 		return result;
 	}
 	
-	private void resetApprovalInfo(Object obj) {
+	private void setApprovalInfo(Object obj) {
 		if(obj instanceof BaseModel) {
 			BaseModel m = (BaseModel)obj;
 			ApprovalInfoModel approvalInfo = m.getApprovalInfo();

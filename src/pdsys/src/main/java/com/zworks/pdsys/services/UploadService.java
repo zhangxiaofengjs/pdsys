@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zworks.pdsys.common.utils.DateUtils;
-import com.zworks.pdsys.common.utils.UploadFileUtils;
+import com.zworks.pdsys.common.utils.IOUtils;
 import com.zworks.pdsys.config.UploadConfig;
 import com.zworks.pdsys.models.ImageModel;
 
@@ -24,7 +24,7 @@ public class UploadService {
 		String fileName = DateUtils.format(DateUtils.now(), DATE_TIME_PATTERN) + mpFile.getOriginalFilename();
     	String filePath = uploadConfig.getLocation() + uploadConfig.getTempFolder() + fileName;
 
-    	if(!UploadFileUtils.save(mpFile, filePath)) {
+    	if(!IOUtils.save(mpFile, filePath)) {
     		return null;
     	}
     	
@@ -43,7 +43,7 @@ public class UploadService {
         	String fileName = mpFile.getOriginalFilename();
         	String filePath = uploadConfig.getLocation() + uploadConfig.getImageFolder() + fileName;
         	
-        	if(!UploadFileUtils.save(mpFile, filePath)) {
+        	if(!IOUtils.save(mpFile, filePath)) {
         		return false;
         	}
 
@@ -57,6 +57,6 @@ public class UploadService {
 	}
 	
 	public void delete(String path) {
-		UploadFileUtils.delete(path);
+		IOUtils.delete(path);
 	}
 }

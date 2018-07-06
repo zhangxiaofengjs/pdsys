@@ -6,12 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.common.enumClass.ApprovalState;
-import com.zworks.pdsys.common.enumClass.NoticeType;
 import com.zworks.pdsys.common.utils.SecurityContextUtils;
 import com.zworks.pdsys.mappers.ApprovalInfoMapper;
 import com.zworks.pdsys.models.ApprovalInfoModel;
 import com.zworks.pdsys.models.ApprovalNodeModel;
-import com.zworks.pdsys.models.NoticeModel;
 import com.zworks.pdsys.models.UserModel;
 
 @Service

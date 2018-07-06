@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zworks.pdsys.common.annotations.ResetApprovalInfo;
+import com.zworks.pdsys.common.annotations.SetApprovalInfo;
 import com.zworks.pdsys.common.enumClass.ApprovalState;
 import com.zworks.pdsys.common.enumClass.ApprovalType;
 import com.zworks.pdsys.common.enumClass.NoticeType;
@@ -72,7 +72,7 @@ public class PurchaseService {
 		}
 	}
 
-	@ResetApprovalInfo
+	@SetApprovalInfo
 	public PurchaseModel queryOne(PurchaseModel purchase) {
 		List<PurchaseModel> ps = queryList(purchase);
 		if(ps.size() == 1) {
@@ -85,7 +85,7 @@ public class PurchaseService {
 		purchaseMapper.update(purchase);
 	}
 
-	@ResetApprovalInfo
+	@SetApprovalInfo
 	public List<PurchaseModel> queryList(PurchaseModel purchase) {
 		List<PurchaseModel> purchases = purchaseMapper.queryList(purchase);
 		return purchases;

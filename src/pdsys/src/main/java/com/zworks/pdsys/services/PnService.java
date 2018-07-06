@@ -1,6 +1,5 @@
 package com.zworks.pdsys.services;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,6 +127,7 @@ public class PnService {
 		return false;
 	}
 
+	@Transactional
 	public void addBOM(PnModel pn) {
 		for(PnBOMRelModel bomRel : pn.getPnBOMRels()) {
 			bomRel.getFilterCond().put("pnId", pn.getId());

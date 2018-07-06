@@ -18,7 +18,7 @@ import com.zworks.pdsys.business.beans.PurchaseBOMListFromBean;
 import com.zworks.pdsys.common.enumClass.ApprovalState;
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.enumClass.PurchaseState;
-import com.zworks.pdsys.common.utils.DateUtils;
+import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
 import com.zworks.pdsys.models.ApprovalInfoModel;
@@ -309,9 +309,10 @@ public class PurchaseController {
 		}
 		
 		WareHouseEntryModel entry = purchase.getWareHouseEntry();
-		JSONResponse res = wareHouseEntryService.checkAddable(entry);
-		if(!res.isSuccess()) {
-			return res;
+		try {
+			wareHouseEntryService.checkAddable(entry);
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
 		}
 		
 		p.setWareHouseEntry(entry);

@@ -14,7 +14,6 @@ import com.zworks.pdsys.business.beans.BOMUseNumBean;
 import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.enumClass.EntryType;
 import com.zworks.pdsys.common.exception.PdsysException;
-import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.SecurityContextUtils;
 import com.zworks.pdsys.mappers.WareHouseEntryMapper;
 import com.zworks.pdsys.models.BOMModel;
@@ -162,11 +161,11 @@ public class WareHouseEntryService {
 		wareHouseEntryMapper.delete(entry);
 	}
 
-	public JSONResponse checkAddable(WareHouseEntryModel entry) {
+	public void checkAddable(WareHouseEntryModel entry) {
 		WareHouseEntryModel e = new WareHouseEntryModel();
 		e.setNo(entry.getNo());
 		if(exists(e)) {
-			return JSONResponse.error("已经存在单号:" + entry.getNo());
+			throw new PdsysException("已经存在单号:" + entry.getNo());
 		}
 		
 		e = new WareHouseEntryModel();
@@ -175,10 +174,8 @@ public class WareHouseEntryService {
 		e.setState(EntryState.PLANNING.ordinal());
 		List<WareHouseEntryModel> es = queryList(e);
 		if(es.size()!=0) {
-			return JSONResponse.error("当前用户[" + es.get(0).getUser().getName() + "]存在未处理单号:" + es.get(0).getNo());
+			throw new PdsysException("当前用户[" + es.get(0).getUser().getName() + "]存在未处理单号:" + es.get(0).getNo());
 		}
-		
-		return JSONResponse.success();
 	}
 	
 	@Transactional

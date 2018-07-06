@@ -1,13 +1,9 @@
 package com.zworks.pdsys.common.utils;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.springframework.web.multipart.MultipartFile;
 
-public class UploadFileUtils {
+public class IOUtils {
     /**
      * 将上传的文件保存到工程目录
      * @param file 文件

@@ -36,7 +36,6 @@ public class WareHouseDeliveryMachinePartService {
 		}
 	}
 
-
 	public void delete(WareHouseDeliveryMachinePartModel deliveryMachinePart) {
 		wareHouseDeliveryMachinePartMapper.delete(deliveryMachinePart);
 	}
