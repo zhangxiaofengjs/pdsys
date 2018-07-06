@@ -13,18 +13,21 @@ function createUnitGroupButtons(option) {
 						"label":"单位",
 						"type":"text",
 						"value":"",
+						"required":"required",
 					},
 					{
 						"name":"ratio",
 						"label":"换算为",
 						"type":"number",
 						"value":"0",
+						"required":"required",
 					},
 					{
 						"name":"subName",
 						"label":"小单位",
 						"type":"text",
-						"value":""
+						"value":"",
+						"required":"required",
 					},
 				],
 				"url":"/unit/add",

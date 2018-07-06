@@ -8,13 +8,13 @@ $(document).ready(function(){
 				"name":"pn",
 				"label":"品目",
 				"type":"text",
-				"requried":"requried",
+				"required":"required",
 			},
 			{
 				"name":"name",
 				"label":"名称",
 				"type":"text",
-				"requried":"requried",
+				"required":"required",
 			},
 			{
 				"name":"unit.id",
@@ -82,7 +82,7 @@ $(document).ready(function(){
 				"type":"text",
 				"value":"",
 				"depend":true,
-				"requried":"requried",
+				"required":"required",
 			},
 			{
 				"name":"name",
@@ -90,7 +90,7 @@ $(document).ready(function(){
 				"type":"text",
 				"value":"",
 				"depend":true,
-				"requried":"requried",
+				"required":"required",
 			},
 			{
 				"name":"unit.id",

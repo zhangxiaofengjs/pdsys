@@ -21,19 +21,19 @@ $(document).ready(function(){
 				"name":"pn",
 				"label":"品番",
 				"type":"text",
-				"requried":"requried",
+				"required":"required",
 			},
 			{
 				"name":"name",
 				"label":"名称",
 				"type":"text",
-				"requried":"requried",
+				"required":"required",
 			},
 			{
 				"name":"price",
 				"label":"单价",
 				"type":"number",
-				"requried":"requried",
+				"required":"required",
 			},
 			{
 				"name":"unit.id",
@@ -124,7 +124,7 @@ $(document).ready(function(){
 				"type":"text",
 				"value":"",
 				"depend":true,
-				"requried":"requried",
+				"required":"required",
 			},
 			{
 				"name":"name",
@@ -132,13 +132,13 @@ $(document).ready(function(){
 				"type":"text",
 				"value":"",
 				"depend":true,
-				"requried":"requried",
+				"required":"required",
 			},
 			{
 				"name":"price",
 				"label":"单价",
 				"type":"number",
-				"requried":"requried",
+				"required":"required",
 			},
 			{
 				"name":"unit.id",

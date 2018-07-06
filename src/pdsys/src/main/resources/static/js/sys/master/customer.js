@@ -7,7 +7,7 @@ $(document).ready(function(){
 				"name":"name",
 				"label":"姓名",
 				"type":"text",
-				"requried":"requried"
+				"required":"required"
 			},
 			{
 				"name":"phone",
@@ -60,7 +60,7 @@ $(document).ready(function(){
 				"label":"姓名",
 				"type":"text",
 				"value":"",
-				"requried":"requried",
+				"required":"required",
 				"depend": true,
 			},
 			{

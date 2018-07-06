@@ -13,6 +13,7 @@ function createSupplierGroupButtons(option) {
 						"label":"供应商名",
 						"type":"text",
 						"value":"",
+						"required":"required",
 					},
 					{
 						"name":"phone",
