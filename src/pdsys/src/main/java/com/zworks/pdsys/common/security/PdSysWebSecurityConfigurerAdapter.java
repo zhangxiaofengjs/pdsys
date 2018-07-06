@@ -45,7 +45,7 @@ public class PdSysWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdap
     @Override  
     protected void configure(HttpSecurity http) throws Exception {  
         http.authorizeRequests()  
-        		.antMatchers("/sys/master/**", "/sys/**").hasAuthority(ROLE.ADMIN)
+        		//.antMatchers("/sys/master/**", "/sys/**").hasAuthority(ROLE.ADMIN)
                 .anyRequest().authenticated() //任何请求,登录后可以访问
                 .and()//Refused to display 'http://localhost:8080/pdsys/main.html' in a frame because it set 'X-Frame-Options' to 'deny'
                 	.headers().frameOptions().disable()//现存框架使用了iframe构造，所以避免上述错误，暂且disable

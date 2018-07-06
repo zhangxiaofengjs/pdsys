@@ -140,7 +140,9 @@
 		                </li>  
 		           	</ul>  
 	       		</li>
-	       		<li sec:authorize="${hasAnyAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN, T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_USER, T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_MASTER)}">
+	       		<li sec:authorize="${hasAnyAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN, 
+	       											 T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_USER, 
+	       											 T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_MASTER)}">
 	                 <a href="#sysmgr" class="nav-header collapsed" style="margin-right:0px;" data-toggle="collapse">
 	                 	 <i class="glyphicon glyphicon-cog"></i>
 					     <span style="margin-left:5px;">
