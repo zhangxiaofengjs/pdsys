@@ -82,7 +82,7 @@
 		where c_id = #{id}
 	</update>
 	
-	<insert id="save" parameterType="orderModel" useGeneratedKeys="true" keyProperty="id">
+	<insert id="add" parameterType="orderModel" useGeneratedKeys="true" keyProperty="id">
 		insert into order_tbl
 		(
 			`c_no`,

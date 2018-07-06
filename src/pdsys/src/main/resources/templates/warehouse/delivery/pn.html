@@ -104,7 +104,6 @@
 							 unit=${pn.unit},
 	 						 order=${wareHouseDeliveryPn.order},
 	 						 wareHousePn=${wareHouseDeliveryPn.wareHousePn},
-	 						 wareHousesSemiNum=(${wareHousePn != null}?${wareHousePn.semiProducedNum}:0),
 	 						 wareHouseNum=(${wareHousePn != null}?${wareHousePn.producedNum}:0)"
 							 th:rowid="${wareHouseDeliveryPn.id}">
 					<td>

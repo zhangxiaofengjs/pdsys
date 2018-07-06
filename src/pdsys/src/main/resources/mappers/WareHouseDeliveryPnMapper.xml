@@ -74,7 +74,7 @@
     	insert into delivery_pn_tbl (
     		c_delivery_id,
     		c_order_id,
-    		c_ref_id
+    		c_ref_id,
     		c_produced_num) 
     	values (
     		#{wareHouseDelivery.id},

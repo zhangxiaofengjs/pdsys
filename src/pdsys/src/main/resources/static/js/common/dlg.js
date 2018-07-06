@@ -195,15 +195,7 @@ CommonDlg.prototype.rebuildField = function(fieldOrName) {
 	}
 	var strFieldHtml = self.buildField(field);
 
-	var fieldElm = self.findFieldElem(field);
-	var fieldElmParent = fieldElm.parent();
-	
-	if(field.type=='select') {
-		//bootstrap-select 会产生一些其他元素，先一并删除，否则等下refresh会产生多余元素
-		fieldElmParent.children().remove();
-	} else {
-		fieldElm.remove();
-	}
+	var fieldElmParent = self.removeFieldElem(field);
 	fieldElmParent.prepend(strFieldHtml);
 	self.refreshSelectPickField(field);
 	
@@ -310,13 +302,7 @@ CommonDlg.prototype.buildAjaxField = function(field) {
 			field.convertAjaxData(field, response);
 			var strFieldHtml = self.buildField(field);
 			
-			var thisFiledElemParent = $(this).parent();
-			if(field.type=='select') {
-				//bootstrap-select 会产生一些其他元素，先一并删除，否则等下refresh会产生多余元素
-				thisFiledElemParent.children().remove();
-			} else {
-				$(this).remove();
-			}
+			var thisFiledElemParent = self.removeFieldElem(field);
 			thisFiledElemParent.prepend(strFieldHtml);
 			
 			//bootstrap-select 搜索框必须刷新才能显示
@@ -333,6 +319,31 @@ CommonDlg.prototype.buildAjaxField = function(field) {
 	});
 };
 
+CommonDlg.prototype.removeFieldElem = function(field) {
+	var fieldElem = $(("#"+field.name).safeJqueryId());
+	var filedElemParent = fieldElem.parent();
+	
+	if(field.type=='select') {
+		//bootstrap-select 会产生一些其他元素，先一并删除，否则等下refresh会产生多余元素
+		if(fieldElem.is("div")) {
+			//如果是 加载中...的消息图标的话，直接移除即可
+			fieldElem.remove();
+			return filedElemParent;//返回他的亲
+		}
+		
+		var parent = filedElemParent.parent();
+		if(filedElemParent.hasClass("bootstrap-select")) {
+			//是第二次加载已经被额外添加了select以外的其他元素，直接移除该亲元素即可
+			filedElemParent.remove();
+			return parent;//返回亲的亲
+		} else {
+			alert("未想定处理");
+		}
+	} else {
+		fieldElem.remove();
+		return filedElemParent;
+	}
+}
 CommonDlg.prototype.refreshSelectPickField = function(fieldOrName) {
 	var field = fieldOrName;
 	if(typeof(field)=="string"){
