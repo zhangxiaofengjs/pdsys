@@ -219,6 +219,11 @@ public class WareHouseEntryController {
 		if(entry.getState() != EntryState.PLANNING.ordinal()) {
 			return JSONResponse.error("只能删除计划中入库单");
 		}
+		
+		if(!SecurityContextUtils.isLoginUser(entry.getUser())) {
+			return JSONResponse.error("当前用户不是提交者");
+		}
+		
 		wareHouseEntryService.delete(entry);
 		return JSONResponse.success();
 	}

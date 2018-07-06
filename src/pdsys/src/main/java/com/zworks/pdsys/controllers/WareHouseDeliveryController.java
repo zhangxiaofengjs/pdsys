@@ -192,7 +192,9 @@ public class WareHouseDeliveryController {
 		if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
 			return JSONResponse.error("只能删除计划中出库单");
 		}
-		
+		if(!SecurityContextUtils.isLoginUser(delivery.getUser())) {
+			return JSONResponse.error("当前用户不是提交者");
+		}
 		wareHouseDeliveryService.delete(delivery);
 		return JSONResponse.success();
 	}

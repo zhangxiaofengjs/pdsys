@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.zworks</groupId>
 	<artifactId>pdsys</artifactId>
-	<version>v20180704</version>
+	<version>v20180706</version>
 	<packaging>jar</packaging>
 	<description>生产系统</description>
 
