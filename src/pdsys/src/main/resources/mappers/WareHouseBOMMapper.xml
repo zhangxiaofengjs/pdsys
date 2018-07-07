@@ -64,7 +64,7 @@
     	values (
     		#{bom.id},
     		#{num},
-    		#{deliveryRemainingNum},
+    		#{deliveryRemainingNum}
     	)
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
