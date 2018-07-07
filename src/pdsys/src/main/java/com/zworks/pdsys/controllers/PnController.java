@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.services.OrderService;
@@ -82,7 +83,12 @@ public class PnController {
 	@RequestMapping(value="/deletepncls")
 	@ResponseBody
 	public JSONResponse deletePnCls(@RequestBody PnModel pn) {
-		pnService.deletePnCls(pn);
+		try {
+			pnService.deletePnCls(pn);
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
+		}
+		
 		return JSONResponse.success();
 	}
 	

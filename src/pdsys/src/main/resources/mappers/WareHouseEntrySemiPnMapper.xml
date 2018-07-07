@@ -13,13 +13,13 @@
 		       e_pn.c_num as e_pn_num
 		from entry_semi_pn_tbl as e_pn
 		<where>
-			<if test="wareHouseEntry.id > 0">
+			<if test="wareHouseEntry != null and wareHouseEntry.id > 0">
 				and e_pn.c_entry_id=#{wareHouseEntry.id}
 			</if>
-			<if test="pn.id > 0">
+			<if test="pn != null and pn.id > 0">
 				and e_pn.c_pn_id=#{pn.id}
 			</if>
-			<if test="pnClsRel.pnCls.id > 0">
+			<if test="pnClsRel != null and pnClsRel.pnCls != null and pnClsRel.pnCls.id > 0">
 				and e_pn.c_pn_cls_id=#{pnClsRel.pnCls.id}
 			</if>
 		</where>

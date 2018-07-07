@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.business.beans.SemiPnClsDetailBean;
 import com.zworks.pdsys.business.beans.SemiPnDetailBean;
+import com.zworks.pdsys.common.exception.PdsysException;
+import com.zworks.pdsys.common.utils.ListUtils;
 import com.zworks.pdsys.mappers.WareHouseSemiPnMapper;
+import com.zworks.pdsys.models.PnClsModel;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.PnPnClsRelModel;
 import com.zworks.pdsys.models.WareHouseSemiPnModel;
@@ -91,5 +94,19 @@ public class WareHouseSemiPnService {
 		}
 		
 		return l;
+	}
+
+	public void checkUsedPnCls(PnClsModel pnCls) {
+		WareHouseSemiPnModel semiPn = new WareHouseSemiPnModel();
+		PnPnClsRelModel pnClsRel = new PnPnClsRelModel();
+		pnClsRel.setPnCls(pnCls);
+		semiPn.setPnClsRel(pnClsRel);
+
+		List<WareHouseSemiPnModel> list = queryList(semiPn);
+		if(!ListUtils.isNullOrEmpty(list)) {
+			semiPn = list.get(0);
+			PnModel pn = semiPn.getPn();
+			throw new PdsysException(String.format("半成品仓库使用中:%s %s %s", pn.getPn(), pn.getName(), semiPn.getPnClsRel().getPnCls().getName()));
+		}
 	}
 }

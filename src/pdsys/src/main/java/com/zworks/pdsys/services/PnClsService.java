@@ -14,6 +14,12 @@ import com.zworks.pdsys.models.PnClsModel;
 public class PnClsService {
 	@Autowired
     private PnClsMapper pnClsMapper;
+	@Autowired
+	private WareHouseSemiPnService wareHouseSemiPnService;
+	@Autowired
+	private WareHouseEntrySemiPnService wareHouseEntrySemiPnService;
+	@Autowired
+	private WareHouseDeliverySemiPnService wareHouseDeliverySemiPnService;
 	
 	public List<PnClsModel> queryList(PnClsModel pnClsModel) {
 		return pnClsMapper.queryList(pnClsModel);
@@ -79,5 +85,11 @@ public class PnClsService {
 		}
 		
 		return false;
+	}
+
+	public void checkUsed(PnClsModel pnCls) {
+		wareHouseSemiPnService.checkUsedPnCls(pnCls);
+		wareHouseEntrySemiPnService.checkUsedPnCls(pnCls);
+		wareHouseDeliverySemiPnService.checkUsedPnCls(pnCls);
 	}
 }

@@ -6,7 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zworks.pdsys.common.exception.PdsysException;
+import com.zworks.pdsys.common.utils.ListUtils;
 import com.zworks.pdsys.mappers.WareHouseDeliverySemiPnMapper;
+import com.zworks.pdsys.models.PnClsModel;
+import com.zworks.pdsys.models.PnPnClsRelModel;
 import com.zworks.pdsys.models.WareHouseDeliverySemiPnModel;
 
 /**
@@ -47,5 +51,17 @@ public class WareHouseDeliverySemiPnService {
 
 	public void update(WareHouseDeliverySemiPnModel deliveryPn) {
 		wareHouseDeliverySemiPnMapper.update(deliveryPn);
+	}
+
+	public void checkUsedPnCls(PnClsModel pnCls) {
+		WareHouseDeliverySemiPnModel semiPn = new WareHouseDeliverySemiPnModel();
+		PnPnClsRelModel pnClsRel = new PnPnClsRelModel();
+		pnClsRel.setPnCls(pnCls);
+		semiPn.setPnClsRel(pnClsRel);
+	
+		List<WareHouseDeliverySemiPnModel> list = queryList(semiPn);
+		if(!ListUtils.isNullOrEmpty(list)) {
+			throw new PdsysException("出库单使用中");
+		}
 	}
 }

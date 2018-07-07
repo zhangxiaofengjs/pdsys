@@ -269,6 +269,7 @@ $(document).ready(function(){
 						});
 					},
 					"error": function(data) {
+						dlg.hide();
 						PdSys.alert(data.msg);
 					}	
 				});

@@ -89,6 +89,8 @@ public class PnService {
 		List<PnPnClsRelModel> clsRels = pn.getPnClsRels();
 		for(PnPnClsRelModel pnClsRel : clsRels) {
 			PnClsModel pnCls = pnClsRel.getPnCls();
+			
+			pnClsService.checkUsed(pnCls);
 			pnClsService.delete(pnCls);
 		}
 		pnMapper.deletePnCls(pn);
