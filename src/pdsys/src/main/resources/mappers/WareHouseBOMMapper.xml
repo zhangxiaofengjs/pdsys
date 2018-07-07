@@ -59,10 +59,12 @@
 	<insert id="add" parameterType="wareHouseBOMModel">
     	insert into warehouse_bom_tbl (
     		c_bom_id,
-    		c_num)
+    		c_num,
+    		c_delivery_remaining_num)
     	values (
     		#{bom.id},
-    		#{num}
+    		#{num},
+    		#{deliveryRemainingNum},
     	)
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id

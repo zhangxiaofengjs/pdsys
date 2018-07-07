@@ -72,6 +72,21 @@
 					</choose>
 				</if>
 			</if>
+			<if test="pnClsRel != null and pnClsRel.pnCls != null">
+				<if test="pnClsRel.pnCls.id > 0">
+					and pnCls.c_id=#{pnClsRel.pnCls.id}
+				</if>
+				<if test="pnClsRel.pnCls.name != null and pnClsRel.pnCls.name != ''">
+					<choose>
+		                <when test="filterCond.fuzzyPnClsNameSearch != null and filterCond.fuzzyPnClsNameSearch">
+							and pnCls.c_name like '%${pnClsRel.pnCls.name}%'
+						</when>
+						 <otherwise>
+		                    and pnCls.c_name=#{pnClsRel.pnCls.name}
+		                </otherwise>
+					</choose>
+				</if>
+			</if>
 		</where>
 		order by pn.c_pn
 		<if test="_parameter != null and filterCond.LOCKUPDATE != null and filterCond.LOCKUPDATE">

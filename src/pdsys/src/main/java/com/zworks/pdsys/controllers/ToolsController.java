@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
+import com.zworks.pdsys.tools.ImportBOMTool;
 import com.zworks.pdsys.tools.ImportPnDefTool;
-
+import com.zworks.pdsys.tools.ImportPnTool;
 /**
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/05/29
@@ -22,6 +23,10 @@ import com.zworks.pdsys.tools.ImportPnDefTool;
 public class ToolsController {
 	@Autowired
 	ImportPnDefTool importPnDefTool;
+	@Autowired
+	ImportBOMTool importBOMTool;
+	@Autowired
+	ImportPnTool importPnTool;
 	
 	@RequestMapping("/importpndef")
 	@ResponseBody
@@ -34,4 +39,29 @@ public class ToolsController {
 		importPnDefTool.execute(path);
 		return JSONResponse.success().put("msg", "成功导入");
 	}
+	
+	@RequestMapping("/importbom")
+	@ResponseBody
+	public JSONResponse importBOMTool(Model model) throws InvalidFormatException, IOException {
+		String path = "c:/pdsys/bom.xlsx";
+		File file = new File(path);
+		if(!file.exists()) {
+			return JSONResponse.error().put("msg", "将导入文件放在服务器路径：c:/pdsys/bom.xlsx");
+		}
+		importBOMTool.execute(path);
+		return JSONResponse.success().put("msg", "成功导入");
+	}
+	
+	@RequestMapping("/importpn")
+	@ResponseBody
+	public JSONResponse ImportPnTool(Model model) throws InvalidFormatException, IOException {
+		String path = "c:/pdsys/pn.xlsx";
+		File file = new File(path);
+		if(!file.exists()) {
+			return JSONResponse.error().put("msg", "将导入文件放在服务器路径：c:/pdsys/pn.xlsx");
+		}
+		importPnTool.execute(path);
+		return JSONResponse.success().put("msg", "成功导入");
+	}
+	
 }

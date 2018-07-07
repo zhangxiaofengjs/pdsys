@@ -113,7 +113,7 @@ public class ImportPnDefTool {
 			is = new FileInputStream(filePath);  
 		             
 			Workbook wb = WorkbookFactory.create(is);
-			Sheet sheet = wb.getSheet("data");
+			Sheet sheet = wb.getSheetAt(0);
 			if(sheet == null) {
 				throw new PdsysException("没找到data sheet");
 			}
