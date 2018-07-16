@@ -1,9 +1,11 @@
 package com.zworks.pdsys.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.mappers.MachineMapper;
@@ -67,8 +69,29 @@ public class MachineService {
 		return false;
 	}
 
+	@Transactional
 	public void updateMachinePart(MachineModel machine) {
-		machineMapper.updateMachinePart(machine);
+		List<MachineMachinePartRelModel> deleteRels = new ArrayList<MachineMachinePartRelModel>();
+		List<MachineMachinePartRelModel> machineMachinePartRels = machine.getMachineMachinePartRels();
+		for(int i = machineMachinePartRels.size() - 1; i >= 0; i--) {
+			MachineMachinePartRelModel rel = machineMachinePartRels.get(i);
+			if(rel.getMaitenacePartNum() == 0) {
+				deleteRels.add(rel);
+				machineMachinePartRels.remove(rel);
+			} else {
+				//do nothing
+			}
+		}
+		
+		if(deleteRels.size()!=0) {
+			machine.setMachineMachinePartRels(deleteRels);
+			machineMapper.deleteMachinePart(machine);
+		}
+		
+		if(machineMachinePartRels.size()!=0) {
+			machine.setMachineMachinePartRels(machineMachinePartRels);
+			machineMapper.updateMachinePart(machine);
+		}
 	}
 
 	public void addMachinePart(MachineModel machine) {

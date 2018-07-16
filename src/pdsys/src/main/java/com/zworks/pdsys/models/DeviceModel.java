@@ -4,6 +4,10 @@ import java.util.Date;
 
 import org.apache.ibatis.type.Alias;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.zworks.pdsys.common.utils.DateJsonDeserializer;
+import com.zworks.pdsys.common.utils.DateJsonSerializer;
 import com.zworks.pdsys.common.utils.DateUtils;
 
 /**
@@ -16,6 +20,8 @@ public class DeviceModel extends BaseModel {
 	private MachineModel machine;
 	private PlaceModel place;
 	private UserModel user;
+	@JsonSerialize(using=DateJsonSerializer.class)
+    @JsonDeserialize(using=DateJsonDeserializer.class)
 	private Date maitenacedDate;
 	private int state;
 	public String getNo() {

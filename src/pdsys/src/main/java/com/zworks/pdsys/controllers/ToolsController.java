@@ -14,6 +14,7 @@ import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.tools.ImportBOMTool;
 import com.zworks.pdsys.tools.ImportPnDefTool;
 import com.zworks.pdsys.tools.ImportPnTool;
+import com.zworks.pdsys.tools.ImportDeviceTool;
 /**
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/05/29
@@ -27,6 +28,8 @@ public class ToolsController {
 	ImportBOMTool importBOMTool;
 	@Autowired
 	ImportPnTool importPnTool;
+	@Autowired
+	ImportDeviceTool importDeviceTool;
 	
 	@RequestMapping("/importpndef")
 	@ResponseBody
@@ -61,6 +64,18 @@ public class ToolsController {
 			return JSONResponse.error().put("msg", "将导入文件放在服务器路径：c:/pdsys/pn.xlsx");
 		}
 		importPnTool.execute(path);
+		return JSONResponse.success().put("msg", "成功导入");
+	}
+	
+	@RequestMapping("/importdevice")
+	@ResponseBody
+	public JSONResponse ImportDeviceTool(Model model) throws InvalidFormatException, IOException {
+		String path = "c:/pdsys/device.xlsx";
+		File file = new File(path);
+		if(!file.exists()) {
+			return JSONResponse.error().put("msg", "将导入文件放在服务器路径：c:/pdsys/device.xlsx");
+		}
+		importDeviceTool.execute(path);
 		return JSONResponse.success().put("msg", "成功导入");
 	}
 	

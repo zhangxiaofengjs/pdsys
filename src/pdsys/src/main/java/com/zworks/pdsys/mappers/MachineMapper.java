@@ -22,4 +22,6 @@ public interface MachineMapper {
 	void updateMachinePart(MachineModel machine);
 
 	void addMachinePart(MachineModel machine);
+
+	void deleteMachinePart(MachineModel machine);
 }

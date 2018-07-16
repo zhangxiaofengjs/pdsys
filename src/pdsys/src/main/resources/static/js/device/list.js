@@ -25,6 +25,11 @@ $(document).ready(function(){
 						{ 'value': 1, "caption" : "维护中"},
 						{ 'value': 2, "caption" : "故障"},
 					],
+				},
+				{
+					"name":"maitenacedDate",
+					"label":"保养时间",
+					"type":"date",
 				}
 			],
 	    	url : "/device/update",
@@ -190,7 +195,7 @@ $(document).ready(function(){
 		},
 		{
 			"name":"machineTrouble.id",
-			"label":"故障CODE",
+			"label":"故障",
 			"type":"select",
 			"options":[],
 			"ajax":true,
@@ -200,7 +205,7 @@ $(document).ready(function(){
 				data.forEach(function(mt, idx) {
 					thisField.options.push({
 						"value": mt.id,
-						"caption": mt.code,
+						"caption": mt.code + " " + mt.comment,
 					});
 				});
 			},

@@ -78,18 +78,20 @@
 			</if>
 
 		</where>
-		order by p.c_name asc, d.c_no asc
+		order by d.c_no asc, p.c_name asc
 	</select>
 	
 	<insert id="add" parameterType="deviceModel">
     	insert into device_tbl (
     		c_no,
     		c_machine_id,
+    		c_maitenaced_date,
     		c_place_id,
     		c_user_id)
     	values (
     		#{no},
     		#{machine.id},
+    		#{maitenacedDate},
     		#{place.id},
     		#{user.id}
     	)
@@ -100,7 +102,8 @@
     
 	<update id="update">
     	update device_tbl
-		set	c_state = #{state}
+		set	c_state = #{state},
+			c_maitenaced_date = #{maitenacedDate}
     	<where>
 			c_id = #{id}
 		</where>

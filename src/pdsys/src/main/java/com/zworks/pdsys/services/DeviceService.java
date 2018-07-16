@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.business.beans.DeviceMaitenaceMachinePartsBean;
+import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.mappers.DeviceMapper;
 import com.zworks.pdsys.mappers.DeviceRepairMapper;
 import com.zworks.pdsys.models.DeviceModel;
@@ -58,6 +59,9 @@ public class DeviceService {
 	}
 
 	public void add(DeviceModel device) {
+		if(device.getMaitenacedDate() == null) {
+			device.setMaitenacedDate(DateUtils.now());
+		}
 		deviceMapper.add(device);
 	}
 

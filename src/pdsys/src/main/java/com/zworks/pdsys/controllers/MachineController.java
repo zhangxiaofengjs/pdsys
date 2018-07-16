@@ -55,9 +55,9 @@ public class MachineController {
 		return JSONResponse.success();
     }
 	
-	@RequestMapping(value="/addMachinePart")
+	@RequestMapping(value="/editMachinePart")
 	@ResponseBody
-    public JSONResponse addMachinePart(@RequestBody MachineModel machine) {
+    public JSONResponse editMachinePart(@RequestBody MachineModel machine) {
 		if(machineService.existsMachinePart(machine)) {
 			machineService.updateMachinePart(machine);
 		} else {

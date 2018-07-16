@@ -419,7 +419,7 @@ $(document).ready(function(){
 			};
 		} else {
 			delAjaxData = {
-					"id":pnId,
+					"id":clsId,
 					"pnClsBOMRels":[{"bom":{"id":bomId}}]
 				};	
 		}

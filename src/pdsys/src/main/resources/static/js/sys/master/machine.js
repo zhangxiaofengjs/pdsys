@@ -281,6 +281,12 @@ $(document).ready(function(){
 				"value":"0"
 			},
 			{
+				"name":"msg",
+				"label":"*",
+				"type":"label",
+				"value":"<span style='color:#919292;'>指定为0时,将解除该维护零件</span>",
+			},
+			{
 				"name":"machineMachinePartRels[0].machinePart.unit.name",
 				"label":"单位",
 				"type":"label",
@@ -292,7 +298,7 @@ $(document).ready(function(){
 			"target":"dlg_div",
 			"caption":"添加 / 修改维护零件",
 			"fields":fields,
-			"url":"/machine/addMachinePart",
+			"url":"/machine/editMachinePart",
 			"success": function(data) {
 				dlg.hide();
 				PdSys.success({

@@ -68,6 +68,7 @@
 	            </choose>
 	        </if>
 		</where>
+		order by m.c_pn asc
 	</select>
 	
 	<insert id="add" parameterType="machineModel" keyProperty="id">
@@ -108,6 +109,15 @@
 		)
         </foreach >
 	</insert>
+	
+	<delete id="deleteMachinePart" parameterType="machineModel">
+		<foreach collection ="machineMachinePartRels" item="machineMachinePartRel" index= "index" separator =";">
+			delete from machine_part_relation_tbl 
+			<where>
+				c_machine_id=#{id} and c_machine_part_id=#{machineMachinePartRel.machinePart.id}
+			</where>
+        </foreach >
+	</delete>
 	
 	<update id="update" parameterType="machineModel">
     	update machine_tbl
