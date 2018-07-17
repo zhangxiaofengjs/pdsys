@@ -55,7 +55,7 @@ public class WareHouseEntryService {
 	@Autowired
     private PnService pnService;
 	@Autowired
-    private UploadService uploadService;
+    private FileService uploadService;
 	@Autowired
 	EntryTemplateReader reader;
 	

@@ -229,4 +229,98 @@ $(function () {
 			}
 		});
 	});
+	
+	$("[id^='uploadOrderFile_'").click(function(){
+		var self = $(this);
+		var orderId = self.attr('id').split("_")[1];
+		
+		var dlg = new CommonDlg();
+		dlg.showFormDlg({
+			"target":"uploadAttachment_div",
+			"caption":"上传附件",
+			"enctype":"multipart/form-data",
+			"method":"post",
+			"fields":[
+				{
+					"name":"id",
+					"type":"hidden",
+					"value":orderId,
+				},
+				{
+					"name":"file",
+					"type":"file",
+					"label":'选择导入附件文件',
+				}],
+			"url":"/order/attachment/add/",
+			"success": function(data) {
+				dlg.hide();
+				PdSys.success({
+					"ok":function(){
+						PdSys.refresh();
+					}});
+			},
+			"error": function(data) {
+				PdSys.alert(data.msg);
+			}
+		});
+	});
+	
+	$("[id^='deleteOrderFile_'").click(function(){
+		var self = $(this);
+		var orderId = self.attr('id').split("_")[1];
+		
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"deleteOrder_div",
+			"caption":"删除订单附件",
+			"type":"yesno",
+			"msg":"确定删除该订单附件?",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/order/attachment/delete",
+					"data":{"id":orderId},
+					"success": function(data) {
+						dlg.hide();
+						PdSys.success({
+							"ok":function(){
+								PdSys.refresh();
+							}});
+					},
+					"error": function(data) {
+						dlg.hide();
+						PdSys.alert(data.msg);
+					}
+				});
+			}
+		});
+	});
+	
+	$("[id^='downloadOrderFile_'").click(function(){
+		var self = $(this);
+		var orderId = self.attr('id').split("_")[1];
+		
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"deleteOrder_div",
+			"caption":"下载附件",
+			"type":"yesno",
+			"msg":"确定下载该订单附件?",
+			"yes": function() {
+				dlg.hide();
+				var form = $("<form>");//定义一个form表单,模拟提交，然后删除(ajax不能接受流类型)
+		        form.attr("style","display:none");
+		        form.attr("target","");
+		        form.attr("method","post");
+		        form.attr("action",PdSys.url("/order/attachment/download"));
+		        var fileInput = $("<input>");
+		        fileInput.attr("type","hidden");
+		        fileInput.attr("id","orderId");//设置属性的名字
+		        fileInput.attr("name","orderId");//设置属性的名字
+		        fileInput.attr("value",orderId);//设置属性的值
+		        $("body").append(form);//将表单放置在web中
+		        form.append(fileInput);
+		        form.submit().remove();//表单提交
+			}
+		});
+	});
 });

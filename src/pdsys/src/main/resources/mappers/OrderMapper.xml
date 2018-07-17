@@ -19,6 +19,7 @@
         <result column="o_ship_date" property="shipDate"/>  
         <result column="o_state" property="state"/>  
         <result column="o_comment" property="comment"/>
+        <result column="o_attachment" property="attachment"/>
         <association property="user" resultMap="userResultMap"/>
         <collection property="orderPns" ofType="orderPnModel" resultMap="orderPnResultMap" />
     </resultMap>
@@ -31,6 +32,7 @@
 			   o.c_ship_date as o_ship_date,
 			   o.c_state as o_state,
 			   o.c_comment as o_comment,
+			   o.c_attachment as o_attachment,
 			   o_pn.c_id as o_pn_id,
 			   o_pn.c_num as o_pn_num,
 			   o_pn.c_delivered_num as o_pn_delivered_num,
@@ -77,6 +79,9 @@
 			</if>
 			<if test="filterCond.update_comment != null and filterCond.update_comment">
 				c_comment = #{comment},
+			</if>
+			<if test="filterCond.update_attachment != null and filterCond.update_attachment">
+				c_attachment = #{attachment},
 			</if>
 		</set>
 		where c_id = #{id}

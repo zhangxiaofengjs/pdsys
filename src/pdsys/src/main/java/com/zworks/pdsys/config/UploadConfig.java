@@ -9,7 +9,7 @@ public class UploadConfig {
 	private String location;
 	private String tempFolder;
 	private String imageFolder;
-	private String orderImportFolder;
+	private String orderAttachmentFolder;
 
 	public String getLocation() {
 		return location;
@@ -35,11 +35,11 @@ public class UploadConfig {
 		this.tempFolder = tempFolder;
 	}
 
-	public String getOrderImportFolder() {
-		return orderImportFolder;
+	public String getOrderAttachmentFolder() {
+		return orderAttachmentFolder;
 	}
 
-	public void setOrderImportFolder(String orderImportFolder) {
-		this.orderImportFolder = orderImportFolder;
+	public void setOrderAttachmentFolder(String orderAttachmentFolder) {
+		this.orderAttachmentFolder = orderAttachmentFolder;
 	}
 }

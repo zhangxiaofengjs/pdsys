@@ -4,6 +4,7 @@ import java.io.File;
 import org.springframework.web.multipart.MultipartFile;
 
 public class IOUtils {
+	private final static char[] INVALID_FILE_NAME_CHAR = {'\\', '/', ':', '*', '?', '\"', '<', '>', '|'};
     /**
      * 将上传的文件保存到工程目录
      * @param file 文件
@@ -50,8 +51,36 @@ public class IOUtils {
         }
     }
 
+    public static String safeFileName(String fileName) {
+    	String str = fileName;
+    	for(char ch : INVALID_FILE_NAME_CHAR) {
+    		str = str.replace(ch, '-');
+    	}
+    	
+    	return str;
+    }
+    
 	public static boolean delete(String path) {
 		 File file = new File(path);
 		 return file.delete();
+	}
+
+	public static String fileName(String path) {
+		File file = new File(path);
+		return file.getName();
+	}
+
+	public static String appendFileName(String originalFilename, String strAppend, String seperator) {
+		int index = originalFilename.lastIndexOf(".");
+		String suffix = "";
+		String fileName = "";
+		if(index >= 0) {
+			fileName = originalFilename.substring(0, index);
+			suffix = originalFilename.substring(index + 1);
+		} else {
+			fileName = originalFilename;
+		}
+		
+		return IOUtils.safeFileName(fileName + seperator + strAppend + (suffix.isEmpty()?"":"." + suffix));
 	}
 }

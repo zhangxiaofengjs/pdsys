@@ -14,3 +14,8 @@
 .blue-font {
 	color:#0489B1;
 }
+
+.a-pointer {
+	cursor:pointer !important;
+	text-decoration:none !important;
+}

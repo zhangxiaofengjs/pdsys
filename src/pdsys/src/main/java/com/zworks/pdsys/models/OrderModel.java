@@ -54,6 +54,8 @@ public class OrderModel extends BaseModel implements Serializable {
 	
 	private List<OrderPnModel> orderPns;
 	
+	private String attachment;
+	
 	public String getNo() {
 		return no;
 	}
@@ -124,5 +126,13 @@ public class OrderModel extends BaseModel implements Serializable {
 
 	public void setOrderPns(List<OrderPnModel> orderPns) {
 		this.orderPns = orderPns;
+	}
+
+	public String getAttachment() {
+		return attachment;
+	}
+
+	public void setAttachment(String attachment) {
+		this.attachment = attachment;
 	}
 }

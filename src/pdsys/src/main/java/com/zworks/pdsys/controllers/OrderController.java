@@ -2,6 +2,9 @@ package com.zworks.pdsys.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -111,6 +114,38 @@ public class OrderController extends BaseController{
 			return JSONResponse.success();
 		} catch(PdsysException ex) {
 			return JSONResponse.error(ex.getMessage());
+		}
+	}
+	
+	@RequestMapping("/attachment/add")
+	@ResponseBody
+	public JSONResponse addAttachment(@RequestParam("id") int id, @RequestParam("file") MultipartFile[] files) {
+		try {
+			orderService.addAttachment(id, files);
+			return JSONResponse.success();
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
+		}
+	}
+	
+	@RequestMapping("/attachment/delete")
+	@ResponseBody
+	public JSONResponse deleteAttachment(@RequestBody OrderModel order) {
+		try {
+			orderService.deleteAttachment(order);
+			return JSONResponse.success();
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
+		}
+	}
+	
+	@RequestMapping("/attachment/download")
+	public void downloadAttachment(int orderId, HttpServletRequest request, HttpServletResponse response) {
+		try {
+			orderService.downloadAttachment(orderId, response);
+			//return JSONResponse.success();
+		} catch(PdsysException ex) {
+			//return JSONResponse.error(ex.getMessage());
 		}
 	}
 	

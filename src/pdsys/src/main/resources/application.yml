@@ -62,7 +62,7 @@ pdsys:
         location: c:/pdsys/upload/ #上传文件路径
         temp-folder: temp/ #临时文件夹
         image-folder: image/ #图形文件夹
-        order-import-folder: order/import #导入的订单文件夹
+        order-attachment-folder: order/attachment/ #导入的附件文件夹
     backup: #备份设定
         database:
             enable: true

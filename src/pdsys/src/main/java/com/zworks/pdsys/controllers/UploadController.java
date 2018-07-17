@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
-import com.zworks.pdsys.services.UploadService;
+import com.zworks.pdsys.services.FileService;
 
 /**
  * @author: ZHAI
@@ -19,7 +19,7 @@ import com.zworks.pdsys.services.UploadService;
 @RequestMapping("/upload")
 public class UploadController {
 	@Autowired
-	UploadService uploadService;
+	FileService uploadService;
 	
 	//上传
 	@RequestMapping(value="/image",method=RequestMethod.POST)

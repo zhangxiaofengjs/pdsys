@@ -40,6 +40,8 @@
 						<th>下单时间</th>
 						<th>交货期限</th>
 						<th>状态</th>
+						<th>负责人</th>
+						<th>附件</th>
 						<th>备注</th>
 					</tr>
 				</thead>
@@ -54,6 +56,21 @@
 				  		  <span class="label label-success" th:case="1">已完成</span>
 				  		  <span class="label label-default" th:case="2">已删除</span>
 				      </td>
+				      <td th:text="${order.user.name}"></td>
+				      <td>
+				      	<a th:id="${'uploadOrderFile_' + order.id}" th:orderId="${order.id}" th:if="${order.attachment == null}" class="glyphicon glyphicon-plus-sign a-pointer" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_ORDER)}" href="javascript:void(0);"></a>
+				      	<a th:id="${'downloadOrderFile_' + order.id}" 
+				      		th:orderId="${order.id}" 
+				      		th:if="${order.attachment != null}" 
+				      		th:title="${order.attachment}"
+				      		class="a-pointer" href="javascript:void(0);">
+				      		<span th:text="${#strings.length(order.attachment) > 8 ? #strings.abbreviate(order.attachment,8) : order.attachment}"></span>
+				      		<img width="16px" th:src="@{/icons/attachment.png}" />
+				      	</a>
+				      	<a th:id="${'deleteOrderFile_' + order.id}" th:orderId="${order.id}" th:if="${order.attachment != null and T(com.zworks.pdsys.common.utils.SecurityContextUtils).isLoginUser(order.user)}" class="a-pointer" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_ORDER)}" href="javascript:void(0);">
+				      		<img width="16px" th:src="@{/icons/delete.png}" />
+				      	</a>
+				      </td>
 				      <td th:text="${order.comment}"></td>
 				    </tr>
 				</tbody>
@@ -63,6 +80,7 @@
    	 	<div id="addOrder_div"></div>
    	 	<div id="updateOrder_div"></div>
    	 	<div id="importOrder_div"></div>
+   	 	<div id="uploadAttachment_div"></div>
    	 	<div id="deleteOrder_div"></div>
    	 	<div id="msg_div"></div>
 	</div>
