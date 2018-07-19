@@ -21,6 +21,9 @@
 		 			<button type="button" class="btn btn-sm btn-info" id="importEntry" th:if="${content=='list'}">Excel导入</button>
 	 			</div>
 	 			<button type="button" class="btn btn-sm btn-info" name="entryList" th:if="${content!='list'}">入库单一览</button>
+	 			<button type="button" class="btn btn-sm btn-info" id="printBtn" name="printBtn" th:if="${content!='list'}">
+		 		    <span class="glyphicon glyphicon-print" title="打印"></span>
+	 		    </button>
 	 			<div style="display:inline-block;" th:if="${entry.id >0 }  and ${entry.state == 0}" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_ENTRY_BOM)}">
 	 				<button type="button" class="btn btn-sm btn-info" name="addEntryBOM">增加入库项目</button>
 		 			<button type="button" class="btn btn-sm btn-info" name="deleteEntryBOM" >删除入库项目</button>
@@ -59,7 +62,7 @@
 	</th:block>
 	<th:block th:if="${content!='list'}" th:each="entryTgt : ${entries}">
 		<!-- 显示明细 -->
-		<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false">
+		<table class="table table-striped table-bordered table-hover table-condensed" contenteditable="false" id="detailDiv">
 			<thead>
 				<tr>
 					<th style="text-align:center;" th:colspan="9">

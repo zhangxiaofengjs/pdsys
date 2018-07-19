@@ -207,4 +207,7 @@ $(function () {
 		$(location).attr('href', url);
 	});
 
+	$("#printBtn").click(function(){
+		PdSys.print("detailDiv");
+	});
 });

@@ -288,4 +288,8 @@ $(document).ready(function(){
 			}
 		});
 	});
+	
+	$("#printBtn").click(function(){
+		PdSys.print("detailDiv");
+	});
 });

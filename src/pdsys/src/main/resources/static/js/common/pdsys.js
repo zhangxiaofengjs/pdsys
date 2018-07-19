@@ -83,3 +83,30 @@ PdSys.sysError = function() {
 		"type":"ok",
 		"msg":"发生系统错误,请联系管理员。"});
 }
+
+PdSys.print = function(option) {
+	var target = option;
+	if(typeof(option) != "string") {
+		target = option.target;
+	}
+	
+	$("#" + target).print({
+		title: '南通创通日用品有限公司',
+	    //Use Global styles
+	    globalStyles : true,
+	    //Add link with attrbute media=print
+	    mediaPrint : false,
+	    //Custom stylesheet
+	    //stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
+	    //Print in a hidden iframe
+	    iframe : true,
+	    //Don't print this
+	    noPrintSelector : ".no-print",
+	    //Add this at top
+	    prepend : "",
+	    //Add this on bottom
+	    append : '<div style="text-align:right;color:#9c9a9a;">© 2018-2028 ZWORKS  版权所有,仅供南通创通日用品有限公司使用</div>',
+	    //Log to console when printing is done via a deffered callback
+	    deferred: $.Deferred().done(function() { console.log('Printing done', arguments); })
+	});
+}

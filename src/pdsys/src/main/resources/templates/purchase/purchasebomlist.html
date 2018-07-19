@@ -19,6 +19,9 @@
 						   <input type="text" class="form-control" placeholder="原包材品番" name="bomPn" id="bomPn" th:value="${formBean.bomPn}">
 			 			</div>
 			 			<button type="submit" class="btn btn-sm btn-info" id="search">查找</button>
+			 			<button type="button" class="btn btn-sm btn-info" id="printBtn" name="printBtn">
+				 		    <span class="glyphicon glyphicon-print" title="打印"></span>
+			 		    </button>
 			 			<div class="form-group" style="display:inline-block;" th:if="${purchase.state == 0}" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_PURCHASE)}">
 			 				<button type="button" class="btn btn-sm btn-info" id="delPurchaseDetail" th:if="${purchase.state==0 && (purchase.approvalInfo.state==0 || purchase.approvalInfo.state==2)}">删除</button>
 			 			    <button type="button" class="btn btn-sm btn-info" id="addPurchaseDetail" th:if="${purchase.state==0 && (purchase.approvalInfo.state==0 || purchase.approvalInfo.state==2)}">追加</button>

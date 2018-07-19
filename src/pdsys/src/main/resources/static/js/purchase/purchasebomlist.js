@@ -290,4 +290,8 @@ $(function () {
 			}
 		});
 	});
+	
+	$("#printBtn").click(function(){
+		PdSys.print("store");
+	});
 });
