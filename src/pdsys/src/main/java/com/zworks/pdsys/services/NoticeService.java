@@ -15,6 +15,10 @@ public class NoticeService {
     private NoticeMapper noticeMapper;
 	
 	public void add(NoticeModel s) {
+		String content = s.getContent();
+		if(content.length() > 1024) {
+			s.setContent(content.substring(0, 1023));
+		}
 		noticeMapper.add(s);
 	}
 	

@@ -11,6 +11,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.zworks.pdsys.common.enumClass.DeviceState;
 import com.zworks.pdsys.common.enumClass.NoticeType;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.models.DeviceModel;
@@ -38,6 +39,7 @@ public class DeviceMaitenaceJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
     	//每天凌晨对接下来的7天内需保养的机器进行通知
     	DeviceModel d = new DeviceModel();
+    	d.setState(DeviceState.WORKING.ordinal());
     	d.getFilterCond().put("toMaitenaceInDays", 6);
     	d.setMaitenacedDate(new Date());
     	List<DeviceModel> ds = deviceService.queryList(d);

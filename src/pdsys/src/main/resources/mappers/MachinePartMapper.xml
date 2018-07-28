@@ -14,6 +14,7 @@
         <id column="mp_id" property="id"/>  
         <result column="mp_pn" property="pn"/>  
         <result column="mp_name" property="name"/>
+        <result column="mp_wareHouseMinNum" property="wareHouseMinNum"/>
         <association property="unit" resultMap="unitResultMap" />
         <association property="supplier" resultMap="supplierResultMap" />
     </resultMap>
@@ -23,6 +24,7 @@
 			mp.c_id as mp_id,
 			mp.c_pn as mp_pn,
 			mp.c_name as mp_name,
+			mp.c_ware_house_min_num as mp_wareHouseMinNum,
 			u.c_id as u_id,
 			u.c_name as u_name,
 			s.c_id as s_id,
@@ -45,6 +47,7 @@
 		(
 			c_pn,
 			c_name,
+			c_ware_house_min_num,
 			c_unit_id,
 			c_supplier_id
 		)
@@ -52,6 +55,7 @@
 		(
 			#{pn},
 			#{name},
+			#{wareHouseMinNum},
 			#{unit.id},
 			#{supplier.id}
 		)

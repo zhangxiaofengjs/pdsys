@@ -9,9 +9,13 @@ import java.io.PrintWriter;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.zworks.pdsys.PdSysApplication;
+import com.zworks.pdsys.common.annotations.PdSysLog;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.config.BackupDataBaseConfig;
 
@@ -25,6 +29,8 @@ public class DataBaseBackupJob implements Job {
 	@Autowired
 	BackupDataBaseConfig backupDataBaseConfig;
 	
+	protected static final Logger logger = LoggerFactory.getLogger(PdSysApplication.class);
+	
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
     	if(!backupDataBaseConfig.isEnable()) {
@@ -33,7 +39,10 @@ public class DataBaseBackupJob implements Job {
     	backup();
     }
     
+    @PdSysLog
     public boolean backup() {
+    	logger.debug("database backup start");
+    	
     	String backupPath = backupDataBaseConfig.getBackupDir() + "pdsys_" + DateUtils.format(DateUtils.now(), "yyyyMMddHHmmss") + ".dbdump";
     	
     	String cmdline = backupDataBaseConfig.getLocation() + "mysqldump" + 
@@ -41,6 +50,9 @@ public class DataBaseBackupJob implements Job {
     					" -u" + backupDataBaseConfig.getUserName() + 
     					" -p" + backupDataBaseConfig.getPassword() + 
     					" " + backupDataBaseConfig.getName();
+    	
+    	logger.debug("backupPath:" + backupPath);
+    	logger.debug("cmd:" + cmdline);
     	
     	PrintWriter printWriter = null;  
         BufferedReader bufferedReader = null;  
@@ -56,6 +68,7 @@ public class DataBaseBackupJob implements Job {
              }  
              printWriter.flush();  
              if(process.waitFor() == 0){//0 表示线程正常终止。  
+            	 logger.debug("database backup end successfully");
                  return true;  
              }  
          }catch (IOException e) {  
@@ -73,7 +86,9 @@ public class DataBaseBackupJob implements Job {
              } catch (IOException e) {  
                  e.printStackTrace();  
              }  
-         }  
+         }
+        
+        logger.debug("database backup end exception");
     	return false;
     }
 }

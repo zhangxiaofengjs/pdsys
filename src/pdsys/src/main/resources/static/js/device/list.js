@@ -10,6 +10,17 @@ $(document).ready(function(){
 		dlg.showFormDlg({
 			"target":"dlg_div",
 			"caption":"选择设备状态",
+			"ajax": {
+				"url":"/device/get",
+				"data":{
+					"id":selIds[0]
+				},
+				"convertAjaxData":function(data) {
+					//var fieldElem = dlg.fieldBy
+					dlg.rebuildFieldWithValue("state", data.device.state);
+					dlg.rebuildFieldWithValue("maitenacedDate", data.device.maitenacedDate);
+				}
+			},
 			"fields":[
 				{
 					"name":"id",
@@ -24,12 +35,14 @@ $(document).ready(function(){
 						{ 'value': 0, "caption" : "运行中"},
 						{ 'value': 1, "caption" : "维护中"},
 						{ 'value': 2, "caption" : "故障"},
+						{ 'value': 3, "caption" : "停用"},
 					],
 				},
 				{
 					"name":"maitenacedDate",
 					"label":"保养时间",
 					"type":"date",
+					"depend":true
 				}
 			],
 	    	url : "/device/update",

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.zworks</groupId>
 	<artifactId>pdsys</artifactId>
-	<version>v20180708</version>
+	<version>v20180730</version>
 	<packaging>jar</packaging>
 	<description>生产系统</description>
 
@@ -59,6 +59,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		
+		<!-- logging -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-logging</artifactId>
+		</dependency>
+
 		<!-- mybatis + mysql -->
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>

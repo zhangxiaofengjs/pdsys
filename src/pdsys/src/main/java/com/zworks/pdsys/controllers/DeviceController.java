@@ -40,6 +40,13 @@ public class DeviceController extends BaseController {
 		return "device/list";
     }
 	
+	@RequestMapping(value= {"/get"})
+	@ResponseBody
+	public JSONResponse get(@RequestBody DeviceModel device, Model model) {
+		DeviceModel d = deviceService.queryOne(device);
+		return JSONResponse.success().put("device", d);
+	}
+	
 	@RequestMapping(value= {"/update"})
 	@ResponseBody
 	public JSONResponse update(@RequestBody DeviceModel device, Model model) {

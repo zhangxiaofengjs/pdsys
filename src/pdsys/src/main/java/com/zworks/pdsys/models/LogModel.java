@@ -2,15 +2,13 @@ package com.zworks.pdsys.models;
 
 import java.util.Date;
 
-import com.zworks.pdsys.common.security.PdSysLoginUser;
-
 public class LogModel {
 	private String description;
 	private String method;
 	private String args;
 	private String ip;
 	private String url;
-	private PdSysLoginUser user;
+	private UserModel user;
 	private long elapseTime;
 	private Date time;
 	
@@ -44,10 +42,10 @@ public class LogModel {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public PdSysLoginUser getUser() {
+	public UserModel getUser() {
 		return user;
 	}
-	public void setUser(PdSysLoginUser user) {
+	public void setUser(UserModel user) {
 		this.user = user;
 	}
 	public long getElapseTime() {

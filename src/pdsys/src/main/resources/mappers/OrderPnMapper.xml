@@ -147,7 +147,7 @@
 				and wh_pn.c_produced_num &gt; 0
 			</if>
 		</where>
-		order by pn.c_pn, pn_cls.c_name, bom.c_type, bom.c_pn
+		order by order_pn.c_id, pn.c_pn, pn_cls.c_name, bom.c_type, bom.c_pn
 	</select>
 	
 	<select id="queryOrderPns" parameterType="orderPnModel" resultMap="orderPnMapper">

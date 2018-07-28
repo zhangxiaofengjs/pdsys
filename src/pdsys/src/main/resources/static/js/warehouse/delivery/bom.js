@@ -78,7 +78,7 @@ $(document).ready(function(){
 			"ajax":true,
 			"url":"/warehouse/list/bom/json",
 			"ajaxData":{
-				"filterCond":{"minCount": 1}
+				"filterCond":{"bigThan": 0}
 			},
 			"convertAjaxData" : function(thisField, data) {
 				//将返回的值转化为Field规格数据,以供重新渲染

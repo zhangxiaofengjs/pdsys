@@ -14,5 +14,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface PdSysLog {
-	String value() default "";
+	String description() default "";
 }

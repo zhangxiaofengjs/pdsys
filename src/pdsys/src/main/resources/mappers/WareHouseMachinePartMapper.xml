@@ -14,6 +14,7 @@
         <id column="mp_id" property="id" />  
         <result column="mp_pn" property="pn"/>  
         <result column="mp_name" property="name"/>  
+        <result column="mp_wareHouseMinNum" property="wareHouseMinNum"/>
         <association property="unit" resultMap="unitResultMap"/>
         <association property="supplier" resultMap="supplierResultMap"/>
     </resultMap>
@@ -29,6 +30,7 @@
 			   mp.c_id as mp_id,
 		       mp.c_pn as mp_pn,
 		       mp.c_name as mp_name,
+		       mp.c_ware_house_min_num as mp_wareHouseMinNum,
 		       unit.c_id as unit_id,
 		       unit.c_name as unit_name,
 		       supplier.c_id as supplier_id,
@@ -50,6 +52,9 @@
 			</if>
 			<if test="machinePart != null and machinePart.id > 0">
 				and mp.c_id=#{machinePart.id}
+			</if>
+			<if test="filterCond.bigThan != null">
+				wh_mp.c_num<![CDATA[>]]>#{filterCond.bigThan}
 			</if>
 		</where>
 	</select>

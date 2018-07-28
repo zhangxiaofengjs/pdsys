@@ -58,11 +58,13 @@
 			<if test="state &gt;= 0">
 				and s.c_state=#{state}
 			</if>
-			<if test="filterCond.start != null">
-				and s.c_create_time &gt;= #{filterCond.start}
-			</if>
-			<if test="filterCond.end != null">
-				and s.c_create_time &lt;= #{filterCond.end}
+			<if test="filterCond != null">
+				<if test="filterCond.start != null">
+					and s.c_create_time &gt;= #{filterCond.start}
+				</if>
+				<if test="filterCond.end != null">
+					and s.c_create_time &lt;= #{filterCond.end}
+				</if>
 			</if>
 			<if test="refId > 0">
 				and s.c_ref_id = #{refId}

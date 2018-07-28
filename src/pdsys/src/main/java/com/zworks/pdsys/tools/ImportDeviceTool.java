@@ -31,6 +31,7 @@ import com.zworks.pdsys.models.PlaceModel;
 import com.zworks.pdsys.models.SupplierModel;
 import com.zworks.pdsys.models.UnitModel;
 import com.zworks.pdsys.models.UserModel;
+import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.services.DeviceService;
 import com.zworks.pdsys.services.MachinePartService;
 import com.zworks.pdsys.services.MachineService;
@@ -39,6 +40,7 @@ import com.zworks.pdsys.services.PlaceService;
 import com.zworks.pdsys.services.SupplierService;
 import com.zworks.pdsys.services.UnitService;
 import com.zworks.pdsys.services.UserService;
+import com.zworks.pdsys.services.WareHouseMachinePartService;
 
 @Component
 @Scope("prototype")
@@ -59,6 +61,8 @@ public class ImportDeviceTool {
 	private MachineTroubleService machineTroubleService;
 	@Autowired
 	private DeviceService deviceService;
+	@Autowired
+	private WareHouseMachinePartService wareHouseMachinePartService;
 	
 	private Map<String, UnitModel> units = new HashMap<String, UnitModel>();
 	private Map<String, MachineModel> machines = new HashMap<String, MachineModel>();
@@ -67,6 +71,7 @@ public class ImportDeviceTool {
 	private Map<String, SupplierModel> suppliers = new HashMap<String, SupplierModel>();
 	private Map<String, MachinePartModel> mps = new HashMap<String, MachinePartModel>();
 	private Map<String, MachineTroubleModel> troubles = new HashMap<String, MachineTroubleModel>();
+	private Map<String, WareHouseMachinePartModel> whMps = new HashMap<String, WareHouseMachinePartModel>();
 
 	@Transactional(rollbackFor=Exception.class)
 	public boolean execute(String filePath) throws InvalidFormatException, IOException{
@@ -132,6 +137,12 @@ public class ImportDeviceTool {
 				MachineTroubleModel s = troubles.get(key);
 				machineTroubleService.add(s);
 			}
+			
+			for(String key : whMps.keySet()) {
+				WareHouseMachinePartModel s = whMps.get(key);
+				wareHouseMachinePartService.add(s);
+			}
+			
 //		} catch(Exception e) {
 //			e.printStackTrace();
 //			return false;
@@ -268,7 +279,9 @@ public class ImportDeviceTool {
 	            String useNum = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String unitName = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String supplierName = ExcelUtils.getCellValue(row.getCell(idx++));
-
+	            String minNumStr = ExcelUtils.getCellValue(row.getCell(idx++));
+	            String whNumStr = ExcelUtils.getCellValue(row.getCell(idx++));
+	            
 	            if("".equals(mPn)) {
 	            	break;
 	            }
@@ -308,6 +321,7 @@ public class ImportDeviceTool {
 	            mp.setName(pName);
 	            mp.setSupplier(supp);
 	            mp.setUnit(unit);
+	            mp.setWareHouseMinNum(Float.parseFloat(minNumStr));
 	            
 	            mp = addMachinePart(mp);
 	            
@@ -320,6 +334,11 @@ public class ImportDeviceTool {
 	            mpRel.setMachinePart(mp);
 	            mpRel.setMaitenacePartNum(Float.parseFloat(useNum));
 				mpRels.add(mpRel );
+				
+				WareHouseMachinePartModel whPart = new WareHouseMachinePartModel();
+				whPart.setMachinePart(mp);
+				whPart.setNum(Float.parseFloat(whNumStr));
+				whMps.put(mp.getPn(), whPart);
 	        }
 		} catch(Exception e) {
 			throw new PdsysException("保养耗材" + e.getMessage() + " \n错误行:" + (rowNo + 1), e);
@@ -374,6 +393,89 @@ public class ImportDeviceTool {
 			}
 		}
 	}
+	
+//	public void readMachineParts2(String filePath) throws InvalidFormatException, IOException{
+//		int rowNo = 0;
+//		InputStream is = null;
+//		try {
+//			
+//			is = new FileInputStream(filePath);  
+//		             
+//			Workbook wb = WorkbookFactory.create(is);
+//			Sheet sheet = wb.getSheet("维护备件合计表");
+//			if(sheet == null) {
+//				throw new PdsysException("没找到 sheet 维护备件合计表");
+//			}
+//			
+//			for(rowNo = 1; rowNo <= sheet.getLastRowNum(); rowNo++) {
+//				Row row = sheet.getRow(rowNo);
+//	  
+//				int idx = 0;
+//				String pPn = ExcelUtils.getCellValue(row.getCell(idx++));
+//	            String pName = ExcelUtils.getCellValue(row.getCell(idx++));
+//	            String mPn = ExcelUtils.getCellValue(row.getCell(idx++));
+//	            String unitName = ExcelUtils.getCellValue(row.getCell(idx++));
+//	            String nessaryNumStr = ExcelUtils.getCellValue(row.getCell(idx++));
+//	            String whNumStr = ExcelUtils.getCellValue(row.getCell(idx++));
+//
+//	            if("".equals(pPn)) {
+//	            	break;
+//	            }
+//	            
+//	            if("".equals(unitName)) {
+//	            	throw new PdsysException("未设定单位");
+//	            }
+//	            
+//	            UnitModel unit = new UnitModel();
+//	            unit.setName(unitName);
+//	            unit.setRatio(1);
+//	            unit.setSubName(unitName);
+//	            unit = addUnit(unit);
+//	            
+//	            if("".equals(pPn)) {
+//	            	throw new PdsysException("未设定备件型号");
+//	            }
+//	            if("".equals(pName)) {
+//	            	throw new PdsysException("未设定备件名称");
+//	            }
+//	            
+//	            if(!machines.containsKey(mPn)) {
+//	            	throw new PdsysException("未定义机器型号");
+//	            }
+//	            
+//	            MachineModel machine = machines.get(mPn);
+//	            
+//	            MachinePartModel mp = new MachinePartModel();
+//	            mp.setPn(pPn);
+//	            mp.setName(pName);
+//	            mp.setSupplier(machine.getSupplier());
+//	            mp.setUnit(unit);
+//	            
+//	            mp = addMachinePart(mp);
+//	            
+//	            List<MachineMachinePartRelModel> mpRels = machine.getMachineMachinePartRels();
+//	            if(mpRels == null) {
+//	            	mpRels = new ArrayList<MachineMachinePartRelModel>();
+//	            	machine.setMachineMachinePartRels(mpRels);
+//	            }
+//	            MachineMachinePartRelModel mpRel = new MachineMachinePartRelModel();
+//	            mpRel.setMachinePart(mp);
+//	            mpRel.setMaitenacePartNum(0);//固定设为0，暂时式样上对这部分保养消耗不计算
+//				mpRels.add(mpRel );
+//				
+//				WareHouseMachinePartModel whPart = new WareHouseMachinePartModel();
+//				whPart.setMachinePart(mp);
+//				whPart.setNum(Float.parseFloat(whNumStr));
+//				whMps.put(mp.getPn(), whPart);
+//	        }
+//		} catch(Exception e) {
+//			throw new PdsysException("维护备件合计表" + e.getMessage() + " \n错误行:" + (rowNo + 1), e);
+//		} finally {
+//			if(is != null) {
+//				is.close();
+//			}
+//		}
+//	}
 	
 	private MachineTroubleModel addTrouble(MachineTroubleModel trouble) {
 		if(!troubles.containsKey(trouble.getCode())) {

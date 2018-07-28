@@ -48,8 +48,8 @@
 					</choose>
 				</if>
 			</if>
-			<if test="filterCond.minCount != null">
-				wh_bom.c_num<![CDATA[>=]]>#{filterCond.minCount}
+			<if test="filterCond.bigThan != null">
+				wh_bom.c_num<![CDATA[>]]>#{filterCond.bigThan}
 			</if>
 		</where>
 		

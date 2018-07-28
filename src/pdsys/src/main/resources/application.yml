@@ -11,8 +11,8 @@ server:
         context-path: /pdsys
         
 spring:
-    profiles: # 环境 dev
-        active: dev
+    #profiles: # 环境 dev
+    #    active: dev
     jackson: # jackson时间格式化
         time-zone: GMT+8
         date-format: yyyy-MM-dd HH:mm:ss
@@ -67,7 +67,7 @@ pdsys:
         database:
             enable: true
             location: D:\dev\pdsys\env\mysql-5.7.21-winx64\bin\ #mysql安装bin路径
-            backupDir: D:\
+            backupDir: c:/pdsys/dbbackup
             host: localhost
             name: pdsys
             username: root

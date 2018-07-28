@@ -19,3 +19,12 @@
 	cursor:pointer !important;
 	text-decoration:none !important;
 }
+
+.red-bg {
+	background-color:#ca0c16;
+}
+
+.white-text {
+	color:#fff;
+}
+

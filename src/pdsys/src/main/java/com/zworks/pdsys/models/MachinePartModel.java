@@ -15,6 +15,7 @@ public class MachinePartModel extends BaseModel {
 	private String name;
 	private UnitModel unit;
 	private SupplierModel supplier;
+	private float wareHouseMinNum;
 	private List<MachineMachinePartRelModel> machineMachinePartRels;
 	
 	public String getPn() {
@@ -55,5 +56,13 @@ public class MachinePartModel extends BaseModel {
 
 	public void setMachineMachinePartRels(List<MachineMachinePartRelModel> machineMachinePartRels) {
 		this.machineMachinePartRels = machineMachinePartRels;
+	}
+
+	public float getWareHouseMinNum() {
+		return wareHouseMinNum;
+	}
+
+	public void setWareHouseMinNum(float wareHouseMinNum) {
+		this.wareHouseMinNum = wareHouseMinNum;
 	}
 }

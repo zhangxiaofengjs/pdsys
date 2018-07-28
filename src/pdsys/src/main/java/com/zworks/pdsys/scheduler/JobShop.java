@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.scheduler.jobs.DataBaseBackupJob;
 import com.zworks.pdsys.scheduler.jobs.DeviceMaitenaceJob;
+import com.zworks.pdsys.scheduler.jobs.LackOfWareHouseMachinePartJob;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -39,6 +40,13 @@ public class JobShop {
 				  "0 0 10 * * ? *",//每天10:00执行
 				  "设备维护提醒计划Job",
 				  "设备维护提醒计划JobTrigger");
+		
+		//备件最低库存通知提醒
+		createJob(LackOfWareHouseMachinePartJob.class,
+				"pdsys",
+				"0 0 10 * * ? *",//每天10:00执行
+				"备件最低库存通知提醒计划Job",
+				"备件最低库存通知提醒计划JobTrigger");
 	}
 	
 	private void createJob(Class<? extends Job> jobClass, String jobGroup, String cronExpression, String jobDescription, String triggerDescription) {

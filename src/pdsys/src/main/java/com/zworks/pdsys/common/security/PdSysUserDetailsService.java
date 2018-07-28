@@ -16,7 +16,7 @@ public class PdSysUserDetailsService implements UserDetailsService {
     private UserService userService;
 	
 	@Override
-	@PdSysLog("user login")
+	@PdSysLog(description="user login")
 	public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
 		//从数据库查找用户，以及权限
 		UserModel user = new UserModel();

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
+import com.zworks.pdsys.scheduler.jobs.DataBaseBackupJob;
 import com.zworks.pdsys.tools.ImportBOMTool;
 import com.zworks.pdsys.tools.ImportPnDefTool;
 import com.zworks.pdsys.tools.ImportPnTool;
@@ -30,6 +31,9 @@ public class ToolsController {
 	ImportPnTool importPnTool;
 	@Autowired
 	ImportDeviceTool importDeviceTool;
+	
+	@Autowired
+	DataBaseBackupJob dataBaseBackupJob;
 	
 	@RequestMapping("/importpndef")
 	@ResponseBody
@@ -77,6 +81,13 @@ public class ToolsController {
 		}
 		importDeviceTool.execute(path);
 		return JSONResponse.success().put("msg", "成功导入");
+	}
+	
+	@RequestMapping("/backupdb")
+	@ResponseBody
+	public JSONResponse backupDB(Model model) throws InvalidFormatException, IOException {
+		dataBaseBackupJob.backup();
+		return JSONResponse.success().put("msg", "备份结束，请查看备份文件是否生成");
 	}
 	
 }

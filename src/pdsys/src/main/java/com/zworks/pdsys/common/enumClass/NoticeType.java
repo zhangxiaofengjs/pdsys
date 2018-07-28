@@ -5,5 +5,5 @@ package com.zworks.pdsys.common.enumClass;
  * @version: 2018/05/24
  */
 public enum NoticeType {
-	DeviceMaitenaceJob, APPROVAL
+	DeviceMaitenaceJob, APPROVAL, LackOfWareHouseMachinePartJob
 }

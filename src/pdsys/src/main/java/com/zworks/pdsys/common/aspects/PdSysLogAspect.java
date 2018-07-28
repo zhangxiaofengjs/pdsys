@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zworks.pdsys.common.annotations.PdSysLog;
+import com.zworks.pdsys.common.security.PdSysLoginUser;
 import com.zworks.pdsys.common.utils.RequestContextUtils;
 import com.zworks.pdsys.common.utils.SecurityContextUtils;
 import com.zworks.pdsys.models.LogModel;
+import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.services.LogService;
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -70,7 +72,7 @@ public class PdSysLogAspect {
 		PdSysLog syslog = method.getAnnotation(PdSysLog.class);
 		if (syslog != null) {
 			//注解上的描述
-			log.setDescription(syslog.value());
+			log.setDescription(syslog.description());
 		}
 		//请求的方法名
 		String className = joinPoint.getTarget().getClass().getName();
@@ -86,7 +88,15 @@ public class PdSysLogAspect {
 		}
 		log.setUrl(RequestContextUtils.getRequestUrl());
 		log.setIp(RequestContextUtils.getIpAddr());
-		log.setUser(SecurityContextUtils.getLoginUser());
+		
+		PdSysLoginUser lUser = SecurityContextUtils.getLoginUser();
+		UserModel user = lUser == null ? null : lUser.getUser();
+		UserModel u = new UserModel();
+		if(user != null) {
+			u.setId(user.getId());
+			u.setName(user.getName());
+		}
+		log.setUser(u);
 		log.setElapseTime(time);
 		log.setTime(new Date());
 		logService.save(log);
