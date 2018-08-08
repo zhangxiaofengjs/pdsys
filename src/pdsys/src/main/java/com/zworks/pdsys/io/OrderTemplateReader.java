@@ -22,9 +22,11 @@ import com.zworks.pdsys.models.CustomerModel;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.models.PnModel;
+import com.zworks.pdsys.models.UnitModel;
 import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.services.CustomerService;
 import com.zworks.pdsys.services.PnService;
+import com.zworks.pdsys.services.UnitService;
 import com.zworks.pdsys.services.UserService;
 
 @Component
@@ -35,6 +37,8 @@ public class OrderTemplateReader {
 	private UserService userService;
 	@Autowired
 	private PnService pnService;
+	@Autowired
+	private UnitService unitService;
 	
 	public OrderModel read(String filePath) {
 		int rowNo = 0;
@@ -125,9 +129,23 @@ public class OrderTemplateReader {
 					if(!pnSet.add(strPn)) {
 						throw new PdsysException("重复JAN");
 					}
+					if(StringUtils.isNullOrEmpty(strPn)){
+						throw new PdsysException("JAN不正确");
+					}
+					
 					Float num = StringUtils.toFloat(ExcelUtils.getCellValue(row.getCell(2)));
-					if(StringUtils.isNullOrEmpty(strPn) || num == 0){
-						throw new PdsysException("JAN或者订购量不正确");
+					if(num == 0){
+						throw new PdsysException("订购量不正确");
+					}
+					
+					String priceUnitName = ExcelUtils.getCellValue(row.getCell(3));
+					if(StringUtils.isNullOrEmpty(priceUnitName)){
+						throw new PdsysException("价格单位不正确");
+					}
+					
+					Float price = StringUtils.toFloat(ExcelUtils.getCellValue(row.getCell(4)));
+					if(price == 0){
+						throw new PdsysException("价格不正确");
 					}
 					
 					PnModel pn = new PnModel();
@@ -137,10 +155,18 @@ public class OrderTemplateReader {
 						throw new PdsysException("JAN不存在:" + strPn);
 					}
 					
+					UnitModel unit = new UnitModel();
+					unit.setName(priceUnitName);
+					unit = unitService.queryOne(unit);
+					if(unit == null) {
+						throw new PdsysException("单价单位不存在:" + priceUnitName);
+					}
+					
 					OrderPnModel oPn = new OrderPnModel();
 					oPn.setPn(pn);
 					oPn.setNum(num);
-					
+					oPn.setPrice(price);
+					oPn.setPriceUnit(unit);
 					orderPns.add(oPn);
 					break;
 				}

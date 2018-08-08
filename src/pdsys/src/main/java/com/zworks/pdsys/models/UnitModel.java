@@ -8,11 +8,10 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("unitModel")
 public class UnitModel extends BaseModel{
-	public static final UnitModel Empty = new UnitModel();
-	
 	private String name;
 	private String subName;
 	private float ratio;
+	private int type;
 
 	public String getName() {
 		return name;
@@ -36,5 +35,13 @@ public class UnitModel extends BaseModel{
 
 	public void setSubName(String subName) {
 		this.subName = subName;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 }

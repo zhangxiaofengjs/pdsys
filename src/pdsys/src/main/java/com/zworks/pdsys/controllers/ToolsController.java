@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.scheduler.jobs.DataBaseBackupJob;
+import com.zworks.pdsys.tools.ImportBOMDefTool;
 import com.zworks.pdsys.tools.ImportBOMTool;
 import com.zworks.pdsys.tools.ImportPnDefTool;
 import com.zworks.pdsys.tools.ImportPnTool;
@@ -25,6 +26,8 @@ import com.zworks.pdsys.tools.ImportDeviceTool;
 public class ToolsController {
 	@Autowired
 	ImportPnDefTool importPnDefTool;
+	@Autowired
+	ImportBOMDefTool importBOMDefTool;
 	@Autowired
 	ImportBOMTool importBOMTool;
 	@Autowired
@@ -44,6 +47,18 @@ public class ToolsController {
 			return JSONResponse.error().put("msg", "将导入文件放在服务器路径：c:/pdsys/pndef.xlsx");
 		}
 		importPnDefTool.execute(path);
+		return JSONResponse.success().put("msg", "成功导入");
+	}
+	
+	@RequestMapping("/importbomdef")
+	@ResponseBody
+	public JSONResponse importBOMDefTool(Model model) throws InvalidFormatException, IOException {
+		String path = "c:/pdsys/bomdef.xlsx";
+		File file = new File(path);
+		if(!file.exists()) {
+			return JSONResponse.error().put("msg", "将导入文件放在服务器路径：c:/pdsys/bomdef.xlsx");
+		}
+		importBOMDefTool.execute(path);
 		return JSONResponse.success().put("msg", "成功导入");
 	}
 	

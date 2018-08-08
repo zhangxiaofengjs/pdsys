@@ -57,6 +57,33 @@ $(function () {
 			}
 		},
 		{
+			"name":"price",
+			"label":"单价",
+			"type":"number",
+			"value":"1.0",
+			"min":0.000000001,
+		},
+		{
+			"name":"priceUnit.id",
+			"label":"单价单位",
+			"type":"select",
+			"options":[],
+			"required":"required",
+			"ajax":true,
+			"ajaxData": {
+				"type":2, //货币单位
+			},
+			"url":"/unit/list/json",
+			"convertAjaxData" : function(thisField, data) {
+				data.units.forEach(function(unit, idx) {
+					thisField.options.push({
+					"value": unit.id,
+					"caption": unit.name,
+					});
+				});
+			},
+		},
+		{
 			"name":"num",
 			"label":"数量",
 			"type":"number",
@@ -64,7 +91,7 @@ $(function () {
 		},
 		{
 			"name":"pn.unit.name",
-			"label":"单位",
+			"label":"数量单位",
 			"type":"label",
 		}];
 		
@@ -176,9 +203,39 @@ $(function () {
 						var op = data.orderPn;
 						field.ajax = false;//防止循环调用自身ajax
 						dlg.rebuildFieldWithValue("pn.name", "{0} {1}".format(op.pn.pn, op.pn.name));
+						dlg.rebuildFieldWithValue("price", op.price);
+						dlg.rebuildFieldWithValue("priceUnit.id", op.priceUnit.id);
 						dlg.rebuildFieldWithValue("num", op.num);
 						dlg.rebuildFieldWithValue("unitName", op.pn.unit.name);
 					}
+				},
+				{
+					"name":"price",
+					"label":"单价",
+					"type":"number",
+					"value":"1.0",
+					"min":0.000000001,
+				},
+				{
+					"name":"priceUnit.id",
+					"label":"单价单位",
+					"type":"select",
+					"options":[],
+					"required":"required",
+					"ajax":true,
+					"depend": true,
+					"ajaxData": {
+						"type":2, //货币单位
+					},
+					"url":"/unit/list/json",
+					"convertAjaxData" : function(thisField, data) {
+						data.units.forEach(function(unit, idx) {
+							thisField.options.push({
+							"value": unit.id,
+							"caption": unit.name,
+							});
+						});
+					},
 				},
 				{
 					"name":"num",

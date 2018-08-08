@@ -6,6 +6,7 @@
         <id column="o_pn_id" property="id"/> 
         <id column="o_pn_num" property="num"/> 
         <id column="o_pn_delivered_num" property="deliveredNum"/> 
+        <id column="o_pn_price" property="price"/> 
     </resultMap>
     <resultMap id="userResultMap" type="userModel" >
         <id column="u_id" property="id"/> 
@@ -36,6 +37,7 @@
 			   o_pn.c_id as o_pn_id,
 			   o_pn.c_num as o_pn_num,
 			   o_pn.c_delivered_num as o_pn_delivered_num,
+			   o_pn.c_price as o_pn_price,
 			   u.c_id as u_id,
 			   u.c_name as u_name
 		from order_tbl as o

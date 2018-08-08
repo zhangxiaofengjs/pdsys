@@ -38,10 +38,10 @@
 							<th rowspan='3' style="width:20px;" class="no-print"><input type="checkbox" name="selectAll" /></th>
 							<th rowspan='3'>品目</th>
 							<th rowspan='3'>名称</th>
-							<th rowspan='3'>单位</th>
-							<th rowspan='3'>订购数量</th>
+							<th rowspan='3' colspan="2">单价</th>
+							<th rowspan='3' colspan="2">订购数量</th>
 							<th rowspan='3'>已出库数量</th>
-							<th colspan='7'>详细信息</th>
+							<th colspan='6'>详细信息</th>
 						</tr>
 						<tr>
 							<th rowspan='2'>子类</th>
@@ -73,6 +73,8 @@
 									</td>
 									<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${pn.pn}"></td>
 									<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${pn.name}"></td>
+									<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${orderPn.priceUnit.name}" class="number"></td>
+									<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${orderPn.price}" class="number"></td>
 									<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pn.unit)}"></td>
 									<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${orderPn.num}" class="number"></td>
 									<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${orderPn.deliveredNum}" class="number"></td>
@@ -121,8 +123,8 @@
 							<th style="width:20px;" class="no-print"><input type="checkbox" name="selectAll" /></th>
 							<th>品目</th>
 							<th>名称</th>
-							<th>单位</th>
-							<th>订购数量</th>
+							<th colspan=2>单价</th>
+							<th colspan=2>订购数量</th>
 							<th>已出库数量</th>
 						</tr>
 					</thead>
@@ -140,6 +142,8 @@
 								</td>
 								<td th:text="${pn.pn}"></td>
 								<td th:text="${pn.name}"></td>
+								<td th:text="${orderPn.priceUnit.name}"></td>
+								<td th:text="${orderPn.price}"></td>
 								<td th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pn.unit)}"></td>
 								<td th:text="${orderPn.num}" class="number"></td>
 								<td th:text="${orderPn.deliveredNum}" class="number"></td>

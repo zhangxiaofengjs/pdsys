@@ -21,38 +21,28 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.ExcelUtils;
 import com.zworks.pdsys.models.BOMModel;
-import com.zworks.pdsys.models.PnBOMRelModel;
-import com.zworks.pdsys.models.PnClsBOMRelModel;
-import com.zworks.pdsys.models.PnClsModel;
-import com.zworks.pdsys.models.PnModel;
-import com.zworks.pdsys.models.PnPnClsRelModel;
 import com.zworks.pdsys.models.SupplierModel;
 import com.zworks.pdsys.models.UnitModel;
 import com.zworks.pdsys.services.BOMService;
-import com.zworks.pdsys.services.PnService;
 import com.zworks.pdsys.services.SupplierService;
 import com.zworks.pdsys.services.UnitService;
 
 @Component
 @Scope("prototype")
-public class ImportPnDefTool {
+public class ImportBOMDefTool {
 	@Autowired
     private UnitService unitService;
 	@Autowired
 	private BOMService bomService;
 	@Autowired
     private SupplierService supplierService;
-	@Autowired
-	private PnService pnService;
 	
-	private Map<String, PnModel> pns = new HashMap<String,PnModel>();
 	private Map<String, UnitModel> units = new HashMap<String, UnitModel>();
 	private Map<String, BOMModel> boms = new HashMap<String, BOMModel>();
 	private Map<String, SupplierModel> suppliers = new HashMap<String, SupplierModel>();
 
 	@Transactional(rollbackFor=Exception.class)
 	public boolean execute(String filePath) throws InvalidFormatException, IOException{
-		pns.clear();
 		units.clear();
 		boms.clear();
 		suppliers.clear();
@@ -61,14 +51,6 @@ public class ImportPnDefTool {
 		
 //		try {//此处不可try 否则事务会不能正确回滚，应把exception交给spring
 		
-			//check pns
-			for(String key : pns.keySet()) {
-				PnModel pn = pns.get(key);
-				if(pn.getPnClsRels() == null) {
-					throw new PdsysException("未设定本体，PN:" + pn.getPn() + " 行:" + pn.getFilterCond().get("row"));
-				}
-			}
-			
 			//import unit
 			for(String key : units.keySet()) {
 				UnitModel unit = units.get(key);
@@ -79,7 +61,7 @@ public class ImportPnDefTool {
 					unit.setId(unitTmp.getId());
 				}
 			}
-			
+		
 			//import suppliers
 			for(String key : suppliers.keySet()) {
 				SupplierModel s = suppliers.get(key);
@@ -94,19 +76,14 @@ public class ImportPnDefTool {
 			//import boms
 			for(String key : boms.keySet()) {
 				BOMModel bom = boms.get(key);
+				BOMModel bombTmp = new BOMModel();
+				bombTmp.setPn(key);
+				bombTmp = bomService.queryOne(bombTmp);
+				if(bombTmp != null) {
+					throw new PdsysException("已经存在BOM：" + key);
+				}
 				bomService.add(bom);
 				bomService.addSupplier(bom);
-			}
-			
-			//import pns
-			for(String key : pns.keySet()) {
-				PnModel pn = pns.get(key);
-				if(pn.getPnClsRels() == null) {
-					throw new PdsysException("未设定本体，PN:" + pn.getPn());
-				}
-				pnService.add(pn);
-				pnService.addBOM(pn);
-				pnService.addPnCls(pn);
 			}
 //		} catch(Exception e) {
 //			e.printStackTrace();
@@ -127,37 +104,18 @@ public class ImportPnDefTool {
 			if(sheet == null) {
 				throw new PdsysException("没找到data sheet");
 			}
-			PnModel pnObj = null;
 			for(rowNo = 3; rowNo <= sheet.getLastRowNum(); rowNo++) {
 				Row row = sheet.getRow(rowNo);
 	  
 				int idx = 0;
-	           	String pn = ExcelUtils.getCellValue(row.getCell(idx++));
-	           	String name = ExcelUtils.getCellValue(row.getCell(idx++));
-	            String cls = ExcelUtils.getCellValue(row.getCell(idx++));
-	            String unitName = ExcelUtils.getCellValue(row.getCell(idx++));
-	            String unitSubName = ExcelUtils.getCellValue(row.getCell(idx++));
-	            String unitRatio = ExcelUtils.getCellValue(row.getCell(idx++));
-	            String clsNum = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String bomType = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String bomPn = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String bomName = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String bomUnitName = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String bomUnitSubName = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String bomUnitRatio = ExcelUtils.getCellValue(row.getCell(idx++));
-	            String bomUseNum = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String bomPrice = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String bomSupplier = ExcelUtils.getCellValue(row.getCell(idx++));
-	            
-	            //pn-unit
-	            UnitModel unit = null;
-	            if(!"".equals(unitName)) {
-		            unit = new UnitModel();
-		            unit.setName(unitName);
-		            unit.setSubName(unitSubName);
-		            unit.setRatio(Float.parseFloat(unitRatio));
-		            unit = addUnit(unit);
-	            }
 	            
 	            //bom-unit
 	            UnitModel bomUnit = null;
@@ -205,74 +163,11 @@ public class ImportPnDefTool {
 	            bom.setSuppliers(suppliers);
 	            bom = addBoms(bom);
 	            
-	            if(pn != null && !"".equals(pn) ) {
-	            	pnObj = new PnModel();
-	            	pnObj.setPn(pn);
-	            	pnObj.setName(name);
-	            	if(unit == null) {
-		            	throw new PdsysException("未设定单位");
-		            }
-	            	pnObj.setUnit(unit);
-	            	pnObj.getFilterCond().put("row", rowNo + 1);
-	            	if(!addPns(pnObj)) {
-	            		throw new PdsysException("重复品目PN:" + pn);
-	            	}
-	            }
-	            
-	            if("".equals(cls)) {
-	            	throw new PdsysException("本体名列不能为空");
-	            } else if("--".equals(cls)) {
-	            	//共通包材
-	            	List<PnBOMRelModel> pnBOMRels = pnObj.getPnBOMRels();
-	            	if(pnBOMRels == null) {
-	            		pnBOMRels = new ArrayList<PnBOMRelModel>();
-	            		pnObj.setPnBOMRels(pnBOMRels);
-	            	}
-	
-	            	PnBOMRelModel pnBomRel = new PnBOMRelModel();
-	            	pnBomRel.setUseNum(Float.parseFloat(bomUseNum));
-	            	pnBomRel.setBom(bom);
-	            	pnBOMRels.add(pnBomRel);
-	            } else {
-	            	List<PnPnClsRelModel> pnClsRels = pnObj.getPnClsRels();
-	            	if(pnClsRels == null) {
-	            		pnClsRels = new ArrayList<PnPnClsRelModel>();
-	            		pnObj.setPnClsRels(pnClsRels);
-	            	}
-	            	
-	            	PnClsModel pnCls = new PnClsModel();
-	            	pnCls.setName(cls);
-	            	pnCls.setUnit(unit);
-	            	PnPnClsRelModel pnClsRel = new PnPnClsRelModel();
-	            	pnClsRel.setNum(Float.parseFloat(clsNum));
-	            	pnClsRel.setPnCls(pnCls);
-	            	pnClsRel = addCls(pnClsRel, pnClsRels);
-	            	pnCls = pnClsRel.getPnCls();
-	            	
-	            	List<PnClsBOMRelModel> pnClsBomRels = pnCls.getPnClsBOMRels();
-	            	if(pnClsBomRels == null) {
-	            		pnClsBomRels = new ArrayList<PnClsBOMRelModel>();
-	            		pnCls.setPnClsBOMRels(pnClsBomRels);
-	            	}
-	            	
-	            	PnClsBOMRelModel pnClsBomRel = new PnClsBOMRelModel();
-	            	pnClsBomRel.setUseNum(Float.parseFloat(bomUseNum));
-	            	pnClsBomRel.setBom(bom);
-	            	pnClsBomRels.add(pnClsBomRel);
-	            }
+
 	        }
 		}catch(Exception e) {
 			throw new PdsysException(e.getMessage() + " \n错误行:" + (rowNo + 1), e);
 		}
-	}
-	
-	private boolean addPns(PnModel pnObj) {
-		PnModel pn = pns.get(pnObj.getPn());
-		if(pn != null) {
-			return false;
-		}
-		pns.put(pnObj.getPn(), pnObj);
-		return true;
 	}
 
 	private BOMModel addBoms(BOMModel bom) {
@@ -282,19 +177,6 @@ public class ImportPnDefTool {
 		}
 		boms.put(bom.getPn(), bom);
 		return bom;
-	}
-
-	private PnPnClsRelModel addCls(PnPnClsRelModel pnClsRel, List<PnPnClsRelModel> pnClsRels) {
-		for(PnPnClsRelModel rel : pnClsRels) {
-			if(rel.getPnCls().getName().equals(pnClsRel.getPnCls().getName())) {
-				return rel;
-			}
-		}
-		if(pnClsRel.getPnCls().getUnit() == null) {
-        	throw new PdsysException("未设定单位" + pnClsRel.getPnCls().getName());
-        }
-		pnClsRels.add(pnClsRel);
-		return pnClsRel;
 	}
 
 	private SupplierModel addSuppliers(SupplierModel supplier) {

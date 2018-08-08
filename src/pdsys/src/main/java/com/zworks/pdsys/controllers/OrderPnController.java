@@ -91,6 +91,7 @@ public class OrderPnController {
 			return JR;
 		
 		orderPn.getFilterCond().put("update_num", true);
+		orderPn.getFilterCond().put("update_price", true);
 		orderPnService.update(orderPn);
 		return JSONResponse.success();
 	}

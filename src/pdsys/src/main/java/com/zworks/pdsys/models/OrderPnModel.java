@@ -16,6 +16,8 @@ public class OrderPnModel extends BaseModel{
 	@Min(value = 1,message="数量必须是一个数字，其值必须大于0！")
 	private float num;
 	private float deliveredNum;
+	private float price;
+	private UnitModel priceUnit;
 	private WareHousePnModel whpn;
 	
 	public OrderPnModel() {
@@ -56,6 +58,22 @@ public class OrderPnModel extends BaseModel{
 
 	public void setDeliveredNum(float deliveredNum) {
 		this.deliveredNum = deliveredNum;
+	}
+
+	public float getPrice() {
+		return price;
+	}
+
+	public void setPrice(float price) {
+		this.price = price;
+	}
+
+	public UnitModel getPriceUnit() {
+		return priceUnit;
+	}
+
+	public void setPriceUnit(UnitModel priceUnit) {
+		this.priceUnit = priceUnit;
 	}
 
 }

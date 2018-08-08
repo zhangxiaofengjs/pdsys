@@ -239,6 +239,8 @@ public class ImportDeviceTool {
 	            device.setUser(user);
 	            if("正常".equals(state)) {
 	            	device.setState(DeviceState.WORKING.ordinal());
+	            } else  if("停用".equals(state)) {
+	            	device.setState(DeviceState.NOTUSE.ordinal());
 	            } else {
 	            	device.setState(DeviceState.BROKEN.ordinal());
 	            }
@@ -248,7 +250,7 @@ public class ImportDeviceTool {
 	            device = addDevice(device);
 	        }
 		} catch(Exception e) {
-			throw new PdsysException("设备管理" + e.getMessage() + " \n错误行:" + (rowNo + 1), e);
+			throw new PdsysException("【设备管理】" + e.getMessage() + " \n错误行:" + (rowNo + 1), e);
 		} finally {
 			if(is != null) {
 				is.close();
@@ -341,7 +343,7 @@ public class ImportDeviceTool {
 				whMps.put(mp.getPn(), whPart);
 	        }
 		} catch(Exception e) {
-			throw new PdsysException("保养耗材" + e.getMessage() + " \n错误行:" + (rowNo + 1), e);
+			throw new PdsysException("【保养耗材】" + e.getMessage() + " \n错误行:" + (rowNo + 1), e);
 		} finally {
 			if(is != null) {
 				is.close();
@@ -393,89 +395,6 @@ public class ImportDeviceTool {
 			}
 		}
 	}
-	
-//	public void readMachineParts2(String filePath) throws InvalidFormatException, IOException{
-//		int rowNo = 0;
-//		InputStream is = null;
-//		try {
-//			
-//			is = new FileInputStream(filePath);  
-//		             
-//			Workbook wb = WorkbookFactory.create(is);
-//			Sheet sheet = wb.getSheet("维护备件合计表");
-//			if(sheet == null) {
-//				throw new PdsysException("没找到 sheet 维护备件合计表");
-//			}
-//			
-//			for(rowNo = 1; rowNo <= sheet.getLastRowNum(); rowNo++) {
-//				Row row = sheet.getRow(rowNo);
-//	  
-//				int idx = 0;
-//				String pPn = ExcelUtils.getCellValue(row.getCell(idx++));
-//	            String pName = ExcelUtils.getCellValue(row.getCell(idx++));
-//	            String mPn = ExcelUtils.getCellValue(row.getCell(idx++));
-//	            String unitName = ExcelUtils.getCellValue(row.getCell(idx++));
-//	            String nessaryNumStr = ExcelUtils.getCellValue(row.getCell(idx++));
-//	            String whNumStr = ExcelUtils.getCellValue(row.getCell(idx++));
-//
-//	            if("".equals(pPn)) {
-//	            	break;
-//	            }
-//	            
-//	            if("".equals(unitName)) {
-//	            	throw new PdsysException("未设定单位");
-//	            }
-//	            
-//	            UnitModel unit = new UnitModel();
-//	            unit.setName(unitName);
-//	            unit.setRatio(1);
-//	            unit.setSubName(unitName);
-//	            unit = addUnit(unit);
-//	            
-//	            if("".equals(pPn)) {
-//	            	throw new PdsysException("未设定备件型号");
-//	            }
-//	            if("".equals(pName)) {
-//	            	throw new PdsysException("未设定备件名称");
-//	            }
-//	            
-//	            if(!machines.containsKey(mPn)) {
-//	            	throw new PdsysException("未定义机器型号");
-//	            }
-//	            
-//	            MachineModel machine = machines.get(mPn);
-//	            
-//	            MachinePartModel mp = new MachinePartModel();
-//	            mp.setPn(pPn);
-//	            mp.setName(pName);
-//	            mp.setSupplier(machine.getSupplier());
-//	            mp.setUnit(unit);
-//	            
-//	            mp = addMachinePart(mp);
-//	            
-//	            List<MachineMachinePartRelModel> mpRels = machine.getMachineMachinePartRels();
-//	            if(mpRels == null) {
-//	            	mpRels = new ArrayList<MachineMachinePartRelModel>();
-//	            	machine.setMachineMachinePartRels(mpRels);
-//	            }
-//	            MachineMachinePartRelModel mpRel = new MachineMachinePartRelModel();
-//	            mpRel.setMachinePart(mp);
-//	            mpRel.setMaitenacePartNum(0);//固定设为0，暂时式样上对这部分保养消耗不计算
-//				mpRels.add(mpRel );
-//				
-//				WareHouseMachinePartModel whPart = new WareHouseMachinePartModel();
-//				whPart.setMachinePart(mp);
-//				whPart.setNum(Float.parseFloat(whNumStr));
-//				whMps.put(mp.getPn(), whPart);
-//	        }
-//		} catch(Exception e) {
-//			throw new PdsysException("维护备件合计表" + e.getMessage() + " \n错误行:" + (rowNo + 1), e);
-//		} finally {
-//			if(is != null) {
-//				is.close();
-//			}
-//		}
-//	}
 	
 	private MachineTroubleModel addTrouble(MachineTroubleModel trouble) {
 		if(!troubles.containsKey(trouble.getCode())) {

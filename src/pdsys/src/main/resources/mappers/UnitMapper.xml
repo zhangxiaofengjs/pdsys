@@ -29,6 +29,9 @@
 			<if test="ratio > 0">
 				and u.c_ratio = #{ratio} 
 		    </if>
+		    <if test="type > 0">
+				and u.c_type = #{type} 
+		    </if>
 		</where>
 	</select>
 	
