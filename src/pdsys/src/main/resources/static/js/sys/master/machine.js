@@ -278,13 +278,14 @@ $(document).ready(function(){
 				"name":"machineMachinePartRels[0].maitenacePartNum",
 				"label":"维护所需",
 				"type":"number",
-				"value":"0"
+				"value":"0",
+				"required":"required"
 			},
 			{
 				"name":"msg",
 				"label":"*",
 				"type":"label",
-				"value":"<span style='color:#919292;'>指定为0时,将解除该维护零件</span>",
+				"value":"<span style='color:#919292;'>指定为-1时,将解除该维护零件</span>",
 			},
 			{
 				"name":"machineMachinePartRels[0].machinePart.unit.name",
