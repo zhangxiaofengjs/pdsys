@@ -75,7 +75,7 @@ public class MachineService {
 		List<MachineMachinePartRelModel> machineMachinePartRels = machine.getMachineMachinePartRels();
 		for(int i = machineMachinePartRels.size() - 1; i >= 0; i--) {
 			MachineMachinePartRelModel rel = machineMachinePartRels.get(i);
-			if(rel.getMaitenacePartNum() == 0) {
+			if(rel.getMaitenacePartNum() < 0) {
 				deleteRels.add(rel);
 				machineMachinePartRels.remove(rel);
 			} else {
