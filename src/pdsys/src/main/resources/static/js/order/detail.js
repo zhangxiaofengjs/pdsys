@@ -20,40 +20,41 @@ $(function () {
 			"name":"pn.id",
 			"label":"品目名",
 			"type":"select",
+			"data":[],
 			"options":[],
 			"ajax":true,
 			"url":"/pn/list/json",
 			"convertAjaxData" : function(thisField, data) {
+				var self = this;
 				//将返回的值转化为Field规格数据,以供重新渲染
 				//做成选择分支
-				thisField.options.push({
-					"value": -1,
-					"caption":"请选择品目...",
-				});
 				data.pns.forEach(function(pn, idx) {
 					thisField.options.push({
 					"value": pn.id,
-					"caption": "{0} {1}".format(pn.pn, pn.name),
-					"data":pn.unit.name
+					"caption": "{0} {1}".format(pn.pn, pn.name)
+					});
+					self.data.push({
+						"unitName":pn.unit.name,
+						"price":pn.price,
+						"priceUnitId":(pn.priceUnit == null ? 0 : pn.priceUnit.id),
 					});
 				});
 			},
 			"afterBuild": function() {
 				var self = this;
-				var thisElem = dlg.fieldElem(self.type, self.name);
+				var thisElem = dlg.fieldElem(self);
 				//select选择以后刷新品目
 				thisElem.change(function() {
 					var selIndex = thisElem[0].selectedIndex;
-					if(selIndex == 0) {
-						//第一项是[请选择]，其它控件清空处理
-						dlg.fieldElem("type", "pn.unit.name").val("");
-						dlg.fieldElem("number", "num").val("");
-						return;
-					}
+					var data = self.data[selIndex];
 
 					//单位
-					dlg.rebuildFieldWithValue("pn.unit.name", self.options[selIndex].data);
+					dlg.rebuildFieldWithValue("price", data.price);
+					dlg.rebuildFieldWithValue("priceUnit.id", data.priceUnitId);
+					dlg.rebuildFieldWithValue("pn.unit.name", data.unitName);
 				});
+				
+				thisElem.trigger("change");
 			}
 		},
 		{
@@ -75,6 +76,7 @@ $(function () {
 			},
 			"url":"/unit/list/json",
 			"convertAjaxData" : function(thisField, data) {
+				thisField.options = [];
 				data.units.forEach(function(unit, idx) {
 					thisField.options.push({
 					"value": unit.id,

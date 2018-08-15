@@ -167,7 +167,7 @@ public class PnService {
 					float useNum = pnClsBOMRel.getUseNum() * count;
 					addUsedBOM(bomMap, bom, useNum);
 				}
-				else if(isSemi && bom.getType() == BOMType.RAW.ordinal()) {
+				else if(isSemi && bom.getType() == BOMType.RAW.ordinal()) { //半成品只计算原材损耗
 					float useNum = pnClsBOMRel.getUseNum() / pnClsRelTmp.getNum() * count;
 					addUsedBOM(bomMap, bom, useNum);
 				}
@@ -188,7 +188,7 @@ public class PnService {
 				float useNum = pnBOMRel.getUseNum() * count;
 				addUsedBOM(bomMap, bom, useNum);
 			}
-			else if(isSemi && bom.getType() == BOMType.RAW.ordinal()) {
+			else if(isSemi && bom.getType() == BOMType.RAW.ordinal()) { //半成品只计算原材损耗
 				float useNum = pnBOMRel.getUseNum() / countByBox * count;
 				addUsedBOM(bomMap, bom, useNum);
 			}

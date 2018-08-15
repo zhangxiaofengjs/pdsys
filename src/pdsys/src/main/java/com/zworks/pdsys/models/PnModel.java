@@ -13,6 +13,8 @@ public class PnModel extends BaseModel{
 	private String pn;
 	private String name;
 	private UnitModel unit;
+	private float price;
+	private UnitModel priceUnit;
 	private List<PnPnClsRelModel> pnClsRels;
 	private List<PnBOMRelModel> pnBOMRels;
 
@@ -54,5 +56,21 @@ public class PnModel extends BaseModel{
 
 	public void setPnBOMRels(List<PnBOMRelModel> pnBOMRels) {
 		this.pnBOMRels = pnBOMRels;
+	}
+
+	public float getPrice() {
+		return price;
+	}
+
+	public void setPrice(float price) {
+		this.price = price;
+	}
+
+	public UnitModel getPriceUnit() {
+		return priceUnit;
+	}
+
+	public void setPriceUnit(UnitModel priceUnit) {
+		this.priceUnit = priceUnit;
 	}
 }

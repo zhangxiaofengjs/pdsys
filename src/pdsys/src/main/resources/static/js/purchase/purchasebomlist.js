@@ -159,12 +159,12 @@ $(function () {
 					},
 					"afterBuild": function() {
 						var self = this;
-						var thisElem = dlg.fieldElem(self.type, self.name);
+						var thisElem = dlg.fieldElem(self.name);
 						//select选择以后刷新品目
 						thisElem.change(function() {
 							var selIndex = thisElem[0].selectedIndex;
 							var bomId= self.options[selIndex].value;
-							dlg.fieldElem("number", "num").val("");
+							dlg.fieldElem("num").val("");
 							dlg.rebuildFieldWithValue("price", self.options[selIndex].data);
 							var f = dlg.fieldByName("supplier.id");
 							f.options.length = 0;

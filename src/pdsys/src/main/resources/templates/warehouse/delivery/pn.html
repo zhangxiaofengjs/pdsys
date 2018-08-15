@@ -114,7 +114,7 @@
 					</td>
 					<td th:text="${pn.pn + pn.name}"></td>
 					<td th:text="${unit.name}"></td>
-					<td th:text="${order.no}"></td>
+					<td th:text="${order!=null ? order.no : _}"></td>
 					<td th:text="${deliveryTgt.state==0?wareHouseNum:'--'}" class="number"></td>
 					<td th:text="${wareHouseDeliveryPn.producedNum}" 
 						th:class="'number ' + (${wareHouseNum < wareHouseDeliveryPn.producedNum}?'text-danger':'')"></td>

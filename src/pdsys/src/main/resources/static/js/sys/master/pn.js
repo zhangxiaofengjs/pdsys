@@ -40,6 +40,33 @@ $(document).ready(function(){
 					});
 				}
 			},
+			{
+				"name":"price",
+				"label":"单价",
+				"type":"number",
+				"value":"1.0",
+				"min":0.000000001,
+			},
+			{
+				"name":"priceUnit.id",
+				"label":"单价单位",
+				"type":"select",
+				"options":[],
+				"required":"required",
+				"ajax":true,
+				"ajaxData": {
+					"type":2, //货币单位
+				},
+				"url":"/unit/list/json",
+				"convertAjaxData" : function(thisField, data) {
+					data.units.forEach(function(unit, idx) {
+						thisField.options.push({
+						"value": unit.id,
+						"caption": unit.name,
+						});
+					});
+				},
+			},
 		];
 		
 		dlg.showFormDlg({
@@ -117,7 +144,36 @@ $(document).ready(function(){
 						});
 					});
 				}
-			}
+			},
+			{
+				"name":"price",
+				"label":"单价",
+				"type":"number",
+				"value":"1.0",
+				"min":0.000000001,
+				"required":"required",
+			},
+			{
+				"name":"priceUnit.id",
+				"label":"单价单位",
+				"type":"select",
+				"options":[],
+				"required":"required",
+				"ajax":true,
+				"ajaxData": {
+					"type":2, //货币单位
+				},
+				"url":"/unit/list/json",
+				"convertAjaxData" : function(thisField, data) {
+					thisField.options = [];
+					data.units.forEach(function(unit, idx) {
+						thisField.options.push({
+						"value": unit.id,
+						"caption": unit.name,
+						});
+					});
+				},
+			},
 		];
 		
 		dlg.showFormDlg({
@@ -130,9 +186,12 @@ $(document).ready(function(){
 					"id":id
 				},
 				"convertAjaxData":function(data) {
-					dlg.rebuildFieldWithValue("pn", data.pn.pn);
-					dlg.rebuildFieldWithValue("name", data.pn.name);
-					dlg.rebuildFieldWithValue("unit.id", data.pn.unit.id);
+					var pn = data.pn;
+					dlg.rebuildFieldWithValue("pn", pn.pn);
+					dlg.rebuildFieldWithValue("name", pn.name);
+					dlg.rebuildFieldWithValue("unit.id", pn.unit.id);
+					dlg.rebuildFieldWithValue("price", pn.price);
+					dlg.rebuildFieldWithValue("priceUnit.id", pn.priceUnit == null ? 0 : pn.priceUnit.id);
 				}
 			},
 			"url":"/pn/update",

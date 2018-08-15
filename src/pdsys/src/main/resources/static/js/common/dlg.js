@@ -14,7 +14,7 @@ CommonDlg.CACHE = {};
 CommonDlg.prototype.showMsgDlg = function(opt) {
 	this.option = opt;
 	
-	var dlgId = this.option.target + "_dlg";
+	var dlgId = this.id();
 	
 	var strButtonHtml = "";
 	if(this.option.type == "yesno") {
@@ -320,7 +320,12 @@ CommonDlg.prototype.buildAjaxField = function(field) {
 };
 
 CommonDlg.prototype.removeFieldElem = function(field) {
-	var fieldElem = $(("#"+field.name).safeJqueryId());
+	var dlgId = this.id();
+	//var fieldElem = $(("#"+field.name).safeJqueryId());
+	var fieldElem = this.fieldElem(field);
+	if(fieldElem == null || fieldElem == undefined) {
+		return;
+	}
 	var filedElemParent = fieldElem.parent();
 	
 	if(field.type=='select') {
@@ -356,20 +361,22 @@ CommonDlg.prototype.refreshSelectPickField = function(fieldOrName) {
 	$(("#"+field.name).safeJqueryId()).selectpicker('refresh');
 };
 
-CommonDlg.prototype.fieldElem = function(type, name) {
-	var strId = "#{0}_dlg [id='{1}']".format(
-		this.option.target,
-		name.safeJqueryId());
+CommonDlg.prototype.fieldElem = function(fieldOrName) {
+	var field = fieldOrName;
+	if(typeof(field)=="string"){
+		field = this.fieldByName(field);
+	}
+	
+	//从当前dlg往下查找子元素，否则容易和画面其他元素发生重名，导致错误
+	var strId = "#{0} [id='{1}']".format(
+		this.id(),
+		field.name.safeJqueryId());
 	
 	return $(strId);
 };
 
 CommonDlg.prototype.findFieldElem = function(fieldOrName) {
-	var field = fieldOrName;
-	if(typeof(field)=="string"){
-		field = this.fieldByName(field);
-	}
-	return this.fieldElem(field.type, field.name);
+	return this.fieldElem(fieldOrName);
 };
 
 CommonDlg.prototype.fieldVal = function(fieldOrName) {

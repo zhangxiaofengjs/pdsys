@@ -118,7 +118,7 @@ $(document).ready(function(){
 			"afterBuild": function(type) {
 				var self = this;
 				
-				var thisElem = dlg.fieldElem(self.type, self.name);
+				var thisElem = dlg.fieldElem(self);
 				
 				//select选择以后品目在库情况
 				thisElem.change(function() {
@@ -170,7 +170,7 @@ $(document).ready(function(){
 				
 				var self = this;
 				
-				var orderElem = dlg.fieldElem(self.type, self.name);
+				var orderElem = dlg.fieldElem(self);
 				var pnElem = dlg.findFieldElem("pn.id");
 				var pnField = dlg.fieldByName("pn.id");
 				var orderField = dlg.fieldByName("order.id");

@@ -6,6 +6,7 @@ doc/~$env.xlsx
 doc/temp/*
 src/pdsys/target/classes/*
 src/pdsys/target/classes/
+src/pdsys/target/release/*
 src/pdsys/target/maven-status/*
 src/pdsys/target/maven-archiver/*
 src/pdsys/target/generated-sources/*
