@@ -78,6 +78,21 @@ public class PnController {
     }
 	
 	/**
+	 * 修改子类
+	 * */
+	@RequestMapping(value="/updatepncls")
+	@ResponseBody
+	public JSONResponse updatePnCls(@RequestBody PnModel pn) {
+		try {
+			pnService.updatePnCls(pn);
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
+		}
+		
+		return JSONResponse.success();
+	}
+	
+	/**
 	 * 删除子类
 	 * */
 	@RequestMapping(value="/deletepncls")

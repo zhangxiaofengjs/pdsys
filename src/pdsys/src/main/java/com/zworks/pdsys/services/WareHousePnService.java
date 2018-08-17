@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zworks.pdsys.common.exception.PdsysException;
+import com.zworks.pdsys.common.utils.ListUtils;
 import com.zworks.pdsys.mappers.WareHousePnMapper;
+import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 
@@ -42,5 +45,17 @@ public class WareHousePnService {
 
 	public void add(WareHousePnModel wareHousePn) {
 		wareHousePnMapper.add(wareHousePn);
+	}
+
+	public void checkUsedPn(PnModel pn) {
+		WareHousePnModel whpn = new WareHousePnModel();
+		whpn.setPn(pn);
+		
+		List<WareHousePnModel> list = queryList(whpn);
+		if(!ListUtils.isNullOrEmpty(list)) {
+			whpn = list.get(0);
+			PnModel pnTmp = whpn.getPn();
+			throw new PdsysException(String.format("成品仓库使用中:%s %s %s", pnTmp.getPn(), pnTmp.getName()));
+		}
 	}
 }

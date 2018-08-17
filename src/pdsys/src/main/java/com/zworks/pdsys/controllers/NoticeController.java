@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.NoticeFormBean;
+import com.zworks.pdsys.common.annotations.PdSysLog;
 import com.zworks.pdsys.common.enumClass.NoticeState;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.JSONResponse;
@@ -69,6 +70,7 @@ public class NoticeController extends BaseController {
 	
 	@RequestMapping(value="/getcount")
 	@ResponseBody
+	@PdSysLog(ignore=true)
     public JSONResponse getCount(Model model) {
 		NoticeModel notice = new NoticeModel();
 		notice.setState(NoticeState.Unread.ordinal());

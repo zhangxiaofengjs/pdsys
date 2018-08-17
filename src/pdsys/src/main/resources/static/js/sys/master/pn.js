@@ -283,6 +283,117 @@ $(document).ready(function(){
 			}
 		});
 	});
+
+	$("#modifyPnCls").click(function(){
+		var self = $(this);
+		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
+		if(selIds.length != 1) {
+			return;
+		}
+		
+		var selIdArr = selIds[0].split("_");
+		if(selIdArr.length < 2) {
+			PdSys.alert("请选择需要修改的子类");
+			return;
+		}
+		var pnId = selIdArr[0];
+		var clsId = selIdArr[1];
+		if(clsId == -1) {
+			PdSys.alert("请选择需要修改的子类");
+			return;
+		}
+
+		var dlg = new CommonDlg();
+		var fields = [
+			{
+				"name":"id",
+				"type":"hidden",
+				"value":pnId
+			},
+			{
+				"name":"pnClsRels[0].pnCls.id",
+				"type":"hidden",
+				"value":clsId
+			},
+			{
+				"name":"pnClsRels[0].pnCls.name",
+				"label":"本体名",
+				"type":"text",
+				"value":"",
+				"required": true,
+			},
+			{
+				"name":"pnClsRels[0].pnCls.unit.id",
+				"label":"单位",
+				"type":"select",
+				"value":"",
+				"groupButtons": createUnitGroupButtons({
+					"target":"unit_dlg_div",
+					"success": function(action, data) {
+						if(action == "add") {
+							dlg.rebuildFieldWithValue("pnClsRels[0].pnCls.unit.id", data.unit.id);
+						}
+					}
+				}),
+				"ajax": true,
+				"url":"/unit/list/json",
+				"convertAjaxData" : function(thisField, data) {
+					thisField.options = [];
+					data.units.forEach(function(unit, idx) {
+						thisField.options.push({
+							"value": unit.id,
+							"caption":"{0}({1}{2})".format(unit.name, unit.ratio, unit.subName),
+						});
+					});
+				}
+			},
+			{
+				"name":"pnClsRels[0].num",
+				"label":"单位配比",
+				"type":"number",
+				"value":"1",
+				"min":"1",
+			},
+		];
+		
+		dlg.showFormDlg({
+			"target":"dlg_div",
+			"caption":"编辑本体",
+			"fields":fields,
+			"ajax": {
+				"url":"/pn/get",
+				"data":{
+					"id":pnId
+				},
+				"convertAjaxData":function(data) {
+					var pn = data.pn;
+					var pnClsRels = pn.pnClsRels;
+					for(var i = 0; i < pnClsRels.length; i++) {
+						var pnClsRel = pnClsRels[i];
+						var pnCls = pnClsRel.pnCls;
+						
+						if(pnCls.id == clsId) {
+							dlg.rebuildFieldWithValue("pnClsRels[0].pnCls.name", pnCls.name);
+							dlg.rebuildFieldWithValue("pnClsRels[0].pnCls.unit.id", pnCls.unit.id);
+							dlg.rebuildFieldWithValue("pnClsRels[0].num", pnClsRel.num);
+						}
+					}
+				}
+			},
+			"url":"/pn/updatepncls",
+			"success": function(data) {
+				dlg.hide();
+				PdSys.success({
+					"ok" : function() {
+						PdSys.refresh();
+					}
+				});
+			},
+			"error": function(data) {
+				PdSys.alert(data.msg);
+			}
+		});
+	});
 	
 	$("#deletePnCls").click(function(){
 		var self = $(this);

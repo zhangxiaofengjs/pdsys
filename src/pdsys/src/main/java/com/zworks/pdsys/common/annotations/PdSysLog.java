@@ -15,4 +15,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface PdSysLog {
 	String description() default "";
+	boolean ignore() default false;
 }

@@ -1,7 +1,7 @@
 $(document).ready(function(){
-  //先更新一次，5分钟更新一次通知数量
+  //先更新一次，10分钟更新一次通知数量
   updateIndexNoticeCount();
-  setInterval(updateIndexNoticeCount,5*60*1000);//5*60*1000
+  setInterval(updateIndexNoticeCount,10*60*1000);//10*60*1000
 	
   $("a[refURL]").click(function(){
 	  var self = $(this);

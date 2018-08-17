@@ -181,7 +181,11 @@ public class WareHouseDeliveryService {
 				OrderPnModel opn = new OrderPnModel();
 				opn.setOrder(order);
 				opn.setPn(deliveryPn.getPn());
-				opn.setDeliveredNum(deliveryPn.getProducedNum());
+				opn = orderPnService.queryOne(opn);
+				if(opn == null) {
+					throw new PdsysException("预想外错误订单条目不存在： 条目ID， 订单ID" + opn.getId() + order.getId());//库存不够
+				}
+				opn.setDeliveredNum(opn.getDeliveredNum() + deliveryPn.getProducedNum());
 				opn.getFilterCond().put("update_delivery_num", true);
 				orderPnService.update(opn);
 			}

@@ -26,6 +26,12 @@ public class PnService {
     private PnMapper pnMapper;
 	@Autowired
 	private PnClsService pnClsService;
+	@Autowired
+	private WareHousePnService wareHousePnService;
+	@Autowired
+	private WareHouseEntryPnService wareHouseEntryPnService;
+	@Autowired
+	private WareHouseDeliveryPnService wareHouseDeliveryPnService;
 	
 	public List<PnModel> queryList(PnModel pn) {
 		return pnMapper.queryList(pn);
@@ -85,7 +91,51 @@ public class PnService {
 	}
 
 	@Transactional
+	public void updatePnCls(PnModel pn) {
+		PnPnClsRelModel pnClsRel = null;//预想只更新一个本体
+
+		//更新本体的名称和单位
+		List<PnPnClsRelModel> clsRels = pn.getPnClsRels();
+		for(PnPnClsRelModel pnClsRelTmp : clsRels) {
+			PnClsModel pnCls = pnClsRelTmp.getPnCls();
+			pnClsService.update(pnCls);
+			
+			pnClsRel = pnClsRelTmp;
+		}
+		if(pnClsRel == null) {
+			return;
+		}
+		
+		PnModel pnDb = queryOne(pn);
+		if(pnDb == null) {
+			throw new PdsysException("不存在的品目，刷新后再试");
+		}
+		
+		//修改本体使用量，因为涉及到入出库时原包材计算，所以已经使用过不能修改
+		for(PnPnClsRelModel pnClsRelTmp : pnDb.getPnClsRels()) {
+			if(pnClsRelTmp.getPnCls().getId() == pnClsRel.getPnCls().getId()) {
+				if(pnClsRel.getNum() != pnClsRelTmp.getNum()) {
+					checkUsed(pn, false);
+					//修改配比
+					pnMapper.updatePnCls(pn);
+				}
+			}
+		}
+	}
+	
+	private void checkUsed(PnModel pn, boolean isCheckWhPn) {
+		if(isCheckWhPn) {
+			wareHousePnService.checkUsedPn(pn);
+		}
+		wareHouseEntryPnService.checkUsedPn(pn);
+		wareHouseDeliveryPnService.checkUsedPn(pn);
+	}
+
+	@Transactional
 	public void deletePnCls(PnModel pn) {
+		//检测是否使用中，因为涉及到入出库计算则不能随便删除
+		checkUsed(pn, false);
+		
 		List<PnPnClsRelModel> clsRels = pn.getPnClsRels();
 		for(PnPnClsRelModel pnClsRel : clsRels) {
 			PnClsModel pnCls = pnClsRel.getPnCls();
@@ -163,7 +213,7 @@ public class PnService {
 			List<PnClsBOMRelModel> pnClsBOMRels = pnClsTmp.getPnClsBOMRels();
 			for(PnClsBOMRelModel pnClsBOMRel : pnClsBOMRels) {
 				BOMModel bom = pnClsBOMRel.getBom();
-				if(!isSemi) {
+				if(!isSemi && bom.getType() == BOMType.Packing.ordinal()) {//成品只计算包材损耗，因为在半成品入库时已经减掉原材
 					float useNum = pnClsBOMRel.getUseNum() * count;
 					addUsedBOM(bomMap, bom, useNum);
 				}
@@ -184,7 +234,7 @@ public class PnService {
 		for(PnBOMRelModel pnBOMRel : pnBOMRels) {
 			BOMModel bom = pnBOMRel.getBom();
 			
-			if(!isSemi) {
+			if(!isSemi && bom.getType() == BOMType.Packing.ordinal()) {//成品只计算包材损耗，因为在半成品入库时已经减掉原材
 				float useNum = pnBOMRel.getUseNum() * count;
 				addUsedBOM(bomMap, bom, useNum);
 			}

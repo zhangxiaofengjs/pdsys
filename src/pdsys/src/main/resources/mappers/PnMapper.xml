@@ -121,6 +121,9 @@
 	                </otherwise>
 	            </choose>
 	        </if>
+	        <if test="filterCond.pnClsId != null and filterCond.pnClsId > 0">
+	        	and pn_cls.c_id=#{filterCond.pnClsId}
+	        </if>
 		</where>
 	    order by pn.c_pn asc, pn_cls.c_id asc, bom.c_type asc
 	</select>
@@ -161,6 +164,17 @@
             #{num}
         )
 	</insert>
+	
+	<update id="updatePnCls" parameterType="pnModel">
+		<foreach collection ="pnClsRels" item="pnClsRel" index= "index" separator =";">
+			update pn_cls_relation_tbl
+			set	c_num=#{pnClsRel.num}
+			<where>
+				c_pn_id=#{id} and
+				c_cls_id=#{pnClsRel.pnCls.id}
+			</where>
+        </foreach>
+	</update>
 	
 	<delete id="deletePnCls" parameterType="pnModel">
 		<foreach collection ="pnClsRels" item="pnClsRel" index= "index" separator =";">

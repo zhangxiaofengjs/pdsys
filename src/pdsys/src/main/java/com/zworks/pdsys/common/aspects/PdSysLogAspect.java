@@ -71,6 +71,9 @@ public class PdSysLogAspect {
 		LogModel log = new LogModel();
 		PdSysLog syslog = method.getAnnotation(PdSysLog.class);
 		if (syslog != null) {
+			if(syslog.ignore()) {
+				return;//忽略掉的log
+			}
 			//注解上的描述
 			log.setDescription(syslog.description());
 		}

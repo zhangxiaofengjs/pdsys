@@ -43,6 +43,7 @@ spring:
 logging: 
   level:
     org.springframework.web: WARN
+    com.zworks.pdsys.mappers.NoticeMapper.queryList: WARN #定时通知太多，所以暂时不显示DEBUG信息
     com.zworks.pdsys: DEBUG
   file: c:/pdsys/log/pdsys.log
      

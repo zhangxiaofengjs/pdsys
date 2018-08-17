@@ -106,7 +106,7 @@
 		</where>
     </delete>
     
-	<update id="update">
+	<update id="update" parameterType="pnClsModel">
     	update pn_cls_tbl
 		set	c_name = #{name},
 			c_unit_id=#{unit.id}

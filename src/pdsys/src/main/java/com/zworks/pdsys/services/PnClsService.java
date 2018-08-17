@@ -37,6 +37,10 @@ public class PnClsService {
 		pnClsMapper.add(pnCls);
 	}
 
+	public void update(PnClsModel pnCls) {
+		pnClsMapper.update(pnCls);
+	}
+	
 	public boolean exists(PnClsModel pnCls) {
 		List<PnClsModel> list = queryList(pnCls);
 		return list.size() != 0;

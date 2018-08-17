@@ -20,7 +20,10 @@ public interface PnClsMapper {
 
 	void delete(PnClsModel pnCls);
 
+	void update(PnClsModel pnCls);
+
 	void addBOM(PnClsBOMRelModel bomRel);
 
 	void deleteBOM(PnClsModel pnCls);
+
 }

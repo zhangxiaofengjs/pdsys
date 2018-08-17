@@ -53,7 +53,7 @@ public class OrderService {
 		List<OrderPnModel> pns = order.getOrderPns();
 		
 		for(OrderPnModel pn : pns) {
-			if(pn.getDeliveredNum() >= pn.getNum()) {
+			if(pn.getDeliveredNum() < pn.getNum()) {
 				return false;
 			}
 		}

@@ -13,7 +13,7 @@
 		       e_pn.c_produced_num as e_pn_produced_num
 		from entry_pn_tbl as e_pn
 		<where>
-			<if test="wareHouseEntry.id > 0">
+			<if test="wareHouseEntry !=null and wareHouseEntry.id > 0">
 				and e_pn.c_entry_id=#{wareHouseEntry.id}
 			</if>
 			<if test="pn.id > 0">

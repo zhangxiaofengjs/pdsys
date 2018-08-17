@@ -326,7 +326,7 @@ public class WareHouseEntryService {
 			remainNum = whNum - bean.getUseNum();
 			if(remainNum < 0) {
 				//生产所耗BOM居然比之前出库的多，出库有问题，做错误处理
-				String msg = String.format("检测到该入库产品的原包材领料不足，请检查近期原包材出库单。<hr>原包材:%s %s<br>现场库存:%.2f %s<br>预计消耗:%.2f %s",
+				String msg = String.format("检测到该入库产品的原包材领料不足，请检查近期原包材出库单。<hr>原包材:%s | %s<br>现场库存:%.2f %s<br>预计消耗:%.2f %s",
 						bom.getPn(),
 						bom.getName(),
 						whNum,

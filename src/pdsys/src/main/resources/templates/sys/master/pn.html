@@ -19,16 +19,17 @@
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 	 			<div class="form-group" sec:authorize="${hasAnyAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).ADMIN, T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_MASTER)}">
 		 			<div class="btn-group">
-			 			<button type="button" class="btn btn-sm btn-info" id='addPn'>添加品目</button>
-			 			<button type="button" class="btn btn-sm btn-info" id='editPn'>修改品目</button>
+			 			<button type="button" class="btn btn-sm btn-info" id='addPn'>品目添加</button>
+			 			<button type="button" class="btn btn-sm btn-info" id='editPn'>修改</button>
 		 			</div>
 		 			<div class="btn-group">
-			 			<button type="button" class="btn btn-sm btn-info" id='addPnCls'>添加子类</button>
-			 			<button type="button" class="btn btn-sm btn-info" id='deletePnCls'>删除子类</button>
+			 			<button type="button" class="btn btn-sm btn-info" id='addPnCls'>本体添加</button>
+			 			<button type="button" class="btn btn-sm btn-info" id='modifyPnCls'>修改</button>
+			 			<button type="button" class="btn btn-sm btn-info" id='deletePnCls'>删除</button>
 		 			</div>
 		 			<div class="btn-group">
-			 			<button type="button" class="btn btn-sm btn-info" id='addBOM'>添加原包材</button>
-			 			<button type="button" class="btn btn-sm btn-info" id='deleteBOM'>删除原包材</button>
+			 			<button type="button" class="btn btn-sm btn-info" id='addBOM'>原包材添加</button>
+			 			<button type="button" class="btn btn-sm btn-info" id='deleteBOM'>删除</button>
 		 			</div>
 		 		</div>
 			</form>
@@ -66,7 +67,7 @@
 						<td>
 							<input type="checkbox" name="select" th:rowid="${pn.id+'_-1'}">
 						</td>
-						<td th:rowspan="${pnRowSize}" th:text="${pn.pn}"></td>
+						<td th:rowspan="${pnRowSize}" th:text="${pn.pn}" th:title="${pn.id}"></td>
 						<td th:rowspan="${pnRowSize}" th:text="${pn.name}"></td>
 						<td th:rowspan="${pnRowSize}" th:text="${pn.priceUnit != null?pn.priceUnit.name:_}"></td>
 						<td th:rowspan="${pnRowSize}" th:text="${pn.price}"></td>
@@ -87,7 +88,7 @@
 						<td>
 							<input type="checkbox" name="select" th:rowid="${pn.id+'_-1_'+ bom.id}">
 						</td>
-						<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${pn.pn}"></td>
+						<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${pn.pn}" th:title="${pn.id}"></td>
 						<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${pn.name}"></td>
 						<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${pn.priceUnit != null?pn.priceUnit.name:_}"></td>
 						<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${pn.price}"></td>
@@ -117,7 +118,7 @@
 							<td>
 								<input type="checkbox" name="select" th:rowid="${rowId}">
 							</td>
-							<td th:text="${pnCls.name + '(' + pnClsRel.num + pnCls.unit.name + ')'}"></td>
+							<td th:text="${pnCls.name + '(' + pnClsRel.num + pnCls.unit.name + ')'}" th:title="${pnCls.id}"></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -135,7 +136,7 @@
 							<td>
 								<input type="checkbox" name="select" th:rowid="${rowId}">
 							</td>
-							<td th:rowspan="${clsBomSize}" th:if="${iterStat3.index == 0}" th:text="${pnCls.name + '(' + pnClsRel.num + pnCls.unit.name + ')'}"></td>
+							<td th:rowspan="${clsBomSize}" th:if="${iterStat3.index == 0}" th:text="${pnCls.name + '(' + pnClsRel.num + pnCls.unit.name + ')'}" th:title="${pnCls.id}"></td>
 							<td th:switch="${bom != null ? bom.type : ''}">
 			    				<span th:case="0">原</span>
 					  			<span th:case="1">包</span>
