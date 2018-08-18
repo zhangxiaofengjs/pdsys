@@ -12,6 +12,10 @@
         <id column="u_id" property="id"/> 
         <result column="u_name" property="name"/>
     </resultMap>
+    <resultMap id="customerResultMap" type="customerModel" >
+        <id column="c_id" property="id"/> 
+        <result column="c_name" property="name"/>
+    </resultMap>
 	<resultMap id="orderResultMap" type="orderModel" >
         <id column="o_id" property="id"/> 
         <result column="o_no" property="no"/>
@@ -22,6 +26,7 @@
         <result column="o_comment" property="comment"/>
         <result column="o_attachment" property="attachment"/>
         <association property="user" resultMap="userResultMap"/>
+        <association property="customer" resultMap="customerResultMap"/>
         <collection property="orderPns" ofType="orderPnModel" resultMap="orderPnResultMap" />
     </resultMap>
     
@@ -39,10 +44,13 @@
 			   o_pn.c_delivered_num as o_pn_delivered_num,
 			   o_pn.c_price as o_pn_price,
 			   u.c_id as u_id,
-			   u.c_name as u_name
+			   u.c_name as u_name,
+			   c.c_id as c_id,
+			   c.c_name as c_name
 		from order_tbl as o
 		left join order_pn_tbl as o_pn on o.c_id=o_pn.c_order_id
 		left join user_tbl as u on o.c_user_id = u.c_id 
+		left join customer_tbl as c on o.c_customer_id = c.c_id 
 		<where>
 			<if test="id > 0">
 				and o.c_id = #{id}

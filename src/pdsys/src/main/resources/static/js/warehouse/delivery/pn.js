@@ -160,7 +160,7 @@ $(document).ready(function(){
 				data.orders.forEach(function(order, idx) {
 					thisField.options.push({
 						"value": order.id,
-						"caption":order.no,
+						"caption":"{0} (期限:{1})".format(order.no, order.shipDeadDate),
 					});
 				});
 			},
@@ -214,7 +214,8 @@ $(document).ready(function(){
 				thisField.value = getOrderPnTable(orderPn);
 				
 				//dlg.fieldByName("semiProducedNum").max = whPn.semiProducedNum;
-				dlg.fieldByName("producedNum").max = whPn.producedNum;
+				//出库数量不能大于订购数量
+				dlg.fieldByName("producedNum").max = Math.min(orderPn.num - orderPn.deliveredNum, whPn.producedNum);
 			},
 		},
 		{
@@ -328,30 +329,11 @@ $(document).ready(function(){
 					"url":"/warehouse/delivery/delivery/" + $("#delivery_id").val(),
 					"success": function(data) {
 						dlg.hide();
-						
-						if(data.success) {
-							var msgDlg = new CommonDlg();
-							msgDlg.showMsgDlg({
-								"target":"msg_div",
-								"type":"ok",
-								"msg":"出库成功!",
-								"ok": function(){
-									PdSys.refresh();
-								}});
-						} else {
-							var msgDlg = new CommonDlg();
-							msgDlg.showMsgDlg({
-								"target":"msg_div",
-								"type":"ok",
-								"msg":data.msg});
-						}
+						PdSys.success({"ok":PdSys.refresh()});
 					},
 					"error": function(data) {
-						var msgDlg = new CommonDlg();
-						msgDlg.showMsgDlg({
-							"target":"msg_div",
-							"type":"ok",
-							"msg":"出库失败,请联系管理员!"});
+						dlg.hide();
+						PdSys.alert(data.msg);
 					}
 				});
 			}

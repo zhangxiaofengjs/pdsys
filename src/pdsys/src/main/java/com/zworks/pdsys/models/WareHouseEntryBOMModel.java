@@ -10,7 +10,8 @@ import org.apache.ibatis.type.Alias;
 public class WareHouseEntryBOMModel extends WareHouseBOMModel{
 	private WareHouseEntryModel wareHouseEntry;
 	private WareHouseBOMModel wareHouseBOM;//实际库存
-
+	private SupplierModel supplier;
+	
 	public WareHouseEntryModel getWareHouseEntry() {
 		return wareHouseEntry;
 	}
@@ -22,5 +23,13 @@ public class WareHouseEntryBOMModel extends WareHouseBOMModel{
 	}
 	public void setWareHouseBOM(WareHouseBOMModel wareHouseBOM) {
 		this.wareHouseBOM = wareHouseBOM;
+	}
+	
+	public SupplierModel getSupplier() {
+		return supplier;
+	}
+
+	public void setSupplier(SupplierModel supplier) {
+		this.supplier = supplier;
 	}
 }

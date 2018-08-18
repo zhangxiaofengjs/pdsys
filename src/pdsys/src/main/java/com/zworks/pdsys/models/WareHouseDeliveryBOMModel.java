@@ -10,7 +10,7 @@ import org.apache.ibatis.type.Alias;
 public class WareHouseDeliveryBOMModel extends WareHouseBOMModel{
 	private WareHouseDeliveryModel wareHouseDelivery;
 	private WareHouseBOMModel wareHouseBOM;
-	
+
 	public WareHouseDeliveryBOMModel() {
 	}
 	

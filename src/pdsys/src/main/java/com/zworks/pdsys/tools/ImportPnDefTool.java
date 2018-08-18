@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zworks.pdsys.common.enumClass.UnitType;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.ExcelUtils;
 import com.zworks.pdsys.models.BOMModel;
@@ -134,6 +135,8 @@ public class ImportPnDefTool {
 				int idx = 0;
 	           	String pn = ExcelUtils.getCellValue(row.getCell(idx++));
 	           	String name = ExcelUtils.getCellValue(row.getCell(idx++));
+	           	String priceUnitName = ExcelUtils.getCellValue(row.getCell(idx++));
+	           	String price = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String cls = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String unitName = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String unitSubName = ExcelUtils.getCellValue(row.getCell(idx++));
@@ -148,6 +151,19 @@ public class ImportPnDefTool {
 	            String bomUseNum = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String bomPrice = ExcelUtils.getCellValue(row.getCell(idx++));
 	            String bomSupplier = ExcelUtils.getCellValue(row.getCell(idx++));
+	            
+	            //pn-price unit
+	            UnitModel priceUnit = null;
+	            if("".equals(priceUnitName)) {
+	            	//default
+	            	priceUnitName = "USD";
+	            }
+            	priceUnit = new UnitModel();
+            	priceUnit.setName(priceUnitName);
+            	priceUnit.setSubName(priceUnitName);
+            	priceUnit.setRatio(1);
+            	priceUnit.setType(UnitType.Currency.ordinal());
+            	priceUnit = addUnit(priceUnit);
 	            
 	            //pn-unit
 	            UnitModel unit = null;
@@ -209,6 +225,13 @@ public class ImportPnDefTool {
 	            	pnObj = new PnModel();
 	            	pnObj.setPn(pn);
 	            	pnObj.setName(name);
+	            	
+	            	float priceTmp = 0;
+	            	try {
+	            		priceTmp = Float.parseFloat(price);
+	            	} catch(Exception e) {}
+	            	pnObj.setPrice(priceTmp);
+	            	pnObj.setPriceUnit(priceUnit);
 	            	if(unit == null) {
 		            	throw new PdsysException("未设定单位");
 		            }

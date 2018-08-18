@@ -43,6 +43,7 @@
         <id column="bom_id" property="id" />  
         <result column="bom_pn" property="pn" />  
         <result column="bom_name" property="name" />  
+        <result column="bom_type" property="type" />  
         <association property="unit" resultMap="unitResultMap"/>
     </resultMap>
     <resultMap id="pnClsResultMap" type="pnClsModel" >  
@@ -287,6 +288,7 @@
 		       bom.c_id as bom_id,
 		       bom.c_pn as bom_pn,
 		       bom.c_name as bom_name,
+		       bom.c_type as bom_type,
 		       unit.c_id as unit_id,
 		       unit.c_name as unit_name,
 		       wh_bom.c_id as wh_bom_id,

@@ -6,7 +6,7 @@ M.bomName = function(bom) {
 		return "";
 	}
 	
-	var str = "{0} {1}".format(bom.pn, bom.name);
+	var str = "[{0}] {1} {2}".format((bom.type == 0 ? "原" : "包"), bom.pn, bom.name);
 	if(bom.comment != null && bom.comment != null && bom.comment != "") {
 		str += "(" + bom.comment + ")";
 	}

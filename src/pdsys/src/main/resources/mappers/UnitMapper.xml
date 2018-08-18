@@ -40,13 +40,15 @@
 		(
 			c_name,
 			c_sub_name,
-			c_ratio
+			c_ratio,
+			c_type
 		)
 		values
 		(
 			#{name},
 			#{subName},
-			#{ratio}
+			#{ratio},
+			#{type}
 		)
 		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
