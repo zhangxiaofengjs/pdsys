@@ -110,6 +110,24 @@ $(document).ready(function(){
 			},
 		},
 		{
+			"name":"supplier.id",
+			"label":"供应商",
+			"type":"select",
+			"options":[],
+			"min":1,
+			"ajax":true,
+			"url":"/supplier/list/json",
+			"convertAjaxData" : function(thisField, data) {
+				thisField.options = [];
+				data.suppliers.forEach(function(supplier, idx) {
+					thisField.options.push({
+						"value": supplier.id,
+						"caption": supplier.name,
+					});
+				});
+			}
+		},
+		{
 			"name":"num",
 			"label":"数量",
 			"type":"number",

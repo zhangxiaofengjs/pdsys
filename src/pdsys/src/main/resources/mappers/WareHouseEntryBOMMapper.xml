@@ -75,11 +75,13 @@
     	insert into entry_bom_tbl (
     		c_entry_id,
     		c_ref_id,
-    		c_num)
+    		c_num,
+    		c_supplier_id)
     	values (
     		#{wareHouseEntry.id},
     		#{bom.id},
-    		#{num}
+    		#{num},
+    		#{supplier.id}
     	)
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id

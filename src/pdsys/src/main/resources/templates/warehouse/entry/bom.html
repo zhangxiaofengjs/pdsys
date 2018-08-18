@@ -97,12 +97,14 @@
 					<th>名称</th>
 					<th>单位</th>
 					<th>入库数量</th>
+					<th>供应商</th>
 			    </tr>
 			</thead>
 			<tbody>
 				<tr th:each="wareHouseEntryBOM : ${entryTgt.wareHouseEntryBOMs}"
 					th:with="bom=(${wareHouseEntryBOM.bom}),
-							 unit=${bom.unit}"
+							 unit=${bom.unit},
+							 supplier=${wareHouseEntryBOM.supplier}"
 							 th:rowid="${wareHouseEntryBOM.id}">
 					<td>
 						<input type="checkbox" name="select" th:rowid="${wareHouseEntryBOM.id}">
@@ -115,6 +117,7 @@
 					<td th:text="${bom}?${bom.name}:_"></td>
 					<td th:text="${unit}?${unit.name}:_"></td>
 					<td th:text="${wareHouseEntryBOM.num}" class="number"></td>
+					<td th:text="${supplier!=null?supplier.name:_}"></td>
 			    </tr>
 			</tbody>
 		</table>
