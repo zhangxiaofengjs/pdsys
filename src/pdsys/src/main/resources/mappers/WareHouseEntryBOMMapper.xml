@@ -55,8 +55,23 @@
 			<if test="wareHouseEntry != null and wareHouseEntry.state > -1">
 				and e.c_state = #{wareHouseEntry.state}
 			</if>
-			<if test="bom.id > 0">
-				and e_bom.c_ref_id=#{bom.id}
+			<if test="bom!=null">
+				<if test="bom.id > 0">
+					and e_bom.c_ref_id=#{bom.id}
+				</if>
+				<if test="bom.pn != null and bom.pn != ''">
+					<choose>
+		                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+		                   	and bom.c_pn like '%${bom.pn}%'
+		                </when>
+		                <otherwise>
+							and bom.c_pn=#{bom.pn}
+		                </otherwise>
+		            </choose>
+				</if>
+				<if test="bom.type > -1">
+					and bom.c_type=#{bom.type}
+				</if>
 			</if>
 			<if test="filterCond.entryStart != null">
 				and e.c_entry_time &gt;= #{filterCond.entryStart}

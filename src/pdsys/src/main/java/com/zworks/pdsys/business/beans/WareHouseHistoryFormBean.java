@@ -9,6 +9,8 @@ import com.zworks.pdsys.common.utils.DateUtils;
  * @version: 2018/05/04
  */
 public class WareHouseHistoryFormBean {
+	private int bomType;
+	private String pn;
 	private Date start;
 	private Date end;
 	
@@ -29,5 +31,21 @@ public class WareHouseHistoryFormBean {
 	}
 	public void setEnd(Date end) {
 		this.end = end;
+	}
+
+	public String getPn() {
+		return pn;
+	}
+
+	public void setPn(String pn) {
+		this.pn = pn;
+	}
+
+	public int getBomType() {
+		return bomType;
+	}
+
+	public void setBomType(int bomType) {
+		this.bomType = bomType;
 	}
 }

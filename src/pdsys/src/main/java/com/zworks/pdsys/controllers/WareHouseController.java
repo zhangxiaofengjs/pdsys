@@ -21,6 +21,7 @@ import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.RequestContextUtils;
+import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
@@ -137,6 +138,8 @@ public class WareHouseController extends BaseController{
 		
 		Date s = DateUtils.startOfDay(formBean.getStart());
 		Date e = DateUtils.endOfDay(formBean.getEnd());
+		String pn = formBean.getPn();
+		int bomType = formBean.getBomType();
 		if(s == null) {
 			s = RequestContextUtils.getSessionAttribute(this, "start" + type, DateUtils.startOfDay(DateUtils.thisMonthStart()));
 			formBean.setStart(s);
@@ -147,40 +150,66 @@ public class WareHouseController extends BaseController{
 			formBean.setEnd(e);
 		}
 		RequestContextUtils.setSessionAttribute(this, "end" + type, e);
+		if(pn == null) {
+			pn= RequestContextUtils.getSessionAttribute(this, "pn" + type, "");
+			formBean.setPn(pn);
+		}
+		RequestContextUtils.setSessionAttribute(this, "pn" + type, pn);
+		if(bomType == -1) {
+			bomType= RequestContextUtils.getSessionAttribute(this, "bomType" + type, -1);
+			formBean.setBomType(bomType);
+		}
+		RequestContextUtils.setSessionAttribute(this, "bomType" + type, bomType);
 		
 		if(type.equals("deliverybom")) {
-			WareHouseDeliveryBOMModel bom = new WareHouseDeliveryBOMModel();
+			WareHouseDeliveryBOMModel deliveryBom = new WareHouseDeliveryBOMModel();
+			
 			WareHouseDeliveryModel d = new WareHouseDeliveryModel();
 			d.setState(DeliveryState.DELIVERIED.ordinal());
-			bom.setWareHouseDelivery(d);
-			bom.getFilterCond().put("deliveryStart", s);
-			bom.getFilterCond().put("deliveryEnd", e);
-			bom.getFilterCond().put("groupByBOM", true);
 			
-			List<WareHouseDeliveryBOMModel> list = wareHouseDeliveryBOMService.queryList(bom);
+			BOMModel bom = new BOMModel();
+			bom.setPn(pn);
+			bom.setType(bomType);
+			
+			deliveryBom.setWareHouseDelivery(d);
+			deliveryBom.setBom(bom);
+			deliveryBom.getFilterCond().put("fuzzyPnSearch", true);
+			deliveryBom.getFilterCond().put("deliveryStart", s);
+			deliveryBom.getFilterCond().put("deliveryEnd", e);
+			deliveryBom.getFilterCond().put("groupByBOM", true);
+			
+			List<WareHouseDeliveryBOMModel> list = wareHouseDeliveryBOMService.queryList(deliveryBom);
 			model.addAttribute("list", list);
 		} else if(type.equals("entrybom")) {
-			WareHouseEntryBOMModel bom = new WareHouseEntryBOMModel();
+			WareHouseEntryBOMModel entryBom = new WareHouseEntryBOMModel();
+			
 			WareHouseEntryModel entry = new WareHouseEntryModel();
 			entry.setState(EntryState.ENTRIED.ordinal());
-			bom.setWareHouseEntry(entry);
-			bom.getFilterCond().put("entryStart", s);
-			bom.getFilterCond().put("entryEnd", e);
-			bom.getFilterCond().put("groupByBOM", true);
 			
-			List<WareHouseEntryBOMModel> list = wareHouseEntryBOMService.queryList(bom);
+			BOMModel bom = new BOMModel();
+			bom.setPn(pn);
+			bom.setType(bomType);
+			
+			entryBom.setWareHouseEntry(entry);
+			entryBom.setBom(bom);
+			entryBom.getFilterCond().put("fuzzyPnSearch", true);
+			entryBom.getFilterCond().put("entryStart", s);
+			entryBom.getFilterCond().put("entryEnd", e);
+			entryBom.getFilterCond().put("groupByBOM", true);
+			
+			List<WareHouseEntryBOMModel> list = wareHouseEntryBOMService.queryList(entryBom);
 			model.addAttribute("list", list);
 		}
 		else if(type.equals("pn")) {
-			WareHouseDeliveryPnModel pn = new WareHouseDeliveryPnModel();
+			WareHouseDeliveryPnModel deliveryPn = new WareHouseDeliveryPnModel();
 			WareHouseDeliveryModel d = new WareHouseDeliveryModel();
 			d.setState(DeliveryState.DELIVERIED.ordinal());
-			pn.setWareHouseDelivery(d);
-			pn.getFilterCond().put("deliveryStart", s);
-			pn.getFilterCond().put("deliveryEnd", e);
-			pn.getFilterCond().put("groupByPn", true);
+			deliveryPn.setWareHouseDelivery(d);
+			deliveryPn.getFilterCond().put("deliveryStart", s);
+			deliveryPn.getFilterCond().put("deliveryEnd", e);
+			deliveryPn.getFilterCond().put("groupByPn", true);
 			
-			List<WareHouseDeliveryPnModel> list = wareHouseDeliveryPnService.queryList(pn);
+			List<WareHouseDeliveryPnModel> list = wareHouseDeliveryPnService.queryList(deliveryPn);
 			model.addAttribute("list", list);
 		} else {
 			throw new PdsysException("错误参数:/history/main?type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);

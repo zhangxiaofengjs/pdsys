@@ -33,6 +33,7 @@ encoding//src/main/resources/templates/warehouse/entry/machinepart.html=UTF-8
 encoding//src/main/resources/templates/warehouse/entry/main.html=UTF-8
 encoding//src/main/resources/templates/warehouse/entry/pn.html=UTF-8
 encoding//src/main/resources/templates/warehouse/entry/semipn.html=UTF-8
+encoding//src/main/resources/templates/warehouse/history/deliverybom.html=UTF-8
 encoding//src/main/resources/templates/warehouse/history/entrybom.html=UTF-8
 encoding//src/main/resources/templates/warehouse/history/main.html=UTF-8
 encoding//src/main/resources/templates/warehouse/history/pn.html=UTF-8
