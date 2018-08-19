@@ -12,6 +12,7 @@ encoding//src/main/resources/templates/login.html=UTF-8
 encoding//src/main/resources/templates/notice/list.html=UTF-8
 encoding//src/main/resources/templates/order/detail.html=UTF-8
 encoding//src/main/resources/templates/order/list.html=UTF-8
+encoding//src/main/resources/templates/order/listpn.html=UTF-8
 encoding//src/main/resources/templates/purchase/bomdetails.html=UTF-8
 encoding//src/main/resources/templates/purchase/list.html=UTF-8
 encoding//src/main/resources/templates/purchase/purchasebomlist.html=UTF-8

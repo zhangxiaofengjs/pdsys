@@ -10,6 +10,9 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("orderPnModel")
 public class OrderPnModel extends BaseModel{
+	public static final String FCK_FUZZYPNSEARCH = "fuzzyPnSearch";
+	public static final String FCK_NOTDELIVERD = "notDelivered";
+	public static final String FCK_ORDERBYPN = "orderByPn";
 	private PnModel pn;
 	private OrderModel order;
 	

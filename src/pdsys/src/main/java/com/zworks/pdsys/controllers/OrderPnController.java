@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.ValidatorUtils;
-import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.services.OrderPnService;
 import com.zworks.pdsys.services.OrderService;
@@ -28,10 +28,27 @@ public class OrderPnController {
 	/**
 	 * 取得订单品目
 	 */
+	@RequestMapping("/list")
+	public String list(OrderPnModel orderPn, Model model) {
+		//订单一览加载
+		orderPn.putFilterCond(OrderPnModel.FCK_FUZZYPNSEARCH, true);
+		orderPn.putFilterCond(OrderPnModel.FCK_NOTDELIVERD, true);
+		orderPn.putFilterCond(OrderPnModel.FCK_ORDERBYPN, true);
+
+		List<OrderPnModel> list = orderPnService.queryList(orderPn);
+		model.addAttribute("orderPns", list);
+		model.addAttribute("orderPn", orderPn);
+
+		return "order/listpn";
+	}
+	
+	/**
+	 * 取得订单品目
+	 */
 	@RequestMapping("/list/json")
 	@ResponseBody
-	public JSONResponse listJson(@RequestBody OrderModel order) {
-		List<OrderPnModel> list = orderPnService.queryList(order);
+	public JSONResponse listJson(@RequestBody OrderPnModel orderPn) {
+		List<OrderPnModel> list = orderPnService.queryList(orderPn);
 		return JSONResponse.success().put("orderPns", list);
 	}
 	
