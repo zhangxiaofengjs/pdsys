@@ -263,6 +263,8 @@ public class WareHouseEntryController {
 				wareHouseEntryService.entryPn(entry);
 			} else if(entry.getType() == EntryType.SEMIPN.ordinal()) {
 				wareHouseEntryService.entrySemiPn(entry);
+			} else if(entry.getType() == EntryType.BOM.ordinal()) {
+				wareHouseEntryService.entryBOM(entry);
 			}
 			else {
 				wareHouseEntryService.entry(entry);

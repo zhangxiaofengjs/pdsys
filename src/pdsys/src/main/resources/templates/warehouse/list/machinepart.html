@@ -40,7 +40,7 @@
 			<td th:text="${machinePart.pn}"></td>
 			<td th:text="${machinePart.name}"></td>
 			<td th:text="${machinePart.wareHouseMinNum}"></td>
-			<td th:class="${wareHouseMachinePart.num < machinePart.wareHouseMinNum ? 'red-bg white-text' : ''}" th:text="${wareHouseMachinePart.num}"></td>
+			<td th:class="${wareHouseMachinePart.num < machinePart.wareHouseMinNum ? 'red-bg white-font' : ''}" th:text="${wareHouseMachinePart.num}"></td>
 			<td th:text="${unit}?${unit.name}:_"></td>
 			<td th:text="${supplier}?${supplier.name}:_"></td>
 	    </tr>

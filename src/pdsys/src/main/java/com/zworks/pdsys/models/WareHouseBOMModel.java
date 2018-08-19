@@ -10,6 +10,7 @@ import org.apache.ibatis.type.Alias;
 public class WareHouseBOMModel extends BaseModel{
 	private float num;
 	private float deliveryRemainingNum;
+	private float defectiveNum;
 	private BOMModel bom;
 	
 	public WareHouseBOMModel() {
@@ -38,5 +39,13 @@ public class WareHouseBOMModel extends BaseModel{
 
 	public void setDeliveryRemainingNum(float deliveryRemainingNum) {
 		this.deliveryRemainingNum = deliveryRemainingNum;
+	}
+
+	public float getDefectiveNum() {
+		return defectiveNum;
+	}
+
+	public void setDefectiveNum(float defectiveNum) {
+		this.defectiveNum = defectiveNum;
 	}
 }

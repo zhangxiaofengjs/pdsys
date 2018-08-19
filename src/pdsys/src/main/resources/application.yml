@@ -13,6 +13,8 @@ server:
 spring:
     #profiles: # 环境 dev
     #    active: dev
+    #aop:
+    #  auto: true
     jackson: # jackson时间格式化
         time-zone: GMT+8
         date-format: yyyy-MM-dd HH:mm:ss

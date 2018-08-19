@@ -246,7 +246,7 @@ public class WareHouseDeliveryService {
 					throw new PdsysException("库存不足，刷新再试");//库存不够
 				}
 				wareHousePn.setNum(num);
-				
+				wareHousePn.getFilterCond().put("UPDATE_NUM", true);
 				wareHouseSemiPnService.update(wareHousePn);
 			}
 		} else if(delivery.getType() == (int)DeliveryType.MACHINEPART.ordinal()) {

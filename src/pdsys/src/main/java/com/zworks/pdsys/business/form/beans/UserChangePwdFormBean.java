@@ -1,4 +1,4 @@
-package com.zworks.pdsys.business.beans;
+package com.zworks.pdsys.business.form.beans;
 
 public class UserChangePwdFormBean {
 	private int id;

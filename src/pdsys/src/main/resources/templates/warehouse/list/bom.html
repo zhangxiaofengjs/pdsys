@@ -19,13 +19,17 @@
 	<table class="table table-striped table-bordered table-hover table-condensed" >
 		<thead>
 		    <tr>
-				<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
-				<th>种类</th>
-				<th>品番</th>
-				<th>名称</th>
-				<th>单位</th>
-				<th>在库数量</th>
-				<th>现场数量</th>
+				<th rowspan="2" style="width:20px;"><input type="checkbox" name="selectAll"></th>
+				<th rowspan="2">种类</th>
+				<th rowspan="2">品番</th>
+				<th rowspan="2">名称</th>
+				<th rowspan="2">单位</th>
+				<th colspan="3">数量</th>
+		    </tr>
+		    <tr>
+				<th>在库</th>
+				<th>现场</th>
+				<th>不良品</th>
 		    </tr>
 		</thead>
 		<tbody>
@@ -41,10 +45,11 @@
 			  <span th:case="*">包材</span>
 			</td>
 			<td th:text="${bom.pn}"></td>
-			<td th:text="${bom.name + (bom.comment!=null and bom.comment!='' ? '(' + bom.comment + ')' :'')}"></td>
+			<td th:text="${#strings.abbreviate(bom.name,36)}" th:title="${bom.name}"></td>
 			<td th:text="${unit.name}"></td>
 			<td th:text="${whbom.num}" class="number"></td>
 			<td th:text="${whbom.deliveryRemainingNum}" class="number"></td>
+			<td th:text="${whbom.defectiveNum}" class="number"></td>
 	    </tr>
 	  </tbody>
 	</table>

@@ -11,6 +11,7 @@ public class WareHouseSemiPnModel extends BaseModel{
 	private PnModel pn;
 	private PnPnClsRelModel pnClsRel;
 	private float num;
+	private float defectiveNum;
 
 	public PnModel getPn() {
 		return pn;
@@ -34,5 +35,13 @@ public class WareHouseSemiPnModel extends BaseModel{
 
 	public void setPnClsRel(PnPnClsRelModel pnClsRel) {
 		this.pnClsRel = pnClsRel;
+	}
+
+	public float getDefectiveNum() {
+		return defectiveNum;
+	}
+
+	public void setDefectiveNum(float defectiveNum) {
+		this.defectiveNum = defectiveNum;
 	}
 }

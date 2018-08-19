@@ -27,6 +27,7 @@
 	<resultMap id="warehouseSemiPnResultMap" type="wareHouseSemiPnModel" >  
         <id column="wh_id" property="id" />  
         <result column="wh_num" property="num" />  
+        <result column="wh_defective_num" property="defectiveNum" />  
         <association property="pn" resultMap="pnResultMap"/>
         <association property="pnClsRel" resultMap="pnClsRelResultMap"/>
     </resultMap>
@@ -34,7 +35,8 @@
 	<select id="queryList" parameterType="wareHouseSemiPnModel" resultMap="warehouseSemiPnResultMap">
 		select 
 			wh_pn.c_id AS wh_id,
-			wh_pn.c_num AS wh_num, 
+			wh_pn.c_num AS wh_num,
+			wh_pn.c_defective_num AS wh_defective_num,
 			pn.c_id AS pn_id, 
 			pn.c_pn AS pn_pn, 
 			pn.c_name AS pn_name, 
@@ -98,11 +100,13 @@
     	insert into warehouse_semi_pn_tbl (
     		c_pn_id,
     		c_pn_cls_id,
-    		c_num)
+    		c_num,
+    		c_defective_num)
     	values (
     		#{pn.id},
     		#{pnClsRel.pnCls.id},
-    		#{num}
+    		#{num},
+    		#{defectiveNum}
     	)
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
@@ -111,7 +115,14 @@
     
 	<update id="update"  parameterType="wareHouseSemiPnModel">
     	update warehouse_semi_pn_tbl
-		set	c_num=#{num}
+    	<set>
+	    	<if test="filterCond.UPDATE_NUM != null and filterCond.UPDATE_NUM">
+				c_num=#{num},
+			</if>
+	    	<if test="filterCond.UPDATE_DEFECTIVE_NUM != null and filterCond.UPDATE_DEFECTIVE_NUM">
+				c_defective_num=#{defectiveNum},
+			</if>
+		</set>
     	<where>
 			c_id = #{id}
 		</where>

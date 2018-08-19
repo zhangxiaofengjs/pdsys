@@ -12,22 +12,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.zworks.pdsys.business.beans.WareHouseHistoryFormBean;
-import com.zworks.pdsys.business.beans.WareHouseListFormBean;
+import com.zworks.pdsys.business.form.beans.WareHouseHistoryFormBean;
+import com.zworks.pdsys.business.form.beans.WareHouseListFormBean;
+import com.zworks.pdsys.business.service.WareHouseDeliveryBusiness;
+import com.zworks.pdsys.business.service.WareHouseEntryBusiness;
 import com.zworks.pdsys.common.enumClass.DeliveryState;
-import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.RequestContextUtils;
-import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
-import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.models.WareHouseSemiPnModel;
@@ -60,6 +59,10 @@ public class WareHouseController extends BaseController{
 	WareHouseEntryBOMService wareHouseEntryBOMService;
 	@Autowired
 	WareHouseDeliveryPnService wareHouseDeliveryPnService;
+	@Autowired
+	WareHouseEntryBusiness wareHouseEntryBusiness;
+	@Autowired
+	WareHouseDeliveryBusiness wareHouseDeliveryBusiness;
 
 	@RequestMapping("/list/main")
     public String listMain(@RequestParam(name="type",required = false/*, defaultValue="pn"*/)String type, 
@@ -141,7 +144,7 @@ public class WareHouseController extends BaseController{
 		String pn = formBean.getPn();
 		int bomType = formBean.getBomType();
 		if(s == null) {
-			s = RequestContextUtils.getSessionAttribute(this, "start" + type, DateUtils.startOfDay(DateUtils.thisMonthStart()));
+			s = RequestContextUtils.getSessionAttribute(this, "start" + type, DateUtils.startOfDay(DateUtils.getCurrentDate()));
 			formBean.setStart(s);
 		}
 		RequestContextUtils.setSessionAttribute(this, "start" + type, s);
@@ -160,44 +163,12 @@ public class WareHouseController extends BaseController{
 			formBean.setBomType(bomType);
 		}
 		RequestContextUtils.setSessionAttribute(this, "bomType" + type, bomType);
-		
+
 		if(type.equals("deliverybom")) {
-			WareHouseDeliveryBOMModel deliveryBom = new WareHouseDeliveryBOMModel();
-			
-			WareHouseDeliveryModel d = new WareHouseDeliveryModel();
-			d.setState(DeliveryState.DELIVERIED.ordinal());
-			
-			BOMModel bom = new BOMModel();
-			bom.setPn(pn);
-			bom.setType(bomType);
-			
-			deliveryBom.setWareHouseDelivery(d);
-			deliveryBom.setBom(bom);
-			deliveryBom.getFilterCond().put("fuzzyPnSearch", true);
-			deliveryBom.getFilterCond().put("deliveryStart", s);
-			deliveryBom.getFilterCond().put("deliveryEnd", e);
-			deliveryBom.getFilterCond().put("groupByBOM", true);
-			
-			List<WareHouseDeliveryBOMModel> list = wareHouseDeliveryBOMService.queryList(deliveryBom);
+			List<WareHouseDeliveryBOMModel> list = wareHouseDeliveryBusiness.calcDeliveryBOMs(formBean);
 			model.addAttribute("list", list);
 		} else if(type.equals("entrybom")) {
-			WareHouseEntryBOMModel entryBom = new WareHouseEntryBOMModel();
-			
-			WareHouseEntryModel entry = new WareHouseEntryModel();
-			entry.setState(EntryState.ENTRIED.ordinal());
-			
-			BOMModel bom = new BOMModel();
-			bom.setPn(pn);
-			bom.setType(bomType);
-			
-			entryBom.setWareHouseEntry(entry);
-			entryBom.setBom(bom);
-			entryBom.getFilterCond().put("fuzzyPnSearch", true);
-			entryBom.getFilterCond().put("entryStart", s);
-			entryBom.getFilterCond().put("entryEnd", e);
-			entryBom.getFilterCond().put("groupByBOM", true);
-			
-			List<WareHouseEntryBOMModel> list = wareHouseEntryBOMService.queryList(entryBom);
+			List<WareHouseEntryBOMModel> list = wareHouseEntryBusiness.calcEntryBOMs(formBean);
 			model.addAttribute("list", list);
 		}
 		else if(type.equals("pn")) {

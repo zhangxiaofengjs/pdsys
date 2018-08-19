@@ -44,7 +44,10 @@
 			<tbody>
 				<tr th:each="entryTgt : ${entries}">
 					<td><input type="checkbox" name="select" th:rowid="${entryTgt.id}"></td>
-					<td><a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/semipn?content=one&no=' +${entryTgt.no}}"></a></td>
+					<td>
+						<a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/semipn?content=one&no=' +${entryTgt.no}}"></a>
+				  		<span th:if="${entryTgt.itemKind==1}" class="label label-warning">不良品退库</span>
+			  		</td>
 					<td th:text="${entryTgt.user.name}"></td>
 					<td th:switch="${entryTgt.state}">
 			  			<span class="label label-success" th:case="0">计划中</span>
@@ -68,6 +71,8 @@
 				<tr>
 					<th th:colspan="2">入库单号:&nbsp;
 						<a th:style="${entryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${entryTgt.no ==null?'':entryTgt.no}"></a>
+						<br>
+			  			<span th:if="${entryTgt.itemKind==1}" class="label label-warning">不良品退库</span>
 						<i th:if="${entryTgt.state == 2}" th:text="已删除" class="text-muted"></i>
 						<input type="hidden" id="entry_id" name="entry_id" th:value="${entryTgt.id}">
 						<span class="label label-success" th:if="${entryTgt.state==0}">计划中</span>

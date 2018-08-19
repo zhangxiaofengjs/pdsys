@@ -44,6 +44,15 @@ $(document).ready(function(){
 					}
 				},
 				{
+					"name":"itemKind",
+					"label":"入库品种类",
+					"type":"select",
+					"options":[
+						{"value":0, "caption":"正常品(0)"},
+						{"value":1, "caption":"不良品(1)"}],
+					"value":0
+				},
+				{
 					"name":"comment",
 					"label":"备注",
 					"type":"text",

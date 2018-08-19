@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mysql.jdbc.StringUtils;
-import com.zworks.pdsys.business.beans.UserChangePwdFormBean;
+import com.zworks.pdsys.business.form.beans.UserChangePwdFormBean;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.UserModel;
 import com.zworks.pdsys.services.UserService;

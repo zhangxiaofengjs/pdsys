@@ -15,6 +15,14 @@
 	color:#0489B1;
 }
 
+.white-font {
+	color:#fff;
+}
+
+.red-font {
+	color:#FF0000;
+}
+
 .a-pointer {
 	cursor:pointer !important;
 	text-decoration:none !important;
@@ -24,7 +32,4 @@
 	background-color:#ca0c16;
 }
 
-.white-text {
-	color:#fff;
-}
 

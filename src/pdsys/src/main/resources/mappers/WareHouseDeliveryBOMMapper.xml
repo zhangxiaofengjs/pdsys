@@ -16,6 +16,7 @@
     </resultMap>
 	<resultMap id="wareHouseDeliveryResultMap" type="wareHouseDeliveryModel" >  
         <id column="d_id" property="id" />  
+        <id column="d_no" property="no" />  
         <result column="d_time" property="time" />  
     </resultMap>
 	<resultMap id="wareHouseDeliveryBOMResultMap" type="wareHouseDeliveryBOMModel" >  
@@ -31,11 +32,13 @@
 				MAX(d_bom.c_id) as d_bom_id,
 				SUM(d_bom.c_num) as d_bom_num,
 		   		MAX(d.c_id) as d_id,
+		   		group_concat(d.c_no) as d_no,
 		   	</if>	
 			<if test="filterCond.groupByBOM == null or !filterCond.groupByBOM">
 				d_bom.c_id as d_bom_id,
 				d_bom.c_num as d_bom_num,
 				d.c_id as d_id,
+				d.c_no as d_no,
 			</if>
 				bom.c_id as bom_id,
 				bom.c_pn as bom_pn,

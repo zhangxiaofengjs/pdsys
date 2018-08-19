@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.BOMUseNumBean;
-import com.zworks.pdsys.business.beans.PurchaseBOMListFromBean;
+import com.zworks.pdsys.business.form.beans.PurchaseBOMListFromBean;
 import com.zworks.pdsys.common.enumClass.ApprovalState;
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.enumClass.PurchaseState;

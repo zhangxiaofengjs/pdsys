@@ -16,6 +16,7 @@
     </resultMap>
 	<resultMap id="wareHouseEntryResultMap" type="wareHouseEntryModel" >  
         <id column="e_id" property="id" />  
+        <id column="e_no" property="no" />  
         <result column="e_time" property="time" />  
     </resultMap>
     <resultMap id="wareHouseEntryBOMResultMap" type="wareHouseEntryBOMModel" >  
@@ -31,11 +32,13 @@
 				MAX(e_bom.c_id) as e_bom_id,
 				SUM(e_bom.c_num) as e_bom_num,
 		   		MAX(e.c_id) as e_id,
+				group_concat(e.c_no) as e_no,
 		   	</if>	
 			<if test="filterCond.groupByBOM == null or !filterCond.groupByBOM">
 				e_bom.c_id as e_bom_id,
 				e_bom.c_num as e_bom_num,
 				e.c_id as e_id,
+				e.c_no as e_no,
 			</if>
 				bom.c_id as bom_id,
 				bom.c_pn as bom_pn,
@@ -49,11 +52,16 @@
 		left join bom_tbl as bom on e_bom.c_ref_id = bom.c_id
 		left join unit_tbl as u on bom.c_unit_id = u.c_id
 		<where>
-			<if test="wareHouseEntry.id > 0">
-				and e_bom.c_entry_id=#{wareHouseEntry.id}
-			</if>
-			<if test="wareHouseEntry != null and wareHouseEntry.state > -1">
-				and e.c_state = #{wareHouseEntry.state}
+			<if test="wareHouseEntry != null">
+				<if test="wareHouseEntry.id > 0">
+					and e_bom.c_entry_id=#{wareHouseEntry.id}
+				</if>
+				<if test="wareHouseEntry.state > -1">
+					and e.c_state = #{wareHouseEntry.state}
+				</if>
+				<if test="wareHouseEntry.itemKind > -1">
+					and e.c_item_kind = #{wareHouseEntry.itemKind}
+				</if>
 			</if>
 			<if test="bom!=null">
 				<if test="bom.id > 0">

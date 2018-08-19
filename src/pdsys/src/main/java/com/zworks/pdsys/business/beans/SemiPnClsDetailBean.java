@@ -6,6 +6,7 @@ public class SemiPnClsDetailBean {
 	private PnClsModel pnCls;
 	private float unitNum;//构成一个单位的PN需要的数量
 	private float num;//拥有的数量
+	private float defectiveNum;//拥有的不良品数量
 	
 	public PnClsModel getPnCls() {
 		return pnCls;
@@ -24,5 +25,11 @@ public class SemiPnClsDetailBean {
 	}
 	public void setNum(float num) {
 		this.num = num;
+	}
+	public float getDefectiveNum() {
+		return defectiveNum;
+	}
+	public void setDefectiveNum(float defectiveNum) {
+		this.defectiveNum = defectiveNum;
 	}
 }
