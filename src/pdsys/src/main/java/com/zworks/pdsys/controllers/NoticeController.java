@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.zworks.pdsys.business.beans.NoticeFormBean;
+import com.zworks.pdsys.business.form.beans.NoticeFormBean;
 import com.zworks.pdsys.common.annotations.PdSysLog;
 import com.zworks.pdsys.common.enumClass.NoticeState;
 import com.zworks.pdsys.common.utils.DateUtils;

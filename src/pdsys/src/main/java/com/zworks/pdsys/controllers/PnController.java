@@ -50,6 +50,9 @@ public class PnController {
 	@RequestMapping(value="/add")
 	@ResponseBody
     public JSONResponse add(@RequestBody PnModel pn) {
+		if(pnService.exists(pn)) {
+			return JSONResponse.error("已经存在品目:" + pn.getPn() + " " + pn.getName());
+		}
 		pnService.add(pn);
 		return JSONResponse.success();
     }

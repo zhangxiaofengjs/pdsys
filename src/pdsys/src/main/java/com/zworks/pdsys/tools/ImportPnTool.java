@@ -69,6 +69,8 @@ public class ImportPnTool {
 					whSemiPnService.add(whsemiPn);
 				} else {
 					whsemiPn.setId(whsemiPnTmp.getId());
+					whsemiPn.getFilterCond().put("UPDATE_NUM", true);
+					whsemiPn.getFilterCond().put("UPDATE_DEFECTIVE_NUM", true);
 					whSemiPnService.update(whsemiPn);
 				}
 			}

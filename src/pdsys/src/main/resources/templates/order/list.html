@@ -37,6 +37,7 @@
 					<tr>
 						<th style="width:20px;"><input type="checkbox" name="selectAll" /></th>
 						<th>订单号</th>
+						<th>客户</th>
 						<th>下单时间</th>
 						<th>交货期限</th>
 						<th>状态</th>
@@ -49,6 +50,7 @@
 				    <tr th:each="order : ${orders}">
 				      <td><input type="checkbox" name="select" th:rowid="${order.id}"/></td>
 				      <td><a th:text="${order.no}" th:href="@{'/order/detail?id=' +${order.id}}"></a></td>
+				      <td th:text="${order.customer!=null?order.customer.name:_}">
 				      <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}"></td>
 				      <td th:text="${#dates.format(order.shipDeadDate, 'yyyy-MM-dd')}"></td>
 				      <td th:switch="${order.state}">

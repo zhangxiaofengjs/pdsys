@@ -1,4 +1,4 @@
-package com.zworks.pdsys.business.beans;
+package com.zworks.pdsys.business.form.beans;
 
 import java.util.Date;
 

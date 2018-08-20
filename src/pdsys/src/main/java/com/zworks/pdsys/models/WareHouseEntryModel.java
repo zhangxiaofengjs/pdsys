@@ -8,6 +8,7 @@ import org.apache.ibatis.type.Alias;
 /**
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/04/05
+ *           2018/08/19 add itemKind
  */
 @Alias("wareHouseEntryModel")
 public class WareHouseEntryModel extends BaseModel{
@@ -16,6 +17,7 @@ public class WareHouseEntryModel extends BaseModel{
 	private String no;
 	private int state = -1;
 	private int type = -1;
+	private int itemKind = -1;
 	private String comment;
 	private List<WareHouseEntryPnModel> wareHouseEntryPns;
 	private List<WareHouseEntrySemiPnModel> wareHouseEntrySemiPns;
@@ -103,5 +105,13 @@ public class WareHouseEntryModel extends BaseModel{
 
 	public void setWareHouseEntrySemiPns(List<WareHouseEntrySemiPnModel> wareHouseEntrySemiPns) {
 		this.wareHouseEntrySemiPns = wareHouseEntrySemiPns;
+	}
+
+	public int getItemKind() {
+		return itemKind;
+	}
+
+	public void setItemKind(int itemKind) {
+		this.itemKind = itemKind;
 	}
 }

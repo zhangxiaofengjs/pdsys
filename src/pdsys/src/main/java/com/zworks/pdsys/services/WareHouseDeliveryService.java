@@ -183,7 +183,12 @@ public class WareHouseDeliveryService {
 				opn.setPn(deliveryPn.getPn());
 				opn = orderPnService.queryOne(opn);
 				if(opn == null) {
-					throw new PdsysException("预想外错误订单条目不存在： 条目ID， 订单ID" + opn.getId() + order.getId());//库存不够
+					throw new PdsysException(String.format("预想外错误订单条目不存在： 条目ID[%s]订单ID[%d]",
+							deliveryPn.getPn().getPn(), order.getId()));
+				}
+				if(deliveryPn.getProducedNum() > opn.getNum() - opn.getDeliveredNum()) {
+					throw new PdsysException(String.format("超过订购数量： 条目ID[%s]订单ID[%d]",
+							opn.getPn().getPn(), order.getId()));
 				}
 				opn.setDeliveredNum(opn.getDeliveredNum() + deliveryPn.getProducedNum());
 				opn.getFilterCond().put("update_delivery_num", true);
@@ -241,7 +246,7 @@ public class WareHouseDeliveryService {
 					throw new PdsysException("库存不足，刷新再试");//库存不够
 				}
 				wareHousePn.setNum(num);
-				
+				wareHousePn.getFilterCond().put("UPDATE_NUM", true);
 				wareHouseSemiPnService.update(wareHousePn);
 			}
 		} else if(delivery.getType() == (int)DeliveryType.MACHINEPART.ordinal()) {

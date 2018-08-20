@@ -48,7 +48,10 @@
 			<tbody>
 				<tr th:each="entryTgt : ${entries}">
 					<td><input type="checkbox" name="select" th:rowid="${entryTgt.id}"></td>
-					<td><a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/bom?content=one&no=' +${entryTgt.no}}"></a></td>
+					<td>
+						<a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/bom?content=one&no=' +${entryTgt.no}}"></a>
+						<span th:if="${entryTgt.itemKind==1}" class="label label-warning">不良品退库</span>
+					</td>
 					<td th:text="${entryTgt.user.name}"></td>
 					<td th:switch="${entryTgt.state}">
 			  			<span class="label label-success" th:case="0">计划中</span>
@@ -70,8 +73,10 @@
 					</th>
 				</tr>
 				<tr>
-					<th th:colspan="2">入库单号:&nbsp;
+					<th th:colspan="3">入库单号:&nbsp;
 						<a th:style="${entryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${entryTgt.no != null ? entryTgt.no :''}"></a>
+						<br>
+			  			<span th:if="${entryTgt.itemKind==1}" class="label label-warning">不良品退库</span>
 						<i th:if="${entryTgt.state == 2}" th:text="已删除" class="text-muted"></i>
 						<input type="hidden" id="entry_id" name="entry_id" th:value="${entryTgt.id}">
 						<span class="label label-success" th:if="${entryTgt.state==0}">计划中</span>
@@ -84,32 +89,40 @@
 					</th>
 				</tr>
 				<tr>
-					<th style="text-align:center;" th:colspan="1">
+					<th style="text-align:center;" th:colspan="2">
 						备注
 					</th>
-					<td style="" th:colspan="4" th:text="${entryTgt.comment}">
+					<td style="" th:colspan="5" th:text="${entryTgt.comment}">
 					</td>
 				</tr>
 			    <tr>
 			    	<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
+					<th style="width:16px;">K</th>
 					<th>品番</th>
 					<th>名称</th>
 					<th>单位</th>
 					<th>入库数量</th>
+					<th>供应商</th>
 			    </tr>
 			</thead>
 			<tbody>
 				<tr th:each="wareHouseEntryBOM : ${entryTgt.wareHouseEntryBOMs}"
 					th:with="bom=(${wareHouseEntryBOM.bom}),
-							 unit=${bom.unit}"
+							 unit=${bom.unit},
+							 supplier=${wareHouseEntryBOM.supplier}"
 							 th:rowid="${wareHouseEntryBOM.id}">
 					<td>
 						<input type="checkbox" name="select" th:rowid="${wareHouseEntryBOM.id}">
+					</td>
+					<td th:switch="${bom.type}">
+	    				<span th:case="0">原</span>
+			  			<span th:case="1">包</span>
 					</td>
 					<td th:text="${bom}?${bom.pn}:_"></td>
 					<td th:text="${bom}?${bom.name}:_"></td>
 					<td th:text="${unit}?${unit.name}:_"></td>
 					<td th:text="${wareHouseEntryBOM.num}" class="number"></td>
+					<td th:text="${supplier!=null?supplier.name:_}"></td>
 			    </tr>
 			</tbody>
 		</table>

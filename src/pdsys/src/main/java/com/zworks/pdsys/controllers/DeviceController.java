@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.beans.DeviceMaitenaceMachinePartsBean;
-import com.zworks.pdsys.business.beans.DeviceRepairFormBean;
+import com.zworks.pdsys.business.form.beans.DeviceRepairFormBean;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.RequestContextUtils;

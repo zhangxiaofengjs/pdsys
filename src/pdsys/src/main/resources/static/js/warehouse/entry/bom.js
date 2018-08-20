@@ -44,6 +44,15 @@ $(document).ready(function(){
 					}
 				},
 				{
+					"name":"itemKind",
+					"label":"入库品种类",
+					"type":"select",
+					"options":[
+						{"value":0, "caption":"正常品(0)"},
+						{"value":1, "caption":"不良品(1)"}],
+					"value":0
+				},
+				{
 					"name":"comment",
 					"label":"备注",
 					"type":"text",
@@ -108,6 +117,24 @@ $(document).ready(function(){
 				});
 				thisElem.trigger("change");
 			},
+		},
+		{
+			"name":"supplier.id",
+			"label":"供应商",
+			"type":"select",
+			"options":[],
+			"min":1,
+			"ajax":true,
+			"url":"/supplier/list/json",
+			"convertAjaxData" : function(thisField, data) {
+				thisField.options = [];
+				data.suppliers.forEach(function(supplier, idx) {
+					thisField.options.push({
+						"value": supplier.id,
+						"caption": supplier.name,
+					});
+				});
+			}
 		},
 		{
 			"name":"num",

@@ -51,6 +51,12 @@
 	        <association property="pnCls" resultMap="pnClsResultMap"/>
 	    </collection>
     </resultMap>
+    <resultMap id="orderResultMap" type="orderModel" >
+        <id column="o_id" property="id"/> 
+        <result column="o_no" property="no"/>
+        <result column="o_order_date" property="orderDate"/>  
+        <result column="o_ship_dead_date" property="shipDeadDate"/>  
+    </resultMap>
     <resultMap id="whpnResultMap" type="wareHousePnModel" >  
         <id column="wh_pn_id" property="id" />
         <result column="wh_pn_produced_num" property="producedNum" />
@@ -61,15 +67,20 @@
         <result column="order_pn_delivered_num" property="deliveredNum" />  
         <result column="order_pn_price" property="price" />  
         <association property="priceUnit" resultMap="unitResultMap" columnPrefix="order_pn_price_"/>
+        <association property="order" resultMap="orderResultMap"/> 
         <association property="pn" resultMap="pnResultMap"/>
         <association property="whpn" resultMap="whpnResultMap"/> 
     </resultMap>
     
-	<select id="queryList" parameterType="orderModel" resultMap="orderPnMapper">
+	<select id="queryList" parameterType="orderPnModel" resultMap="orderPnMapper">
 		select order_pn.c_id as order_pn_id,
 		       order_pn.c_num as order_pn_num,
 		       order_pn.c_delivered_num as order_pn_delivered_num,
 		       order_pn.c_price as order_pn_price,
+		       o.c_id as o_id,
+			   o.c_no as o_no,
+			   o.c_order_date as o_order_date,
+			   o.c_ship_dead_date as o_ship_dead_date,
 			   price_ut.c_id as order_pn_price_ut_id,
    		       price_ut.c_name as order_pn_price_ut_name,
 			   pn.c_id as pn_id,
@@ -118,7 +129,7 @@
 		       wh_pn.c_id as wh_pn_id,
 			   wh_pn.c_produced_num as wh_pn_produced_num
 		from order_pn_tbl as order_pn 
-		left join order_tbl on order_tbl.c_id = order_pn.c_order_id 
+		left join order_tbl as o on o.c_id = order_pn.c_order_id 
 		left join unit_tbl as price_ut on order_pn.c_price_unit_id = price_ut.c_id
 		left join pn_tbl as pn on order_pn.c_pn_id = pn.c_id 
 		left join unit_tbl as pn_ut on pn.c_unit_id = pn_ut.c_id
@@ -135,14 +146,28 @@
 		left join supplier_tbl as supplier on supplier.c_id = bom_supplier.c_supplier_id 
 		left join warehouse_pn_tbl as wh_pn on wh_pn.c_pn_id = pn.c_id 
 		<where>
-			<if test="id > 0">
-				and order_pn.c_order_id = #{id}
+			<if test="order != null">
+				<if test="order.id > 0">
+					and order_pn.c_order_id = #{order.id}
+				</if>
+				<if test="order.state > -1">
+					and order_tbl.c_state=#{order.state} 
+				</if>
+				<if test="order.no != null and order.no != ''">
+					and order_tbl.c_no like concat('%',#{order.no},'%') 
+				</if>
 			</if>
-			<if test="state > -1">
-				and order_tbl.c_state=#{state} 
-			</if>
-			<if test="no != null and no != ''">
-				and order_tbl.c_no like concat('%',#{no},'%') 
+			<if test="pn != null">
+				<if test="pn.pn != null and pn.pn != ''">
+					<choose>
+		                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+							and pn.c_pn like concat('%',#{pn.pn},'%') 
+						</when>
+						 <otherwise>
+		                    and pn.c_pn=#{pn.pn}
+		                </otherwise>
+					</choose>
+				</if>
 			</if>
 			<if test="filterCond.notDelivered != null and filterCond.notDelivered">
 				<!-- 查询还有未出库的 -->
@@ -153,7 +178,15 @@
 				and wh_pn.c_produced_num &gt; 0
 			</if>
 		</where>
-		order by order_pn.c_id, pn.c_pn, pn_cls.c_name, bom.c_type, bom.c_pn
+		order by 
+		<choose>
+			<when test="filterCond.orderByPn != null and filterCond.orderByPn">
+				pn.c_pn, order_pn.c_id, pn_cls.c_name, bom.c_type, bom.c_pn
+			</when>
+		 	<otherwise>
+				order_pn.c_id, pn.c_pn, pn_cls.c_name, bom.c_type, bom.c_pn
+            </otherwise>
+        </choose>
 	</select>
 	
 	<select id="queryOrderPns" parameterType="orderPnModel" resultMap="orderPnMapper">

@@ -45,7 +45,9 @@ public class OrderPnService {
 	}
 
 	public List<BOMUseNumBean> queryBOMUseNumList(OrderModel order) {
-		List<OrderPnModel> orderPns = queryList(order);
+		OrderPnModel orderPnS = new OrderPnModel();
+		orderPnS.setOrder(order);
+		List<OrderPnModel> orderPns = queryList(orderPnS);
 		Integer[] bomIds = (Integer[])order.getFilterCond().get("bomIds");
 		List<Integer> includeBomIds = bomIds==null?null:Arrays.asList(bomIds);
 		
@@ -161,8 +163,8 @@ public class OrderPnService {
 		return null;
 	}
 	
-	public List<OrderPnModel> queryList( OrderModel order ) {
-		return orderPnMapper.queryList( order );
+	public List<OrderPnModel> queryList( OrderPnModel orderPn ) {
+		return orderPnMapper.queryList( orderPn );
 	}
 	
 	public void update(OrderPnModel orderPnModel) {

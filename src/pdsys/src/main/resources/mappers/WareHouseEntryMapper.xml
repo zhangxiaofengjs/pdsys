@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseEntryMapper">
+    <resultMap id="supplierResultMap" type="supplierModel" >  
+        <id column="supplier_id" property="id" />
+        <result column="supplier_name" property="name" />  
+    </resultMap>
 	<resultMap id="wareHousePnResultMap" type="wareHousePnModel" >  
         <id column="wh_pn_id" property="id" />
         <result column="wh_pn_produced_num" property="producedNum" />  
@@ -13,6 +17,7 @@
 	<resultMap id="wareHouseBOMResultMap" type="wareHouseBOMModel" >  
         <id column="wh_bom_id" property="id" />
         <result column="wh_bom_num" property="num" />  
+        <result column="wh_bom_defective_num" property="defectiveNum" />  
     </resultMap>
 	<resultMap id="wareHouseMachinePartResultMap" type="wareHouseMachinePartModel" >  
         <id column="wh_mp_id" property="id" />
@@ -49,6 +54,7 @@
         <id column="bom_id" property="id" />  
         <result column="bom_pn" property="pn" />  
         <result column="bom_name" property="name" />  
+        <result column="bom_type" property="type" />  
         <association property="unit" resultMap="unitResultMap"/>
     </resultMap>
 	<resultMap id="wareHouseEntryPnResultMap" type="wareHouseEntryPnModel">  
@@ -68,6 +74,7 @@
         <id column="e_bom_id" property="id" />  
         <result column="e_bom_num" property="num" />  
         <association property="bom" resultMap="BOMResultMap" />
+        <association property="supplier" resultMap="supplierResultMap" />
         <association property="wareHouseBOM" resultMap="wareHouseBOMResultMap" />
     </resultMap>
     <resultMap id="wareHouseEntryMachinePartResultMap" type="wareHouseEntryMachinePartModel">  
@@ -87,6 +94,7 @@
         <result column="e_entry_time" property="entryTime" />  
         <result column="e_state" property="state" />  
         <result column="e_type" property="type" />  
+        <result column="e_item_kind" property="itemKind" />  
         <result column="e_comment" property="comment" />  
         <result column="e_create_time" property="createTime" />  
         <result column="e_update_time" property="updateTime" />  
@@ -106,6 +114,7 @@
 			   entry.c_create_time as e_create_time,
 			   entry.c_state as e_state,
 			   entry.c_type as e_type,
+			   entry.c_item_kind as e_item_kind,
 			   entry.c_comment as e_comment,
 		       user.c_id as user_id,
 		       user.c_no as user_no,
@@ -150,6 +159,7 @@
 			   entry.c_create_time as e_create_time,
 			   entry.c_state as e_state,
 			   entry.c_type as e_type,
+			   entry.c_item_kind as e_item_kind,
 			   entry.c_comment as e_comment,
 		       user.c_id as user_id,
 		       user.c_no as user_no,
@@ -200,6 +210,7 @@
 			   entry.c_create_time as e_create_time,
 			   entry.c_state as e_state,
 			   entry.c_type as e_type,
+			   entry.c_item_kind as e_item_kind,
 			   entry.c_comment as e_comment,
 		       user.c_id as user_id,
 		       user.c_no as user_no,
@@ -257,6 +268,7 @@
 			   entry.c_create_time as e_create_time,
 			   entry.c_state as e_state,
 			   entry.c_type as e_type,
+			   entry.c_item_kind as e_item_kind,
 			   entry.c_comment as e_comment,
 		       user.c_id as user_id,
 		       user.c_no as user_no,
@@ -272,14 +284,18 @@
 		       bom.c_type as bom_type,
 		       unit.c_id as unit_id,
 		       unit.c_name as unit_name,
+		       supplier.c_id as supplier_id,
+		       supplier.c_name as supplier_name,
 		       wh_bom.c_id as wh_bom_id,
-		       wh_bom.c_num as wh_bom_num
+		       wh_bom.c_num as wh_bom_num,
+		       wh_bom.c_defective_num as wh_bom_defective_num
 		from entry_tbl as entry
 		left join user_tbl as user on entry.c_user_id = user.c_id
 		left join user_tbl as upt_user on entry.c_update_user_id = upt_user.c_id
 		left join entry_bom_tbl as e_bom on entry.c_id = e_bom.c_entry_id
 		left join bom_tbl as bom on e_bom.c_ref_id = bom.c_id
 		left join unit_tbl as unit on bom.c_unit_id = unit.c_id
+		left join supplier_tbl as supplier on e_bom.c_supplier_id = supplier.c_id
 		left join warehouse_bom_tbl as wh_bom on e_bom.c_ref_id = wh_bom.c_bom_id
 		<where>
 			entry.c_type=1
@@ -308,6 +324,7 @@
 			   entry.c_create_time as e_create_time,
 			   entry.c_state as e_state,
 			   entry.c_type as e_type,
+			   entry.c_item_kind as e_item_kind,
 			   entry.c_comment as e_comment,
 		       user.c_id as user_id,
 		       user.c_no as user_no,
@@ -355,11 +372,13 @@
     		c_user_id,
     		c_no,
     		c_type,
+    		c_item_kind,
     		c_comment)
     	values (
     		#{user.id},
     		#{no},
     		#{type},
+    		#{itemKind},
     		#{comment}
     		)
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">

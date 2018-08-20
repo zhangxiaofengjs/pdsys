@@ -69,6 +69,10 @@ public class BaseModel {
 		this.filterCond = filterCond;
 	}
 
+	public void putFilterCond(String key, Object value) {
+		this.filterCond.put(key, value);
+	}
+	
 	public PageModel getPage() {
 		return page;
 	}

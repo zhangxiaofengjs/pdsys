@@ -104,4 +104,9 @@ public class DateUtils {
 		}
 		return now;
 	}
+
+	public static String Today() {
+		
+		return null;
+	}
 }

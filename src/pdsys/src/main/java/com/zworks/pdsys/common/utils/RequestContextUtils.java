@@ -11,6 +11,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @date 2018/5/7
  */
 public class RequestContextUtils {
+	private static final String SESSION_ATTRIBUTE_PREFIX = "pdsys.";
+	
 	public static HttpServletRequest getRequest() {
 		ServletRequestAttributes requestAttrs = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
 		return requestAttrs.getRequest();
@@ -21,7 +23,7 @@ public class RequestContextUtils {
 		HttpServletRequest request = getRequest();
 		HttpSession session = request.getSession();
 		
-		T v = (T)session.getAttribute(obj.getClass().getName()+key);
+		T v = (T)session.getAttribute(SESSION_ATTRIBUTE_PREFIX + obj.getClass().getName()+key);
 		if(v == null) {
 			v = defaultValue;
 		}
@@ -32,7 +34,7 @@ public class RequestContextUtils {
 		HttpServletRequest request = getRequest();
 		HttpSession session = request.getSession();
 		
-		session.setAttribute(obj.getClass().getName()+key, value);
+		session.setAttribute(SESSION_ATTRIBUTE_PREFIX + obj.getClass().getName()+key, value);
 	}
 
 	public static String getIpAddr() {

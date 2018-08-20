@@ -197,7 +197,9 @@ public class OrderController extends BaseController{
 		
 		List<OrderPnModel> list = null;
 		if( order!=null ) {
-			list = orderPnService.queryList(order);
+			OrderPnModel orderPn = new OrderPnModel();
+			orderPn.setOrder(order);
+			list = orderPnService.queryList(orderPn);
 		}
 		model.addAttribute("orderPns", list);
 		model.addAttribute("showDetail", showDetail);

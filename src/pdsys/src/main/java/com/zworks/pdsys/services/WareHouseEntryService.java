@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zworks.pdsys.business.beans.BOMUseNumBean;
+import com.zworks.pdsys.common.enumClass.EntryItemKind;
 import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.enumClass.EntryType;
 import com.zworks.pdsys.common.exception.PdsysException;
@@ -180,26 +181,7 @@ public class WareHouseEntryService {
 	
 	@Transactional
 	public void entry(WareHouseEntryModel entry) {
-		if(entry.getType() == EntryType.BOM.ordinal()) {
-			entry = queryOneWithBOM(entry);
-			
-			for(WareHouseEntryBOMModel entryBOM : entry.getWareHouseEntryBOMs()) {
-				WareHouseBOMModel wareHouseBOM = entryBOM.getWareHouseBOM();
-				
-				if(wareHouseBOM == null) {
-					//还没入库过，新建
-					wareHouseBOM = new WareHouseBOMModel();
-					wareHouseBOM.setBom(entryBOM.getBom());
-					wareHouseBOM.setNum(entryBOM.getNum());
-					wareHouseBOMService.add(wareHouseBOM);
-				} else {
-					float num = wareHouseBOM.getNum() + entryBOM.getNum();
-					wareHouseBOM.setNum(num);
-					wareHouseBOM.getFilterCond().put("UPDATE_NUM", true);
-					wareHouseBOMService.update(wareHouseBOM);
-				}
-			}
-		} else if(entry.getType() == EntryType.MACHINEPART.ordinal()) {
+		 if(entry.getType() == EntryType.MACHINEPART.ordinal()) {
 			entry = queryOneWithMachinePart(entry);
 			
 			for(WareHouseEntryMachinePartModel entryMachinePart : entry.getWareHouseEntryMachineParts()) {
@@ -228,6 +210,54 @@ public class WareHouseEntryService {
 		wareHouseEntryMapper.update(entry);
 	}
 
+	public void entryBOM(WareHouseEntryModel e) {
+		WareHouseEntryModel entry = queryOneWithBOM(e);
+		
+		for(WareHouseEntryBOMModel entryBOM : entry.getWareHouseEntryBOMs()) {
+			WareHouseBOMModel wareHouseBOM = entryBOM.getWareHouseBOM();
+			
+			boolean isCreate = false;
+			if(wareHouseBOM == null) {
+				//还没入库过，新建
+				wareHouseBOM = new WareHouseBOMModel();
+				wareHouseBOM.setBom(entryBOM.getBom());
+				wareHouseBOM.setNum(0);
+				wareHouseBOM.setDefectiveNum(0);
+				isCreate = true;
+			}
+			
+			if(entry.getItemKind() == EntryItemKind.NORMAL.ordinal()) {
+				float num = wareHouseBOM.getNum() + entryBOM.getNum();
+				wareHouseBOM.setNum(num);
+			} else if(entry.getItemKind() == EntryItemKind.DEFECTIVE.ordinal()) {
+				//不良品退库
+				float num = wareHouseBOM.getDefectiveNum() + entryBOM.getNum();
+				wareHouseBOM.setDefectiveNum(num);
+			} else {
+				throw new PdsysException("未想定入库品种类" + entry.getItemKind());
+			}
+			
+			if(isCreate) {
+				wareHouseBOMService.add(wareHouseBOM);
+			} else {
+				if(entry.getItemKind() == EntryItemKind.NORMAL.ordinal()) {
+					wareHouseBOM.getFilterCond().put("UPDATE_NUM", true);
+				} else if(entry.getItemKind() == EntryItemKind.DEFECTIVE.ordinal()) {
+					//不良品退库
+					wareHouseBOM.getFilterCond().put("UPDATE_DEFECTIVE_NUM", true);
+				} else {
+					//nothing
+				}
+				wareHouseBOMService.update(wareHouseBOM);
+			}
+		}
+		
+		entry.setEntryTime(new Date());
+		entry.setState(EntryState.ENTRIED.ordinal());
+		
+		wareHouseEntryMapper.update(entry);
+	}
+			
 	@Transactional
 	public void entryPn(WareHouseEntryModel e) {
 		WareHouseEntryModel entry = queryOneWithPn(e);
@@ -280,24 +310,45 @@ public class WareHouseEntryService {
 		WareHouseEntryModel entry = queryOneWithSemiPn(e);
 		
 		Map<Integer, BOMUseNumBean> calcUsedBOMs = new HashMap<Integer, BOMUseNumBean>();
-		for(WareHouseEntrySemiPnModel entryPn : entry.getWareHouseEntrySemiPns()) {
-			WareHouseSemiPnModel wareHousePn = entryPn.getWareHouseSemiPn();
+		for(WareHouseEntrySemiPnModel entrySemiPn : entry.getWareHouseEntrySemiPns()) {
+			WareHouseSemiPnModel wareHouseSemiPn = entrySemiPn.getWareHouseSemiPn();
 
-			float semiNum = entryPn.getNum();
-			if(wareHousePn == null) {
+			boolean isCreate = false;
+			if(wareHouseSemiPn == null) {
 				//还没入库过，新建
-				wareHousePn = new WareHouseSemiPnModel();
-				wareHousePn.setPn(entryPn.getPn());
-				wareHousePn.setPnClsRel(entryPn.getPnClsRel());
-				wareHousePn.setNum(semiNum);
-				wareHouseSemiPnService.add(wareHousePn);
+				wareHouseSemiPn = new WareHouseSemiPnModel();
+				wareHouseSemiPn.setPn(entrySemiPn.getPn());
+				wareHouseSemiPn.setPnClsRel(entrySemiPn.getPnClsRel());
+				wareHouseSemiPn.setNum(0);
+				wareHouseSemiPn.setDefectiveNum(0);
+				isCreate = true;
+			}
+			
+			float semiNum = entrySemiPn.getNum();
+			if(entry.getItemKind() == EntryItemKind.NORMAL.ordinal()) {
+				wareHouseSemiPn.setNum(semiNum + wareHouseSemiPn.getNum());
+			} else if(entry.getItemKind() == EntryItemKind.DEFECTIVE.ordinal()) {
+				//不良品退库
+				wareHouseSemiPn.setDefectiveNum(semiNum + wareHouseSemiPn.getDefectiveNum());
 			} else {
-				wareHousePn.setNum(semiNum + wareHousePn.getNum());
-				wareHouseSemiPnService.update(wareHousePn);
+				throw new PdsysException("未想定入库品种类" + entry.getItemKind());
+			}
+
+			if(isCreate) {
+				wareHouseSemiPnService.add(wareHouseSemiPn);
+			} else {
+				if(entry.getItemKind() == EntryItemKind.NORMAL.ordinal()) {
+					wareHouseSemiPn.getFilterCond().put("UPDATE_NUM", true);
+				} else if(entry.getItemKind() == EntryItemKind.DEFECTIVE.ordinal()) {
+					wareHouseSemiPn.getFilterCond().put("UPDATE_DEFECTIVE_NUM", true);
+				} else {
+					//do nothing
+				}
+				wareHouseSemiPnService.update(wareHouseSemiPn);
 			}
 			
 			//マージする
-			Map<Integer, BOMUseNumBean> tmpCalcUsedBOMs = pnService.calcUsedBOM(entryPn.getPn(), entryPn.getPnClsRel(), true, semiNum);
+			Map<Integer, BOMUseNumBean> tmpCalcUsedBOMs = pnService.calcUsedBOM(entrySemiPn.getPn(), entrySemiPn.getPnClsRel(), true, semiNum);
 			MergeBOMUsedMap(calcUsedBOMs, tmpCalcUsedBOMs);
 		}
 		

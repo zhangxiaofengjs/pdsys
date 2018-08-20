@@ -89,6 +89,7 @@ public class WareHouseSemiPnService {
 			for(SemiPnClsDetailBean db : tgtB.getPnClsDetails()) {
 				if(db.getPnCls().getId() == pnClsRel.getPnCls().getId()) {
 					db.setNum(whpn.getNum());
+					db.setDefectiveNum(whpn.getDefectiveNum());
 				}
 			}
 		}

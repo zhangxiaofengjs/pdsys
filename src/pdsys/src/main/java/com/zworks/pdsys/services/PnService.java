@@ -45,6 +45,11 @@ public class PnService {
 		pnMapper.update(pn);
 	}
 
+	public boolean exists(PnModel pn) {
+		List<PnModel> pns = queryList(pn);
+		return pns.size()!=0;
+	}
+	
 	public PnModel queryOne(PnModel pn) {
 		List<PnModel> pns = queryList(pn);
 		if(pns.size()==1) {
