@@ -375,7 +375,7 @@ public class WareHouseEntryService {
 				whNum = whBOM.getDeliveryRemainingNum();
 			}
 			remainNum = whNum - bean.getUseNum();
-			if(remainNum < 0) {
+			if(remainNum < 0 && Math.abs(remainNum) > 0.0099999) { //忽略小数点3位后面的数字
 				//生产所耗BOM居然比之前出库的多，出库有问题，做错误处理
 				String msg = String.format("检测到该入库产品的原包材领料不足，请检查近期原包材出库单。<hr>原包材:%s | %s<br>现场库存:%.2f %s<br>预计消耗:%.2f %s",
 						bom.getPn(),
@@ -385,6 +385,9 @@ public class WareHouseEntryService {
 						bean.getUseNum(),
 						bom.getUnit().getName());
 				throw new PdsysException(msg);
+			}
+			if(Math.abs(remainNum) < 0.0099999) {
+				remainNum = 0;//忽略掉这部分库存
 			}
 			whBOM.getFilterCond().put("UPDATE_DELIVERYREMAINNUM", true);
 			whBOM.setDeliveryRemainingNum(remainNum);
