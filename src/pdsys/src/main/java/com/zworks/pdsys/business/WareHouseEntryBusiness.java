@@ -1,4 +1,4 @@
-package com.zworks.pdsys.business.service;
+package com.zworks.pdsys.business;
 
 import java.util.List;
 
