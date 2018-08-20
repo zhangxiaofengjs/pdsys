@@ -125,7 +125,7 @@
 	        	and pn_cls.c_id=#{filterCond.pnClsId}
 	        </if>
 		</where>
-	    order by pn.c_pn asc, pn_cls.c_id asc, bom.c_type asc
+	    order by pn.c_pn asc, pn_bom.c_type asc, pn_cls.c_id asc, bom.c_type asc, pn_bom.c_type asc
 	</select>
 	
 	<insert id="add" parameterType="pnModel" keyProperty="id">
