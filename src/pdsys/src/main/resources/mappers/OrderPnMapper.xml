@@ -148,13 +148,13 @@
 		<where>
 			<if test="order != null">
 				<if test="order.id > 0">
-					and order_pn.c_order_id = #{order.id}
+					and o.c_id = #{order.id}
 				</if>
 				<if test="order.state > -1">
-					and order_tbl.c_state=#{order.state} 
+					and o.c_state=#{order.state} 
 				</if>
 				<if test="order.no != null and order.no != ''">
-					and order_tbl.c_no like concat('%',#{order.no},'%') 
+					and o.c_no like concat('%',#{order.no},'%') 
 				</if>
 			</if>
 			<if test="pn != null">
