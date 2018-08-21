@@ -4,7 +4,7 @@
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseEntrySemiPnMapper">
 	<resultMap id="wareHouseEntryPnResultMap" type="wareHouseEntrySemiPnModel" >  
         <id column="e_pn_id" property="id" />  
-        <result column="e_pn_produced_num" property="producedNum" />  
+        <result column="e_pn_num" property="num" />  
     </resultMap>
 
 	<select id="queryList" parameterType="wareHouseEntrySemiPnModel" resultMap="wareHouseEntryPnResultMap">

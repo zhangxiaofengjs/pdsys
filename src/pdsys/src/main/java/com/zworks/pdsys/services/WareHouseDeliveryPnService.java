@@ -28,6 +28,17 @@ public class WareHouseDeliveryPnService {
 		return wareHouseDeliveryPnMapper.queryList(obj);
 	}
 
+	public WareHouseDeliveryPnModel queryOne(WareHouseDeliveryPnModel deliveryPn) {
+		List<WareHouseDeliveryPnModel> queryList = queryList(deliveryPn);
+		if(ListUtils.isNullOrEmpty(queryList)) {
+			return null;
+		} else if(queryList.size() == 1) {
+			return queryList.get(0);
+		}
+		
+		throw new PdsysException("未想定数目：WareHouseDeliveryPnService-queryOne");
+	}
+	
 	public void add(WareHouseDeliveryPnModel deliveryPn) {
 		wareHouseDeliveryPnMapper.add(deliveryPn);
 	}

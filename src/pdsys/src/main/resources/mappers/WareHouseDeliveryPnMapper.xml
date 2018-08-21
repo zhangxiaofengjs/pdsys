@@ -32,7 +32,7 @@
 		   	</if>	
 			<if test="filterCond.groupByPn == null or !filterCond.groupByPn">
 				d_pn.c_id as d_pn_id,
-				d_pn.c_produced_num as c_produced_num,
+				d_pn.c_produced_num as d_pn_produced_num,
 				d.c_id as d_id,
 			</if>
 				pn.c_id as pn_id,

@@ -16,14 +16,14 @@
         <id column="d_id" property="id" />  
         <result column="d_time" property="time" />  
     </resultMap>
-	<resultMap id="wareHouseDeliveryPnResultMap" type="wareHouseDeliverySemiPnModel" >  
+	<resultMap id="wareHouseDeliverySemiPnResultMap" type="wareHouseDeliverySemiPnModel" >  
         <id column="d_pn_id" property="id" />  
-        <result column="d_pn_produced_num" property="producedNum" />  
+        <result column="d_pn_num" property="num" />  
         <association property="wareHouseDelivery" resultMap="wareHouseDeliveryResultMap"/>
         <association property="pn" resultMap="pnResultMap"/>
     </resultMap>
 
-	<select id="queryList" parameterType="wareHouseDeliverySemiPnModel" resultMap="wareHouseDeliveryPnResultMap">
+	<select id="queryList" parameterType="wareHouseDeliverySemiPnModel" resultMap="wareHouseDeliverySemiPnResultMap">
 		select 
 				d_pn.c_id as d_pn_id,
 				d_pn.c_num as d_pn_num,

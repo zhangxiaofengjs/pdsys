@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zworks.pdsys.common.exception.PdsysException;
+import com.zworks.pdsys.common.utils.ListUtils;
 import com.zworks.pdsys.mappers.WareHouseDeliveryBOMMapper;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 
@@ -25,6 +27,17 @@ public class WareHouseDeliveryBOMService {
 		return wareHouseDeliveryBOMMapper.queryList(obj);
 	}
 
+	public WareHouseDeliveryBOMModel queryOne(WareHouseDeliveryBOMModel deliveryBOM) {
+		List<WareHouseDeliveryBOMModel> queryList = queryList(deliveryBOM);
+		if(ListUtils.isNullOrEmpty(queryList)) {
+			return null;
+		} else if(queryList.size() == 1) {
+			return queryList.get(0);
+		}
+		
+		throw new PdsysException("未想定数目：WareHouseDeliveryBOMService-queryOne");
+	}
+	
 	public void add(WareHouseDeliveryBOMModel deliveryBOM) {
 		wareHouseDeliveryBOMMapper.add(deliveryBOM);
 	}

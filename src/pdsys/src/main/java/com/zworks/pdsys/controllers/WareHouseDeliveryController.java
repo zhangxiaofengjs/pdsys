@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.business.WareHouseDeliveryBusiness;
 import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.enumClass.DeliveryType;
 import com.zworks.pdsys.common.exception.PdsysException;
@@ -47,6 +48,8 @@ public class WareHouseDeliveryController {
 	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
 	@Autowired
 	WareHouseDeliveryMachinePartService wareHouseDeliveryMachinePartService;
+	@Autowired
+	WareHouseDeliveryBusiness wareHouseDeliveryBusiness;
 	
 	@RequestMapping(value= {"/main", "/main/{type}"})
     public String main(
@@ -132,23 +135,13 @@ public class WareHouseDeliveryController {
 	@RequestMapping(value="/add/pn")
 	@ResponseBody
     public JSONResponse addDeliveryPn(@RequestBody WareHouseDeliveryPnModel deliveryPn, Model model) {
-		if(wareHouseDeliveryPnService.exists(deliveryPn)) {
-			//已经存在，做更新
-			wareHouseDeliveryPnService.update(deliveryPn);
-		} else {
-			wareHouseDeliveryPnService.add(deliveryPn);
-		}
+		wareHouseDeliveryBusiness.addDeliveryPn(deliveryPn);
 		return JSONResponse.success();
     }
 	@RequestMapping(value="/add/semipn")
 	@ResponseBody
-	public JSONResponse addDeliveryPn(@RequestBody WareHouseDeliverySemiPnModel deliveryPn, Model model) {
-		if(wareHouseDeliverySemiPnService.exists(deliveryPn)) {
-			//已经存在，做更新
-			wareHouseDeliverySemiPnService.update(deliveryPn);
-		} else {
-			wareHouseDeliverySemiPnService.add(deliveryPn);
-		}
+	public JSONResponse addDeliverySemiPn(@RequestBody WareHouseDeliverySemiPnModel deliveryPn, Model model) {
+		wareHouseDeliveryBusiness.addDeliverySemiPn(deliveryPn);
 		return JSONResponse.success();
 	}
 	/**
@@ -157,12 +150,7 @@ public class WareHouseDeliveryController {
 	@RequestMapping(value="/add/bom")
 	@ResponseBody
 	public JSONResponse addDeliveryBOM(@RequestBody WareHouseDeliveryBOMModel deliveryBOM, Model model) {
-		if(wareHouseDeliveryBOMService.exists(deliveryBOM)) {
-			//已经存在，做更新
-			wareHouseDeliveryBOMService.update(deliveryBOM);
-		} else {
-			wareHouseDeliveryBOMService.add(deliveryBOM);
-		}
+		wareHouseDeliveryBusiness.addDeliveryBOM(deliveryBOM);
 		return JSONResponse.success();
 	}
 	/**
@@ -171,12 +159,7 @@ public class WareHouseDeliveryController {
 	@RequestMapping(value="/add/machinepart")
 	@ResponseBody
 	public JSONResponse addDeliveryMachinePart(@RequestBody WareHouseDeliveryMachinePartModel deliveryMachinePart, Model model) {
-		if(wareHouseDeliveryMachinePartService.exists(deliveryMachinePart)) {
-			//已经存在，做更新
-			wareHouseDeliveryMachinePartService.update(deliveryMachinePart);
-		} else {
-			wareHouseDeliveryMachinePartService.add(deliveryMachinePart);
-		}
+		wareHouseDeliveryBusiness.addDeliveryMachinePart(deliveryMachinePart);
 		return JSONResponse.success();
 	}
 	

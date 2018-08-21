@@ -12,12 +12,16 @@ import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
+import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
+import com.zworks.pdsys.models.WareHouseDeliverySemiPnModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
+import com.zworks.pdsys.services.WareHouseDeliveryMachinePartService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
+import com.zworks.pdsys.services.WareHouseDeliverySemiPnService;
 import com.zworks.pdsys.services.WareHouseEntryBOMService;
 
 /**
@@ -32,6 +36,10 @@ public class WareHouseDeliveryBusiness {
 	WareHouseDeliveryPnService wareHouseDeliveryPnService;
 	@Autowired
 	WareHouseEntryBOMService wareHouseEntryBOMService;
+	@Autowired
+	WareHouseDeliverySemiPnService wareHouseDeliverySemiPnService;
+	@Autowired
+	WareHouseDeliveryMachinePartService wareHouseDeliveryMachinePartService;
 	
 	//出库统计
 	public List<WareHouseDeliveryBOMModel> calcDeliveryBOMs(WareHouseHistoryFormBean formBean) {
@@ -99,5 +107,49 @@ public class WareHouseDeliveryBusiness {
 		
 		List<WareHouseDeliveryPnModel> list = wareHouseDeliveryPnService.queryList(deliveryPn);
 		return list;
+	}
+
+	public void addDeliveryPn(WareHouseDeliveryPnModel deliveryPn) {
+		WareHouseDeliveryPnModel dPn = wareHouseDeliveryPnService.queryOne(deliveryPn);
+		if(dPn == null) {
+			wareHouseDeliveryPnService.add(deliveryPn);
+		} else {
+			//已经存在，做更新
+			deliveryPn.setProducedNum(deliveryPn.getProducedNum() + dPn.getProducedNum());
+			wareHouseDeliveryPnService.update(deliveryPn);
+		}
+	}
+
+	public void addDeliverySemiPn(WareHouseDeliverySemiPnModel deliverySemiPn) {
+		WareHouseDeliverySemiPnModel dSemiPn = wareHouseDeliverySemiPnService.queryOne(deliverySemiPn);
+		if(dSemiPn == null) {
+			wareHouseDeliverySemiPnService.add(deliverySemiPn);
+		} else {
+			//已经存在，做更新
+			deliverySemiPn.setNum(deliverySemiPn.getNum() + dSemiPn.getNum());
+			wareHouseDeliverySemiPnService.update(deliverySemiPn);
+		}
+	}
+
+	public void addDeliveryBOM(WareHouseDeliveryBOMModel deliveryBOM) {
+		WareHouseDeliveryBOMModel dBOM = wareHouseDeliveryBOMService.queryOne(deliveryBOM);
+		if(dBOM == null) {
+			wareHouseDeliveryBOMService.add(deliveryBOM);
+		} else {
+			//已经存在，做更新
+			deliveryBOM.setNum(deliveryBOM.getNum() + dBOM.getNum());
+			wareHouseDeliveryBOMService.update(deliveryBOM);
+		}
+	}
+
+	public void addDeliveryMachinePart(WareHouseDeliveryMachinePartModel deliveryMachinePart) {
+		WareHouseDeliveryMachinePartModel dMP = wareHouseDeliveryMachinePartService.queryOne(deliveryMachinePart);
+		if(dMP == null) {
+			wareHouseDeliveryMachinePartService.add(deliveryMachinePart);
+		} else {
+			//已经存在，做更新
+			deliveryMachinePart.setNum(deliveryMachinePart.getNum() + dMP.getNum());
+			wareHouseDeliveryMachinePartService.update(deliveryMachinePart);
+		}
 	}
 }

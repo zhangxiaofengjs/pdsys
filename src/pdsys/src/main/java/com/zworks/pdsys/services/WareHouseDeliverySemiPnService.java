@@ -29,6 +29,17 @@ public class WareHouseDeliverySemiPnService {
 		return wareHouseDeliverySemiPnMapper.queryList(obj);
 	}
 
+	public WareHouseDeliverySemiPnModel queryOne(WareHouseDeliverySemiPnModel deliverySemiPn) {
+		List<WareHouseDeliverySemiPnModel> queryList = queryList(deliverySemiPn);
+		if(ListUtils.isNullOrEmpty(queryList)) {
+			return null;
+		} else if(queryList.size() == 1) {
+			return queryList.get(0);
+		}
+		
+		throw new PdsysException("未想定数目：WareHouseDeliverySemiPnService-queryOne");
+	}
+	
 	public void add(WareHouseDeliverySemiPnModel deliveryPn) {
 		wareHouseDeliverySemiPnMapper.add(deliveryPn);
 	}

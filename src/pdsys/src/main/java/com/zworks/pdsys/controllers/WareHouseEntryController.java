@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.zworks.pdsys.business.WareHouseEntryBusiness;
 import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.enumClass.EntryType;
 import com.zworks.pdsys.common.exception.PdsysException;
@@ -48,6 +49,8 @@ public class WareHouseEntryController {
 	WareHouseEntryBOMService wareHouseEntryBOMService;
 	@Autowired
 	WareHouseEntryMachinePartService wareHouseEntryMachinePartService;
+	@Autowired
+	WareHouseEntryBusiness wareHouseEntryBusiness;
 
 	@RequestMapping(value= {"/main", "/main/{type}"})
     public String entryMain(
@@ -123,50 +126,28 @@ public class WareHouseEntryController {
 	@RequestMapping(value="/update/pn")
 	@ResponseBody
     public JSONResponse updateEntryPn(@RequestBody WareHouseEntryPnModel entryPn, Model model) {
-		if(wareHouseEntryPnService.exist(entryPn)) {
-			wareHouseEntryPnService.update(entryPn);
-		} else {
-			wareHouseEntryPnService.add(entryPn);
-		}
+		wareHouseEntryBusiness.updateEntryPn(entryPn);
 		return JSONResponse.success();
     }
 	
 	@RequestMapping(value="/update/semipn")
 	@ResponseBody
-	public JSONResponse updateEntrySemiPn(@RequestBody WareHouseEntrySemiPnModel entryPn, Model model) {
-		if(wareHouseEntrySemiPnService.exist(entryPn)) {
-			wareHouseEntrySemiPnService.update(entryPn);
-		} else {
-			wareHouseEntrySemiPnService.add(entryPn);
-		}
+	public JSONResponse updateEntrySemiPn(@RequestBody WareHouseEntrySemiPnModel entrySemiPn, Model model) {
+		wareHouseEntryBusiness.updateEntrySemiPn(entrySemiPn);
 		return JSONResponse.success();
 	}
 	
-	/**
-	 * 新建入库明细
-	 * */
 	@RequestMapping(value="/update/bom")
 	@ResponseBody
     public JSONResponse updateEntryBOM(@RequestBody WareHouseEntryBOMModel entryBOM, Model model) {
-		if(wareHouseEntryBOMService.exist(entryBOM)) {
-			wareHouseEntryBOMService.update(entryBOM);
-		} else {
-			wareHouseEntryBOMService.add(entryBOM);
-		}
+		wareHouseEntryBusiness.updateEntryBOM(entryBOM);
 		return JSONResponse.success();
     }
 	
-	/**
-	 * 新建入库明细
-	 * */
 	@RequestMapping(value="/update/machinepart")
 	@ResponseBody
-    public JSONResponse updateEntryBOM(@RequestBody WareHouseEntryMachinePartModel entryMp, Model model) {
-		if(wareHouseEntryMachinePartService.exist(entryMp)) {
-			wareHouseEntryMachinePartService.update(entryMp);
-		} else {
-			wareHouseEntryMachinePartService.add(entryMp);
-		}
+    public JSONResponse updateEntryMachinePart(@RequestBody WareHouseEntryMachinePartModel entryMp, Model model) {
+		wareHouseEntryBusiness.updateEntryMachinePart(entryMp);
 		return JSONResponse.success();
     }
 	

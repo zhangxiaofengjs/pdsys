@@ -27,10 +27,13 @@ public class WareHouseEntryPnService {
 	
 	public WareHouseEntryPnModel queryOne(WareHouseEntryPnModel entryPn) {
 		List<WareHouseEntryPnModel> ePns = queryList(entryPn);
+		if(ListUtils.isNullOrEmpty(ePns)) {
+			return null;
+		}
 		if(ePns.size()==1) {
 			return ePns.get(0);
 		}
-		return null;
+		throw new PdsysException("未想定数目：WareHouseEntryPnService-queryOne");
 	}
 	
 	@Transactional
@@ -45,7 +48,8 @@ public class WareHouseEntryPnService {
 	}
 
 	public boolean exist(WareHouseEntryPnModel entryPn) {
-		return queryOne(entryPn) != null;
+		List<WareHouseEntryPnModel> ePns = queryList(entryPn);
+		return ePns.size() != 0;
 	}
 
 	public void update(WareHouseEntryPnModel entryPn) {

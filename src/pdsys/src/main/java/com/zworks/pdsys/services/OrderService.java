@@ -1,6 +1,5 @@
 package com.zworks.pdsys.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +16,6 @@ import com.zworks.pdsys.io.OrderTemplateReader;
 import com.zworks.pdsys.mappers.OrderMapper;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
-import com.zworks.pdsys.models.PnModel;
 
 @Service
 public class OrderService {
