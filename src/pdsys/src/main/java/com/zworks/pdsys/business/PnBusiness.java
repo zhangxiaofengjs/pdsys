@@ -182,8 +182,41 @@ public class PnBusiness {
 		}
 	}
 
+	private boolean existsBOM(PnModel pn) {
+		PnModel p = new PnModel();
+		p.setId(pn.getId());
+		p = pnService.queryOne(pn);
+		
+		if(p == null) {
+			return false;
+		}
+
+		List<PnBOMRelModel> bomRels = p.getPnBOMRels();
+		if(bomRels == null) {
+			return false;
+		}
+		List<PnBOMRelModel> targetBomRels = pn.getPnBOMRels();
+		if(targetBomRels == null) {
+			return false;
+		}
+		
+		for(PnBOMRelModel bomRel : bomRels) {
+			BOMModel bom = bomRel.getBom();
+			
+			//寻找同样的
+			for(PnBOMRelModel tgtbomRel : targetBomRels) {
+				BOMModel tmpbom = tgtbomRel.getBom();
+				if(bom.getId() ==  tmpbom.getId()) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	public void addBOM(PnModel pn) {
-		if(pnService.existsBOM(pn)) {
+		if(existsBOM(pn)) {
 			//已经存在该原包材 则做更新
 			throw new PdsysException("已经存在该原包材");
 		}

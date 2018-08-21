@@ -112,39 +112,6 @@ public class PnService {
 		pnMapper.deletePnCls(pn);
 	}
 
-	public boolean existsBOM(PnModel pn) {
-		PnModel p = new PnModel();
-		p.setId(pn.getId());
-		p = queryOne(pn);
-		
-		if(p == null) {
-			return false;
-		}
-
-		List<PnBOMRelModel> bomRels = p.getPnBOMRels();
-		if(bomRels == null) {
-			return false;
-		}
-		List<PnBOMRelModel> targetBomRels = pn.getPnBOMRels();
-		if(targetBomRels == null) {
-			return false;
-		}
-		
-		for(PnBOMRelModel bomRel : bomRels) {
-			BOMModel bom = bomRel.getBom();
-			
-			//寻找同样的
-			for(PnBOMRelModel tgtbomRel : targetBomRels) {
-				BOMModel tmpbom = tgtbomRel.getBom();
-				if(bom.getId() ==  tmpbom.getId()) {
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-
 	@Transactional
 	public void addBOM(PnModel pn) {
 		for(PnBOMRelModel bomRel : pn.getPnBOMRels()) {
