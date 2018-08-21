@@ -12,6 +12,7 @@ import com.zworks.pdsys.business.beans.BOMUseNumBean;
 import com.zworks.pdsys.common.enumClass.BOMType;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
+import com.zworks.pdsys.common.utils.ListUtils;
 import com.zworks.pdsys.mappers.PnMapper;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.PnBOMRelModel;
@@ -26,15 +27,15 @@ public class PnService {
     private PnMapper pnMapper;
 	@Autowired
 	private PnClsService pnClsService;
-	@Autowired
-	private WareHousePnService wareHousePnService;
-	@Autowired
-	private WareHouseEntryPnService wareHouseEntryPnService;
-	@Autowired
-	private WareHouseDeliveryPnService wareHouseDeliveryPnService;
 	
 	public List<PnModel> queryList(PnModel pn) {
 		return pnMapper.queryList(pn);
+	}
+	
+	public PnModel queryByClsId(int pnClsId) {
+		PnModel pn = new PnModel();
+		pn.putFilterCond(PnModel.FCK_PNCLSID, pnClsId);
+		return queryOne(pn);
 	}
 	
 	public void add(PnModel pn) {
@@ -45,6 +46,10 @@ public class PnService {
 		pnMapper.update(pn);
 	}
 
+	public void delete(PnModel pn) {
+		pnMapper.delete(pn);
+	}
+	
 	public boolean exists(PnModel pn) {
 		List<PnModel> pns = queryList(pn);
 		return pns.size()!=0;
@@ -55,7 +60,7 @@ public class PnService {
 		if(pns.size()==1) {
 			return pns.get(0);
 		}
-		return null;
+		throw new PdsysException("超出预想数目:PN-queryOne");
 	}
 
 	@Transactional
@@ -95,58 +100,14 @@ public class PnService {
 		return false;
 	}
 
-	@Transactional
 	public void updatePnCls(PnModel pn) {
-		PnPnClsRelModel pnClsRel = null;//预想只更新一个本体
-
-		//更新本体的名称和单位
-		List<PnPnClsRelModel> clsRels = pn.getPnClsRels();
-		for(PnPnClsRelModel pnClsRelTmp : clsRels) {
-			PnClsModel pnCls = pnClsRelTmp.getPnCls();
-			pnClsService.update(pnCls);
-			
-			pnClsRel = pnClsRelTmp;
-		}
-		if(pnClsRel == null) {
-			return;
-		}
-		
-		PnModel pnDb = queryOne(pn);
-		if(pnDb == null) {
-			throw new PdsysException("不存在的品目，刷新后再试");
-		}
-		
-		//修改本体使用量，因为涉及到入出库时原包材计算，所以已经使用过不能修改
-		for(PnPnClsRelModel pnClsRelTmp : pnDb.getPnClsRels()) {
-			if(pnClsRelTmp.getPnCls().getId() == pnClsRel.getPnCls().getId()) {
-				if(pnClsRel.getNum() != pnClsRelTmp.getNum()) {
-					checkUsed(pn, false);
-					//修改配比
-					pnMapper.updatePnCls(pn);
-				}
-			}
-		}
+		pnMapper.updatePnCls(pn);
 	}
 	
-	private void checkUsed(PnModel pn, boolean isCheckWhPn) {
-		if(isCheckWhPn) {
-			wareHousePnService.checkUsedPn(pn);
-		}
-		wareHouseEntryPnService.checkUsedPn(pn);
-		wareHouseDeliveryPnService.checkUsedPn(pn);
-	}
-
 	@Transactional
 	public void deletePnCls(PnModel pn) {
-		//检测是否使用中，因为涉及到入出库计算则不能随便删除
-		checkUsed(pn, false);
-		
-		List<PnPnClsRelModel> clsRels = pn.getPnClsRels();
-		for(PnPnClsRelModel pnClsRel : clsRels) {
-			PnClsModel pnCls = pnClsRel.getPnCls();
-			
-			pnClsService.checkUsed(pnCls);
-			pnClsService.delete(pnCls);
+		if(ListUtils.isNullOrEmpty(pn.getPnClsRels())) {
+			return;
 		}
 		pnMapper.deletePnCls(pn);
 	}
@@ -193,6 +154,9 @@ public class PnService {
 	}
 
 	public void deleteBOM(PnModel pn) {
+		if(ListUtils.isNullOrEmpty(pn.getPnBOMRels())) {
+			return;
+		}
 		pnMapper.deleteBOM(pn);
 	}
 	

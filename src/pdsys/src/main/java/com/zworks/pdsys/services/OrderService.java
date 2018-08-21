@@ -1,5 +1,6 @@
 package com.zworks.pdsys.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import com.zworks.pdsys.io.OrderTemplateReader;
 import com.zworks.pdsys.mappers.OrderMapper;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
+import com.zworks.pdsys.models.PnModel;
 
 @Service
 public class OrderService {
@@ -32,10 +34,6 @@ public class OrderService {
 		return orderMapper.queryList( order );
 	}
 	
-	public void update(OrderModel order) {
-		orderMapper.update( order );
-	}
-	
 	public OrderModel queryOne(OrderModel order) {
 		List<OrderModel> list = queryList(order);
 		if(list.size() == 1) {
@@ -44,6 +42,10 @@ public class OrderService {
 		return null;
 	}
 	
+	public void update(OrderModel order) {
+		orderMapper.update( order );
+	}
+
 	public void add(OrderModel order) {
 		orderMapper.add( order );
 	}

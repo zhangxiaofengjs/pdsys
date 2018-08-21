@@ -55,7 +55,7 @@ public class WareHousePnService {
 		if(!ListUtils.isNullOrEmpty(list)) {
 			whpn = list.get(0);
 			PnModel pnTmp = whpn.getPn();
-			throw new PdsysException(String.format("成品仓库使用中:%s %s %s", pnTmp.getPn(), pnTmp.getName()));
+			throw new PdsysException(String.format("成品仓库使用中:%s %s", pnTmp.getPn(), pnTmp.getName()));
 		}
 	}
 }

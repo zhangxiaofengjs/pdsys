@@ -107,7 +107,7 @@ public class WareHouseSemiPnService {
 		if(!ListUtils.isNullOrEmpty(list)) {
 			semiPn = list.get(0);
 			PnModel pn = semiPn.getPn();
-			throw new PdsysException(String.format("半成品仓库使用中:%s %s %s", pn.getPn(), pn.getName(), semiPn.getPnClsRel().getPnCls().getName()));
+			throw new PdsysException(String.format("半成品仓库使用中:<br>品目:%s %s <br>本体:%s", pn.getPn(), pn.getName(), semiPn.getPnClsRel().getPnCls().getName()));
 		}
 	}
 }

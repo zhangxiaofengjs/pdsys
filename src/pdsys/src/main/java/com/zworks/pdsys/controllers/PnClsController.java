@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.business.PnClsBusiness;
+import com.zworks.pdsys.business.form.beans.RelateBOMFormBean;
+import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.PnClsModel;
 import com.zworks.pdsys.services.PnClsService;
@@ -18,6 +21,8 @@ import com.zworks.pdsys.services.PnClsService;
 public class PnClsController {
 	@Autowired
 	PnClsService pnClsService;
+	@Autowired
+	PnClsBusiness pnClsBusiness;
 	
 	@RequestMapping("/list/json")
 	@ResponseBody
@@ -39,16 +44,31 @@ public class PnClsController {
 	@RequestMapping(value="/addBOM")
 	@ResponseBody
     public JSONResponse addBOM(@RequestBody PnClsModel pnCls) {
-		if(pnClsService.existsBOM(pnCls)) {
-			return JSONResponse.error("已经存在该原包材");
+		try {
+			pnClsBusiness.addBOM(pnCls);
+		} catch(PdsysException e) {
+			return JSONResponse.error(e.getMessage());
 		}
-		pnClsService.addBOM(pnCls);
 		return JSONResponse.success();
     }
 	@RequestMapping(value="/deleteBOM")
 	@ResponseBody
 	public JSONResponse deleteBOM(@RequestBody PnClsModel pnCls) {
-		pnClsService.deleteBOM(pnCls);
+		try {
+			pnClsBusiness.deleteBOM(pnCls);
+		} catch(PdsysException e) {
+			return JSONResponse.error(e.getMessage());
+		}
+		return JSONResponse.success();
+	}
+	@RequestMapping(value="/changeBOM")
+	@ResponseBody
+	public JSONResponse changeBOM(@RequestBody RelateBOMFormBean formBean) {
+		try {
+			pnClsBusiness.changeBOM(formBean);
+		} catch(PdsysException e) {
+			return JSONResponse.error(e.getMessage());
+		}
 		return JSONResponse.success();
 	}
 }

@@ -25,7 +25,7 @@ public class BOMController {
 	
 	@RequestMapping("/list/json")
 	@ResponseBody
-	public JSONResponse listJson(@RequestBody BOMModel bom, Model model) {
+	public JSONResponse listJson(@RequestBody(required=false) BOMModel bom, Model model) {
 		List<BOMModel> list = bomService.queryList(bom);
 		return JSONResponse.success().put("boms", list);
 	}

@@ -28,7 +28,7 @@ spring:
     mvc: 
         static-path-pattern: /**
     datasource: # 数据库配置
-        url: jdbc:mysql://localhost:3306/pdsys?useSSL=false&useUnicode=true&characterEncoding=utf-8 #allowMultiQueries=true暂时未添加多条语句同时执行
+        url: jdbc:mysql://localhost:3306/pdsys?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
         username: root
         password: root
         driverClassName: com.mysql.jdbc.Driver

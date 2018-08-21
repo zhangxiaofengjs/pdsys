@@ -10,6 +10,8 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("pnModel")
 public class PnModel extends BaseModel{
+	public static final String FCK_PNCLSID = "pnClsId";
+	
 	private String pn;
 	private String name;
 	private UnitModel unit;

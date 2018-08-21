@@ -72,7 +72,7 @@
 				and o_pn.c_pn_id in
 				<foreach collection="orderPns" index="index" item="orderPn" open="(" separator="," close=")">  
 			        #{orderPn.pn.id}
-			    </foreach> 
+			    </foreach>
 			</if>
 		</where>
 		order by o.c_state asc, o.c_order_date asc, o.c_ship_dead_date asc, o.c_no asc

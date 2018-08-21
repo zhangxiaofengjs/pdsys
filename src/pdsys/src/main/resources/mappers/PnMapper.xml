@@ -150,6 +150,13 @@
       	</selectKey>
 	</insert>
 	
+	<delete id="delete" parameterType="pnModel">
+		delete from pn_tbl
+		<where>
+			c_id=#{id}
+		</where>
+	</delete>
+	
 	<insert id="addPnCls" parameterType="pnPnClsRelModel" keyProperty="id">
 		insert into pn_cls_relation_tbl
 		(

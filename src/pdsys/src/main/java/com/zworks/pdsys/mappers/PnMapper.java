@@ -18,6 +18,7 @@ public interface PnMapper {
 
 	void add(PnModel pn);
 	void update(PnModel pn);
+	void delete(PnModel pn);
 
 	void addPnCls(PnPnClsRelModel pn);
 	void updatePnCls(PnModel pn);
@@ -25,5 +26,6 @@ public interface PnMapper {
 
 	void addBOM(PnBOMRelModel bomRel);
 	void deleteBOM(PnModel pn);
+
 
 }

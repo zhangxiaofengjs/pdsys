@@ -14,12 +14,6 @@ import com.zworks.pdsys.models.PnClsModel;
 public class PnClsService {
 	@Autowired
     private PnClsMapper pnClsMapper;
-	@Autowired
-	private WareHouseSemiPnService wareHouseSemiPnService;
-	@Autowired
-	private WareHouseEntrySemiPnService wareHouseEntrySemiPnService;
-	@Autowired
-	private WareHouseDeliverySemiPnService wareHouseDeliverySemiPnService;
 	
 	public List<PnClsModel> queryList(PnClsModel pnClsModel) {
 		return pnClsMapper.queryList(pnClsModel);
@@ -68,32 +62,5 @@ public class PnClsService {
 
 	public void deleteBOM(PnClsModel pnCls) {
 		pnClsMapper.deleteBOM(pnCls);
-	}
-	
-	public boolean existsBOM(PnClsModel pnCls) {
-		PnClsModel targetPnCls = queryOne(pnCls);
-		if(targetPnCls == null) {
-			return false;
-		}
-		
-		List<PnClsBOMRelModel> bomRels = pnCls.getPnClsBOMRels();
-		List<PnClsBOMRelModel> targetBomRels = targetPnCls.getPnClsBOMRels();
-		
-		for(PnClsBOMRelModel bomRel : bomRels) {
-			for(PnClsBOMRelModel bRel : targetBomRels) {
-				if(bomRel.getBom().getId() == bRel.getBom().getId()) {
-					//同样子类下有同样的BOM
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-
-	public void checkUsed(PnClsModel pnCls) {
-		wareHouseSemiPnService.checkUsedPnCls(pnCls);
-		wareHouseEntrySemiPnService.checkUsedPnCls(pnCls);
-		wareHouseDeliverySemiPnService.checkUsedPnCls(pnCls);
 	}
 }

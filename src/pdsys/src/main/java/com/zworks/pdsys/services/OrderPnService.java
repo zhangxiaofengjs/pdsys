@@ -44,6 +44,16 @@ public class OrderPnService {
 		orderPnMapper.delete(orderPn);
 	}
 
+	public List<OrderPnModel> queryByPn(String strPn) {
+		PnModel pn = new PnModel();
+		pn.setPn(strPn);
+		
+		OrderPnModel orderPn = new OrderPnModel();
+		orderPn.setPn(pn);
+		
+		return queryList(orderPn);
+	}
+
 	public List<BOMUseNumBean> queryBOMUseNumList(OrderModel order) {
 		OrderPnModel orderPnS = new OrderPnModel();
 		orderPnS.setOrder(order);
@@ -179,4 +189,5 @@ public class OrderPnService {
 		return false;
 	}
 
+	
 }

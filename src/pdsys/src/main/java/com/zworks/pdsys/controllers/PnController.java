@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.business.PnBusiness;
+import com.zworks.pdsys.business.form.beans.RelateBOMFormBean;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.PnModel;
@@ -20,9 +22,10 @@ import com.zworks.pdsys.services.PnService;
 public class PnController {
 	@Autowired
 	PnService pnService;
-	
 	@Autowired
 	OrderService orderService;
+	@Autowired
+	PnBusiness pnBusiness;
 	
 	/**
 	 * 品目一览
@@ -67,6 +70,17 @@ public class PnController {
 		return JSONResponse.success();
     }
 	
+	@RequestMapping(value="/delete")
+	@ResponseBody
+    public JSONResponse delete(@RequestBody PnModel pn) {
+		try {
+			pnBusiness.delete(pn);
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
+		}
+		return JSONResponse.success();
+    }
+	
 	/**
 	 * 添加子类
 	 * */
@@ -87,7 +101,7 @@ public class PnController {
 	@ResponseBody
 	public JSONResponse updatePnCls(@RequestBody PnModel pn) {
 		try {
-			pnService.updatePnCls(pn);
+			pnBusiness.updatePnCls(pn);
 		} catch(PdsysException ex) {
 			return JSONResponse.error(ex.getMessage());
 		}
@@ -102,7 +116,7 @@ public class PnController {
 	@ResponseBody
 	public JSONResponse deletePnCls(@RequestBody PnModel pn) {
 		try {
-			pnService.deletePnCls(pn);
+			pnBusiness.deletePnCls(pn);
 		} catch(PdsysException ex) {
 			return JSONResponse.error(ex.getMessage());
 		}
@@ -116,11 +130,11 @@ public class PnController {
 	@RequestMapping(value="/addBOM")
 	@ResponseBody
 	public JSONResponse addBOM(@RequestBody PnModel pn) {
-		if(pnService.existsBOM(pn)) {
-			//已经存在该原包材 则做更新
-			return JSONResponse.error("已经存在该原包材");
+		try {
+			pnBusiness.addBOM(pn);
+		} catch(PdsysException e) {
+			return JSONResponse.error(e.getMessage());
 		}
-		pnService.addBOM(pn);
 		return JSONResponse.success();
 	}
 	
@@ -130,7 +144,24 @@ public class PnController {
 	@RequestMapping(value="/deleteBOM")
 	@ResponseBody
 	public JSONResponse deleteBOM(@RequestBody PnModel pn) {
-		pnService.deleteBOM(pn);
+		try {
+			pnBusiness.deleteBOM(pn);
+		} catch(PdsysException e) {
+			return JSONResponse.error(e.getMessage());
+		}
+		
+		return JSONResponse.success();
+	}
+	
+	@RequestMapping(value="/changeBOM")
+	@ResponseBody
+	public JSONResponse changeBOM(@RequestBody RelateBOMFormBean formBean) {
+		try {
+			pnBusiness.changeBOM(formBean);
+		} catch(PdsysException e) {
+			return JSONResponse.error(e.getMessage());
+		}
+		
 		return JSONResponse.success();
 	}
 }

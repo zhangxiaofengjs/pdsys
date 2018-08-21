@@ -209,6 +209,44 @@ $(document).ready(function(){
 		});
 	});
 	
+	$("#deletePn").click(function(){
+		var self = $(this);
+		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
+		if(selIds.length != 1) {
+			return;
+		}
+		var selIdArr = selIds[0].split("_");
+		var pnId = selIdArr[0];
+		var dlg = new CommonDlg();
+		
+		dlg.showMsgDlg({
+			"target":"dlg_div",
+			"caption":"删除品目",
+			"msg": "确定删除该品目?",
+			"type": "yesno",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/pn/delete",
+					"data": {
+						"id":pnId
+					},
+					"success": function(data) {
+						dlg.hide();
+						PdSys.success({
+							"ok" : function() {
+								PdSys.refresh();
+							}
+						});
+					},
+					"error": function(data) {
+						dlg.hide();
+						PdSys.alert(data.msg);
+					}
+				});
+			}
+		});
+	});
+	
 	$("#addPnCls").click(function(){
 		var self = $(this);
 		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
@@ -447,7 +485,7 @@ $(document).ready(function(){
 		});
 	});
 	
-	$("button[id^='addBOM'").click(function(){
+	$("#addBOM").click(function(){
 		var self = $(this);
 		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
 		if(selIds.length != 1) {
@@ -550,6 +588,142 @@ $(document).ready(function(){
 			"caption":"添加使用原包材",
 			"fields":fields,
 			"url":url,
+			"success": function(data) {
+				dlg.hide();
+				PdSys.success({
+					"ok" : function() {
+						PdSys.refresh();
+					}
+				});
+			},
+			"error": function(data) {
+				PdSys.alert(data.msg);
+			}
+		});
+	});
+	
+	$("#editBOM").click(function(){
+		var self = $(this);
+		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});
+		if(selIds.length != 1) {
+			return;
+		}
+		
+		var selIdArr = selIds[0].split("_");
+		if(selIdArr.length < 3) {
+			PdSys.alert("选择的行没有关联原包材");
+			return;
+		}
+		var pnId = selIdArr[0];
+		var clsId = selIdArr[1];
+		var bomId = selIdArr[2];
+		var url = (clsId==-1?"/pn/changeBOM":"/pncls/changeBOM");
+		var dlg = new CommonDlg();
+		var fields = [
+			{
+				"name":"type",
+				"type":"hidden",
+				"value":"change",
+			},
+			{
+				"name":"pnId",
+				"type":"hidden",
+				"value":pnId
+			},
+			{
+				"name":"pnClsId",
+				"type":"hidden",
+				"value":clsId
+			},
+			{
+				"name":"bomId",
+				"type":"hidden",
+				"value":bomId
+			},
+			{
+				"name":"newBomId",
+				"label": "使用原包材",
+				"type":"select",
+				"value":bomId,
+				"ajax": true,
+				"ajaxdata": [],
+				"url":"/bom/list/json",
+				"convertAjaxData" : function(thisField, data) {
+					thisField.options = [];
+					data.boms.forEach(function(bom, idx) {
+						thisField.options.push({
+							"value": bom.id,
+							"caption":bom.pn + " " + bom.name,
+							"data":M.unitName(bom.unit)
+						});
+					});
+				},
+				"afterBuild":function(t) {
+					var self = this;
+					var fieldElm = dlg.findFieldElem(self);
+					fieldElm.change(function() {
+						var selIndex = fieldElm[0].selectedIndex;
+						var val = self.options[selIndex].data;
+						dlg.rebuildFieldWithValue("unitName", val);
+					});
+					
+					fieldElm.trigger("change");
+				},
+			},
+			{
+				"name":"useNum",
+				"label":"使用数量",
+				"type":"number",
+				"depend":true,
+				"value":"0",
+				"min":"0.00000000000000001"
+			},
+			{
+				"name":"unitName",
+				"label":"单位",
+				"type":"label",
+				"value":""
+			},
+		];
+		
+		dlg.showFormDlg({
+			"target":"dlg_div",
+			"caption":"修改使用原包材",
+			"fields":fields,
+			"url":url,
+			"ajax": {
+				"url":"/pn/get",
+				"data":{
+					"id":pnId
+				},
+				"convertAjaxData":function(data) {
+					var pn = data.pn;
+					if(clsId == -1) {
+						for(var i = 0; i < pn.pnBOMRels.length; i++) {
+							var pnBOMRel = pn.pnBOMRels[i];
+							var bom = pnBOMRel.bom;
+							if(bom.id == bomId) {
+								dlg.rebuildFieldWithValue("useNum", pnBOMRel.useNum);
+								return;
+							}
+						}
+					} else {
+						for(var i = 0; i < pn.pnClsRels.length; i++) {
+							var pnCls = pn.pnClsRels[i].pnCls;
+							for(var j = 0; j < pnCls.pnClsBOMRels.length; j++) {
+								var pClsBOMRel = pnCls.pnClsBOMRels[j];
+								var bom = pClsBOMRel.bom;
+								if(bom.id == bomId) {
+									dlg.rebuildFieldWithValue("useNum", pClsBOMRel.useNum);
+									return;
+								}
+							}
+						}
+					}
+					
+					dlg.rebuildFieldWithValue("useNum", 0);
+				}
+			},
 			"success": function(data) {
 				dlg.hide();
 				PdSys.success({
