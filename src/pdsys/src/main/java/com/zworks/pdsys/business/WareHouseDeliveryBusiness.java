@@ -10,11 +10,14 @@ import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.enumClass.EntryItemKind;
 import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.models.BOMModel;
+import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
+import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
+import com.zworks.pdsys.services.WareHouseDeliveryPnService;
 import com.zworks.pdsys.services.WareHouseEntryBOMService;
 
 /**
@@ -25,6 +28,8 @@ import com.zworks.pdsys.services.WareHouseEntryBOMService;
 public class WareHouseDeliveryBusiness {
 	@Autowired
 	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
+	@Autowired
+	WareHouseDeliveryPnService wareHouseDeliveryPnService;
 	@Autowired
 	WareHouseEntryBOMService wareHouseEntryBOMService;
 	
@@ -74,5 +79,25 @@ public class WareHouseDeliveryBusiness {
 			}
 		}
 		return deliveryList;
+	}
+	
+	public List<WareHouseDeliveryPnModel> calcDeliveryPns(WareHouseHistoryFormBean formBean) {
+		WareHouseDeliveryPnModel deliveryPn = new WareHouseDeliveryPnModel();
+		
+		WareHouseDeliveryModel d = new WareHouseDeliveryModel();
+		d.setState(DeliveryState.DELIVERIED.ordinal());
+		
+		PnModel pnM = new PnModel();
+		pnM.setPn(formBean.getPn());
+		
+		deliveryPn.setPn(pnM);
+		deliveryPn.setWareHouseDelivery(d);
+		deliveryPn.putFilterCond(WareHouseDeliveryPnModel.FCK_FUZZYPNSEARCH, true);
+		deliveryPn.putFilterCond(WareHouseDeliveryPnModel.FCK_DELIVERYSTART, formBean.getStart());
+		deliveryPn.putFilterCond(WareHouseDeliveryPnModel.FCK_DELIVERYEND, formBean.getEnd());
+		deliveryPn.putFilterCond(WareHouseDeliveryPnModel.FCK_GROUPBYPN, true);
+		
+		List<WareHouseDeliveryPnModel> list = wareHouseDeliveryPnService.queryList(deliveryPn);
+		return list;
 	}
 }

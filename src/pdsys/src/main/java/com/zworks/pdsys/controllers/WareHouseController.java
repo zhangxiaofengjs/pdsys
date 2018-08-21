@@ -16,7 +16,6 @@ import com.zworks.pdsys.business.WareHouseDeliveryBusiness;
 import com.zworks.pdsys.business.WareHouseEntryBusiness;
 import com.zworks.pdsys.business.form.beans.WareHouseHistoryFormBean;
 import com.zworks.pdsys.business.form.beans.WareHouseListFormBean;
-import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.DateUtils;
@@ -24,9 +23,9 @@ import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.RequestContextUtils;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
-import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
+import com.zworks.pdsys.models.WareHouseEntryPnModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.models.WareHouseSemiPnModel;
@@ -135,7 +134,7 @@ public class WareHouseController extends BaseController{
 			WareHouseHistoryFormBean formBean,
 			Model model) {
 		if(type == null) {
-			type = RequestContextUtils.getSessionAttribute(this, "his_type", "pn");
+			type = RequestContextUtils.getSessionAttribute(this, "his_type", "entrypn");
 		}
 		RequestContextUtils.setSessionAttribute(this, "his_type", type);
 		
@@ -170,17 +169,11 @@ public class WareHouseController extends BaseController{
 		} else if(type.equals("entrybom")) {
 			List<WareHouseEntryBOMModel> list = wareHouseEntryBusiness.calcEntryBOMs(formBean);
 			model.addAttribute("list", list);
-		}
-		else if(type.equals("pn")) {
-			WareHouseDeliveryPnModel deliveryPn = new WareHouseDeliveryPnModel();
-			WareHouseDeliveryModel d = new WareHouseDeliveryModel();
-			d.setState(DeliveryState.DELIVERIED.ordinal());
-			deliveryPn.setWareHouseDelivery(d);
-			deliveryPn.getFilterCond().put("deliveryStart", s);
-			deliveryPn.getFilterCond().put("deliveryEnd", e);
-			deliveryPn.getFilterCond().put("groupByPn", true);
-			
-			List<WareHouseDeliveryPnModel> list = wareHouseDeliveryPnService.queryList(deliveryPn);
+		} else if(type.equals("entrypn")) {
+			List<WareHouseEntryPnModel> list = wareHouseEntryBusiness.calcEntryPns(formBean);
+			model.addAttribute("list", list);
+		} else if(type.equals("deliverypn")) {
+			List<WareHouseDeliveryPnModel> list = wareHouseDeliveryBusiness.calcDeliveryPns(formBean);
 			model.addAttribute("list", list);
 		} else {
 			throw new PdsysException("错误参数:/history/main?type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);

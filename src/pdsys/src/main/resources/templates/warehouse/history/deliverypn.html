@@ -1,13 +1,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-<div th:fragment="content(ePnList)">
+<div th:fragment="content(dPnList)">
 	<nav style="border-radius:0px;margin-bottom:-1px;" class="navbar navbar-default">
 		<div class="container-fluid">
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/history/main/entrypn}" method="post">
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/history/main/deliverypn}" method="post">
 				 <div class="form-group">
 				   <input type="text" class="form-control" name="pn" th:value="${formBean.pn}" placeholder="品番">
 				   <input type="date" class="form-control" name="start" th:value="${#dates.format(formBean.start, 'yyyy-MM-dd')}" placeholder="开始日期">
@@ -26,21 +26,21 @@
 				<th>品目</th>
 				<th>名称</th>
 				<th>单位</th>
-				<th>入库数量</th>
+				<th>出库数量</th>
 		    </tr>
 		</thead>
 		<tbody>
-			<tr th:each="ePn : ${ePnList}"
-				th:with="pn=${ePn.pn},
+			<tr th:each="dPn : ${dPnList}"
+				th:with="pn=${dPn.pn},
 						 unit=${pn.unit}"
-						 th:rowid="${ePn.id}">
+						 th:rowid="${dPn.id}">
 				<td>
-					<input type="checkbox" name="select" th:rowid="${ePn.id}">
+					<input type="checkbox" name="select" th:rowid="${dPn.id}">
 				</td>
 				<td th:text="${pn.pn}"></td>
 				<td th:text="${pn.name}"></td>
 				<td th:text="${unit.name}"></td>
-				<td th:text="${#numbers.formatDecimal(ePn.producedNum,1,3)}" class="number"></td>
+				<td th:text="${#numbers.formatDecimal(dPn.producedNum,1,3)}" class="number"></td>
 		    </tr>
 		</tbody>
 	</table>

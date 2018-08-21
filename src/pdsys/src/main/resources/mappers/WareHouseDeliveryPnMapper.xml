@@ -45,14 +45,28 @@
 		left join pn_tbl as pn on d_pn.c_ref_id = pn.c_id
 		left join unit_tbl as u on pn.c_unit_id = u.c_id
 		<where>
-			<if test="wareHouseDelivery != null and wareHouseDelivery.id > 0">
-				and d_pn.c_delivery_id = #{wareHouseDelivery.id}
+			<if test="wareHouseDelivery != null">
+				<if test="wareHouseDelivery.id > 0">
+					and d_pn.c_delivery_id = #{wareHouseDelivery.id}
+				</if>
+				<if test="wareHouseDelivery.state > -1">
+					and d.c_state = #{wareHouseDelivery.state}
+				</if>
 			</if>
-			<if test="wareHouseDelivery != null and wareHouseDelivery.state > -1">
-				and d.c_state = #{wareHouseDelivery.state}
-			</if>
-			<if test="pn != null and pn.id > 0">
-				and d_pn.c_ref_id = #{pn.id}
+			<if test="pn != null">
+				<if test="pn.id > 0">
+					and d_pn.c_ref_id = #{pn.id}
+				</if>
+				<if test="pn.pn != null and pn.pn!=''">
+					<choose>
+		                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+		                   	and pn.c_pn like '%${pn.pn}%'
+		                </when>
+		                <otherwise>
+							and pn.c_pn=#{pn.pn}
+		                </otherwise>
+		            </choose>
+				</if>
 			</if>
 			<if test="order != null and order.id > 0">
 				and d_pn.c_order_id = #{order.id}

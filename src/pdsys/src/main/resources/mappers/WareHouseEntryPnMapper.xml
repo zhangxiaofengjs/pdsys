@@ -2,24 +2,83 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseEntryPnMapper">
+	<resultMap id="unitResultMap" type="unitModel" >  
+        <id column="u_id" property="id" />  
+        <result column="u_name" property="name" />
+    </resultMap>
+    <resultMap id="pnResultMap" type="pnModel" >  
+        <id column="pn_id" property="id" />  
+        <result column="pn_pn" property="pn" />
+        <result column="pn_name" property="name" />
+        <association property="unit" resultMap="unitResultMap"/>
+    </resultMap>
+	<resultMap id="wareHouseEntryResultMap" type="wareHouseEntryModel" >  
+        <id column="e_id" property="id" />  
+        <result column="e_time" property="time" />  
+    </resultMap>
 	<resultMap id="wareHouseEntryPnResultMap" type="wareHouseEntryPnModel" >  
         <id column="e_pn_id" property="id" />  
-        <result column="e_pn_produced_num" property="producedNum" />  
+        <result column="e_pn_produced_num" property="producedNum" /> 
+        <association property="wareHouseEntry" resultMap="wareHouseEntryResultMap"/>
+        <association property="pn" resultMap="pnResultMap"/> 
     </resultMap>
 
 	<select id="queryList" parameterType="wareHouseEntryPnModel" resultMap="wareHouseEntryPnResultMap">
-		select e_pn.c_id as e_pn_id,
-		       e_pn.c_entry_id as e_pn_entry_id,
-		       e_pn.c_produced_num as e_pn_produced_num
-		from entry_pn_tbl as e_pn
-		<where>
-			<if test="wareHouseEntry !=null and wareHouseEntry.id > 0">
-				and e_pn.c_entry_id=#{wareHouseEntry.id}
+		select
+			<if test="filterCond.groupByPn != null and filterCond.groupByPn">
+				MAX(e_pn.c_id) as e_pn_id,
+				SUM(e_pn.c_produced_num) as e_pn_produced_num,
+		   		MAX(e.c_id) as e_id,
+		   	</if>	
+			<if test="filterCond.groupByPn == null or !filterCond.groupByPn">
+		 		e_pn.c_id as e_pn_id,
+		    	e_pn.c_produced_num as e_pn_produced_num,
+		    	e.c_id as e_id,
 			</if>
-			<if test="pn.id > 0">
-				and e_pn.c_ref_id=#{pn.id}
+				pn.c_id as pn_id,
+				pn.c_pn as pn_pn,
+				pn.c_name as pn_name,
+				u.c_id as u_id,
+				u.c_name as u_name
+		from entry_pn_tbl as e_pn
+		left join entry_tbl as e on e_pn.c_entry_id = e.c_id
+		left join pn_tbl as pn on e_pn.c_ref_id = pn.c_id
+		left join unit_tbl as u on pn.c_unit_id = u.c_id
+		<where>
+			<if test="wareHouseEntry != null">
+				<if test="wareHouseEntry.id > 0">
+					and e_pn.c_entry_id = #{wareHouseEntry.id}
+				</if>
+				<if test="wareHouseEntry.state > -1">
+					and e.c_state = #{wareHouseEntry.state}
+				</if>
+			</if>
+			<if test="pn != null">
+				<if test="pn.id > 0">
+					and e_pn.c_ref_id = #{pn.id}
+				</if>
+				<if test="pn.pn != null and pn.pn!=''">
+					<choose>
+		                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
+		                   	and pn.c_pn like '%${pn.pn}%'
+		                </when>
+		                <otherwise>
+							and pn.c_pn=#{pn.pn}
+		                </otherwise>
+		            </choose>
+				</if>
+			</if>
+			<if test="filterCond.entryStart != null">
+				and e.c_entry_time &gt;= #{filterCond.entryStart}
+			</if>
+			<if test="filterCond.entryEnd != null">
+				and e.c_entry_time &lt;= #{filterCond.entryEnd}
 			</if>
 		</where>
+		<if test="filterCond.groupByPn != null and filterCond.groupByPn">
+			group by pn.c_id
+		</if>
+		order by pn.c_pn
 	</select>
 	<insert id="add" parameterType="wareHouseEntryPnModel">
     	insert into entry_pn_tbl (

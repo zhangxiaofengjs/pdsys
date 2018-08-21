@@ -8,6 +8,11 @@ import org.apache.ibatis.type.Alias;
  */
 @Alias("wareHouseEntryPnModel")
 public class WareHouseEntryPnModel extends WareHousePnModel{
+	public static final String FCK_FUZZYPNSEARCH = "fuzzyPnSearch";
+	public static final String FCK_ENTRYSTART = "entryStart";
+	public static final String FCK_ENTRYEND = "entryEnd";
+	public static final String FCK_GROUPBYPN = "groupByPn";
+
 	private WareHouseEntryModel wareHouseEntry;
 	private WareHousePnModel wareHousePn;//实际库存
 

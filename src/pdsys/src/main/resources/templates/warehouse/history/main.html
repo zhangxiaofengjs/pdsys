@@ -4,8 +4,11 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li role="presentation" th:class="(${type}=='pn'? 'active' : '')">
-			<a th:href="@{/warehouse/history/main/pn}">生产出库统计</a>
+		<li role="presentation" th:class="(${type}=='entrypn'? 'active' : '')">
+			<a th:href="@{/warehouse/history/main/entrypn}">生产入库统计</a>
+		</li>
+		<li role="presentation" th:class="(${type}=='deliverypn'? 'active' : '')">
+			<a th:href="@{/warehouse/history/main/deliverypn}">生产出库统计</a>
 		</li>
 		<li role="presentation" th:class="(${type}=='entrybom'? 'active' : '')">
 			<a th:href="@{/warehouse/history/main/entrybom}">原包材入库统计</a>
