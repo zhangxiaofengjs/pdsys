@@ -27,7 +27,7 @@
 		<thead>
 		    <tr>
 				<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
-				<th>种类</th>
+				<th>K</th>
 				<th>品番</th>
 				<th>名称</th>
 				<th>单位</th>
@@ -45,8 +45,8 @@
 				<input type="checkbox" name="select" th:rowid="${dBOM.id}">
 			</td>
 			<td th:switch="${bom}?${bom.type}:0">
-			  <span th:case="0">原材</span>
-			  <span th:case="*">包材</span>
+			  <span th:case="0">原</span>
+			  <span th:case="*">包</span>
 			</td>
 			<td th:text="${bom.pn}"></td>
 			<td th:text="${#strings.abbreviate(bom.name,36)}" th:title="${bom.name}"></td>

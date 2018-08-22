@@ -132,11 +132,13 @@ public class PnService {
 		
 		Map<Integer, BOMUseNumBean> bomMap = new HashMap<Integer, BOMUseNumBean>();
 		
-		//特有材计算
-		PnPnClsRelModel pnClsRelTgt = null;
+		//共通材计算
+		//每箱中包含所有子类的个数
+		float countByBox = 0.0f;
 		List<PnPnClsRelModel> pnClsRels = pn.getPnClsRels();
 		for(PnPnClsRelModel pnClsRelTmp : pnClsRels) {
 			PnClsModel pnClsTmp = pnClsRelTmp.getPnCls();
+			countByBox += pnClsRelTmp.getNum();
 
 			//指定子类时，只计算指定子类的半成品
 			if(pnClsRel != null) {
@@ -158,12 +160,7 @@ public class PnService {
 					addUsedBOM(bomMap, bom, useNum);
 				}
 			}
-			
-			pnClsRelTgt = pnClsRelTmp;
 		}
-		
-		//每箱中包含子类的个数
-		float countByBox = pnClsRelTgt.getNum();
 		
 		//共通材计算
 		List<PnBOMRelModel> pnBOMRels = pn.getPnBOMRels();
