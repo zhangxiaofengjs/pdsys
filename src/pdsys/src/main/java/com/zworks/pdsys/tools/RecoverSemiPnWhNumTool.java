@@ -1,30 +1,18 @@
 package com.zworks.pdsys.tools;
 
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zworks.pdsys.business.beans.BOMUseNumBean;
 import com.zworks.pdsys.common.enumClass.BOMType;
-import com.zworks.pdsys.common.exception.PdsysException;
-import com.zworks.pdsys.common.utils.DateUtils;
-import com.zworks.pdsys.common.utils.ExcelUtils;
-import com.zworks.pdsys.common.utils.StringUtils;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.PnBOMRelModel;
 import com.zworks.pdsys.models.PnClsModel;
@@ -32,13 +20,9 @@ import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.PnPnClsRelModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseEntrySemiPnModel;
-import com.zworks.pdsys.models.WareHousePnModel;
-import com.zworks.pdsys.models.WareHouseSemiPnModel;
 import com.zworks.pdsys.services.PnService;
 import com.zworks.pdsys.services.WareHouseBOMService;
 import com.zworks.pdsys.services.WareHouseEntrySemiPnService;
-import com.zworks.pdsys.services.WareHousePnService;
-import com.zworks.pdsys.services.WareHouseSemiPnService;
 
 /*
  * #67 导致半成品的现场数量多计算了，此为数据修正恢复程序，按理在release后只使用一次

@@ -2,19 +2,21 @@
 <head></head>
 <body>
 <div th:fragment="content(ePnList)">
+	<script th:src="@{/js/warehouse/history/entrypn.js}"></script>
 	<nav style="border-radius:0px;margin-bottom:-1px;" class="navbar navbar-default">
 		<div class="container-fluid">
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/history/main/entrypn}" method="post">
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" id="form" th:action="@{/warehouse/history/main/entrypn}" method="post">
 				 <div class="form-group">
-				   <input type="text" class="form-control" name="pn" th:value="${formBean.pn}" placeholder="品番">
-				   <input type="date" class="form-control" name="start" th:value="${#dates.format(formBean.start, 'yyyy-MM-dd')}" placeholder="开始日期">
+				   <input type="text" class="form-control" name="pn" id="pn" th:value="${formBean.pn}" placeholder="品番">
+				   <input type="date" class="form-control" name="start" id="start" th:value="${#dates.format(formBean.start, 'yyyy-MM-dd')}" placeholder="开始日期">
 				   <b>到</b>
-				   <input type="date" class="form-control" name="end" th:value="${#dates.format(formBean.end, 'yyyy-MM-dd')}" placeholder="结束日期">
+				   <input type="date" class="form-control" name="end" id="end" th:value="${#dates.format(formBean.end, 'yyyy-MM-dd')}" placeholder="结束日期">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
+	 			<button type="button" class="btn btn-sm btn-info" id="export">导出Excel</button>
 			</form>
 		</div>
 	</nav>

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.common.utils.RequestContextUtils;
+import com.zworks.pdsys.io.WareHouseHistoryWriter;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
@@ -29,6 +31,7 @@ import com.zworks.pdsys.models.WareHouseEntryPnModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.models.WareHouseSemiPnModel;
+import com.zworks.pdsys.services.FileService;
 import com.zworks.pdsys.services.WareHouseBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
@@ -62,6 +65,10 @@ public class WareHouseController extends BaseController{
 	WareHouseEntryBusiness wareHouseEntryBusiness;
 	@Autowired
 	WareHouseDeliveryBusiness wareHouseDeliveryBusiness;
+	@Autowired
+	WareHouseHistoryWriter wareHouseHistoryWriter;
+	@Autowired
+	FileService fileService;
 
 	@RequestMapping("/list/main")
     public String listMain(@RequestParam(name="type",required = false/*, defaultValue="pn"*/)String type, 
@@ -184,6 +191,41 @@ public class WareHouseController extends BaseController{
 		return "warehouse/history/main";
 	}
 	
+	@RequestMapping(value= {"/history/download/{type}"})
+	public ResponseEntity<byte[]> historyDownload(
+			@PathVariable(name="type" ,required=false)String type,
+			WareHouseHistoryFormBean formBean,
+			Model model) {
+		
+		String filePath = String.format("[%s](%s-%s_%s_%s).xlsx",
+				DateUtils.format(DateUtils.getCurrentDate(),"yyyyMMdd"),
+				formBean.getStart()==null?"":DateUtils.format(formBean.getStart(),"yyyyMMdd"),
+				formBean.getEnd()==null?"":DateUtils.format(formBean.getEnd(),"yyyyMMdd"),
+				formBean.getPn(),
+				formBean.getBomType());
+		
+		if(type.equals("deliverybom")) {
+			List<WareHouseDeliveryBOMModel> list = wareHouseDeliveryBusiness.calcDeliveryBOMs(formBean);
+			filePath = fileService.getTempFilePath("原包材出库统计" + filePath);
+			wareHouseHistoryWriter.writeDeliveryBOM(list, fileService.getTempFilePath(filePath));
+		} else if(type.equals("entrybom")) {
+			List<WareHouseEntryBOMModel> list = wareHouseEntryBusiness.calcEntryBOMs(formBean);
+			filePath = fileService.getTempFilePath("原包材入库统计" + filePath);
+			wareHouseHistoryWriter.writeEntryBOM(list, fileService.getTempFilePath(filePath));
+		} else if(type.equals("entrypn")) {
+			List<WareHouseEntryPnModel> list = wareHouseEntryBusiness.calcEntryPns(formBean);
+			filePath = fileService.getTempFilePath("生产入库统计" + filePath);
+			wareHouseHistoryWriter.writeEntryPn(list, fileService.getTempFilePath(filePath));
+		} else if(type.equals("deliverypn")) {
+			List<WareHouseDeliveryPnModel> list = wareHouseDeliveryBusiness.calcDeliveryPns(formBean);
+			filePath = fileService.getTempFilePath("生产出库统计" + filePath);
+			wareHouseHistoryWriter.writeDeliveryPn(list, fileService.getTempFilePath(filePath));
+		} else {
+			throw new PdsysException("错误参数:/history/main?type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
+		}
+
+		return fileService.download(filePath);
+	}
 	@RequestMapping("/list/semipn/json")
 	@ResponseBody
     public JSONResponse listSemiJson(@RequestBody WareHouseSemiPnModel pn, Model model) {

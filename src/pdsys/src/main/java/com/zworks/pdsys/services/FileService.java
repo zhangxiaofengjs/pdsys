@@ -5,10 +5,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,13 +36,18 @@ public class FileService {
 
 	public String saveTemp(MultipartFile mpFile) {
 		String fileName = DateUtils.format(DateUtils.now(), DATE_TIME_PATTERN) + mpFile.getOriginalFilename();
-    	String filePath = uploadConfig.getLocation() + uploadConfig.getTempFolder() + fileName;
+    	String filePath = getTempFilePath(fileName);
 
     	if(!IOUtils.save(mpFile, filePath)) {
     		return null;
     	}
     	
     	return filePath;
+	}
+	
+	public String getTempFilePath(String fileName) {
+		String filePath = uploadConfig.getLocation() + uploadConfig.getTempFolder() + IOUtils.fileName(fileName);
+		return filePath;
 	}
 	
 	public String getOrderAttachmentPath(String attachment) {
@@ -134,4 +144,28 @@ public class FileService {
         
         return true;
     }
+	
+	public ResponseEntity<byte[]> download(String filePath) {
+		String fileName = "";
+        try {
+        	File f = new File(filePath);
+            fileName = new String(f.getName().getBytes("UTF-8"), "iso-8859-1");// 为了解决中文名称乱码问题
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        // 下载文件
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDispositionFormData("attachment", fileName);
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        try {
+            return new ResponseEntity<byte[]>(
+            		IOUtils.readToByteArr(filePath), headers,
+                    HttpStatus.CREATED);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+	}
 }

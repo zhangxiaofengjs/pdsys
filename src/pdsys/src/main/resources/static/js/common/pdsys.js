@@ -84,6 +84,23 @@ PdSys.sysError = function() {
 		"msg":"发生系统错误,请联系管理员。"});
 }
 
+PdSys.download = function(option) {
+	var strContent = "";
+	if(option.data != null && option.data != undefined) {
+		$.each(option.data, function() {
+			strContent += '<input type="hidden" name="{0}" value="{1}" />'.format(
+					this.name, 
+					this.value || '');
+		});
+	}
+	
+	var str = '<form action="{0}" method="post">\
+		{1}\
+		</form>'.format(PdSys.url(option.url), strContent);
+	
+	jQuery(str).appendTo('body').submit().remove();
+}
+
 PdSys.print = function(option) {
 	var target = option;
 	if(typeof(option) != "string") {
