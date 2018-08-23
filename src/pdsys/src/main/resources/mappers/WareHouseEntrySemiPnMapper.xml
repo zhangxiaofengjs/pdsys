@@ -2,16 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zworks.pdsys.mappers.WareHouseEntrySemiPnMapper">
+ 	<resultMap id="pnClsResultMap" type="pnClsModel" >  
+        <id column="pn_cls_id" property="id" />  
+    </resultMap>
+ 	<resultMap id="pnClsRelResultMap" type="pnPnClsRelModel" >  
+        <association property="pnCls" resultMap="pnClsResultMap"/>
+    </resultMap>
+ 	<resultMap id="pnResultMap" type="pnModel" >  
+        <id column="pn_id" property="id" />  
+        <result column="pn_pn" property="pn" />
+        <result column="pn_name" property="name" />
+    </resultMap>
 	<resultMap id="wareHouseEntryPnResultMap" type="wareHouseEntrySemiPnModel" >  
         <id column="e_pn_id" property="id" />  
         <result column="e_pn_num" property="num" />  
+        <association property="pn" resultMap="pnResultMap"/>
+        <association property="pnClsRel" resultMap="pnClsRelResultMap"/>
     </resultMap>
 
 	<select id="queryList" parameterType="wareHouseEntrySemiPnModel" resultMap="wareHouseEntryPnResultMap">
 		select e_pn.c_id as e_pn_id,
-		       e_pn.c_entry_id as e_pn_entry_id,
-		       e_pn.c_num as e_pn_num
+		       e_pn.c_num as e_pn_num,
+		       e.c_id as e_id,
+		       pn.c_id as pn_id,
+		       pn_cls.c_id as pn_cls_id
 		from entry_semi_pn_tbl as e_pn
+		left join entry_tbl as e on e.c_id = e_pn.c_entry_id
+		left join pn_tbl as pn on pn.c_id = e_pn.c_pn_id
+		left join pn_cls_tbl as pn_cls on pn_cls.c_id = e_pn.c_pn_cls_id
 		<where>
 			<if test="wareHouseEntry != null and wareHouseEntry.id > 0">
 				and e_pn.c_entry_id=#{wareHouseEntry.id}

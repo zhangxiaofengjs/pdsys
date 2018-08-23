@@ -39,6 +39,9 @@
 		left join unit_tbl as unit on bom.c_unit_id = unit.c_id
 		<where>
 			<if test="bom != null">
+				<if test="bom.id != null and bom.id > 0">
+					and bom.c_id=#{bom.id}
+				</if>
 				<if test="bom.pn != null and bom.pn !=''">
 					<choose>
 		                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">

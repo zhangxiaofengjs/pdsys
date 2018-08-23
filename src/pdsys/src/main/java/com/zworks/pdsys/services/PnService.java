@@ -57,7 +57,10 @@ public class PnService {
 	
 	public PnModel queryOne(PnModel pn) {
 		List<PnModel> pns = queryList(pn);
-		if(pns.size()==1) {
+		if(ListUtils.isNullOrEmpty(pns)) {
+			return null;
+		}
+		else if(pns.size()==1) {
 			return pns.get(0);
 		}
 		throw new PdsysException("超出预想数目:PN-queryOne");

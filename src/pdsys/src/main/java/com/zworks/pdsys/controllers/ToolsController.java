@@ -2,6 +2,7 @@ package com.zworks.pdsys.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import com.zworks.pdsys.tools.ImportBOMTool;
 import com.zworks.pdsys.tools.ImportPnDefTool;
 import com.zworks.pdsys.tools.ImportPnTool;
 import com.zworks.pdsys.tools.ImportDeviceTool;
+import com.zworks.pdsys.tools.RecoverSemiPnWhNumTool;
 /**
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/05/29
@@ -37,6 +39,9 @@ public class ToolsController {
 	
 	@Autowired
 	DataBaseBackupJob dataBaseBackupJob;
+	
+	@Autowired
+	RecoverSemiPnWhNumTool recoverSemiPnWhNumTool;
 	
 	@RequestMapping("/importpndef")
 	@ResponseBody
@@ -103,6 +108,13 @@ public class ToolsController {
 	public JSONResponse backupDB(Model model) throws InvalidFormatException, IOException {
 		dataBaseBackupJob.backup();
 		return JSONResponse.success().put("msg", "备份结束，请查看备份文件是否生成");
+	}
+	
+	@RequestMapping("/recoversemipnwhnum")
+	@ResponseBody
+	public JSONResponse RecoverSemiPnWhNumTool(String end, Model model) throws InvalidFormatException, IOException {
+		recoverSemiPnWhNumTool.execute(end);
+		return JSONResponse.success().put("msg", "已恢复!详细见c:/pdsys/recoversemipnwhnum.log");
 	}
 	
 }
