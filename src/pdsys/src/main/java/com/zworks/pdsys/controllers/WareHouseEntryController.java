@@ -82,19 +82,38 @@ public class WareHouseEntryController {
 		entry.setNo(no);
 		entry.getFilterCond().put("fuzzyNoSearch", content.equals("list"));
 		
-		if(type.equals("bom")) {
-			list = wareHouseEntryService.queryListWithBOM(entry);
-		} else if(type.equals("pn")) {
-			list = wareHouseEntryService.queryListWithPn(entry);
-		} else if(type.equals("semipn")) {
-			list = wareHouseEntryService.queryListWithSemiPn(entry);
-		} 
-		else if(type.equals("machinepart")) {
-			list = wareHouseEntryService.queryListWithMachinePart(entry);
+		if(content.equals("list")) {
+			if(type.equals("bom")) {
+				entry.setType(EntryType.BOM.ordinal());
+				list = wareHouseEntryService.queryList(entry);
+			} else if(type.equals("pn")) {
+				entry.setType(EntryType.PN.ordinal());
+				list = wareHouseEntryService.queryList(entry);
+			} else if(type.equals("semipn")) {
+				entry.setType(EntryType.SEMIPN.ordinal());
+				list = wareHouseEntryService.queryList(entry);
+			} 
+			else if(type.equals("machinepart")) {
+				entry.setType(EntryType.MACHINEPART.ordinal());
+				list = wareHouseEntryService.queryList(entry);
+			} else {
+				list = new ArrayList<WareHouseEntryModel>();
+			}
 		} else {
-			list = new ArrayList<WareHouseEntryModel>();
+			if(type.equals("bom")) {
+				list = wareHouseEntryService.queryListWithBOM(entry);
+			} else if(type.equals("pn")) {
+				list = wareHouseEntryService.queryListWithPn(entry);
+			} else if(type.equals("semipn")) {
+				list = wareHouseEntryService.queryListWithSemiPn(entry);
+			} 
+			else if(type.equals("machinepart")) {
+				list = wareHouseEntryService.queryListWithMachinePart(entry);
+			} else {
+				list = new ArrayList<WareHouseEntryModel>();
+			}
 		}
-
+		
 		if(!content.equals("list") && list.size()>0) {
 			entry = (WareHouseEntryModel)list.get(0);
 		}

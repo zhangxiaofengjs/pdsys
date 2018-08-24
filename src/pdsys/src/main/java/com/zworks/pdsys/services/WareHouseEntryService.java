@@ -1,5 +1,10 @@
 package com.zworks.pdsys.services;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,10 +20,13 @@ import com.zworks.pdsys.common.enumClass.EntryItemKind;
 import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.enumClass.EntryType;
 import com.zworks.pdsys.common.exception.PdsysException;
+import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.SecurityContextUtils;
 import com.zworks.pdsys.io.EntryTemplateReader;
 import com.zworks.pdsys.mappers.WareHouseEntryMapper;
 import com.zworks.pdsys.models.BOMModel;
+import com.zworks.pdsys.models.PnModel;
+import com.zworks.pdsys.models.PnPnClsRelModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryMachinePartModel;
@@ -263,6 +271,7 @@ public class WareHouseEntryService {
 		WareHouseEntryModel entry = queryOneWithPn(e);
 		
 		Map<Integer, BOMUseNumBean> calcUsedBOMs = new HashMap<Integer, BOMUseNumBean>();
+		Map<Object, Collection<BOMUseNumBean>> pnUsedBOMs = new HashMap<Object, Collection<BOMUseNumBean>>();
 				
 		for(WareHouseEntryPnModel entryPn : entry.getWareHouseEntryPns()) {
 			WareHousePnModel wareHousePn = entryPn.getWareHousePn();
@@ -281,6 +290,8 @@ public class WareHouseEntryService {
 
 			Map<Integer, BOMUseNumBean> tmpCalcUsedBOMs = pnService.calcUsedBOM(entryPn.getPn(), null, false, pnum);
 			MergeBOMUsedMap(calcUsedBOMs, tmpCalcUsedBOMs);
+			
+			pnUsedBOMs.put(entryPn, tmpCalcUsedBOMs.values());
 		}
 		
 		UpdateRemainingBOM(calcUsedBOMs);
@@ -289,6 +300,59 @@ public class WareHouseEntryService {
 		entry.setState(EntryState.ENTRIED.ordinal());
 		
 		wareHouseEntryMapper.update(entry);
+		
+		writeUsedBOMLog(pnUsedBOMs, false);
+	}
+
+	private void writeUsedBOMLog(Map<Object, Collection<BOMUseNumBean>> pnUsedBOMs, boolean isSemi) {
+		FileWriter fw = null;
+		try {
+			//如果文件存在，则追加内容；如果文件不存在，则创建文件
+			File f=new File("c:\\pdsys\\usedbom.log");
+			fw = new FileWriter(f, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		PrintWriter pw = new PrintWriter(fw);
+		
+		for(Object key : pnUsedBOMs.keySet()) {
+			Collection<BOMUseNumBean> collection = pnUsedBOMs.get(key);
+			
+			for(BOMUseNumBean usedBom : collection) {
+				if(isSemi) {
+					WareHouseEntrySemiPnModel entrySemiPn = (WareHouseEntrySemiPnModel)key;
+					PnPnClsRelModel pnClsRel = entrySemiPn.getPnClsRel();
+					PnModel pn = entrySemiPn.getPn();
+					
+					pw.print(DateUtils.format(DateUtils.getCurrentDate()) + ",");
+					pw.print("半成品入库,");
+					pw.print(pn.getPn() + "," + pn.getName()+ "," + pnClsRel.getPnCls().getName()+",");
+					pw.print(entrySemiPn.getNum() + ",");
+				} else {
+					WareHouseEntryPnModel entryPn = (WareHouseEntryPnModel)key;
+					
+					pw.print(DateUtils.format(DateUtils.getCurrentDate()) + ",");
+					pw.print("成品入库,");
+					pw.print(entryPn.getPn().getPn() + "," + entryPn.getPn().getName() +",");
+					pw.print(entryPn.getProducedNum() + ",");
+				}
+				
+				pw.print(usedBom.getBom().getPn() + "," + usedBom.getBom().getName() +",");
+				pw.println(String.format("%.6f", usedBom.getUseNum()));
+			}
+		}
+
+		pw.flush();
+		
+		try {
+			fw.flush();
+			pw.close();
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void MergeBOMUsedMap(Map<Integer, BOMUseNumBean> calcUsedBOMs, Map<Integer, BOMUseNumBean> tmpCalcUsedBOMs) {
@@ -310,9 +374,12 @@ public class WareHouseEntryService {
 		WareHouseEntryModel entry = queryOneWithSemiPn(e);
 		
 		Map<Integer, BOMUseNumBean> calcUsedBOMs = new HashMap<Integer, BOMUseNumBean>();
+		Map<Object, Collection<BOMUseNumBean>> pnUsedBOMs = new HashMap<Object, Collection<BOMUseNumBean>>();
+		
 		for(WareHouseEntrySemiPnModel entrySemiPn : entry.getWareHouseEntrySemiPns()) {
 			WareHouseSemiPnModel wareHouseSemiPn = entrySemiPn.getWareHouseSemiPn();
-
+			PnPnClsRelModel pnClsRel = entrySemiPn.getPnClsRel();
+			PnModel pn = entrySemiPn.getPn();
 			boolean isCreate = false;
 			if(wareHouseSemiPn == null) {
 				//还没入库过，新建
@@ -348,8 +415,10 @@ public class WareHouseEntryService {
 			}
 			
 			//マージする
-			Map<Integer, BOMUseNumBean> tmpCalcUsedBOMs = pnService.calcUsedBOM(entrySemiPn.getPn(), entrySemiPn.getPnClsRel(), true, semiNum);
+			Map<Integer, BOMUseNumBean> tmpCalcUsedBOMs = pnService.calcUsedBOM(pn, pnClsRel, true, semiNum);
 			MergeBOMUsedMap(calcUsedBOMs, tmpCalcUsedBOMs);
+			
+			pnUsedBOMs.put(entrySemiPn, tmpCalcUsedBOMs.values());
 		}
 		
 		UpdateRemainingBOM(calcUsedBOMs);
@@ -358,6 +427,8 @@ public class WareHouseEntryService {
 		entry.setState(EntryState.ENTRIED.ordinal());
 		
 		wareHouseEntryMapper.update(entry);
+		
+		writeUsedBOMLog(pnUsedBOMs, true);
 	}
 
 	private void UpdateRemainingBOM(Map<Integer, BOMUseNumBean> calcUsedBOMs) {
@@ -375,7 +446,7 @@ public class WareHouseEntryService {
 				whNum = whBOM.getDeliveryRemainingNum();
 			}
 			remainNum = whNum - bean.getUseNum();
-			if(remainNum < 0 && Math.abs(remainNum) > 0.0099999) { //忽略小数点3位后面的数字
+			if(whBOM == null || remainNum < 0 && Math.abs(remainNum) > 0.0099999) { //忽略小数点3位后面的数字
 				//生产所耗BOM居然比之前出库的多，出库有问题，做错误处理
 				String msg = String.format("检测到该入库产品的原包材领料不足，请检查近期原包材出库单。<hr>原包材:#%s# %s | %s<br>现场库存:%.2f %s<br>预计消耗:%.2f %s",
 						bom.getId(),
