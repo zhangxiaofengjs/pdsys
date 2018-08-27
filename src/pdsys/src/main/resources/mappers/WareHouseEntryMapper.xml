@@ -149,6 +149,7 @@
 				and entry.c_user_id = #{user.id}
 			</if>
 		</where>
+		order by entry.c_state asc, entry.c_entry_time desc
 	</select>
 	
 	<select id="queryListWithPn" parameterType="wareHouseEntryModel" resultMap="wareHouseEntryResultMap">

@@ -111,6 +111,19 @@ public class WareHouseEntryService {
 	public void add(WareHouseEntryModel obj) {
 		wareHouseEntryMapper.add(obj);
 	}
+
+	@Transactional
+	public void addWithBOMs(WareHouseEntryModel entry) {
+		add(entry);
+
+		List<WareHouseEntryBOMModel> wareHouseEntryBOMs = entry.getWareHouseEntryBOMs();
+		if(wareHouseEntryBOMs != null) {
+			for(WareHouseEntryBOMModel ebom : wareHouseEntryBOMs) {
+	        	ebom.setWareHouseEntry(entry);
+	    		wareHouseEntryBOMService.add(ebom);
+	        }
+		}
+	}
 	
 	@Transactional
 	public void delete(WareHouseEntryModel entry) {

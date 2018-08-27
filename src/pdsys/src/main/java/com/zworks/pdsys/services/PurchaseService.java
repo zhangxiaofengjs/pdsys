@@ -1,6 +1,5 @@
 package com.zworks.pdsys.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,6 @@ import com.zworks.pdsys.models.NoticeModel;
 import com.zworks.pdsys.models.PurchaseBOMModel;
 import com.zworks.pdsys.models.PurchaseModel;
 import com.zworks.pdsys.models.UserModel;
-import com.zworks.pdsys.models.WareHouseEntryBOMModel;
-import com.zworks.pdsys.models.WareHouseEntryModel;
 
 @Service
 public class PurchaseService {
@@ -31,10 +28,6 @@ public class PurchaseService {
     private PurchaseMapper purchaseMapper;
 	@Autowired
 	private PurchaseBOMMapper purchaseBOMMapper;
-	@Autowired
-	private WareHouseEntryService wareHouseEntryService;
-	@Autowired
-	private WareHouseEntryBOMService wareHouseEntryBOMService;
 	@Autowired
 	PurchaseBOMService purchaseBOMService;
 	@Autowired
@@ -100,34 +93,6 @@ public class PurchaseService {
 			}
 		}
 		return false;
-	}
-
-	@Transactional
-	public WareHouseEntryModel entry(PurchaseModel p) {
-		//创建入库单以及明细
-		WareHouseEntryModel entry = p.getWareHouseEntry();
-		wareHouseEntryService.add(entry);
-
-		List<WareHouseEntryBOMModel> eBoms = new ArrayList<WareHouseEntryBOMModel>();
-		for(PurchaseBOMModel pBOM : p.getPurchaseBOMs()) {
-			WareHouseEntryBOMModel whBOM = new WareHouseEntryBOMModel();
-			whBOM.setWareHouseEntry(entry);
-			whBOM.setBom(pBOM.getBom());
-			whBOM.setNum(pBOM.getNum());
-			
-			wareHouseEntryBOMService.add(whBOM);
-			
-			eBoms.add(whBOM);
-		}
-		//进行入库
-		entry.setWareHouseEntryBOMs(eBoms);
-		wareHouseEntryService.entry(entry);
-		
-		//更新采购单
-		p.setState(PurchaseState.FINISHED.ordinal());
-		p.setPurchaseDate(DateUtils.getCurrentDate());
-		update(p);
-		return entry;
 	}
 
 	@Transactional

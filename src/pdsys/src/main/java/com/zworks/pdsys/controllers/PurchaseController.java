@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,9 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.business.PurchaseBusiness;
+import com.zworks.pdsys.business.WareHouseEntryBusiness;
 import com.zworks.pdsys.business.beans.BOMUseNumBean;
 import com.zworks.pdsys.business.form.beans.PurchaseBOMListFromBean;
 import com.zworks.pdsys.common.enumClass.ApprovalState;
+import com.zworks.pdsys.common.enumClass.EntryItemKind;
 import com.zworks.pdsys.common.enumClass.OrderState;
 import com.zworks.pdsys.common.enumClass.PurchaseState;
 import com.zworks.pdsys.common.exception.PdsysException;
@@ -50,11 +54,16 @@ public class PurchaseController {
 	
 	@Autowired
 	PurchaseBOMService purchaseBOMService;
+	@Autowired
+	PurchaseBusiness purchaseBusiness;
 
 	@Autowired
 	private WareHouseEntryService wareHouseEntryService;
 	@Autowired
 	private ApprovalInfoService approvalInfoService;
+	@Autowired
+	private WareHouseEntryBusiness wareHouseEntryBusiness;
+	
 	/**
 	 * 采购管理
 	 */
@@ -299,6 +308,7 @@ public class PurchaseController {
 	
 	@RequestMapping("/entry")
 	@ResponseBody
+	@Transactional
     public JSONResponse entry(@RequestBody PurchaseModel purchase, Model model) {
 		PurchaseModel p = purchaseService.queryOne(purchase);
 		if(p == null) {
@@ -308,15 +318,23 @@ public class PurchaseController {
 			return JSONResponse.error("该采购单还未下单");
 		}
 		
+		//创建入库单
 		WareHouseEntryModel entry = purchase.getWareHouseEntry();
+		entry.setItemKind(EntryItemKind.NORMAL.ordinal());
 		try {
 			wareHouseEntryService.checkAddable(entry);
 		} catch(PdsysException ex) {
 			return JSONResponse.error(ex.getMessage());
 		}
+		purchaseBusiness.CreateEntryBOMs(p, entry);
+		wareHouseEntryService.addWithBOMs(entry);
 		
+		//入库
+		wareHouseEntryBusiness.entryBOM(entry);
+		
+		//更新采购单
 		p.setWareHouseEntry(entry);
-		purchaseService.entry(p);
+		purchaseBusiness.entry(p);
 		return JSONResponse.success();
     }
 	

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -407,8 +408,11 @@ public class WareHouseEntryBusiness {
 		writeUsedBOMLog(pnUsedBOMs, true);
 	}
 
+	//更新原包材现场数据
 	private void UpdateRemainingBOM(Map<Integer, BOMUseNumBean> calcUsedBOMs) {
-		//更新原包材现场数据
+		List<WareHouseBOMModel> updateWHBOMs = new ArrayList<WareHouseBOMModel>();
+		List<BOMUseNumBean> errBOMs = new ArrayList<BOMUseNumBean>();
+		
 		for(Integer bomId : calcUsedBOMs.keySet()) {
 			BOMUseNumBean bean = calcUsedBOMs.get(bomId);
 			BOMModel bom = bean.getBom();
@@ -424,21 +428,36 @@ public class WareHouseEntryBusiness {
 			remainNum = whNum - bean.getUseNum();
 			if(whBOM == null || remainNum < 0 && Math.abs(remainNum) > 0.0099999) { //忽略小数点3位后面的数字
 				//生产所耗BOM居然比之前出库的多，出库有问题，做错误处理
-				String msg = String.format("检测到该入库产品的原包材领料不足，请检查近期原包材出库单。<hr>原包材:#%s# %s | %s<br>现场库存:%.2f %s<br>预计消耗:%.2f %s",
-						bom.getId(),
-						bom.getPn(),
-						bom.getName(),
-						whNum,
-						bom.getUnit().getName(),
-						bean.getUseNum(),
-						bom.getUnit().getName());
-				throw new PdsysException(msg);
+				bean.setWareHouseNum(whNum);
+				errBOMs.add(bean);
 			}
 			if(Math.abs(remainNum) < 0.0099999) {
 				remainNum = 0;//忽略掉这部分库存
 			}
+			
 			whBOM.getFilterCond().put("UPDATE_DELIVERYREMAINNUM", true);
 			whBOM.setDeliveryRemainingNum(remainNum);
+			updateWHBOMs.add(whBOM);
+		}
+		
+		if(errBOMs.size() != 0) {
+			String strHtml = "<table class=\"table table-striped table-bordered table-hover table-condensed\" contenteditable=\"false\">";
+			strHtml += "<tr><th>原包材</th><th>U</th><th>现场</th><th>预计消耗</th></tr>";
+			for(BOMUseNumBean bean : errBOMs) {
+				BOMModel bom = bean.getBom();
+				strHtml += String.format("<tr><td title=\"#%d#%s\">%s</td><td>%s</td><td>%.2f</td><td>%.2f</td></tr>", 
+						bom.getId(),
+						bom.getName(),
+						bom.getPn(),
+						bom.getUnit().getName(),
+						bean.getWareHouseNum(),
+						bean.getUseNum());
+			}
+			strHtml += "</table>";
+			String msg = String.format("检测到该入库产品的原包材领料不足，请检查近期原包材出库单。<hr>%s",strHtml);
+			throw new PdsysException(msg);
+		}
+		for(WareHouseBOMModel whBOM : updateWHBOMs) {
 			wareHouseBOMService.update(whBOM);
 		}
 	}

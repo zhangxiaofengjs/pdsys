@@ -153,6 +153,7 @@
 				and delivery.c_user_id = #{user.id}
 			</if>
 		</where>
+		order by delivery.c_state asc, delivery.c_entry_time desc
 	</select>
 	<select id="queryListWithPn" parameterType="wareHouseDeliveryModel" resultMap="wareHouseDeliveryResultMap">
 		select delivery.c_id as d_id,
