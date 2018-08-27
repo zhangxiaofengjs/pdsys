@@ -9,10 +9,15 @@
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/delivery/main/semipn}" method="post">
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" th:object="${delivery}" role="form" th:action="@{/warehouse/delivery/main/semipn}" method="post">
 	 			<div class="form-group" th:if="${content=='list'}">
 				   <input type="text" class="form-control" name="no" id="no" th:value="${delivery.no != null ? delivery.no:_}" placeholder="出库单号">
-				   <input type="hidden" class="form-control" name="content" id="content" value="list">
+				   <select id="state" class="form-control" th:field="*{state}">  
+	                  <option value="-2">--状态--</option>
+	                  <option value="0">计划中</option>
+	                  <option value="1">已出库</option>
+	               </select>
+	               <input type="hidden" class="form-control" name="content" id="content" value="list">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info" name="refresh" th:if="${content=='list'}">查询</button>
 	 			<div class="form-group" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_DELIVERY_PN)}">

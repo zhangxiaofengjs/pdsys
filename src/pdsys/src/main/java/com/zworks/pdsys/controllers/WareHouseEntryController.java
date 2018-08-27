@@ -56,6 +56,7 @@ public class WareHouseEntryController {
     public String entryMain(
     		@PathVariable(name="type" ,required=false)String type,
     		@RequestParam(name="no", required=false)String no,
+    		@RequestParam(name="state", required=false)Integer state,
     		@RequestParam(name="content", required=false)String content,
     		Model model) {
 
@@ -72,6 +73,11 @@ public class WareHouseEntryController {
 		}
 		RequestContextUtils.setSessionAttribute(this, "no" + type, no);
 		
+		if(state == null) {
+			state = RequestContextUtils.getSessionAttribute(this, "state" + type, 0);
+		}
+		RequestContextUtils.setSessionAttribute(this, "state" + type, state);
+		
 		if(content == null) {
 			content = RequestContextUtils.getSessionAttribute(this, "content" + content, "list");
 		}
@@ -80,6 +86,7 @@ public class WareHouseEntryController {
 		List<?> list = null;
 		WareHouseEntryModel entry = new WareHouseEntryModel();
 		entry.setNo(no);
+		entry.setState(state);
 		entry.getFilterCond().put("fuzzyNoSearch", content.equals("list"));
 		
 		if(content.equals("list")) {

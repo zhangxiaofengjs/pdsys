@@ -9,9 +9,14 @@
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:action="@{/warehouse/entry/main/semipn}" method="post">
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" th:object="${entry}" role="form" th:action="@{/warehouse/entry/main/semipn}" method="post">
 	 			<div class="form-group" th:if="${content=='list'}">
 				   <input type="text" class="form-control" name="no" id="no" th:value="${entry.no != null ? entry.no:_}" placeholder="入库单号">
+				   <select id="state" class="form-control" th:field="*{state}">  
+	                  <option value="-2">--状态--</option>
+	                  <option value="0">计划中</option>
+	                  <option value="1">已入库</option>
+	               </select>
 				   <input type="hidden" class="form-control" name="content" id="content" value="list">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info" name="refresh" th:if="${content=='list'}">查询</button>
@@ -46,7 +51,7 @@
 					<td><input type="checkbox" name="select" th:rowid="${entryTgt.id}"></td>
 					<td>
 						<a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/semipn?content=one&no=' +${entryTgt.no}}"></a>
-				  		<span th:if="${entryTgt.itemKind==1}" class="label label-warning">不良品退库</span>
+				  		<span th:if="${entryTgt.itemKind==1}" class="label label-warning">不良品</span>
 			  		</td>
 					<td th:text="${entryTgt.user.name}"></td>
 					<td th:switch="${entryTgt.state}">
@@ -72,7 +77,7 @@
 					<th th:colspan="2">入库单号:&nbsp;
 						<a th:style="${entryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${entryTgt.no ==null?'':entryTgt.no}"></a>
 						<br>
-			  			<span th:if="${entryTgt.itemKind==1}" class="label label-warning">不良品退库</span>
+			  			<span th:if="${entryTgt.itemKind==1}" class="label label-warning">不良品</span>
 						<i th:if="${entryTgt.state == 2}" th:text="已删除" class="text-muted"></i>
 						<input type="hidden" id="entry_id" name="entry_id" th:value="${entryTgt.id}">
 						<span class="label label-success" th:if="${entryTgt.state==0}">计划中</span>

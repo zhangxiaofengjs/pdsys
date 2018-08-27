@@ -55,7 +55,7 @@ public class WareHouseDeliveryController {
     public String main(
     		@PathVariable(name="type" ,required=false)String type,
     		@RequestParam(name="no", required=false)String no,
-    		@RequestParam(name="fuzzyNo", required=false)String fuzzyNo,
+    		@RequestParam(name="state", required=false)Integer state,
     		@RequestParam(name="content", required=false)String content,
     		Model model) {
 
@@ -71,6 +71,11 @@ public class WareHouseDeliveryController {
 		}
 		RequestContextUtils.setSessionAttribute(this, "no" + type, no);
 		
+		if(state == null) {
+			state = RequestContextUtils.getSessionAttribute(this, "state" + type, 0);
+		}
+		RequestContextUtils.setSessionAttribute(this, "state" + type, state);
+		
 		if(content == null) {
 			content = RequestContextUtils.getSessionAttribute(this, "content" + content, "list");
 		}
@@ -80,7 +85,8 @@ public class WareHouseDeliveryController {
 		WareHouseDeliveryModel delivery = new WareHouseDeliveryModel();
 		delivery.getFilterCond().put("fuzzyNoSearch", content.equals("list"));
 		delivery.setNo(no);
-			
+		delivery.setState(state);
+		
 		if(content.equals("list")) {
 			if(type.equals("pn")) {
 				delivery.setType(DeliveryType.PN.ordinal());
