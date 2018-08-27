@@ -260,14 +260,14 @@ public class WareHouseEntryController {
 		
 		try {
 			if(entry.getType() == EntryType.PN.ordinal()) {
-				wareHouseEntryService.entryPn(entry);
+				wareHouseEntryBusiness.entryPn(entry);
 			} else if(entry.getType() == EntryType.SEMIPN.ordinal()) {
-				wareHouseEntryService.entrySemiPn(entry);
+				wareHouseEntryBusiness.entrySemiPn(entry);
 			} else if(entry.getType() == EntryType.BOM.ordinal()) {
-				wareHouseEntryService.entryBOM(entry);
+				wareHouseEntryBusiness.entryBOM(entry);
 			}
 			else {
-				wareHouseEntryService.entry(entry);
+				wareHouseEntryBusiness.entry(entry);
 			}
 			return JSONResponse.success();
 		} catch(PdsysException ex) {
