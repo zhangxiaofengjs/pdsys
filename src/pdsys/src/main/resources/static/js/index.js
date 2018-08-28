@@ -103,6 +103,10 @@ function showPage(pATag)
 	$("#nav_title").html("主页 > " + menuDisplay);
 }
 
+function loginUserId() {
+	return $("#userid").val();
+}
+
 function updateIndexNoticeCount() {
 	PdSys.ajax({
 		"url":"/notice/getcount",

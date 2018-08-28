@@ -26,6 +26,7 @@ $(function () {
 					"label":"提交人",
 					"type":"select",
 					"options":[],
+					"value": PdSys.loginUserId(),
 					"ajax":true,
 					"url":"/user/list/json",
 					"convertAjaxData" : function(thisField, data) {

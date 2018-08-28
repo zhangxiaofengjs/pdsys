@@ -30,6 +30,7 @@ $(document).ready(function(){
 					"label":"领收人",
 					"type":"select",
 					"options":[],
+					"value": PdSys.loginUserId(),
 					"ajax":true,
 					"url":"/user/list/json",
 					"convertAjaxData" : function(thisField, data) {

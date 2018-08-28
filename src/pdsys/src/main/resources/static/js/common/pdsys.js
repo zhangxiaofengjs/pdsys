@@ -1,6 +1,14 @@
 function PdSys() {
 };
 
+PdSys.loginUserId = function() {
+	var win = $(window)[0];
+	if(win.parent == null) {
+		return 0;
+	}
+    return win.parent.loginUserId();//调用index.js中的函数
+}
+
 //取得UrlContext路径
 PdSys.contextPath = function() {
 	//获取主机地址之后的目录，如： uimcardprj/share/meun.jsp

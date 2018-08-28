@@ -46,6 +46,7 @@ $(function () {
 					"label":"责任者",
 					"type":"select",
 					"options":[],
+					"value": PdSys.loginUserId(),
 					"ajax":true,
 					"url":"/user/list/json",
 					"convertAjaxData" : function(field, data) {
