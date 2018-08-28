@@ -85,6 +85,13 @@
 						<a th:style="${entryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${entryTgt.no ==null?'':entryTgt.no}"></a>
 						<i th:if="${entryTgt.state == 2}" th:text="已删除" class="text-muted"></i>
 						<input type="hidden" id="entry_id" name="entry_id" th:value="${entryTgt.id}">
+						<br>
+						<span th:switch="${entryTgt.itemKind}">
+				  			<span class="label label-success" th:case="0">正常零部件</span>
+				  			<span class="label label-danger" th:case="1">故障零部件</span>
+				  			<span class="label label-primary" th:case="2">返修零部件</span>
+				  			<span class="label label-default" th:case="3">报废零部件</span>
+				    	</span>
 						<span class="label label-success" th:if="${entryTgt.state==0}">计划中</span>
 			  			<span class="label label-default" th:if="${entryTgt.state==1}">已入库</span>
 					</th>

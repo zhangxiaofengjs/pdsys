@@ -55,7 +55,7 @@
 					<td width="20px">
 						<span th:switch="${deliveryTgt.itemKind}">
 				  			<span class="label label-success" th:case="0">正常零部件</span>
-				  			<span class="label label-warning" th:case="1">出库送修零部件</span>
+				  			<span class="label label-warning" th:case="1">送修零部件</span>
 				  			<span class="label label-default" th:case="2">报废零部件</span>
 				    	</span>
 					</td>
@@ -85,6 +85,12 @@
 						<i th:if="${deliveryTgt.state == 2}" th:text="已删除" class="text-muted"></i>
 						<input type="hidden" id="delivery_id" name="delivery_id" th:value="${deliveryTgt.id}">
 						<input type="hidden" id="delivery_item_kind" name="delivery_item_kind" th:value="${deliveryTgt.itemKind}">
+						<br>
+						<span th:switch="${deliveryTgt.itemKind}">
+				  			<span class="label label-success" th:case="0">正常零部件</span>
+				  			<span class="label label-warning" th:case="1">送修零部件</span>
+				  			<span class="label label-default" th:case="2">报废零部件</span>
+				    	</span>
 						<span class="label label-success" th:if="${deliveryTgt.state==0}">计划中</span>
 			  			<span class="label label-default" th:if="${deliveryTgt.state==1}">已出库</span>
 					</th>

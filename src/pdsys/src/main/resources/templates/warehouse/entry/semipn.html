@@ -53,6 +53,7 @@
 						<a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/semipn?content=one&no=' +${entryTgt.no}}"></a>
 				  	</td>
 				  	<td width="20px">
+				  		<span th:if="${entryTgt.itemKind==0}" class="label label-success">正常品</span>
 				  		<span th:if="${entryTgt.itemKind==1}" class="label label-warning">不良品</span>
 			  		</td>
 					<td th:text="${entryTgt.user.name}"></td>
@@ -79,6 +80,7 @@
 					<th th:colspan="2">入库单号:&nbsp;
 						<a th:style="${entryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${entryTgt.no ==null?'':entryTgt.no}"></a>
 						<br>
+			  			<span th:if="${entryTgt.itemKind==0}" class="label label-warning">正常品</span>
 			  			<span th:if="${entryTgt.itemKind==1}" class="label label-warning">不良品</span>
 						<i th:if="${entryTgt.state == 2}" th:text="已删除" class="text-muted"></i>
 						<input type="hidden" id="entry_id" name="entry_id" th:value="${entryTgt.id}">
