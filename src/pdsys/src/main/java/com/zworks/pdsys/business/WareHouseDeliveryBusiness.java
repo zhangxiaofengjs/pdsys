@@ -1,14 +1,18 @@
 package com.zworks.pdsys.business;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.business.form.beans.WareHouseHistoryFormBean;
+import com.zworks.pdsys.common.enumClass.DeliveryItemKind;
 import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.enumClass.EntryItemKind;
 import com.zworks.pdsys.common.enumClass.EntryState;
+import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
@@ -18,11 +22,14 @@ import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 import com.zworks.pdsys.models.WareHouseDeliverySemiPnModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
+import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryMachinePartService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
 import com.zworks.pdsys.services.WareHouseDeliverySemiPnService;
+import com.zworks.pdsys.services.WareHouseDeliveryService;
 import com.zworks.pdsys.services.WareHouseEntryBOMService;
+import com.zworks.pdsys.services.WareHouseMachinePartService;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -31,6 +38,8 @@ import com.zworks.pdsys.services.WareHouseEntryBOMService;
 @Service
 public class WareHouseDeliveryBusiness {
 	@Autowired
+	WareHouseDeliveryService wareHouseDeliveryService;
+	@Autowired
 	WareHouseDeliveryBOMService wareHouseDeliveryBOMService;
 	@Autowired
 	WareHouseDeliveryPnService wareHouseDeliveryPnService;
@@ -38,6 +47,8 @@ public class WareHouseDeliveryBusiness {
 	WareHouseEntryBOMService wareHouseEntryBOMService;
 	@Autowired
 	WareHouseDeliverySemiPnService wareHouseDeliverySemiPnService;
+	@Autowired
+	WareHouseMachinePartService wareHouseMachinePartService;
 	@Autowired
 	WareHouseDeliveryMachinePartService wareHouseDeliveryMachinePartService;
 	
@@ -151,5 +162,51 @@ public class WareHouseDeliveryBusiness {
 			deliveryMachinePart.setNum(deliveryMachinePart.getNum() + dMP.getNum());
 			wareHouseDeliveryMachinePartService.update(deliveryMachinePart);
 		}
+	}
+
+	@Transactional
+	public void deliveryMachinePart(WareHouseDeliveryModel d) {
+		d.getFilterCond().put("LOCKUPDATE", true);
+		
+		WareHouseDeliveryModel delivery = wareHouseDeliveryService.queryOneWithMachinePart(d);
+		if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
+			//已经被其他人出库过
+			throw new PdsysException("已经出库，刷新再试");
+		}
+		
+		for(WareHouseDeliveryMachinePartModel deliveryMp : delivery.getWareHouseDeliveryMachineParts()) {
+			WareHouseMachinePartModel wareHouseMP = deliveryMp.getWareHouseMachinePart();
+			
+			float num = -1;
+			if(wareHouseMP != null) {
+				if(delivery.getItemKind() == DeliveryItemKind.NORMAL.ordinal()) {
+					num = wareHouseMP.getNum() - deliveryMp.getNum();
+					wareHouseMP.putFilterCond("UPDATE_NUM", true);
+					wareHouseMP.setNum(num);
+				} else if(delivery.getItemKind() == DeliveryItemKind.DEFECTIVE.ordinal()) {
+					num = wareHouseMP.getDefectiveNum() - deliveryMp.getNum();
+					wareHouseMP.putFilterCond("UPDATE_DEFECTIVE_NUM", true);
+					wareHouseMP.setDefectiveNum(num);
+				} else if(delivery.getItemKind() == DeliveryItemKind.SCRAP.ordinal()) {
+					num = wareHouseMP.getScrapNum() - deliveryMp.getNum();
+					wareHouseMP.putFilterCond("UPDATE_SCRAP_NUM", true);
+					wareHouseMP.setScrapNum(num);
+				} else {
+					throw new PdsysException("未想定出库种类" + delivery.getItemKind());
+				}
+			}
+			
+			if(num < 0) {
+				//库存不足
+				throw new PdsysException("库存不足，刷新再试");//库存不够
+			}
+			
+			wareHouseMachinePartService.update(wareHouseMP);
+		}
+		
+		delivery.setDeliveryTime(new Date());
+		delivery.setState(DeliveryState.DELIVERIED.ordinal());
+		
+		wareHouseDeliveryService.update(delivery);
 	}
 }

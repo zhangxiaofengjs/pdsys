@@ -272,9 +272,10 @@ public class WareHouseEntryController {
 				wareHouseEntryBusiness.entrySemiPn(entry);
 			} else if(entry.getType() == EntryType.BOM.ordinal()) {
 				wareHouseEntryBusiness.entryBOM(entry);
-			}
-			else {
-				wareHouseEntryBusiness.entry(entry);
+			} else if(entry.getType() == EntryType.MACHINEPART.ordinal()) {
+				wareHouseEntryBusiness.entryMachinePart(entry);
+			} else {
+				throw new PdsysException("未想定入库种类");
 			}
 			return JSONResponse.success();
 		} catch(PdsysException ex) {

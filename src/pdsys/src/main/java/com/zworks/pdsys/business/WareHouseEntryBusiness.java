@@ -19,7 +19,6 @@ import com.zworks.pdsys.business.beans.BOMUseNumBean;
 import com.zworks.pdsys.business.form.beans.WareHouseHistoryFormBean;
 import com.zworks.pdsys.common.enumClass.EntryItemKind;
 import com.zworks.pdsys.common.enumClass.EntryState;
-import com.zworks.pdsys.common.enumClass.EntryType;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.models.BOMModel;
@@ -165,28 +164,45 @@ public class WareHouseEntryBusiness {
 	}
 	
 	@Transactional
-	public void entry(WareHouseEntryModel entry) {
-		 if(entry.getType() == EntryType.MACHINEPART.ordinal()) {
-			entry = wareHouseEntryService.queryOneWithMachinePart(entry);
+	public void entryMachinePart(WareHouseEntryModel e) {
+		WareHouseEntryModel entry = wareHouseEntryService.queryOneWithMachinePart(e);
+		
+		for(WareHouseEntryMachinePartModel entryMachinePart : entry.getWareHouseEntryMachineParts()) {
+			WareHouseMachinePartModel wareHouseMachinePart = entryMachinePart.getWareHouseMachinePart();
 			
-			for(WareHouseEntryMachinePartModel entryMachinePart : entry.getWareHouseEntryMachineParts()) {
-				WareHouseMachinePartModel wareHouseMachinePart = entryMachinePart.getWareHouseMachinePart();
-				
-				if(wareHouseMachinePart == null) {
-					//还没入库过，新建
-					wareHouseMachinePart = new WareHouseMachinePartModel();
-					wareHouseMachinePart.setMachinePart(entryMachinePart.getMachinePart());
-					wareHouseMachinePart.setNum(entryMachinePart.getNum());
-					wareHouseMachinePartService.add(wareHouseMachinePart);
-				} else {
-					float num = wareHouseMachinePart.getNum() + entryMachinePart.getNum();
-					wareHouseMachinePart.setNum(num);
-					
-					wareHouseMachinePartService.update(wareHouseMachinePart);
-				}
+			boolean isCreate = false;
+			if(wareHouseMachinePart == null) {
+				//还没入库过，新建
+				wareHouseMachinePart = new WareHouseMachinePartModel();
+				wareHouseMachinePart.setMachinePart(entryMachinePart.getMachinePart());
+				isCreate = true;
 			}
-		} else {
-			throw new PdsysException("未想定入库种类");
+			
+			float num = entryMachinePart.getNum();
+			
+			if(entry.getItemKind() == EntryItemKind.NORMAL.ordinal() ||
+				entry.getItemKind() == EntryItemKind.FIXRETURN.ordinal()) {
+				num += wareHouseMachinePart.getNum();
+				wareHouseMachinePart.setNum(num);
+				wareHouseMachinePart.putFilterCond("UPDATE_NUM", true);
+			} else if(entry.getItemKind() == EntryItemKind.DEFECTIVE.ordinal()) {
+				num += wareHouseMachinePart.getDefectiveNum();
+				wareHouseMachinePart.setDefectiveNum(num);
+				wareHouseMachinePart.putFilterCond("UPDATE_DEFECTIVE_NUM", true);
+			} else if(entry.getItemKind() == EntryItemKind.SCRAP.ordinal()) {
+				num += wareHouseMachinePart.getScrapNum();
+				wareHouseMachinePart.setScrapNum(num);
+				wareHouseMachinePart.putFilterCond("UPDATE_SCRAP_NUM", true);
+			} else {
+				throw new PdsysException("未想定入库品种类" + entry.getItemKind());
+			}
+			
+			if(isCreate) {
+				//还没入库过，新建
+				wareHouseMachinePartService.add(wareHouseMachinePart);
+			} else {
+				wareHouseMachinePartService.update(wareHouseMachinePart);
+			}
 		}
 		
 		entry.setEntryTime(new Date());
@@ -195,6 +211,7 @@ public class WareHouseEntryBusiness {
 		wareHouseEntryService.update(entry);
 	}
 
+	@Transactional
 	public void entryBOM(WareHouseEntryModel e) {
 		WareHouseEntryModel entry = wareHouseEntryService.queryOneWithBOM(e);
 		

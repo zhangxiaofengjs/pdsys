@@ -21,12 +21,16 @@
 	<resultMap id="wareHouseMachinePartResultMap" type="wareHouseMachinePartModel" >  
         <id column="wh_mp_id" property="id" />  
         <result column="wh_mp_num" property="num" />  
+        <result column="wh_mp_defective_num" property="defectiveNum" />  
+        <result column="wh_mp_scrap_num" property="scrapNum" />  
         <association property="machinePart" resultMap="machinePartResultMap"/>
     </resultMap>
     
 	<select id="queryList" parameterType="wareHouseMachinePartModel" resultMap="wareHouseMachinePartResultMap">
 		select wh_mp.c_id as wh_mp_id,
 			   wh_mp.c_num as wh_mp_num,
+			   wh_mp.c_defective_num as wh_mp_defective_num,
+			   wh_mp.c_scrap_num as wh_mp_scrap_num,
 			   mp.c_id as mp_id,
 		       mp.c_pn as mp_pn,
 		       mp.c_name as mp_name,
@@ -45,7 +49,7 @@
 	                <when test="filterCond.fuzzyPnSearch != null and filterCond.fuzzyPnSearch">
 						and mp.c_pn like '%${machinePart.pn}%'
 					</when>
-					 <otherwise>
+					<otherwise>
 	                    and mp.c_pn=#{machinePart.pn}
 	                </otherwise>
 				</choose>
@@ -54,17 +58,32 @@
 				and mp.c_id=#{machinePart.id}
 			</if>
 			<if test="filterCond.bigThan != null">
-				wh_mp.c_num<![CDATA[>]]>#{filterCond.bigThan}
+				<choose>
+					<when test="filterCond.deliveryItemKind == 0">
+						wh_mp.c_num<![CDATA[>]]>#{filterCond.bigThan}
+					</when>
+					<when test="filterCond.deliveryItemKind == 1">
+						wh_mp.c_defective_num<![CDATA[>]]>#{filterCond.bigThan}
+					</when>
+					<when test="filterCond.deliveryItemKind == 2">
+						wh_mp.c_scrap_num<![CDATA[>]]>#{filterCond.bigThan}
+					</when>
+				</choose>
 			</if>
 		</where>
 	</select>
 	<insert id="add" parameterType="wareHouseMachinePartModel">
     	insert into warehouse_machine_part_tbl (
     		c_machine_part_id,
-    		c_num)
+    		c_num,
+    		c_defective_num,
+    		c_scrap_num
+    		)
     	values (
     		#{machinePart.id},
-    		#{num}
+    		#{num},
+    		#{defectiveNum},
+    		#{scrapNum}
     	)
       	<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       		select LAST_INSERT_ID() as id
@@ -73,7 +92,17 @@
     
     <update id="update" parameterType="wareHouseMachinePartModel">
     	update warehouse_machine_part_tbl
-    	set c_num=#{num}
+		<set>
+			<if test="filterCond.UPDATE_NUM != null and filterCond.UPDATE_NUM">
+				c_num=#{num},
+			</if>
+	    	<if test="filterCond.UPDATE_DEFECTIVE_NUM != null and filterCond.UPDATE_DEFECTIVE_NUM">
+				c_defective_num=#{defectiveNum},
+			</if>
+	    	<if test="filterCond.UPDATE_SCRAP_NUM != null and filterCond.UPDATE_SCRAP_NUM">
+				c_scrap_num=#{scrapNum},
+			</if>
+		</set>
     	<where>
 			<if test="id > 0">
 				and c_id=#{id}

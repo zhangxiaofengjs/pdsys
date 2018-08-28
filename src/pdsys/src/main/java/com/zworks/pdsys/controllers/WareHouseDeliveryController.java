@@ -262,7 +262,9 @@ public class WareHouseDeliveryController {
 			if(delivery.getType() == DeliveryType.BOM.ordinal()) {
 				wareHouseDeliveryService.deliveryBOM(delivery);
 			}
-			else {
+			else if(delivery.getType() == DeliveryType.MACHINEPART.ordinal()) {
+				wareHouseDeliveryBusiness.deliveryMachinePart(delivery);
+			} else {
 				wareHouseDeliveryService.delivery(delivery);
 			}
 			return JSONResponse.success();

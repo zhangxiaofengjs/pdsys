@@ -44,6 +44,18 @@ $(document).ready(function(){
 					}
 				},
 				{
+					"name":"itemKind",
+					"label":"入库品种类",
+					"type":"select",
+					"options":[
+						{"value":0, "caption":"正常零部件入库"},
+						{"value":1, "caption":"故障零部件入库"},
+						{"value":2, "caption":"返修零部件入库"},
+						{"value":3, "caption":"报废零部件入库"}
+						],
+					"value":0
+				},
+				{
 					"name":"comment",
 					"label":"备注",
 					"type":"text",

@@ -43,7 +43,7 @@
 			<thead>
 				<tr>
 					<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
-					<th>入库单号</th>
+					<th colspan="2">入库单号</th>
 					<th>提交人</th>
 					<th>状态</th>
 					<th>入库时间</th>
@@ -55,6 +55,8 @@
 					<td><input type="checkbox" name="select" th:rowid="${entryTgt.id}"></td>
 					<td>
 						<a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/bom?content=one&no=' +${entryTgt.no}}"></a>
+					</td>
+					<td width="20px">
 						<span th:if="${entryTgt.itemKind==1}" class="label label-warning">不良品</span>
 					</td>
 					<td th:text="${entryTgt.user.name}"></td>

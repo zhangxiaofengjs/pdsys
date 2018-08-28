@@ -44,6 +44,17 @@ $(document).ready(function(){
 					}
 				},
 				{
+					"name":"itemKind",
+					"label":"出库品种类",
+					"type":"select",
+					"options":[
+						{"value":0, "caption":"正常出库"},
+						{"value":1, "caption":"故障送修出库"},
+						{"value":2, "caption":"报废零部件出库"}
+						],
+					"value":0
+				},
+				{
 					"name":"comment",
 					"label":"备注",
 					"type":"text",
@@ -66,7 +77,8 @@ $(document).ready(function(){
 	
 	$("button[name='addDeliveryMachinePart']").click(function(){
 		var self = $(this);
-
+		var itemKind = $('#delivery_item_kind').val();
+		
 		var fields = [
 		{
 			"name":"wareHouseDelivery.id",
@@ -82,7 +94,9 @@ $(document).ready(function(){
 			"ajax":true,
 			"url":"/warehouse/list/machinepart/json",
 			"ajaxData":{
-				"filterCond":{"bigThan": 0}
+				"filterCond":{
+					"bigThan": 0,
+					"deliveryItemKind": itemKind}
 			},
 			"convertAjaxData" : function(thisField, data) {
 				//将返回的值转化为Field规格数据,以供重新渲染
@@ -97,7 +111,9 @@ $(document).ready(function(){
 					thisField.options.push({
 						"value": machinePart.id,
 						"caption": "{0} {1}".format(machinePart.pn, machinePart.name),
-						"data": {"unitName":machinePart.unit.name,"num":(whmp==null?"0":whmp.num)}
+						"data": {
+							"unitName":machinePart.unit.name,
+							"num":(whmp==null?"0":(itemKind == 0?whmp.num:(itemKind == 1?whmp.defectiveNum:whmp.scrapNum)))}
 					});
 				});
 			},
@@ -113,6 +129,7 @@ $(document).ready(function(){
 					if(selIndex != -1) {
 						val = self.options[selIndex].data;
 					}
+					
 					dlg.rebuildFieldWithValue("wareHouseNum", val==null?"":val.num);
 					dlg.rebuildFieldWithValue("unitName", val==null?"":val.unitName);
 				});

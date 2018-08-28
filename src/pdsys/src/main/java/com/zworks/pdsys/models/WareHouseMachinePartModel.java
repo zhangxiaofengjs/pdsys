@@ -9,6 +9,8 @@ import org.apache.ibatis.type.Alias;
 @Alias("wareHouseMachinePartModel")
 public class WareHouseMachinePartModel extends BaseModel{
 	private float num;
+	private float defectiveNum;
+	private float scrapNum;
 	private MachinePartModel machinePart;
 	
 	public WareHouseMachinePartModel() {
@@ -28,5 +30,21 @@ public class WareHouseMachinePartModel extends BaseModel{
 
 	public void setMachinePart(MachinePartModel machinePart) {
 		this.machinePart = machinePart;
+	}
+
+	public float getDefectiveNum() {
+		return defectiveNum;
+	}
+
+	public void setDefectiveNum(float defectiveNum) {
+		this.defectiveNum = defectiveNum;
+	}
+
+	public float getScrapNum() {
+		return scrapNum;
+	}
+
+	public void setScrapNum(float scrapNum) {
+		this.scrapNum = scrapNum;
 	}
 }

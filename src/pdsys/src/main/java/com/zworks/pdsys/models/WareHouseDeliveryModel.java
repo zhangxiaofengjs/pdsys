@@ -16,6 +16,7 @@ public class WareHouseDeliveryModel extends BaseModel{
 	private Date deliveryTime;
 	private int state = -1;
 	private int type = -1;
+	private int itemKind = -1;
 	private String comment;
 	private List<WareHouseDeliveryPnModel> wareHouseDeliveryPns;
 	private List<WareHouseDeliverySemiPnModel> wareHouseDeliverySemiPns;
@@ -103,5 +104,13 @@ public class WareHouseDeliveryModel extends BaseModel{
 
 	public void setWareHouseDeliverySemiPns(List<WareHouseDeliverySemiPnModel> wareHouseDeliverySemiPns) {
 		this.wareHouseDeliverySemiPns = wareHouseDeliverySemiPns;
+	}
+
+	public int getItemKind() {
+		return itemKind;
+	}
+
+	public void setItemKind(int itemKind) {
+		this.itemKind = itemKind;
 	}
 }

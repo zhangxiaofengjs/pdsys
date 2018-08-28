@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.zworks.pdsys.common.enumClass.DeliveryState;
 import com.zworks.pdsys.common.enumClass.DeliveryType;
 import com.zworks.pdsys.common.enumClass.OrderState;
@@ -22,7 +23,6 @@ import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
 import com.zworks.pdsys.models.WareHouseDeliverySemiPnModel;
-import com.zworks.pdsys.models.WareHouseMachinePartModel;
 import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.models.WareHouseSemiPnModel;
 
@@ -40,8 +40,6 @@ public class WareHouseDeliveryService {
 	private WareHouseSemiPnService wareHouseSemiPnService;
 	@Autowired
 	private WareHouseBOMService wareHouseBOMService;
-	@Autowired
-	private WareHouseMachinePartService wareHouseMachinePartService;
 	@Autowired
 	private OrderPnService orderPnService;
 	@Autowired
@@ -249,28 +247,6 @@ public class WareHouseDeliveryService {
 				wareHousePn.getFilterCond().put("UPDATE_NUM", true);
 				wareHouseSemiPnService.update(wareHousePn);
 			}
-		} else if(delivery.getType() == (int)DeliveryType.MACHINEPART.ordinal()) {
-			delivery = this.queryOneWithMachinePart(delivery);
-			if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
-				//已经被其他人出库过
-				throw new PdsysException("已经出库，刷新再试");
-			}
-			for(WareHouseDeliveryMachinePartModel deliveryMp : delivery.getWareHouseDeliveryMachineParts()) {
-				WareHouseMachinePartModel wareHouseMP = deliveryMp.getWareHouseMachinePart();
-				
-				float num = -1;
-				if(wareHouseMP != null) {
-					num = wareHouseMP.getNum() - deliveryMp.getNum();
-				}
-				
-				if(num < 0) {
-					//库存不足
-					throw new PdsysException("库存不足，刷新再试");//库存不够
-				}
-				wareHouseMP.setNum(num);
-				
-				wareHouseMachinePartService.update(wareHouseMP);
-			}
 		} else {
 			throw new PdsysException("未设定处理");
 		}
@@ -314,6 +290,10 @@ public class WareHouseDeliveryService {
 		delivery.setDeliveryTime(new Date());
 		delivery.setState(DeliveryState.DELIVERIED.ordinal());
 		
+		wareHouseDeliveryMapper.update(delivery);
+	}
+
+	public void update(WareHouseDeliveryModel delivery) {
 		wareHouseDeliveryMapper.update(delivery);
 	}
 }
