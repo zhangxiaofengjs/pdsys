@@ -2,7 +2,6 @@ package com.zworks.pdsys.business;
 
 import java.util.Date;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +14,7 @@ import com.zworks.pdsys.common.enumClass.EntryState;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.PnModel;
+import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
@@ -23,6 +23,8 @@ import com.zworks.pdsys.models.WareHouseDeliverySemiPnModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 import com.zworks.pdsys.models.WareHouseEntryModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
+import com.zworks.pdsys.models.WareHouseSemiPnModel;
+import com.zworks.pdsys.services.WareHouseBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryBOMService;
 import com.zworks.pdsys.services.WareHouseDeliveryMachinePartService;
 import com.zworks.pdsys.services.WareHouseDeliveryPnService;
@@ -30,6 +32,7 @@ import com.zworks.pdsys.services.WareHouseDeliverySemiPnService;
 import com.zworks.pdsys.services.WareHouseDeliveryService;
 import com.zworks.pdsys.services.WareHouseEntryBOMService;
 import com.zworks.pdsys.services.WareHouseMachinePartService;
+import com.zworks.pdsys.services.WareHouseSemiPnService;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -51,6 +54,10 @@ public class WareHouseDeliveryBusiness {
 	WareHouseMachinePartService wareHouseMachinePartService;
 	@Autowired
 	WareHouseDeliveryMachinePartService wareHouseDeliveryMachinePartService;
+	@Autowired
+	WareHouseBOMService wareHouseBOMService;
+	@Autowired
+	WareHouseSemiPnService wareHouseSemiPnService;
 	
 	//出库统计
 	public List<WareHouseDeliveryBOMModel> calcDeliveryBOMs(WareHouseHistoryFormBean formBean) {
@@ -164,6 +171,104 @@ public class WareHouseDeliveryBusiness {
 		}
 	}
 
+	@Transactional
+	public void deliveryBOM(WareHouseDeliveryModel d) {
+		d.getFilterCond().put("LOCKUPDATE", true);
+		WareHouseDeliveryModel delivery = wareHouseDeliveryService.queryOneWithBOM(d);
+
+		if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
+			//已经被其他人出库过
+			throw new PdsysException("已经出库，刷新再试");
+		}
+		for(WareHouseDeliveryBOMModel deliveryBOM : delivery.getWareHouseDeliveryBOMs()) {
+			WareHouseBOMModel wareHouseBOM = deliveryBOM.getWareHouseBOM();
+			if(wareHouseBOM == null) {
+				//库存不足
+				throw new PdsysException("库存不足，刷新再试");
+			}
+
+			if(delivery.getItemKind() == DeliveryItemKind.NORMAL.ordinal()) {
+				float num = wareHouseBOM.getNum() - deliveryBOM.getNum();
+				float deliveryRemainingNum = wareHouseBOM.getDeliveryRemainingNum() + deliveryBOM.getNum();
+			
+				if(num < 0) {
+					//库存不足
+					throw new PdsysException("库存不足，刷新再试");
+				}
+			
+				wareHouseBOM.setNum(num);
+				wareHouseBOM.setDeliveryRemainingNum(deliveryRemainingNum);
+				wareHouseBOM.getFilterCond().put("UPDATE_NUM", true);
+				wareHouseBOM.getFilterCond().put("UPDATE_DELIVERYREMAINNUM", true);
+			} else if(delivery.getItemKind() == DeliveryItemKind.DEFECTIVE.ordinal() ||
+					delivery.getItemKind() == DeliveryItemKind.SCRAP.ordinal()) {
+				float num = wareHouseBOM.getDefectiveNum() - deliveryBOM.getNum();
+
+				if(num < 0) {
+					//库存不足
+					throw new PdsysException("库存不足，刷新再试");
+				}
+			
+				wareHouseBOM.setDefectiveNum(num);
+				wareHouseBOM.getFilterCond().put("UPDATE_DEFECTIVE_NUM", true);
+			} else {
+				throw new PdsysException("未想定出库单种类" + delivery.getItemKind());
+			}
+			wareHouseBOMService.update(wareHouseBOM);
+		}
+		
+		delivery.setDeliveryTime(new Date());
+		delivery.setState(DeliveryState.DELIVERIED.ordinal());
+		
+		wareHouseDeliveryService.update(delivery);
+	}
+	
+	@Transactional
+	public void deliverySemiPn(WareHouseDeliveryModel d) {
+		d.getFilterCond().put("LOCKUPDATE", true);
+		
+		WareHouseDeliveryModel delivery = wareHouseDeliveryService.queryOneWithSemiPn(d);
+		if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
+			//已经被其他人出库过
+			throw new PdsysException("已经出库，刷新再试");
+		}
+		
+		for(WareHouseDeliverySemiPnModel deliveryPn : delivery.getWareHouseDeliverySemiPns()) {
+			WareHouseSemiPnModel wareHousePn = deliveryPn.getWareHouseSemiPn();
+			
+			float num = -1;
+			if(delivery.getItemKind() == DeliveryItemKind.NORMAL.ordinal()) {
+				if(wareHousePn != null) {
+					num = wareHousePn.getNum() - deliveryPn.getNum();
+				}
+				
+				if(num < 0) {
+					throw new PdsysException("库存不足，刷新再试");//库存不够
+				} 
+				wareHousePn.setNum(num);
+				wareHousePn.getFilterCond().put("UPDATE_NUM", true);
+			} else if(delivery.getItemKind() == DeliveryItemKind.SCRAP.ordinal()) {
+				if(wareHousePn != null) {
+					num = wareHousePn.getDefectiveNum() - deliveryPn.getNum();
+				}
+				
+				if(num < 0) {
+					throw new PdsysException("库存不足，刷新再试");//库存不够
+				} 
+				wareHousePn.setDefectiveNum(num);
+				wareHousePn.getFilterCond().put("UPDATE_DEFECTIVE_NUM", true);
+			} else {
+				throw new PdsysException("未想定出库种类" + delivery.getItemKind());
+			}
+			wareHouseSemiPnService.update(wareHousePn);
+		}
+		
+		delivery.setDeliveryTime(new Date());
+		delivery.setState(DeliveryState.DELIVERIED.ordinal());
+		
+		wareHouseDeliveryService.update(delivery);
+	}
+	
 	@Transactional
 	public void deliveryMachinePart(WareHouseDeliveryModel d) {
 		d.getFilterCond().put("LOCKUPDATE", true);

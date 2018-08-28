@@ -45,6 +45,17 @@ $(document).ready(function(){
 					}
 				},
 				{
+					"name":"itemKind",
+					"label":"出库品种类",
+					"type":"select",
+					"options":[
+						{"value":0, "caption":"正常出库"},
+						{"value":1, "caption":"退供应商"},
+						{"value":2, "caption":"报废品"}
+						],
+					"value":0
+				},
+				{
 					"name":"comment",
 					"label":"备注",
 					"type":"text",
@@ -64,6 +75,7 @@ $(document).ready(function(){
 	$("button[name='addDeliveryBOM']").click(function(){
 		var self = $(this);
 
+		var itemKind = $('#delivery_itemKind').val()
 		var fields = [
 		{
 			"name":"wareHouseDelivery.id",
@@ -90,7 +102,7 @@ $(document).ready(function(){
 					thisField.options.push({
 						"value": bom.id,
 						"caption": M.bomName(bom),
-						"data": {"unitName":bom.unit.name,"num":whbom.num}
+						"data": {"unitName":bom.unit.name,"num":itemKind==0?whbom.num:whbom.defectiveNum}
 					});
 				});
 			},

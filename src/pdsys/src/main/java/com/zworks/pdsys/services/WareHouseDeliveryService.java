@@ -17,7 +17,6 @@ import com.zworks.pdsys.mappers.WareHouseDeliveryMapper;
 import com.zworks.pdsys.models.OrderModel;
 import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.models.PnModel;
-import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
@@ -38,8 +37,6 @@ public class WareHouseDeliveryService {
 	private WareHousePnService wareHousePnService;
 	@Autowired
 	private WareHouseSemiPnService wareHouseSemiPnService;
-	@Autowired
-	private WareHouseBOMService wareHouseBOMService;
 	@Autowired
 	private OrderPnService orderPnService;
 	@Autowired
@@ -225,28 +222,6 @@ public class WareHouseDeliveryService {
 					orderService.update(o);
 				}
 			}
-		} else if(delivery.getType() == (int)DeliveryType.SEMIPN.ordinal()) {
-			delivery = this.queryOneWithSemiPn(delivery);
-			if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
-				//已经被其他人出库过
-				throw new PdsysException("已经出库，刷新再试");
-			}
-			for(WareHouseDeliverySemiPnModel deliveryPn : delivery.getWareHouseDeliverySemiPns()) {
-				WareHouseSemiPnModel wareHousePn = deliveryPn.getWareHouseSemiPn();
-				
-				float num = -1;
-				if(wareHousePn != null) {
-					num = wareHousePn.getNum() - deliveryPn.getNum();
-				}
-				
-				if(num < 0) {
-					//库存不足
-					throw new PdsysException("库存不足，刷新再试");//库存不够
-				}
-				wareHousePn.setNum(num);
-				wareHousePn.getFilterCond().put("UPDATE_NUM", true);
-				wareHouseSemiPnService.update(wareHousePn);
-			}
 		} else {
 			throw new PdsysException("未设定处理");
 		}
@@ -257,42 +232,6 @@ public class WareHouseDeliveryService {
 		wareHouseDeliveryMapper.update(delivery);
 	}
 	
-	@Transactional
-	public void deliveryBOM(WareHouseDeliveryModel d) {
-		d.getFilterCond().put("LOCKUPDATE", true);
-		WareHouseDeliveryModel delivery = this.queryOneWithBOM(d);
-
-		if(delivery.getState() != DeliveryState.PLANNING.ordinal()) {
-			//已经被其他人出库过
-			throw new PdsysException("已经出库，刷新再试");
-		}
-		for(WareHouseDeliveryBOMModel deliveryBOM : delivery.getWareHouseDeliveryBOMs()) {
-			WareHouseBOMModel wareHouseBOM = deliveryBOM.getWareHouseBOM();
-			if(wareHouseBOM == null) {
-				//库存不足
-				throw new PdsysException("库存不足，刷新再试");
-			}
-			float num = wareHouseBOM.getNum() - deliveryBOM.getNum();
-			float deliveryRemainingNum = wareHouseBOM.getDeliveryRemainingNum() + deliveryBOM.getNum();
-			
-			if(num < 0) {
-				//库存不足
-				throw new PdsysException("库存不足，刷新再试");
-			}
-			
-			wareHouseBOM.setNum(num);
-			wareHouseBOM.setDeliveryRemainingNum(deliveryRemainingNum);
-			wareHouseBOM.getFilterCond().put("UPDATE_NUM", true);
-			wareHouseBOM.getFilterCond().put("UPDATE_DELIVERYREMAINNUM", true);
-			wareHouseBOMService.update(wareHouseBOM);
-		}
-		
-		delivery.setDeliveryTime(new Date());
-		delivery.setState(DeliveryState.DELIVERIED.ordinal());
-		
-		wareHouseDeliveryMapper.update(delivery);
-	}
-
 	public void update(WareHouseDeliveryModel delivery) {
 		wareHouseDeliveryMapper.update(delivery);
 	}

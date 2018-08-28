@@ -260,9 +260,10 @@ public class WareHouseDeliveryController {
 		
 		try {
 			if(delivery.getType() == DeliveryType.BOM.ordinal()) {
-				wareHouseDeliveryService.deliveryBOM(delivery);
-			}
-			else if(delivery.getType() == DeliveryType.MACHINEPART.ordinal()) {
+				wareHouseDeliveryBusiness.deliveryBOM(delivery);
+			} else if(delivery.getType() == DeliveryType.SEMIPN.ordinal()) {
+				wareHouseDeliveryBusiness.deliverySemiPn(delivery);
+			} else if(delivery.getType() == DeliveryType.MACHINEPART.ordinal()) {
 				wareHouseDeliveryBusiness.deliveryMachinePart(delivery);
 			} else {
 				wareHouseDeliveryService.delivery(delivery);

@@ -9,11 +9,13 @@
     <resultMap id="wareHouseSemiPnResultMap" type="wareHouseSemiPnModel" >  
         <id column="wh_pn_id" property="id" />
         <result column="wh_pn_num" property="num" />  
+        <result column="wh_pn_defective_num" property="defectiveNum" />  
     </resultMap>
     <resultMap id="wareHouseBOMResultMap" type="wareHouseBOMModel" >  
         <id column="wh_bom_id" property="id" />
         <result column="wh_bom_num" property="num" />  
         <result column="wh_bom_dr_num" property="deliveryRemainingNum" />  
+        <result column="wh_bom_defective_num" property="defectiveNum" />  
     </resultMap>
     <resultMap id="wareHouseMachinePartResultMap" type="wareHouseMachinePartModel" >  
         <id column="wh_mp_id" property="id" />
@@ -244,7 +246,8 @@
 		       cls_unit.c_name as cls_unit_name,
 		       cls_unit.c_sub_name as cls_unit_sub_name,
 		       wh_pn.c_id as wh_pn_id,
-		       wh_pn.c_num as wh_pn_num
+		       wh_pn.c_num as wh_pn_num,
+		       wh_pn.c_defective_num as wh_pn_defective_num
 		from delivery_tbl as delivery
 		left join user_tbl as user on delivery.c_user_id = user.c_id
 		left join user_tbl as upt_user on delivery.c_update_user_id = upt_user.c_id
@@ -301,7 +304,8 @@
 		       unit.c_name as unit_name,
 		       wh_bom.c_id as wh_bom_id,
 		       wh_bom.c_num as wh_bom_num,
-		       wh_bom.c_delivery_remaining_num as wh_bom_dr_num
+		       wh_bom.c_delivery_remaining_num as wh_bom_dr_num,
+		       wh_bom.c_defective_num as wh_bom_defective_num
 		from delivery_tbl as delivery
 		left join user_tbl as user on delivery.c_user_id = user.c_id
 		left join user_tbl as upt_user on delivery.c_update_user_id = upt_user.c_id

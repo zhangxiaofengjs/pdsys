@@ -39,7 +39,7 @@
 			<thead>
 				<tr>
 					<th style="width:20px;"><input type="checkbox" name="selectAll"></th>
-					<th>出库单号</th>
+					<th colspan="2">出库单号</th>
 					<th>提交人</th>
 					<th>状态</th>
 					<th>出库时间</th>
@@ -50,6 +50,12 @@
 				<tr th:each="deliveryTgt : ${deliveries}">
 					<td><input type="checkbox" name="select" th:rowid="${deliveryTgt.id}"></td>
 					<td><a th:text="${deliveryTgt.no}" th:href="@{'/warehouse/delivery/main/semipn?content=one&no=' +${deliveryTgt.no}}"></a></td>
+					<td width="20px">
+						<span th:switch="${deliveryTgt.itemKind}">
+				  			<span class="label label-success" th:case="0">正常出库</span>
+				  			<span class="label label-default" th:case="2">报废出库</span>
+				    	</span>
+					</td>
 					<td th:text="${deliveryTgt.user.name}"></td>
 					<td th:switch="${deliveryTgt.state}">
 			  			<span class="label label-success" th:case="0">计划中</span>
@@ -75,6 +81,12 @@
 						<a th:style="${deliveryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${deliveryTgt.no != null ? deliveryTgt.no:''}"></a>
 						<i th:if="${deliveryTgt.state == 2}" th:text="已删除" class="text-muted"></i>
 						<input type="hidden" id="delivery_id" name="delivery_id" th:value="${deliveryTgt.id}">
+						<input type="hidden" id="delivery_itemKind" name="delivery_itemKind" th:value="${deliveryTgt.itemKind}">
+						<br>
+						<span th:switch="${deliveryTgt.itemKind}">
+				  			<span class="label label-success" th:case="0">正常出库</span>
+				  			<span class="label label-default" th:case="2">报废出库</span>
+				    	</span>
 						<span class="label label-success" th:if="${deliveryTgt.state==0}">计划中</span>
 			  			<span class="label label-default" th:if="${deliveryTgt.state==1}">已出库</span>
 					</th>
@@ -109,7 +121,7 @@
 	 						 pnCls=${wareHouseDeliverySemiPn.pnClsRel.pnCls},
 							 unit=${pnCls.unit},
 	 						 wareHouseSemiPn=${wareHouseDeliverySemiPn.wareHouseSemiPn},
-	 						 wareHouseNum=(${wareHouseSemiPn != null}?${wareHouseSemiPn.num}:0)"
+	 						 wareHouseNum=(${wareHouseSemiPn != null}?${deliveryTgt.itemKind==0?wareHouseSemiPn.num:wareHouseSemiPn.defectiveNum}:0)"
 							 th:rowid="${wareHouseDeliverySemiPn.id}">
 					<td>
 						<input type="checkbox" name="select" th:rowid="${wareHouseDeliverySemiPn.id}">
