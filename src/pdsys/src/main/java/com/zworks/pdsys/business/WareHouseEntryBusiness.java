@@ -447,14 +447,15 @@ public class WareHouseEntryBusiness {
 				//生产所耗BOM居然比之前出库的多，出库有问题，做错误处理
 				bean.setWareHouseNum(whNum);
 				errBOMs.add(bean);
+			} else {
+				if(Math.abs(remainNum) < 0.0099999) {
+					remainNum = 0;//忽略掉这部分库存
+				}
+				
+				whBOM.getFilterCond().put("UPDATE_DELIVERYREMAINNUM", true);
+				whBOM.setDeliveryRemainingNum(remainNum);
+				updateWHBOMs.add(whBOM);
 			}
-			if(Math.abs(remainNum) < 0.0099999) {
-				remainNum = 0;//忽略掉这部分库存
-			}
-			
-			whBOM.getFilterCond().put("UPDATE_DELIVERYREMAINNUM", true);
-			whBOM.setDeliveryRemainingNum(remainNum);
-			updateWHBOMs.add(whBOM);
 		}
 		
 		if(errBOMs.size() != 0) {

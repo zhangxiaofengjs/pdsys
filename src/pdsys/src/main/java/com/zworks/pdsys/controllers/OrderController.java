@@ -90,9 +90,13 @@ public class OrderController extends BaseController{
 		if(o == null) {
 			return JSONResponse.error("已选订单不存在！");
 		}
-		else if( o.getState() == OrderState.DELETED.ordinal() )
+		else if( o.getState() == OrderState.FINISHED.ordinal() )
 		{
-			return JSONResponse.error("状态为已删除的订单不能修改！");
+			return JSONResponse.error("已完成的订单不能修改！");
+		}
+
+		if(!SecurityContextUtils.isLoginUser(o.getUser())) {
+			return JSONResponse.error("登录用户非订单的责任者");
 		}
 
 		order.getFilterCond().put("update_state", true);
