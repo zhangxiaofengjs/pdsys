@@ -38,6 +38,12 @@ public class PnService {
 		return queryOne(pn);
 	}
 	
+	public List<PnModel> queryByBOMId(int bomId) {
+		PnModel pn = new PnModel();
+		pn.putFilterCond(PnModel.FCK_BOMID, bomId);
+		return queryList(pn);
+	}
+	
 	public void add(PnModel pn) {
 		pnMapper.add(pn);
 	}

@@ -107,7 +107,7 @@ $(document).ready(function(){
 				"label":"种类",
 				"type":"select",
 				"value":"",
-				"disabled":"disabled",
+				//"disabled":"disabled",
 				"depend":true,
 				"options":[{
 					"caption":"原材",

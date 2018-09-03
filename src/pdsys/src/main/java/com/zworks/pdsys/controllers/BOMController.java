@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.business.BOMBusiness;
+import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.services.BOMService;
@@ -22,6 +24,8 @@ import com.zworks.pdsys.services.BOMService;
 public class BOMController {
 	@Autowired
 	BOMService bomService;
+	@Autowired
+	BOMBusiness bomBusiness;
 	
 	@RequestMapping("/list/json")
 	@ResponseBody
@@ -56,14 +60,12 @@ public class BOMController {
 	@RequestMapping("/update")
 	@ResponseBody
 	public JSONResponse update(@RequestBody BOMModel bom, Model model) {
-		BOMModel b = new BOMModel();
-		b.setId(bom.getId());
-		b = bomService.queryOne(b);
-		if(b == null) {
-			return JSONResponse.error("该品番不存在");
+		try {
+			bomBusiness.update(bom);
+			return JSONResponse.success();
+		} catch(PdsysException e) {
+			return JSONResponse.error(e.getMessage());
 		}
-		bomService.update(bom);
-		return JSONResponse.success();
 	}
 	
 	@RequestMapping("/addsupplier")

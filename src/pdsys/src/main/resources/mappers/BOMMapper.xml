@@ -85,9 +85,10 @@
     
 	<update id="update">
     	update bom_tbl
-		set	c_pn = #{pn},
-			c_name = #{name},
-			c_unit_id = #{unit.id},
+		set	c_type=#{type},
+			c_pn=#{pn},
+			c_name=#{name},
+			c_unit_id=#{unit.id},
 			c_price=#{price},
 			c_comment=#{comment}
     	<where>

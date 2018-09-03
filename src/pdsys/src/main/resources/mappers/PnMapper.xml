@@ -124,6 +124,9 @@
 	        <if test="filterCond.pnClsId != null and filterCond.pnClsId > 0">
 	        	and pn_cls.c_id=#{filterCond.pnClsId}
 	        </if>
+	        <if test="filterCond.bomId != null and filterCond.bomId > 0">
+	        	and (bom.c_id=#{filterCond.bomId} or pn_bom.c_id=#{filterCond.bomId})
+	        </if>
 		</where>
 	    order by pn.c_pn asc, pn_bom.c_type asc, pn_bom.c_pn asc, pn_cls.c_id asc, bom.c_type asc, bom.c_pn asc
 	</select>

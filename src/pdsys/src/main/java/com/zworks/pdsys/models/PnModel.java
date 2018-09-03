@@ -11,6 +11,7 @@ import org.apache.ibatis.type.Alias;
 @Alias("pnModel")
 public class PnModel extends BaseModel{
 	public static final String FCK_PNCLSID = "pnClsId";
+	public static final String FCK_BOMID = "bomId";
 	
 	private String pn;
 	private String name;
