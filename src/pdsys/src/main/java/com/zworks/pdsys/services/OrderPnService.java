@@ -138,17 +138,13 @@ public class OrderPnService {
 		pb.setPurchase(p);
 		pb.getFilterCond().put("groupByBOM", true);
 		
-		WareHouseBOMModel whBom = new WareHouseBOMModel();
-		whBom.setBom(bom);
-		
 		BOMUseNumBean bomUseBean = bomMap.get(bom.getId());
 		if(bomUseBean == null) {
 			bomUseBean = new BOMUseNumBean();
 			bomUseBean.setBom(bom);
 			bomUseBean.setUseNum(needNum * useNum);
 			
-			whBom.setBom(bom);
-			WareHouseBOMModel whBomTmp = wareHouseBOMService.queryOne(whBom);
+			WareHouseBOMModel whBomTmp = wareHouseBOMService.queryByBomId(bom.getId());
 			if(whBomTmp != null) {
 				bomUseBean.setWareHouseNum(whBomTmp.getNum());
 			}

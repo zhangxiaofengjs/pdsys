@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.mappers.WareHouseBOMMapper;
+import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 
 /**
@@ -22,10 +24,22 @@ public class WareHouseBOMService {
 		return list;
 	}
 	
+	public WareHouseBOMModel queryByBomId(int bomId) {
+		BOMModel bom = new BOMModel();
+		bom.setId(bomId);
+		
+		WareHouseBOMModel whBom = new WareHouseBOMModel();
+		whBom.setBom(bom);
+		
+		return queryOne(whBom);
+	}
+	
 	public WareHouseBOMModel queryOne(WareHouseBOMModel filterObj) {
 		List<WareHouseBOMModel> list = queryList(filterObj);
-		if(list.size()==1) {
+		if(list.size() == 1) {
 			return list.get(0);
+		} else if(list.size() > 1) {
+			throw new PdsysException("期待以外的数据被查询到");
 		}
 		return null;
 	}

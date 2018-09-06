@@ -40,11 +40,13 @@
 				</thead>
 				<tbody>
 				    <tr th:each="orderPn : ${orderPns}"
-				    	th:with="order=${orderPn.order}">
+				    	th:with="order=${orderPn.order},
+				    			 pn=${orderPn.pn},
+				    			 pnUnit=${pn.unit}">
 				      <td><input type="checkbox" name="select" th:rowid="${orderPn.id}"/></td>
 				      <td th:text="${orderPn.pn.pn}"></td>
 				      <td th:text="${orderPn.pn.name}"></td>
-				      <td th:text="${orderPn.pn.unit.name}"></td>
+				      <td th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pnUnit)}"></td>
 				      <td th:text="${orderPn.num}" class="number"></td>
 				      <td th:text="${orderPn.deliveredNum}" class="number"></td>
 				      <td th:text="${order.no}" class="blue-font"></td>
