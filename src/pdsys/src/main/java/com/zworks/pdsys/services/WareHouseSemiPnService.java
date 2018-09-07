@@ -14,6 +14,7 @@ import com.zworks.pdsys.mappers.WareHouseSemiPnMapper;
 import com.zworks.pdsys.models.PnClsModel;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.PnPnClsRelModel;
+import com.zworks.pdsys.models.WareHousePnModel;
 import com.zworks.pdsys.models.WareHouseSemiPnModel;
 
 /**
@@ -31,6 +32,20 @@ public class WareHouseSemiPnService {
 		List<WareHouseSemiPnModel> list = wareHouseSemiPnMapper.queryList(filterObj);
 		
 		return list;
+	}
+	
+
+	public List<WareHouseSemiPnModel> queryListByPn(String strPn, boolean fuzzyPnSearch) {
+		PnModel pn = new PnModel();
+		pn.setPn(strPn);
+
+		WareHouseSemiPnModel whPn = new WareHouseSemiPnModel();
+		whPn.setPn(pn);
+		
+		if(fuzzyPnSearch) {
+			whPn.putFilterCond("fuzzyPnSearch", true);
+		}
+		return queryList(whPn);
 	}
 	
 	public WareHouseSemiPnModel queryOne(WareHouseSemiPnModel filterObj) {

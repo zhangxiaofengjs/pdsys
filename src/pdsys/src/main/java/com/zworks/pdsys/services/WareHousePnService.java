@@ -27,6 +27,19 @@ public class WareHousePnService {
 		return list;
 	}
 	
+	public List<WareHousePnModel> queryListByPn(String strPn, boolean fuzzyPnSearch) {
+		PnModel pn = new PnModel();
+		pn.setPn(strPn);
+
+		WareHousePnModel whPn = new WareHousePnModel();
+		whPn.setPn(pn);
+		
+		if(fuzzyPnSearch) {
+			whPn.putFilterCond("fuzzyPnSearch", true);
+		}
+		return queryList(whPn);
+	}
+
 	public WareHousePnModel queryOne(WareHousePnModel filterObj) {
 		List<WareHousePnModel> list = queryList(filterObj);
 		if(list.size() == 1) {
@@ -58,4 +71,6 @@ public class WareHousePnService {
 			throw new PdsysException(String.format("成品仓库使用中:%s %s", pnTmp.getPn(), pnTmp.getName()));
 		}
 	}
+
+	
 }

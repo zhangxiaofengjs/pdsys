@@ -10,13 +10,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zworks.pdsys.business.WareHouseDeliveryBusiness;
 import com.zworks.pdsys.business.WareHouseEntryBusiness;
 import com.zworks.pdsys.business.form.beans.WareHouseHistoryFormBean;
 import com.zworks.pdsys.business.form.beans.WareHouseListFormBean;
+import com.zworks.pdsys.common.annotations.PdSysSessionValue;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.exception.PdsysExceptionCode;
 import com.zworks.pdsys.common.utils.DateUtils;
@@ -71,67 +71,29 @@ public class WareHouseController extends BaseController{
 	FileService fileService;
 
 	@RequestMapping("/list/main")
-    public String listMain(@RequestParam(name="type",required = false/*, defaultValue="pn"*/)String type, 
-    		WareHouseListFormBean formBean,
-    		Model model) {
-		if(type == null) {
-			type = RequestContextUtils.getSessionAttribute(this, "type", "pn");
-		}
-		RequestContextUtils.setSessionAttribute(this, "type", type);
-		
-		if(type.equals("bom")) {
-			WareHouseBOMModel whbom = formBean.getWareHouseBOM();
-			if(whbom == null) {
-				whbom =  RequestContextUtils.getSessionAttribute(this, "whbom", new WareHouseBOMModel());
-				formBean.setWareHouseBOM(whbom);
-			}
-			whbom.getFilterCond().put("fuzzyPnSearch", true);
-			
-			List<?> list = wareHouseBOMService.queryList(whbom);
+	@PdSysSessionValue(name="formBean", defaultValue=PdSysSessionValue.VALUE_INSTANCE)
+    public String listMain(WareHouseListFormBean formBean, Model model) {
+		if("bom".equals(formBean.getType())) {
+			List<?> list = wareHouseBOMService.queryListByPn(formBean.getBomPn(), true);
 			model.addAttribute("list", list);
-			RequestContextUtils.setSessionAttribute(this, "whbom", whbom);
 		}
-		else if(type.equals("pn")) {
-			WareHousePnModel whPn = formBean.getWareHousePn();
-			if(whPn == null) {
-				whPn =  RequestContextUtils.getSessionAttribute(this, "whPn", new WareHousePnModel());
-				formBean.setWareHousePn(whPn);
-			}
-			whPn.getFilterCond().put("fuzzyPnSearch", true);
-			
-			List<?> list = wareHousePnService.queryList(whPn);
+		else if("pn".equals(formBean.getType())) {
+			List<WareHousePnModel> list = wareHousePnService.queryListByPn(formBean.getPnPn(), true);
 			model.addAttribute("list", list);
-			RequestContextUtils.setSessionAttribute(this, "whPn", whPn);
 		}
-		else if(type.equals("semipn")) {
-			WareHouseSemiPnModel whPn = formBean.getWareHouseSemiPn();
-			if(whPn == null) {
-				whPn =  RequestContextUtils.getSessionAttribute(this, "whSemiPn", new WareHouseSemiPnModel());
-				formBean.setWareHouseSemiPn(whPn);
-			}
-			whPn.getFilterCond().put("fuzzyPnSearch", true);
-			
-			List<WareHouseSemiPnModel> list = wareHouseSemiPnService.queryList(whPn);
+		else if("semipn".equals(formBean.getType())) {
+			List<WareHouseSemiPnModel> list = wareHouseSemiPnService.queryListByPn(formBean.getBomPn(), true);
 			model.addAttribute("list", wareHouseSemiPnService.convertToSemiPnList(list));
-			RequestContextUtils.setSessionAttribute(this, "whSemiPn", whPn);
 		}
-		else if(type.equals("machinepart")) {
-			WareHouseMachinePartModel whMp = formBean.getWareHouseMachinePart();
-			if(whMp == null) {
-				whMp =  RequestContextUtils.getSessionAttribute(this, "whMp", new WareHouseMachinePartModel());
-				formBean.setWareHouseMachinePart(whMp);
-			}
-			whMp.getFilterCond().put("fuzzyPnSearch", true);
-			List<?> list = wareHouseMachinePartService.queryList(whMp);
+		else if("machinepart".equals(formBean.getType())) {
+			List<?> list = wareHouseMachinePartService.queryListByPn(formBean.getMachinePartPn(), true);
 			model.addAttribute("list", list);
-			RequestContextUtils.setSessionAttribute(this, "whMp", whMp);
 		}
 		else {
-			throw new PdsysException("错误参数:/list/main?type=" + type, PdsysExceptionCode.ERROR_REQUEST_PARAM);
+			throw new PdsysException("错误参数:/list/main?type=" + formBean.getType(), PdsysExceptionCode.ERROR_REQUEST_PARAM);
 		}
 				
 		model.addAttribute("formBean", formBean);
-		model.addAttribute("type", type);
 		return "warehouse/list/main";
     }
 	

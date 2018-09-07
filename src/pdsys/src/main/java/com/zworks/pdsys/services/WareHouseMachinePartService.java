@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.mappers.WareHouseMachinePartMapper;
 import com.zworks.pdsys.models.MachinePartModel;
+import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
+import com.zworks.pdsys.models.WareHousePnModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -22,6 +24,20 @@ public class WareHouseMachinePartService {
 		List<WareHouseMachinePartModel> list = wareHouseMapper.queryList(filterObj);
 		
 		return list;
+	}
+	
+
+	public List<?> queryListByPn(String strPn, boolean fuzzyPnSearch) {
+		MachinePartModel mp = new MachinePartModel();
+		mp.setPn(strPn);
+
+		WareHouseMachinePartModel whPn = new WareHouseMachinePartModel();
+		whPn.setMachinePart(mp);
+		
+		if(fuzzyPnSearch) {
+			whPn.putFilterCond("fuzzyPnSearch", true);
+		}
+		return queryList(whPn);
 	}
 	
 	public WareHouseMachinePartModel queryOne(WareHouseMachinePartModel filterObj) {

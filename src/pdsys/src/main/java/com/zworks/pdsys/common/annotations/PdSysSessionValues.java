@@ -8,12 +8,11 @@ import java.lang.annotation.Target;
 
 /**
  * @author: zhangxiaofengjs@163.com
- * @version: 2018/08/19
+ * @version: 2018/09/07
  */
-@Target(value={ElementType.METHOD, ElementType.TYPE})
+@Target(value={ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface NormalizeDate {
-	boolean start() default false;
-	boolean end() default false;
+public @interface PdSysSessionValues {
+	PdSysSessionValue[] value();
 }

@@ -4,20 +4,20 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li role="presentation" th:class="(${type}=='pn'? 'active' : '')">
+		<li role="presentation" th:class="(${formBean.type}=='pn'? 'active' : '')">
 			<a th:href="@{/warehouse/list/main?type=pn}">生产库</a>
 		</li>
-		<li role="presentation" th:class="(${type}=='semipn'? 'active' : '')">
+		<li role="presentation" th:class="(${formBean.type}=='semipn'? 'active' : '')">
 			<a th:href="@{/warehouse/list/main?type=semipn}">生产库(半成品)</a>
 		</li>
-		<li role="presentation" th:class="(${type}=='bom'? 'active' : '')">
+		<li role="presentation" th:class="(${formBean.type}=='bom'? 'active' : '')">
 			<a th:href="@{/warehouse/list/main?type=bom}">原包材库</a>
 		</li>
-		<li role="presentation" th:class="(${type}=='machinepart'? 'active' : '')">
+		<li role="presentation" th:class="(${formBean.type}=='machinepart'? 'active' : '')">
 			<a th:href="@{/warehouse/list/main?type=machinepart}">设备备件库</a>
 		</li>
 	</ul>
-<div th:replace="warehouse/list/__${type}__::content(${list})"></div>
+<div th:replace="warehouse/list/__${formBean.type}__::content(${list})"></div>
 <div th:replace="common/footer::copyright"></div>
 </body>
 </html>

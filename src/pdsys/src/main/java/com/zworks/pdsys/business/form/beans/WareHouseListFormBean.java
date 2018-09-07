@@ -1,51 +1,60 @@
 package com.zworks.pdsys.business.form.beans;
 
-import com.zworks.pdsys.models.WareHouseBOMModel;
-import com.zworks.pdsys.models.WareHouseMachinePartModel;
-import com.zworks.pdsys.models.WareHousePnModel;
-import com.zworks.pdsys.models.WareHouseSemiPnModel;
+import com.zworks.pdsys.common.annotations.PdSysSessionDefaultValue;
 
 /**
  * @author: zhangxiaofengjs@163.com
  * @version: 2018/04/05
  */
 public class WareHouseListFormBean {
-	private WareHouseBOMModel wareHouseBOM;
-	private WareHousePnModel wareHousePn;
-	private WareHouseSemiPnModel wareHouseSemiPn;
-	private WareHouseMachinePartModel wareHouseMachinePart;
+	@PdSysSessionDefaultValue("pn")
+	private String type;
+
+	private String pnPn;
+	private String bomPn;
+	private String semipnPn;
+	private String machinePartPn;
 	
 	public WareHouseListFormBean() {
 	}
-	
-	public WareHousePnModel getWareHousePn() {
-		return wareHousePn;
-	}
-	public void setWareHousePn(WareHousePnModel wareHousePn) {
-		this.wareHousePn = wareHousePn;
+
+	public String getType() {
+		return type;
 	}
 
-	public WareHouseMachinePartModel getWareHouseMachinePart() {
-		return wareHouseMachinePart;
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public void setWareHouseMachinePart(WareHouseMachinePartModel wareHouseMachinePart) {
-		this.wareHouseMachinePart = wareHouseMachinePart;
+	public String getPnPn() {
+		return pnPn;
 	}
 
-	public WareHouseBOMModel getWareHouseBOM() {
-		return wareHouseBOM;
+	public void setPnPn(String pnPn) {
+		this.pnPn = pnPn;
 	}
 
-	public void setWareHouseBOM(WareHouseBOMModel wareHouseBOM) {
-		this.wareHouseBOM = wareHouseBOM;
+	public String getBomPn() {
+		return bomPn;
 	}
 
-	public WareHouseSemiPnModel getWareHouseSemiPn() {
-		return wareHouseSemiPn;
+	public void setBomPn(String bomPn) {
+		this.bomPn = bomPn;
 	}
 
-	public void setWareHouseSemiPn(WareHouseSemiPnModel wareHouseSemiPn) {
-		this.wareHouseSemiPn = wareHouseSemiPn;
+	public String getSemipnPn() {
+		return semipnPn;
+	}
+
+	public void setSemipnPn(String semipnPn) {
+		this.semipnPn = semipnPn;
+	}
+
+	public String getMachinePartPn() {
+		return machinePartPn;
+	}
+
+	public void setMachinePartPn(String machinePartPn) {
+		this.machinePartPn = machinePartPn;
 	}
 }

@@ -8,9 +8,10 @@
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean.wareHouseBOM}" th:action="@{main?type=bom}" method="post">
+	 		<form class="navbar-form navbar-left" style="padding-left:0px;" role="form" th:object="${formBean}" th:action="@{main}" method="post">
 				 <div class="form-group">
-				   <input type="text" class="form-control" th:field="*{bom.pn}" placeholder="输入品番">
+				   <input type="hidden" class="form-control" th:field="*{type}">
+				   <input type="text" class="form-control" th:field="*{bomPn}" placeholder="输入品番">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 			</form>

@@ -24,6 +24,19 @@ public class WareHouseBOMService {
 		return list;
 	}
 	
+	public List<?> queryListByPn(String strPn, boolean fuzzyPnSearch) {
+		BOMModel bom = new BOMModel();
+		bom.setPn(strPn);
+		
+		WareHouseBOMModel whBom = new WareHouseBOMModel();
+		whBom.setBom(bom);
+		
+		if(fuzzyPnSearch) {
+			whBom.putFilterCond("fuzzyPnSearch", true);
+		}
+		return queryList(whBom);
+	}
+	
 	public WareHouseBOMModel queryByBomId(int bomId) {
 		BOMModel bom = new BOMModel();
 		bom.setId(bomId);

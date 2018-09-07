@@ -8,9 +8,10 @@
 	  		<div class="navbar-header">
 	  			<span class="navbar-brand glyphicon glyphicon-filter" aria-hidden="true"></span>
 	  		</div>
-	 		<form class="navbar-form navbar-left" role="form" style="padding-left:0px;" th:object="${formBean.wareHouseMachinePart}" th:action="@{main?type=machinepart}" method="post">
+	 		<form class="navbar-form navbar-left" role="form" style="padding-left:0px;" th:object="${formBean}" th:action="@{main}" method="post">
 				 <div class="form-group">
-				   <input type="text" class="form-control" th:field="*{machinePart.pn}" placeholder="输入品番">
+				   <input type="hidden" class="form-control" th:field="*{type}">
+				   <input type="text" class="form-control" th:field="*{machinePartPn}" placeholder="输入品番">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
 			</form>
