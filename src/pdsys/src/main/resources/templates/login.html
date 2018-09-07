@@ -30,14 +30,18 @@
 				    <h2>请登录</h2>
 	                <div th:if="${param.error}" class="alert alert-danger">不合法的用户名或者密码</div>
 	                <div th:if="${param.logout}" class="alert alert-info">已退出登录</div>
-				    <form role="form" name="form" th:action="@{/login}" method="post">
+				    <form role="form" class="form-horizontal" name="form" th:action="@{/login}" method="post">
 				        <div class="form-group">
-				            <label for="no">账号</label>
-				            <input type="text" class="form-control" name="no" value="" placeholder="账号"/>
+				            <label for="no" class="col-sm-2 control-label">账号</label>
+				            <div class="col-sm-10">
+				            	<input type="text" class="form-control" name="no" value="" placeholder="账号"/>
+				            </div>
 				        </div>
 				        <div class="form-group">
-				            <label for="password">密码</label>
-				            <input type="password" class="form-control" name="password" value="" placeholder="密码"/>
+				            <label for="password" class="col-sm-2 control-label">密码</label>
+				            <div class="col-sm-10">
+				            	<input type="password" class="form-control" name="password" value="" placeholder="密码"/>
+				            </div>
 				        </div>
 				        <input type="submit" id="login" value="登录" class="btn btn-success"/>
 				    </form>
