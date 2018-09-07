@@ -47,7 +47,8 @@ public class LineCounter {
 	    }
 	     
 	    //读取非空白行
-	    public void readLinePerFile() {
+	    @SuppressWarnings("unlikely-arg-type")
+		public void readLinePerFile() {
 	        try {
 	            for (File s : list) {
 	                int yuan = linenumber;

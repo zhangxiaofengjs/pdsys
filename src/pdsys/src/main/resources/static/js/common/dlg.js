@@ -58,6 +58,15 @@ CommonDlg.prototype.showMsgDlg = function(opt) {
 		}
 	);
 	
+	$("#" + dlgId).on('shown.bs.modal', function(e){
+		//对话框显示后默认focus一个
+		if($("#" + opt.target + "_btn_ok").length > 0) {
+			$("#" + opt.target + "_btn_ok").focus();
+		}
+		if($("#" + opt.target + "_btn_yes").length > 0) {
+			$("#" + opt.target + "_btn_yes").focus();
+		}
+	});
 	$("#" + dlgId).modal();
 };
 

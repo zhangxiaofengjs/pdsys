@@ -21,9 +21,7 @@ import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryMachinePartModel;
 import com.zworks.pdsys.models.WareHouseDeliveryModel;
 import com.zworks.pdsys.models.WareHouseDeliveryPnModel;
-import com.zworks.pdsys.models.WareHouseDeliverySemiPnModel;
 import com.zworks.pdsys.models.WareHousePnModel;
-import com.zworks.pdsys.models.WareHouseSemiPnModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -35,8 +33,6 @@ public class WareHouseDeliveryService {
     private WareHouseDeliveryMapper wareHouseDeliveryMapper;
 	@Autowired
 	private WareHousePnService wareHousePnService;
-	@Autowired
-	private WareHouseSemiPnService wareHouseSemiPnService;
 	@Autowired
 	private OrderPnService orderPnService;
 	@Autowired
