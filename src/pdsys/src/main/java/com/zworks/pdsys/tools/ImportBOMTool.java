@@ -18,7 +18,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.common.exception.PdsysException;
+import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.ExcelUtils;
+import com.zworks.pdsys.common.utils.PdSysFileWriter;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.WareHouseBOMModel;
 import com.zworks.pdsys.services.BOMService;
@@ -42,6 +44,10 @@ public class ImportBOMTool {
 		
 //		try {//此处不可try 否则事务会不能正确回滚，应把exception交给spring
 		
+			PdSysFileWriter writer = new PdSysFileWriter();
+			writer.open("c:\\pdsys\\importbom.log");
+			writer.WriteLine("------------------------" + DateUtils.format(DateUtils.now(), "yyyy/MM/dd HH:mm:ss") + "------------------------");
+			writer.WriteLine("id\tpn\twhnum\twhdeliveryremainnum\tupdnum\tupddeliveryremainnum");
 			//import 
 			for(String key : whboms.keySet()) {
 				WareHouseBOMModel whBom = whboms.get(key);
@@ -50,12 +56,23 @@ public class ImportBOMTool {
 					whbomService.add(whBom);
 				} else {
 					whBom.setId(whBomTmp.getId());
-					whBom.getFilterCond().put("UPDATE_NUM", true);
-					whBom.getFilterCond().put("UPDATE_DELIVERYREMAINNUM", true);
+					if(whBom.getNum() != -1) {
+						whBom.getFilterCond().put("UPDATE_NUM", true);
+					}
+					if(whBom.getDeliveryRemainingNum() != -1) {
+						whBom.getFilterCond().put("UPDATE_DELIVERYREMAINNUM", true);
+					}
 					whbomService.update(whBom);
 				}
+				writer.WriteLine("%d\t%s\t%.3f\t%.3f\t%.3f\t%.3f", 
+						whBom.getBom().getId(),
+						whBom.getBom().getPn(),
+						whBomTmp == null ? 0 : whBomTmp.getNum(),
+						whBomTmp == null ? 0 : whBomTmp.getDeliveryRemainingNum(),
+						whBom.getNum(),
+						whBom.getDeliveryRemainingNum());
 			}
-			
+			writer.close();
 //		} catch(Exception e) {
 //			e.printStackTrace();
 //			return false;
@@ -98,19 +115,26 @@ public class ImportBOMTool {
 
 	            bom.setPn(pn);
 	            bom  = bomService.queryOne(bom);
-	            if(bom == null) {
+	            if(bom == null && (!"".equals(num) || !"".equals(remaingNum))) {
+	            	//不需要更新库存的不做报错
 	            	throw new PdsysException("不存在的原包材编号:" + pn);
 	            }
 	            whBom.setBom(bom);
 	            
 	            if(!"".equals(num)) {
 	            	whBom.setNum(Float.parseFloat(num));
+	            } else {
+	            	whBom.setNum(-1);
 	            }
 	            if(!"".equals(remaingNum)) {
 	            	whBom.setDeliveryRemainingNum(Float.parseFloat(remaingNum));
+	            } else {
+	            	whBom.setDeliveryRemainingNum(-1);
 	            }
 	           
-	            whboms.put(pn, whBom);
+	            if(whBom.getNum() != -1 || whBom.getDeliveryRemainingNum() != -1) {
+	            	whboms.put(pn, whBom);
+	            }
 	        }
 		} catch(Exception e) {
 			throw new PdsysException(e.getMessage() + " \n错误行:" + (rowNo + 1), e);
