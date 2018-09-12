@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.zworks.pdsys.mappers.WareHouseMachinePartMapper;
 import com.zworks.pdsys.models.MachinePartModel;
-import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.models.WareHouseMachinePartModel;
-import com.zworks.pdsys.models.WareHousePnModel;
 
 /**
  * @author: zhangxiaofengjs@163.com

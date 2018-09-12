@@ -209,8 +209,8 @@ public class WareHouseDeliveryService {
 			}
 			
 			//更新订单状态
-			OrderModel o = new OrderModel();
 			for (Integer orderId : orderMap.keySet()) {
+				OrderModel o = new OrderModel();
 				o.setId(orderId);
 				if(orderService.isAllPnDelivered(o)) {
 					o.getFilterCond().put("update_state", true);

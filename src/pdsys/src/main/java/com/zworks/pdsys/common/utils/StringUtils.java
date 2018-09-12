@@ -32,7 +32,7 @@ public class StringUtils {
     }
 	
 	public static boolean isNullOrEmpty(String subName) {
-		if(subName == null || subName.equals("")) {
+		if(subName == null || "".equals(subName)) {
 			return true;
 		} else {
 			return false;

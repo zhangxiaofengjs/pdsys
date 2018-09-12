@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zworks.pdsys.business.form.beans.RelateBOMFormBean;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.ListUtils;
+import com.zworks.pdsys.common.utils.StringUtils;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.OrderPnModel;
 import com.zworks.pdsys.models.PnBOMRelModel;
@@ -50,6 +51,31 @@ public class PnBusiness {
 	private WareHouseEntrySemiPnService wareHouseEntrySemiPnService;
 	@Autowired
 	private WareHouseDeliverySemiPnService wareHouseDeliverySemiPnService;
+	
+	public void update(PnModel pn) {
+		if(StringUtils.isNullOrEmpty(pn.getPn()) ||
+			StringUtils.isNullOrEmpty(pn.getName())) {
+			throw new PdsysException("品番或者名称不能为空");
+		}
+		
+		PnModel p = new PnModel();
+		p.setId(pn.getId());
+		p = pnService.queryOne(p);
+		if(p == null) {
+			throw new PdsysException("该品番不存在");
+		}
+		
+		PnModel p2 = new PnModel();
+		p2.setPn(pn.getPn());
+		p2 = pnService.queryOne(p2);
+		if(p2 != null) {
+			if(p2.getId() != pn.getId()) {
+				throw new PdsysException("同品番的品目已经存在:" + pn.getPn());
+			}
+		}
+		
+		pnService.update(pn);
+	}
 	
 	private void checkUsed(PnModel pn, boolean isCheckWhPn, boolean isCheckOrder) {
 		//库存使用中？

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.ListUtils;
+import com.zworks.pdsys.common.utils.StringUtils;
 import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.PnModel;
 import com.zworks.pdsys.services.BOMService;
@@ -22,11 +23,25 @@ public class BOMBusiness {
 	@Autowired
 	private PnService pnService;
 	public void update(BOMModel bom) {
+		if(StringUtils.isNullOrEmpty(bom.getPn()) ||
+			StringUtils.isNullOrEmpty(bom.getName())) {
+			throw new PdsysException("品番或者名称不能为空");
+		}
+		
 		BOMModel b = new BOMModel();
 		b.setId(bom.getId());
 		b = bomService.queryOne(b);
 		if(b == null) {
 			throw new PdsysException("该品番不存在");
+		}
+		
+		BOMModel b2 = new BOMModel();
+		b2.setPn(bom.getPn());
+		b2 = bomService.queryOne(b2);
+		if(b2 != null) {
+			if(b2.getId() != bom.getId()) {
+				throw new PdsysException("同品番的品目已经存在:" + bom.getPn());
+			}
 		}
 		
 		if(b.getType() != bom.getType()) {

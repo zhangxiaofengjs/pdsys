@@ -120,14 +120,4 @@
 		    </foreach>
 	    </if>
     </delete>
-    
-	<update id="">
-    	update 
-		set	c_bom_id = #{pn},
-			c_name = #{name},
-			c_unit_id = #{unit.id}
-    	<where>
-			c_id = #{id}
-		</where>
-    </update>
 </mapper>

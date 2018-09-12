@@ -66,7 +66,11 @@ public class PnController {
 	@RequestMapping(value="/update")
 	@ResponseBody
     public JSONResponse update(@RequestBody PnModel pn) {
-		pnService.update(pn);
+		try {
+			pnBusiness.update(pn);
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
+		}
 		return JSONResponse.success();
     }
 	
