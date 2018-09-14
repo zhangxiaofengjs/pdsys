@@ -38,6 +38,13 @@ function createMachinePartGroupButtons(option) {
 						}
 					},
 					{
+						"name":"wareHouseMinNum",
+						"label":"最小库存量",
+						"type":"number",
+						"value":0,
+						"min":0,
+					}, 
+					{
 						"name":"supplier.id",
 						"label":"供应商",
 						"type":"select",
