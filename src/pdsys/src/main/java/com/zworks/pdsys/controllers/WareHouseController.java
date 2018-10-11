@@ -87,7 +87,7 @@ public class WareHouseController extends BaseController{
 			model.addAttribute("list", list);
 		}
 		else if("semipn".equals(formBean.getType())) {
-			List<WareHouseSemiPnModel> list = wareHouseSemiPnService.queryListByPn(formBean.getBomPn(), true);
+			List<WareHouseSemiPnModel> list = wareHouseSemiPnService.queryListByPn(formBean.getSemipnPn(), true);
 			model.addAttribute("list", wareHouseSemiPnService.convertToSemiPnList(list));
 		}
 		else if("machinepart".equals(formBean.getType())) {
