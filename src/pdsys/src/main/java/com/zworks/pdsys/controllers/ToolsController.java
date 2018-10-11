@@ -10,10 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zworks.pdsys.business.WareHouseBusiness;
 import com.zworks.pdsys.common.utils.JSONResponse;
 import com.zworks.pdsys.scheduler.jobs.DataBaseBackupJob;
 import com.zworks.pdsys.tools.ImportBOMDefTool;
-import com.zworks.pdsys.tools.ImportBOMTool;
 import com.zworks.pdsys.tools.ImportDeviceTool;
 import com.zworks.pdsys.tools.ImportPnDefTool;
 import com.zworks.pdsys.tools.ImportPnTool;
@@ -30,7 +30,7 @@ public class ToolsController {
 	@Autowired
 	ImportBOMDefTool importBOMDefTool;
 	@Autowired
-	ImportBOMTool importBOMTool;
+	WareHouseBusiness wareHouseBusiness;
 	@Autowired
 	ImportPnTool importPnTool;
 	@Autowired
@@ -74,7 +74,7 @@ public class ToolsController {
 		if(!file.exists()) {
 			return JSONResponse.error().put("msg", "将导入文件放在服务器路径：c:/pdsys/bom.xlsx");
 		}
-		importBOMTool.execute(path);
+		wareHouseBusiness.importBOM(path);
 		return JSONResponse.success().put("msg", "成功导入");
 	}
 	

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
@@ -14,8 +15,9 @@ public class PdSysApplication {
 	public static void main(String[] args) {
 		logger.info("PDSYS 启动开始...");
 		SpringApplication app = new SpringApplication(PdSysApplication.class); 
-        app.run(args);
-       
+        @SuppressWarnings("unused")
+		ConfigurableApplicationContext configAppContext = app.run(args);
+
         logger.info("\n"+
         		"○○○○○○○○○╭╭╮╮╮启动╭╭╭╮╮○○○○ \n"+
         		"○○○○○○○○○╰╰ ╮╮成功╭╭ ╯╯○○○○○  \n"+

@@ -102,6 +102,11 @@ public class IOUtils {
 		return file.getName();
 	}
 
+	public static String folderPath(String path) {
+		File file = new File(path);
+		return file.getParent();
+	}
+	
 	public static String appendFileName(String originalFilename, String strAppend, String seperator) {
 		int index = originalFilename.lastIndexOf(".");
 		String suffix = "";

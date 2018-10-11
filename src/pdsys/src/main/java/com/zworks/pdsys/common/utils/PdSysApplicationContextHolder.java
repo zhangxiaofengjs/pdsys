@@ -6,19 +6,16 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 /**
- * Spring Context 工具类
- * 
- * @author ZHAI
- * 
- * @date 2016年11月29日 下午11:45:51
+ * @author: zhangxiaofengjs@163.com
+ * @version: 2018/10/10
  */
 @Component
-public class SpringContextUtils implements ApplicationContextAware {
+public class PdSysApplicationContextHolder implements ApplicationContextAware {
 	public static ApplicationContext applicationContext;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		SpringContextUtils.applicationContext = applicationContext;
+		PdSysApplicationContextHolder.applicationContext = applicationContext;
 	}
 
 	public static Object getBean(String name) {

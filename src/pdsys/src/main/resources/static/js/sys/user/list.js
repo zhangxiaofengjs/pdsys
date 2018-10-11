@@ -216,6 +216,9 @@ $(document).ready(function(){
 								<td colspan=2><input type="checkbox" name="app_purchase" {3}> 采购单承认</td>\
 							</tr>\
 							<tr>\
+								<td colspan=3><input type="checkbox" name="e_warehouse_bom" {13}> <span style="color:red;"><b>原包材库存编辑</b></span></td>\
+							</tr>\
+							<tr>\
 								<td><input type="checkbox" name="e_warehouse_entry_pn" {4}> 生产入库</td>\
 								<td><input type="checkbox" name="e_warehouse_entry_bom" {5}> 原包材入库</td>\
 								<td><input type="checkbox" name="e_warehouse_entry_device" {6}> 设备零件入库</td>\
@@ -245,7 +248,8 @@ $(document).ready(function(){
 							isValidAuth(roles,"e_warehouse_delivery_device") ? 'checked="checked"' : '',
 							isValidAuth(roles,"e_device") ? 'checked="checked"' : '',
 							isValidAuth(roles,"e_user") ? 'checked="checked"' : '',
-							isValidAuth(roles,"e_master") ? 'checked="checked"' : ''
+							isValidAuth(roles,"e_master") ? 'checked="checked"' : '',
+							isValidAuth(roles,"e_warehouse_bom") ? 'checked="checked"' : ''
 						);
 					thisField.ajax = false;//防止重复请求
 					dlg.rebuildFieldWithValue("auth", strHtml);

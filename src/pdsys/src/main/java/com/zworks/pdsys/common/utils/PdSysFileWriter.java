@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import com.zworks.pdsys.common.exception.PdsysException;
+
 public class PdSysFileWriter {
 	private FileWriter fw;
 	private PrintWriter pw;
@@ -22,18 +24,22 @@ public class PdSysFileWriter {
 		pw = new PrintWriter(fw);
 	}
 	
-	public void Write(String str, Object... args) {
+	public void write(String str, Object... args) {
 		pw.write(String.format(str, args));
 	}
 	
-	public void WriteLine(String str, Object... args) {
-		Write(str, args);
-		Write("\n");
+	public void writeLine(String str, Object... args) {
+		write(str, args);
+		write("\n");
 	}
 	
-	public void close() throws IOException {
+	public void close() {
 		pw.flush();
 		pw.close();
-		fw.close();
+		try {
+			fw.close();
+		} catch (IOException e) {
+			throw new PdsysException(e.getMessage());
+		}
 	}
 }

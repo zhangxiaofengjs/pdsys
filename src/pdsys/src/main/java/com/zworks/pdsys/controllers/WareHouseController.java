@@ -10,8 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.zworks.pdsys.business.WareHouseBusiness;
 import com.zworks.pdsys.business.WareHouseDeliveryBusiness;
 import com.zworks.pdsys.business.WareHouseEntryBusiness;
 import com.zworks.pdsys.business.form.beans.WareHouseHistoryFormBean;
@@ -49,6 +52,8 @@ import com.zworks.pdsys.services.WareHouseSemiPnService;
 public class WareHouseController extends BaseController{
 	@Autowired
 	WareHouseBOMService wareHouseBOMService;
+	@Autowired
+	WareHouseBusiness wareHouseBusiness;
 	@Autowired
 	WareHousePnService wareHousePnService;
 	@Autowired
@@ -208,4 +213,15 @@ public class WareHouseController extends BaseController{
 		List<WareHouseMachinePartModel> list = wareHouseMachinePartService.queryList(mp);
         return JSONResponse.success().put("machineparts", list);
     }
+	
+	@RequestMapping("/import/bom")
+	@ResponseBody
+	public JSONResponse importBOM(@RequestParam("file") MultipartFile[] files) {
+		try {
+			wareHouseBusiness.importBOM(files);
+			return JSONResponse.success();
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
+		}
+	}
 }

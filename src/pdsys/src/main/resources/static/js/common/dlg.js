@@ -22,6 +22,8 @@ CommonDlg.prototype.showMsgDlg = function(opt) {
 						  <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="{1}" name="{1}">否</button>'.
 						  format(this.option.target + "_btn_yes",
 								  this.option.target + "_btn_no");
+	} else if(this.option.type == "none") {
+		//do nothing
 	} else {
 		strButtonHtml += '<button type="button" class="btn btn-info btn-sm" data-dismiss="modal" id="{0}" name="{0}">确定</button>'.
 						  format(this.option.target + "_btn_ok");
@@ -144,7 +146,7 @@ CommonDlg.prototype.showFormDlg = function(opt) {
 				</div>\
 				<div class="modal-footer">\
 	    			<button type="button" class="btn btn-default btn-sm" data-dismiss="modal">取消</button>\
-	    			<button type="button" class="btn btn-info btn-sm" onclick="CommonDlg.ajaxSubmitForm(\'{0}\');">确定</button>\
+	    			<button type="button" class="btn btn-info btn-sm" id="{0}_btn_ok" name="{0}_btn_ok" onclick="CommonDlg.ajaxSubmitForm(\'{0}\');">确定</button>\
 				</div>\
 		    </div>\
 		  </div>\
@@ -457,6 +459,14 @@ CommonDlg.prototype.doValid = function() {
 	return isOK;
 };
 
+CommonDlg.prototype.afterSubmit = function() {
+	var self = this;
+	
+	if(self.option.hasOwnProperty("afterSubmit")) {
+		isOK = (self.option.afterSubmit)();
+	}
+};
+
 //formJson = {
 //	'num': 11,
 //	'bom':{
@@ -587,4 +597,6 @@ CommonDlg.ajaxSubmitForm = function(dlgId) {
     
 	//提交
 	$.ajax(args);
+
+	dlg.afterSubmit();
 }
