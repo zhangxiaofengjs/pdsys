@@ -193,6 +193,13 @@ public class WareHouseController extends BaseController{
 
 		return fileService.download(filePath);
 	}
+	@RequestMapping("/list/pn/json")
+	@ResponseBody
+	public JSONResponse listPnJson(@RequestBody WareHousePnModel pn, Model model) {
+		List<WareHousePnModel> list = wareHousePnService.queryList(pn);
+		return JSONResponse.success().put("pns", list);
+	}
+	
 	@RequestMapping("/list/semipn/json")
 	@ResponseBody
     public JSONResponse listSemiJson(@RequestBody WareHouseSemiPnModel pn, Model model) {
@@ -213,6 +220,17 @@ public class WareHouseController extends BaseController{
 		List<WareHouseMachinePartModel> list = wareHouseMachinePartService.queryList(mp);
         return JSONResponse.success().put("machineparts", list);
     }
+	
+	@RequestMapping("/update/pn")
+	@ResponseBody
+	public JSONResponse updatePn(@RequestBody WareHousePnModel pn, Model model) {
+		try {
+			wareHousePnService.update(pn);
+			return JSONResponse.success();
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
+		}
+	}
 	
 	@RequestMapping("/import/bom")
 	@ResponseBody

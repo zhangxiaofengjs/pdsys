@@ -15,6 +15,7 @@ public class ROLE {
 	public static String EDIT_USER = "e_user";
 	public static String EDIT_MASTER = "e_master";
 	public static String EDIT_WAREHOUSE_BOM = "e_warehouse_bom";
+	public static String EDIT_WAREHOUSE_PN = "e_warehouse_pn";
 	
 	public static String[] ROLES = new String[] {
 		ADMIN,
@@ -31,5 +32,6 @@ public class ROLE {
 		EDIT_USER,
 		EDIT_MASTER,
 		EDIT_WAREHOUSE_BOM,
+		EDIT_WAREHOUSE_PN,
 	};
 }

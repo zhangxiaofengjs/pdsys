@@ -33,6 +33,9 @@
 		left join pn_tbl AS pn on wh_pn.c_pn_id = pn.c_id
 		left join unit_tbl AS unit on pn.c_unit_id = unit.c_id
 		<where>
+			<if test="id > 0">
+				and wh_pn.c_id=#{id}
+			</if>
 			<if test="pn != null">
 				<if test="pn.id > 0">
 					and pn.c_id=#{pn.id}
