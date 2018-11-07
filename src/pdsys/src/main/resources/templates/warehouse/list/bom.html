@@ -43,7 +43,7 @@
 					 unit=${bom.unit}"
 			th:rowid="${bom.id}">
 			<td>
-				<input type="checkbox" name="select" th:rowid="${bom.id}">
+				<input type="checkbox" name="select" th:rowid="${bom.id}" th:title="${whbom.id}">
 			</td>
 			<td th:switch="${bom}?${bom.type}:0">
 			  <span th:case="0">原材</span>
