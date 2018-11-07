@@ -151,6 +151,7 @@ $(function () {
 						dlg.rebuildFieldWithValue("orderNo", o.no);
 						dlg.rebuildFieldWithValue("shipDeadDate", o.shipDeadDate);
 						dlg.rebuildFieldWithValue("comment", o.comment);
+						dlg.rebuildFieldWithValue("customer.id", o.customer.id);
 						dlg.rebuildFieldWithValue("state", o.state);
 					}
 				},
@@ -176,6 +177,26 @@ $(function () {
 							"caption":"已删除",
 							"value":"2",
 						}*/]
+				},
+				{
+					"name":"customer.id",
+					"label":"顾客",
+					"type":"select",
+					"options":[],
+					"ajax":true,
+					"depend": true,
+					"url":"/customer/list",
+					"convertAjaxData" : function(field, data) {
+						//将返回的值转化为Field规格数据,以供重新渲染
+						//做成选择分支
+						field.options = [];
+						data.forEach(function(customer, idx) {
+							field.options.push({
+								"value": customer.id,
+								"caption":customer.name
+							});
+						});
+					}
 				},
 				{
 					"name":"comment",

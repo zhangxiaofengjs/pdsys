@@ -35,7 +35,7 @@
 				<td>
 					<input type="checkbox" name="select" th:rowid="${wareHousePn.id}">
 				</td>
-				<td th:text="${pn.pn}"></td>
+				<td th:text="${pn.pn}" th:title="${pn.id}"></td>
 				<td th:text="${pn.name}"></td>
 				<td th:text="${unit.name}"></td>
 				<td th:text="${wareHousePn.producedNum}" class="number"></td>

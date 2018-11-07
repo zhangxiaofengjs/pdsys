@@ -50,7 +50,7 @@
 				<tr th:each="deliveryTgt : ${deliveries}">
 					<td><input type="checkbox" name="select" th:rowid="${deliveryTgt.id}"></td>
 					<td>
-						<a th:text="${deliveryTgt.no}" th:href="@{'/warehouse/delivery/main/machinepart?content=one&no=' +${deliveryTgt.no}}"></a>
+						<a th:text="${deliveryTgt.no}" th:title="${deliveryTgt.id}" th:href="@{'/warehouse/delivery/main/machinepart?content=one&no=' +${deliveryTgt.no}}"></a>
 					</td>
 					<td width="20px">
 						<span th:switch="${deliveryTgt.itemKind}">
@@ -81,7 +81,7 @@
 				</tr>
 				<tr>
 					<th th:colspan="2">出库单号:&nbsp;
-						<a th:style="${deliveryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${deliveryTgt.no ==null?'':deliveryTgt.no}"></a>
+						<a th:style="${deliveryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${deliveryTgt.no ==null?'':deliveryTgt.no}" th:title="${deliveryTgt.id}"></a>
 						<i th:if="${deliveryTgt.state == 2}" th:text="已删除" class="text-muted"></i>
 						<input type="hidden" id="delivery_id" name="delivery_id" th:value="${deliveryTgt.id}">
 						<input type="hidden" id="delivery_item_kind" name="delivery_item_kind" th:value="${deliveryTgt.itemKind}">
@@ -124,9 +124,9 @@
 							 wareHouseNum=(${wareHouseMachinePart}?${deliveryTgt.itemKind==0?wareHouseMachinePart.num:(deliveryTgt.itemKind==1?wareHouseMachinePart.defectiveNum:wareHouseMachinePart.scrapNum)}:0)"
 							 th:rowid="${wareHouseDeliveryMachinePart.id}">
 					<td>
-						<input type="checkbox" name="select" th:rowid="${wareHouseDeliveryMachinePart.id}">
+						<input type="checkbox" name="select" th:rowid="${wareHouseDeliveryMachinePart.id}" th:title="${wareHouseDeliveryMachinePart.id}">
 					</td>
-					<td th:text="${machinePart}?${machinePart.pn}:_"></td>
+					<td th:text="${machinePart}?${machinePart.pn}:_" th:title="${machinePart}?${machinePart.id}:_"></td>
 					<td th:text="${machinePart}?${machinePart.name}:_"></td>
 					<td th:text="${unit}?${unit.name}:_"></td>
 					<td th:text="${deliveryTgt.state==0?wareHouseNum:'--'}" class="number"></td>

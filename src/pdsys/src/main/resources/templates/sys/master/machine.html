@@ -46,15 +46,15 @@
 				<td>
 					<input type="checkbox" name="select" th:rowid="${machine.id}">
 				</td>
-				<td th:text="${machine.pn}"></td>
+				<td th:text="${machine.pn}" th:title="${machine.id}"></td>
 				<td th:text="${machine.name}"></td>
 				<td th:text="${machine.unit.name}"></td>
 				<td th:text="${machine.maitenacePeriod}" class="number"></td>
-				<td th:text="${machine.supplier.name}"></td>
+				<td th:text="${machine.supplier.name}" th:title="${machine.supplier.id}"></td>
 				<td>
 					<span th:each="machineMachinePartRel,iterStat: ${machine.machineMachinePartRels}"
 						  th:with="machinePart=${machineMachinePartRel.machinePart}">
-						<span th:text="'●' + ${machinePart.pn + ' ' + machinePart.name} + ' 维护消耗:' + ${machineMachinePartRel.maitenacePartNum} + ${machinePart.unit.name}"></span>
+						<span th:text="'●' + ${machinePart.pn + ' ' + machinePart.name} + ' 维护消耗:' + ${machineMachinePartRel.maitenacePartNum} + ${machinePart.unit.name}" th:title="${machinePart.id}"></span>
 						<br/>
 					</span>
 				</td>

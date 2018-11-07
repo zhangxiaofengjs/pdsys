@@ -50,7 +50,7 @@
 				<tr th:each="entryTgt : ${entries}">
 					<td><input type="checkbox" name="select" th:rowid="${entryTgt.id}"></td>
 					<td>
-						<a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/machinepart?content=one&no=' +${entryTgt.no}}"></a>
+						<a th:text="${entryTgt.no}" th:title="${entryTgt.id}" th:href="@{'/warehouse/entry/main/machinepart?content=one&no=' +${entryTgt.no}}"></a>
 					</td>
 					<td width="20px">
 						<span th:switch="${entryTgt.itemKind}">
@@ -82,7 +82,7 @@
 				</tr>
 				<tr>
 					<th th:colspan="2">入库单号:&nbsp;
-						<a th:style="${entryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${entryTgt.no ==null?'':entryTgt.no}"></a>
+						<a th:style="${entryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${entryTgt.no ==null?'':entryTgt.no}" th:title="${entryTgt.id}"></a>
 						<i th:if="${entryTgt.state == 2}" th:text="已删除" class="text-muted"></i>
 						<input type="hidden" id="entry_id" name="entry_id" th:value="${entryTgt.id}">
 						<br>
@@ -122,9 +122,9 @@
 							 unit=(${machinePart != null}?${machinePart.unit}:null)"
 							 th:rowid="${wareHouseEntryMachinePart.id}">
 					<td>
-						<input type="checkbox" name="select" th:rowid="${wareHouseEntryMachinePart.id}">
+						<input type="checkbox" name="select" th:rowid="${wareHouseEntryMachinePart.id}" th:title="${wareHouseEntryMachinePart.id}">
 					</td>
-					<td th:text="${machinePart}?${machinePart.pn}:_"></td>
+					<td th:text="${machinePart}?${machinePart.pn}:_" th:title="${machinePart}?${machinePart.id}:_"></td>
 					<td th:text="${machinePart}?${machinePart.name}:_"></td>
 					<td th:text="${unit}?${unit.name}:_"></td>
 					<td th:text="${wareHouseEntryMachinePart.num}" class="number"></td>

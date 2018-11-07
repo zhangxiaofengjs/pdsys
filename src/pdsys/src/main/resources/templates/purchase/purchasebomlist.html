@@ -43,7 +43,7 @@
 						</th>
 					</tr>
 					<tr>
-						<th th:colspan="2">采购单编号:&nbsp;<span style="font-weight:bold;color:#0489B1;" th:text="${purchase.no}"></span></th>
+						<th th:colspan="2">采购单编号:&nbsp;<span style="font-weight:bold;color:#0489B1;" th:text="${purchase.no}" th:title="${purchase.id}"></span></th>
 						<th th:colspan="1">下单日期:&nbsp;<b th:text="((${purchase.purchaseDate} != null) ? ${#dates.format(purchase.purchaseDate, 'yyyy-MM-dd')} : '未定')"></b></th>
 						<th th:colspan="7">提交人:&nbsp;
 							<span th:text="${purchase.user!=null?purchase.user.name:''}"></span>
@@ -74,12 +74,12 @@
 				<tbody>
 				    <tr th:each="purchaseBom : ${purchase.purchaseBOMs}">
 				      <td><input type="checkbox" name="select" th:rowid="${purchaseBom.id}"/></td>
-				      <td th:if="${purchaseBom.bom!=null}" th:text="${purchaseBom.bom.pn} +' '+${purchaseBom.bom.name}"></td>
+				      <td th:if="${purchaseBom.bom!=null}" th:text="${purchaseBom.bom.pn} +' '+${purchaseBom.bom.name}" th:title="${purchaseBom.bom.id}"></td>
 				      <td th:text="${purchaseBom.bom.unit.name}"></td>
 				      <td th:text="${#numbers.formatDecimal(purchaseBom.num,1,3)}" class="number"></td>
 				      <td th:text="${#numbers.formatDecimal(purchaseBom.price,1,3)}" class="number"></td>
 				      <td>
-						<i th:if="${purchaseBom.supplier!=null}" th:text="${purchaseBom.supplier.name}"></i>
+						<i th:if="${purchaseBom.supplier!=null}" th:text="${purchaseBom.supplier.name}" th:title="${purchaseBom.supplier.id}"></i>
 					 </td>
 				    </tr>
 				</tbody>

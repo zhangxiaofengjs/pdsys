@@ -71,7 +71,7 @@
 									<td class="no-print">
 										<input type="checkbox" name="select" th:rowid="${rowId}">
 									</td>
-									<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${pn.pn}"></td>
+									<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${pn.pn}" th:title="${pn.id}"></td>
 									<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${pn.name}"></td>
 									<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${orderPn.priceUnit.name}" class="number"></td>
 									<td th:rowspan="${pnRowSize}" th:if="${iterStat11.index == 0}" th:text="${orderPn.price}" class="number"></td>
@@ -140,7 +140,7 @@
 								<td class="no-print">
 									<input type="checkbox" name="select" th:rowid="${rowId}">
 								</td>
-								<td th:text="${pn.pn}"></td>
+								<td th:text="${pn.pn}" th:title="${pn.id}"></td>
 								<td th:text="${pn.name}"></td>
 								<td th:text="${orderPn.priceUnit.name}"></td>
 								<td th:text="${orderPn.price}"></td>

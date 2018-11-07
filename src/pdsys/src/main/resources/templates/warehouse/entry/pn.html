@@ -52,7 +52,7 @@
 			<tbody>
 				<tr th:each="entryTgt : ${entries}">
 					<td><input type="checkbox" name="select" th:rowid="${entryTgt.id}"></td>
-					<td><a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/pn?content=one&no=' +${entryTgt.no}}"></a></td>
+					<td th:title="${entryTgt.id}"><a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/pn?content=one&no=' +${entryTgt.no}}"></a></td>
 					<td th:text="${entryTgt.user.name}"></td>
 					<td th:switch="${entryTgt.state}">
 			  			<span class="label label-success" th:case="0">计划中</span>
@@ -75,7 +75,7 @@
 				</tr>
 				<tr>
 					<th th:colspan="2">入库单号:&nbsp;
-						<a th:style="${entryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${entryTgt.no ==null?'':entryTgt.no}"></a>
+						<a th:style="${entryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${entryTgt.no ==null?'':entryTgt.no}" th:title="${entryTgt.id}"></a>
 						<i th:if="${entryTgt.state == 2}" th:text="已删除" class="text-muted"></i>
 						<input type="hidden" id="entry_id" name="entry_id" th:value="${entryTgt.id}">
 						<span class="label label-success" th:if="${entryTgt.state==0}">计划中</span>
@@ -108,9 +108,9 @@
 							 unit=${pn.unit}"
 							 th:rowid="${wareHouseEntryPn.id}">
 					<td>
-						<input type="checkbox" name="select" th:rowid="${wareHouseEntryPn.id}">
+						<input type="checkbox" name="select" th:rowid="${wareHouseEntryPn.id}" th:title="${wareHouseEntryPn.id}">
 					</td>
-					<td th:text="${pn.pn}"></td>
+					<td th:text="${pn.pn}" th:title="${pn.id}"></td>
 					<td th:text="${pn.name}"></td>
 					<td th:text="${unit.name}"></td>
 					<td th:text="${wareHouseEntryPn.producedNum}" class="number"></td>

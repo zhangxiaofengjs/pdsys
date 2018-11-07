@@ -51,9 +51,9 @@
 						<td>
 							<input type="checkbox" name="select" th:rowid="${device.id}">
 						</td> 
-						<td th:text="${device}?${device.no}:_"></td>
+						<td th:text="${device}?${device.no}:_" th:title="${device.id}"></td>
 						<td>
-							<a href="javascript:(void);" th:id="'machine_' + (${machine}?${machine.id}:_)" th:text="${machine}?${machine.pn + ' ' + machine.name}:_"></a>
+							<a href="javascript:(void);" th:id="'machine_' + (${machine}?${machine.id}:_)" th:text="${machine}?${machine.pn + ' ' + machine.name}:_" th:title="${machine.id}"></a>
 						</td>
 						<td th:text="${place}?${place.name}:_"></td>
 						<td th:text="${machine}?${machine.maitenacePeriod}:_"></td>

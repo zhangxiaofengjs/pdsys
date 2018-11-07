@@ -44,12 +44,12 @@
 				    			 pn=${orderPn.pn},
 				    			 pnUnit=${pn.unit}">
 				      <td><input type="checkbox" name="select" th:rowid="${orderPn.id}"/></td>
-				      <td th:text="${orderPn.pn.pn}"></td>
+				      <td th:text="${orderPn.pn.pn}" th:title="${orderPn.pn.id}"></td>
 				      <td th:text="${orderPn.pn.name}"></td>
 				      <td th:text="${T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(pnUnit)}"></td>
 				      <td th:text="${orderPn.num}" class="number"></td>
 				      <td th:text="${orderPn.deliveredNum}" class="number"></td>
-				      <td th:text="${order.no}" class="blue-font"></td>
+				      <td th:text="${order.no}" th:title="${order.id}" class="blue-font"></td>
 				      <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}"></td>
 				      <td th:text="${#dates.format(order.shipDeadDate, 'yyyy-MM-dd')}"></td>
 				    </tr>

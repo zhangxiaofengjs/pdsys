@@ -48,9 +48,9 @@
 							<td>
 								<input type="checkbox" name="select" th:rowid="${rowId}">
 							</td>
-							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${pn.pn}"></td>
+							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${pn.pn}" th:title="${pn.id}"></td>
 							<td th:rowspan="${pnRowSize}" th:if="${iterStat2.index == 0}" th:text="${pn.name}"></td>
-							<td th:rowspan="1" th:text="${pnCls.name}"></td>
+							<td th:rowspan="1" th:text="${pnCls.name}" th:title="${pnCls.id}"></td>
 							<td th:rowspan="1" th:text="${pnClsDetail.unitNum + ' ' + unit.name}"></td>
 							<td th:rowspan="1" th:text="${pnClsDetail.num}" class="number"></td>
 							<td th:rowspan="1" th:text="${pnClsDetail.defectiveNum}" class="number"></td>

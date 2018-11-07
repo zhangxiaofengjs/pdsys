@@ -50,7 +50,7 @@
 				<tr th:each="entryTgt : ${entries}">
 					<td><input type="checkbox" name="select" th:rowid="${entryTgt.id}"></td>
 					<td>
-						<a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/semipn?content=one&no=' +${entryTgt.no}}"></a>
+						<a th:text="${entryTgt.no}" th:href="@{'/warehouse/entry/main/semipn?content=one&no=' +${entryTgt.no}}" th:title="${entryTgt.id}"></a>
 				  	</td>
 				  	<td width="20px">
 				  		<span th:if="${entryTgt.itemKind==0}" class="label label-success">正常品</span>
@@ -78,7 +78,7 @@
 				</tr>
 				<tr>
 					<th th:colspan="2">入库单号:&nbsp;
-						<a th:style="${entryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${entryTgt.no ==null?'':entryTgt.no}"></a>
+						<a th:style="${entryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${entryTgt.no ==null?'':entryTgt.no}" th:title="${entryTgt.id}"></a>
 						<br>
 			  			<span th:if="${entryTgt.itemKind==0}" class="label label-warning">正常品</span>
 			  			<span th:if="${entryTgt.itemKind==1}" class="label label-warning">不良品</span>
@@ -116,11 +116,11 @@
 							 unit=${pnCls.unit}"
 							 th:rowid="${wareHouseEntrySemiPn.id}">
 					<td>
-						<input type="checkbox" name="select" th:rowid="${wareHouseEntrySemiPn.id}">
+						<input type="checkbox" name="select" th:rowid="${wareHouseEntrySemiPn.id}" th:title="${wareHouseEntrySemiPn.id}">
 					</td>
-					<td th:text="${pn.pn}"></td>
+					<td th:text="${pn.pn}" th:title="${pn.id}"></td>
 					<td th:text="${pn.name}"></td>
-					<td th:text="${pnCls.name}"></td>
+					<td th:text="${pnCls.name}" th:title="${pnCls.id}"></td>
 					<td th:text="${unit.name}"></td>
 					<td th:text="${wareHouseEntrySemiPn.num}" class="number"></td>
 			    </tr>

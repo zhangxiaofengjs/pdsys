@@ -101,6 +101,7 @@ public class OrderController extends BaseController{
 
 		order.getFilterCond().put("update_state", true);
 		order.getFilterCond().put("update_ship_dead_date", true);
+		order.getFilterCond().put("update_customer", true);
 		order.getFilterCond().put("update_comment", true);
 		
 		orderService.update(order);

@@ -36,7 +36,7 @@
 				<td>
 					<input type="checkbox" name="select" th:rowid="${customer.id}">
 				</td>
-				<td th:text="${customer.name}"></td>
+				<td th:text="${customer.name}" th:title="${customer.id}"></td>
 				<td th:text="${customer.phone}"></td>
 				<td th:text="${customer.address}"></td>
 		    </tr>

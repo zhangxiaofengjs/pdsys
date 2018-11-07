@@ -49,7 +49,7 @@
 			  <span th:case="0">原材</span>
 			  <span th:case="*">包材</span>
 			</td>
-			<td th:text="${bom.pn}"></td>
+			<td th:text="${bom.pn}" th:title="${bom.id}"></td>
 			<td th:text="${#strings.abbreviate(bom.name,36)}" th:title="${bom.name}"></td>
 			<td th:text="${unit.name}"></td>
 			<td th:text="${whbom.num}" class="number"></td>

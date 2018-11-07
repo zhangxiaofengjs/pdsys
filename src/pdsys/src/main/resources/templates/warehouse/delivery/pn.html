@@ -52,7 +52,7 @@
 			<tbody>
 				<tr th:each="deliveryTgt : ${deliveries}">
 					<td><input type="checkbox" name="select" th:rowid="${deliveryTgt.id}"></td>
-					<td><a th:text="${deliveryTgt.no}" th:href="@{'/warehouse/delivery/main/pn?content=one&no=' +${deliveryTgt.no}}"></a></td>
+					<td><a th:text="${deliveryTgt.no}" th:href="@{'/warehouse/delivery/main/pn?content=one&no=' +${deliveryTgt.no}}" th:title="${deliveryTgt.id}"></a></td>
 					<td th:text="${deliveryTgt.user.name}"></td>
 					<td th:switch="${deliveryTgt.state}">
 			  			<span class="label label-success" th:case="0">计划中</span>
@@ -75,7 +75,7 @@
 				</tr>
 				<tr>
 					<th th:colspan="2">出库单号:&nbsp;
-						<a th:style="${deliveryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${deliveryTgt.no != null ? deliveryTgt.no:''}"></a>
+						<a th:style="${deliveryTgt.state == 2} ? 'text-decoration:line-through;' :''" href="javascript:void(0);" th:text="'#' + ${deliveryTgt.no != null ? deliveryTgt.no:''}" th:title="${deliveryTgt.id}"></a>
 						<i th:if="${deliveryTgt.state == 2}" th:text="已删除" class="text-muted"></i>
 						<input type="hidden" id="delivery_id" name="delivery_id" th:value="${deliveryTgt.id}">
 						<span class="label label-success" th:if="${deliveryTgt.state==0}">计划中</span>
@@ -115,11 +115,11 @@
 	 						 wareHouseNum=(${wareHousePn != null}?${wareHousePn.producedNum}:0)"
 							 th:rowid="${wareHouseDeliveryPn.id}">
 					<td>
-						<input type="checkbox" name="select" th:rowid="${wareHouseDeliveryPn.id}">
+						<input type="checkbox" name="select" th:rowid="${wareHouseDeliveryPn.id}" th:title="${wareHouseDeliveryPn.id}">
 					</td>
-					<td th:text="${pn.pn + pn.name}"></td>
+					<td th:text="${pn.pn + pn.name}" th:title="${pn.id}"></td>
 					<td th:text="${unit.name}"></td>
-					<td th:text="${order!=null ? order.no : _}"></td>
+					<td th:text="${order!=null ? order.no : _}" th:title="${order!=null ? order.id : _}"></td>
 					<td th:text="${deliveryTgt.state==0?wareHouseNum:'--'}" class="number"></td>
 					<td th:text="${wareHouseDeliveryPn.producedNum}" 
 						th:class="'number ' + (${wareHouseNum < wareHouseDeliveryPn.producedNum}?'text-danger':'')"></td>

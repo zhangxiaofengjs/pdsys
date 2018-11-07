@@ -43,7 +43,7 @@
 			<td>
 				<input type="checkbox" name="select" th:rowid="${wareHouseMachinePart.id}">
 			</td>
-			<td th:text="${machinePart.pn}"></td>
+			<td th:text="${machinePart.pn}" th:title="${machinePart.id}"></td>
 			<td th:text="${machinePart.name}"></td>
 			<td th:text="${machinePart.wareHouseMinNum}"></td>
 			<td th:class="${wareHouseMachinePart.num < machinePart.wareHouseMinNum ? 'red-bg white-font' : ''}" th:text="${wareHouseMachinePart.num}"></td>
