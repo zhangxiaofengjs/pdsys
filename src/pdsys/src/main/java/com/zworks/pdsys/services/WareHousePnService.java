@@ -71,6 +71,4 @@ public class WareHousePnService {
 			throw new PdsysException(String.format("成品仓库使用中:%s %s", pnTmp.getPn(), pnTmp.getName()));
 		}
 	}
-
-	
 }

@@ -95,4 +95,18 @@
 			c_id = #{id}
 		</where>
     </update>
+    
+	<delete id="delete"  parameterType="wareHouseBOMModel">
+    	delete from warehouse_bom_tbl
+		<where>
+			<choose>
+                <when test="bom != null and bom.id > 0">
+					and c_bom_id=#{bom.id}
+				</when>
+				 <otherwise>
+                    and c_id=#{id}
+                </otherwise>
+			</choose>
+		</where>
+    </delete>
 </mapper>

@@ -33,7 +33,10 @@ public class BOMService {
 	public void update(BOMModel filterObj) {
 		bomMapper.update(filterObj);
 	}
-
+	public void delete(BOMModel b) {
+		bomMapper.delete(b);
+	}
+	
 	public void addSupplier(BOMModel bom) {
 		bomMapper.addSupplier(bom);
 	}

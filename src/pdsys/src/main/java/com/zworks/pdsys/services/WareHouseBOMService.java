@@ -64,4 +64,14 @@ public class WareHouseBOMService {
 	public void update(WareHouseBOMModel wareHouseBOM) {
 		wareHouseBOMMapper.update(wareHouseBOM);
 	}
+
+	public void deleteByBOMId(int bomId) {
+		BOMModel bom = new BOMModel();
+		bom.setId(bomId);
+		
+		WareHouseBOMModel whBom = new WareHouseBOMModel();
+		whBom.setBom(bom);
+		
+		wareHouseBOMMapper.delete(whBom);
+	}
 }

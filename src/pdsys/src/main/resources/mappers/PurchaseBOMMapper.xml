@@ -19,10 +19,17 @@
         <association property="unit" resultMap="unitResultMap"/>
         <collection property="suppliers" ofType="supplierModel" resultMap="supplierResultMap"/>
     </resultMap>
+    
+    <resultMap id="purchaseResultMap" type="purchaseModel" >  
+        <id column="p_id" property="id"/>
+        <result column="p_no" property="no"/>
+    </resultMap>
+    
 	<resultMap id="purchaseBomResultMap" type="purchaseBomModel" >  
         <id column="pb_id" property="id"/>  
         <result column="pb_num" property="num"/>  
         <result column="pb_price" property="price"/>
+        <association property="purchase" resultMap="purchaseResultMap"/>
         <association property="bom" resultMap="bomResultMap"/>
         <association property="supplier" resultMap="supplierResultMap" columnPrefix="s"/>
     </resultMap>
@@ -30,6 +37,8 @@
 	<select id="queryList" resultMap="purchaseBomResultMap">
 		select 
 			<if test="filterCond.groupByBOM != null and filterCond.groupByBOM">
+			   GROUP_CONCAT(p.c_id) as p_id,
+			   GROUP_CONCAT(p.c_no) as p_no,
 			   MAX(pb.c_id) as pb_id,
 			   SUM(pb.c_num) as pb_num,
 		       MAX(pb.c_price) as pb_price,
@@ -42,6 +51,8 @@
 		       MAX(ss.c_name) as ss_name
 			</if>
 			<if test="filterCond.groupByBOM == null or filterCond.groupByBOM==false">
+			   p.c_id as p_id,
+			   p.c_no as p_no,
 			   pb.c_id as pb_id,
 			   pb.c_num as pb_num,
 		       pb.c_price as pb_price,

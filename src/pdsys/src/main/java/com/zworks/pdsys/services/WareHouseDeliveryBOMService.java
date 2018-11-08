@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zworks.pdsys.common.exception.PdsysException;
 import com.zworks.pdsys.common.utils.ListUtils;
 import com.zworks.pdsys.mappers.WareHouseDeliveryBOMMapper;
+import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.WareHouseDeliveryBOMModel;
+import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -27,6 +29,16 @@ public class WareHouseDeliveryBOMService {
 		return wareHouseDeliveryBOMMapper.queryList(obj);
 	}
 
+	public List<WareHouseDeliveryBOMModel> queryByBOMId(int bomId) {
+		WareHouseDeliveryBOMModel dBOM = new WareHouseDeliveryBOMModel();
+		BOMModel bom = new BOMModel();
+		bom.setId(bomId);
+		dBOM.setBom(bom);
+
+		List<WareHouseDeliveryBOMModel> dBOMs = queryList(dBOM);
+		return dBOMs;
+	}
+	
 	public WareHouseDeliveryBOMModel queryOne(WareHouseDeliveryBOMModel deliveryBOM) {
 		List<WareHouseDeliveryBOMModel> queryList = queryList(deliveryBOM);
 		if(ListUtils.isNullOrEmpty(queryList)) {

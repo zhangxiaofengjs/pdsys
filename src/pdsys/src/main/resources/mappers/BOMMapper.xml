@@ -96,6 +96,13 @@
 		</where>
     </update>
     
+    <delete id="delete" parameterType="bomModel">
+    	delete from bom_tbl
+    	<where>
+			c_id = #{id}
+		</where>
+    </delete>
+    
     <insert id="addSupplier" parameterType="bomModel">
     	insert into bom_supplier_tbl (
     		c_bom_id,

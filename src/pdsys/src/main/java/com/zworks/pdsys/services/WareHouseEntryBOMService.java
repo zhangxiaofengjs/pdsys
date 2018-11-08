@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zworks.pdsys.mappers.WareHouseEntryBOMMapper;
+import com.zworks.pdsys.models.BOMModel;
 import com.zworks.pdsys.models.WareHouseEntryBOMModel;
 
 /**
@@ -20,6 +21,16 @@ public class WareHouseEntryBOMService {
 	
 	public List<WareHouseEntryBOMModel> queryList(WareHouseEntryBOMModel entryPn) {
 		return wareHouseEntryBOMMapper.queryList(entryPn);
+	}
+	
+	public List<WareHouseEntryBOMModel> queryByBOMId(int bomId) {
+		WareHouseEntryBOMModel entryBOM = new WareHouseEntryBOMModel();
+		BOMModel bom = new BOMModel();
+		bom.setId(bomId);
+		entryBOM.setBom(bom);
+
+		List<WareHouseEntryBOMModel> eBOMs = queryList(entryBOM);
+		return eBOMs;
 	}
 	
 	public WareHouseEntryBOMModel queryOne(WareHouseEntryBOMModel entryPn) {

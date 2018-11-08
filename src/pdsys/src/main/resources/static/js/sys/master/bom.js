@@ -208,6 +208,39 @@ $(document).ready(function(){
 		});
 	});
 	
+	//删除原包材
+	$("#deleteBOM").click(function(){
+		var self = $(this);
+		var option = {
+			"showMsg":true,
+			"checkOne":true
+		};
+		var selIds = getSelectedRowId(option);
+		if(selIds.length != 1) {
+			return;
+		}
+		
+		var dlg = new CommonDlg();
+		dlg.showMsgDlg({
+			"target":"dlg_div",
+			"caption":"删除原包材",
+			"type":"yesno",
+			"msg":"确定删除已选原包材?",
+			"yes": function() {
+				PdSys.ajax({
+					"url":"/bom/delete",
+					"data":{"id":selIds[0]},
+					"success": function(data) {
+						PdSys.refresh();
+					},
+					"error": function(data) {
+						PdSys.alert(data.msg);
+					}
+				});
+			}
+		});
+	});
+	
 	$("#addBOMSupplier").click(function(){
 		var self = $(this);
 		var selIds = getSelectedRowId({"checkOne":true,"showMsg":true});

@@ -68,6 +68,17 @@ public class BOMController {
 		}
 	}
 	
+	@RequestMapping("/delete")
+	@ResponseBody
+	public JSONResponse delete(@RequestBody BOMModel bom, Model model) {
+		try {
+			bomBusiness.delete(bom);
+			return JSONResponse.success();
+		} catch(PdsysException e) {
+			return JSONResponse.error(e.getMessage());
+		}
+	}
+	
 	@RequestMapping("/addsupplier")
 	@ResponseBody
 	public JSONResponse addSupplier(@RequestBody BOMModel bom, Model model) {

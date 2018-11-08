@@ -18,4 +18,6 @@ public interface WareHouseBOMMapper {
 	void add(WareHouseBOMModel wareHouseBOM);
 
 	void update(WareHouseBOMModel wareHouseBOM);
+
+	void delete(WareHouseBOMModel wareHouseBOM);
 }

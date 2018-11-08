@@ -19,6 +19,8 @@ public interface BOMMapper {
 
 	void update(BOMModel filterObj);
 
+	void delete(BOMModel b);
+	
 	void addSupplier(BOMModel bom);
 
 	void deleteSupplier(BOMModel bom);
