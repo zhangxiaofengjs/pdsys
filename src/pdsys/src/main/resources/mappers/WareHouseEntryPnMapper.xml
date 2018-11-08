@@ -14,6 +14,7 @@
     </resultMap>
 	<resultMap id="wareHouseEntryResultMap" type="wareHouseEntryModel" >  
         <id column="e_id" property="id" />  
+        <id column="e_no" property="no" />  
         <result column="e_time" property="time" />  
     </resultMap>
 	<resultMap id="wareHouseEntryPnResultMap" type="wareHouseEntryPnModel" >  
@@ -29,11 +30,13 @@
 				MAX(e_pn.c_id) as e_pn_id,
 				SUM(e_pn.c_produced_num) as e_pn_produced_num,
 		   		MAX(e.c_id) as e_id,
+		   		MAX(e.c_no) as e_no,
 		   	</if>	
 			<if test="filterCond.groupByPn == null or !filterCond.groupByPn">
 		 		e_pn.c_id as e_pn_id,
 		    	e_pn.c_produced_num as e_pn_produced_num,
 		    	e.c_id as e_id,
+		    	e.c_no as e_no,
 			</if>
 				pn.c_id as pn_id,
 				pn.c_pn as pn_pn,

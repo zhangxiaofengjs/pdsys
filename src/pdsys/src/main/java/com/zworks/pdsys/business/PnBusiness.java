@@ -90,7 +90,7 @@ public class PnBusiness {
 		if(isCheckOrder) {
 			List<OrderPnModel> orderpns = orderPnService.queryByPn(pn.getPn());
 			if(!ListUtils.isNullOrEmpty(orderpns)) {
-				throw new PdsysException(String.format("订单:%s 使用中.", orderpns.get(0).getOrder().getNo()));
+				throw new PdsysException(String.format("订单:%s 使用中。", orderpns.get(0).getOrder().getNo()));
 			}
 		}
 	}

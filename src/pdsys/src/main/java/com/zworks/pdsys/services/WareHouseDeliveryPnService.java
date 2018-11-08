@@ -70,7 +70,7 @@ public class WareHouseDeliveryPnService {
 	
 		List<WareHouseDeliveryPnModel> list = queryList(whPn);
 		if(!ListUtils.isNullOrEmpty(list)) {
-			throw new PdsysException("出库单使用中");
+			throw new PdsysException("出库单使用中。出库单号:" + list.get(0).getWareHouseDelivery().getNo());
 		}
 	}
 }

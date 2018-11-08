@@ -66,7 +66,7 @@ public class WareHouseEntryPnService {
 	
 		List<WareHouseEntryPnModel> list = queryList(whPn);
 		if(!ListUtils.isNullOrEmpty(list)) {
-			throw new PdsysException("入库单使用中");
+			throw new PdsysException("入库单使用中。入库单号：" + list.get(0).getWareHouseEntry().getNo());
 		}
 	}
 }
