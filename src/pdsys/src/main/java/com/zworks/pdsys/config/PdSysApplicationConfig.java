@@ -12,8 +12,12 @@ import com.zworks.pdsys.common.utils.PdSysApplicationContextHolder;
 @Component
 public class PdSysApplicationConfig {
 
+	public static String getProperty(String key) {
+		return PdSysApplicationContextHolder.applicationContext.getEnvironment().getProperty(key);
+	}
+	
 	public static String getLoggerFolder() {
-		String path = PdSysApplicationContextHolder.applicationContext.getEnvironment().getProperty("logging.file");
+		String path = getProperty("logging.file");
 		return IOUtils.folderPath(path) + "\\";
 	}
 }

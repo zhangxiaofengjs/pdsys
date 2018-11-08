@@ -3,6 +3,13 @@ package com.zworks.pdsys.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+/**
+ * 日期处理
+ * 
+ * @author zhangxiaofengjs@163.com
+ * 
+ * @date 2018-01-22
+ */
 @Component
 @ConfigurationProperties(prefix="pdsys.backup.database")  
 public class BackupDataBaseConfig {
