@@ -103,7 +103,7 @@
 						<td th:text="${bom != null ? bom.pn : ''}" th:title="${bom != null ? bom.id : ''}"></td>
 						<td th:text="${bom != null ? #strings.abbreviate(bom.name, 36) : ''}" th:title="${bom != null ? bom.name : ''}"></td>
 						<td th:text="${bom != null ? bom.unit.name : ''}" th:title="${bom!=null?T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(bom.unit):''}"></td>
-						<td th:text="${#numbers.formatDecimal(pnBOMRel.useNum,1,3)}" class="number"></td>
+						<td th:text="${#numbers.formatDecimal(pnBOMRel.useNum,1,5)}" class="number"></td>
 						<td th:text="${#numbers.formatDecimal(bom.price,1,3)}" class="number"></td>
 					</tr>
 				</th:block>
@@ -146,7 +146,7 @@
 							<td th:text="${bom != null ? bom.pn : ''}" th:title="${bom != null ? bom.id : ''}"></td>
 							<td th:text="${bom != null ? #strings.abbreviate(bom.name, 36) : ''}" th:title="${bom != null ? bom.name : ''}"></td>
 							<td th:text="${bom != null ? bom.unit.name : ''}" th:title="${bom!=null?T(com.zworks.pdsys.common.utils.ModelUtils).unitStr(bom.unit):''}"></td>
-							<td th:text="${#numbers.formatDecimal(pnClsBOMRel.useNum,1,3)}" class="number"></td>
+							<td th:text="${#numbers.formatDecimal(pnClsBOMRel.useNum,1,5)}" class="number"></td>
 							<td th:text="${#numbers.formatDecimal(bom.price,1,3)}" class="number"></td>
 						</tr>
 				</th:block>

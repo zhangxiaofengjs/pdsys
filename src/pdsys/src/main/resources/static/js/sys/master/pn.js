@@ -711,11 +711,13 @@ $(document).ready(function(){
 						for(var i = 0; i < pn.pnClsRels.length; i++) {
 							var pnCls = pn.pnClsRels[i].pnCls;
 							for(var j = 0; j < pnCls.pnClsBOMRels.length; j++) {
-								var pClsBOMRel = pnCls.pnClsBOMRels[j];
-								var bom = pClsBOMRel.bom;
-								if(bom.id == bomId) {
-									dlg.rebuildFieldWithValue("useNum", pClsBOMRel.useNum);
-									return;
+								if(pnCls.id == clsId) {
+									var pClsBOMRel = pnCls.pnClsBOMRels[j];
+									var bom = pClsBOMRel.bom;
+									if(bom.id == bomId) {
+										dlg.rebuildFieldWithValue("useNum", pClsBOMRel.useNum);
+										return;
+									}
 								}
 							}
 						}
