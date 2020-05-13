@@ -1,6 +1,8 @@
 package com.zworks.pdsys.business;
 
+import java.util.Collection;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,9 +13,14 @@ import com.zworks.pdsys.common.utils.DateUtils;
 import com.zworks.pdsys.common.utils.PdSysFileCsvWriter;
 import com.zworks.pdsys.config.PdSysApplicationConfig;
 import com.zworks.pdsys.io.WareHouseBOMTemplateReader;
+import com.zworks.pdsys.io.WareHousePnSemiPnTemplateReader;
 import com.zworks.pdsys.models.WareHouseBOMModel;
+import com.zworks.pdsys.models.WareHousePnModel;
+import com.zworks.pdsys.models.WareHouseSemiPnModel;
 import com.zworks.pdsys.services.FileService;
 import com.zworks.pdsys.services.WareHouseBOMService;
+import com.zworks.pdsys.services.WareHousePnService;
+import com.zworks.pdsys.services.WareHouseSemiPnService;
 
 /**
  * @author: zhangxiaofengjs@163.com
@@ -24,9 +31,15 @@ public class WareHouseBusiness {
 	@Autowired
 	FileService fileService;
 	@Autowired
-	private WareHouseBOMTemplateReader templateReader;
+	private WareHouseBOMTemplateReader templateBomReader;
+	@Autowired
+	private WareHousePnSemiPnTemplateReader templatePnReader;
 	@Autowired
 	private WareHouseBOMService whbomService;
+	@Autowired
+	private WareHousePnService whPnService;
+	@Autowired
+	private WareHouseSemiPnService whSemiPnService;
 	
 	@Transactional(rollbackFor=Exception.class)
 	public void importBOM(MultipartFile[] files) {
@@ -47,7 +60,7 @@ public class WareHouseBusiness {
 	public void importBOM(String path) {
         List<WareHouseBOMModel> whBoms;
 		try {
-			whBoms = templateReader.read(path);
+			whBoms = templateBomReader.read(path);
 		} catch (Exception e) {
 			throw new PdsysException(e.getMessage());
 		}
@@ -88,5 +101,58 @@ public class WareHouseBusiness {
         }
         writer.write("\n[%s]正常更新终了", DateUtils.format(DateUtils.now(), "yyyy/MM/dd HH:mm:ss"));
         writer.close();
+	}
+	
+	@Transactional(rollbackFor=Exception.class)
+	public void importPn(MultipartFile[] files) {
+		if(files == null || files.length != 1) {
+			throw new PdsysException("请选定一个文件进行导入");
+		}
+		
+		MultipartFile mpFile = files[0];
+        if(mpFile.isEmpty()) {
+        	throw new PdsysException("选定的文件为空");
+        }
+
+        String tempPath = fileService.saveTemp(mpFile);
+        
+		templatePnReader.read(tempPath, WareHousePnSemiPnTemplateReader.TYPE_PN);
+		Collection<WareHousePnModel> whPns = templatePnReader.getWhpns();
+		for(WareHousePnModel whPn : whPns) {
+			WareHousePnModel whPnTmp = whPnService.queryOne(whPn);
+			if(whPnTmp == null) {
+				whPnService.add(whPn);
+			} else {
+				whPn.setId(whPnTmp.getId());
+				whPnService.update(whPn);
+			}
+		}
+	}
+	@Transactional(rollbackFor=Exception.class)
+	public void importSemiPn(MultipartFile[] files) {
+		if(files == null || files.length != 1) {
+			throw new PdsysException("请选定一个文件进行导入");
+		}
+		
+		MultipartFile mpFile = files[0];
+		if(mpFile.isEmpty()) {
+			throw new PdsysException("选定的文件为空");
+		}
+		
+		String tempPath = fileService.saveTemp(mpFile);
+		
+		templatePnReader.read(tempPath, WareHousePnSemiPnTemplateReader.TYPE_SEMIPN);
+		Collection<WareHouseSemiPnModel> whPns = templatePnReader.getWhsemipns();
+		for(WareHouseSemiPnModel whsemiPn : whPns) {
+			WareHouseSemiPnModel whsemiPnTmp = whSemiPnService.queryOne(whsemiPn);
+			if(whsemiPnTmp == null) {
+				whSemiPnService.add(whsemiPn);
+			} else {
+				whsemiPn.setId(whsemiPnTmp.getId());
+				whsemiPn.getFilterCond().put("UPDATE_NUM", true);
+				//whsemiPn.getFilterCond().put("UPDATE_DEFECTIVE_NUM", true);
+				whSemiPnService.update(whsemiPn);
+			}
+		}
 	}
 }

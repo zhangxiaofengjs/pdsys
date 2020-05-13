@@ -4,7 +4,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 //import org.springframework.security.core.Authentication;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -13,22 +15,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zworks.pdsys.common.security.PdSysLoginUser;
+import com.zworks.pdsys.common.utils.SecurityContextUtils;
 
 /**
  * @author: zhangxiaofengjs@163.com
- * @version: 2018/04/05
+ * @version: 2018/12/25
  */
 @Controller
 public class IndexController {
 	
 	@RequestMapping(value= {"/", "/index"})
     public String index(Model model) {
-		//DEBUG!!!!
-		PdSysLoginUser loginUser = (PdSysLoginUser) SecurityContextHolder.getContext()
-			    .getAuthentication()
-			    .getPrincipal();
+		PdSysLoginUser loginUser = (PdSysLoginUser) SecurityContextUtils.getLoginUser();
 		model.addAttribute("loginUser", loginUser);
-		
+
         return "index";
     }
 	
@@ -39,10 +39,10 @@ public class IndexController {
 	
 	@RequestMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//	    if (auth != null){
-////	        new SecurityContextLogoutHandler().logout(request, response, auth);
-//	    }
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    if (auth != null){
+	        new SecurityContextLogoutHandler().logout(request, response, auth);
+	    }
 	    try {
 			request.logout();
 		} catch (ServletException e) {

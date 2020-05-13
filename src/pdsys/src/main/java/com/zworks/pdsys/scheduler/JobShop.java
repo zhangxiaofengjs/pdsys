@@ -26,7 +26,7 @@ public class JobShop {
 	 @Autowired
 	 private Scheduler scheduler;
 	
-	public void initialize() {
+	 public void initialize() {
 		//备份数据库
 		createJob(DataBaseBackupJob.class,
 				  "pdsys",

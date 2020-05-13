@@ -1,4 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head></head>
 <body>
 <div th:fragment="content(list)">
@@ -14,6 +15,9 @@
 				   <input type="text" class="form-control" th:field="*{semipnPn}" placeholder="输入品目">
 	 			</div>
 	 			<button type="submit" class="btn btn-sm btn-info">查询</button>
+				<div class="form-group" sec:authorize="${hasAuthority(T(com.zworks.pdsys.common.enumClass.ROLE).EDIT_WAREHOUSE_PN)}">
+	 				<button type="button" class="btn btn-sm btn-info" id="importExcel">Excel导入更新</button>
+	 			</div>
 			</form>
 		</div>
 	</nav>
@@ -63,6 +67,8 @@
 	</table>
 	<div id="checkout_dlg_div"></div>
 	<div id="msg_div"></div>
+	<div id="importExcel_div"></div>
+	<div id="msg_info_div"></div>
 </div>
 </body>
 </html>

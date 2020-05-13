@@ -242,4 +242,26 @@ public class WareHouseController extends BaseController{
 			return JSONResponse.error(ex.getMessage());
 		}
 	}
+	
+	@RequestMapping("/import/pn")
+	@ResponseBody
+	public JSONResponse importPn(@RequestParam("file") MultipartFile[] files) {
+		try {
+			wareHouseBusiness.importPn(files);
+			return JSONResponse.success();
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
+		}
+	}
+	
+	@RequestMapping("/import/semipn")
+	@ResponseBody
+	public JSONResponse importSemiPn(@RequestParam("file") MultipartFile[] files) {
+		try {
+			wareHouseBusiness.importSemiPn(files);
+			return JSONResponse.success();
+		} catch(PdsysException ex) {
+			return JSONResponse.error(ex.getMessage());
+		}
+	}
 }

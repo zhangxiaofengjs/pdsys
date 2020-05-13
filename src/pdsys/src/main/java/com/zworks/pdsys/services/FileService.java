@@ -1,6 +1,7 @@
 package com.zworks.pdsys.services;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -145,6 +146,33 @@ public class FileService {
         return true;
     }
 	
+	public static byte[] readToByteArr(String filePath) throws IOException {
+        File f = new File(filePath);
+ 
+        ByteArrayOutputStream bos = new ByteArrayOutputStream((int) f.length());
+        BufferedInputStream in = null;
+        try {
+            in = new BufferedInputStream(new FileInputStream(f));
+            int buf_size = 1024;
+            byte[] buffer = new byte[buf_size];
+            int len = 0;
+            while (-1 != (len = in.read(buffer, 0, buf_size))) {
+                bos.write(buffer, 0, len);
+            }
+            return bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            bos.close();
+        }
+    }
+	
 	public ResponseEntity<byte[]> download(String filePath) {
 		String fileName = "";
         try {
@@ -161,7 +189,7 @@ public class FileService {
 
         try {
             return new ResponseEntity<byte[]>(
-            		IOUtils.readToByteArr(filePath), headers,
+            		readToByteArr(filePath), headers,
                     HttpStatus.CREATED);
         } catch (IOException e) {
             e.printStackTrace();
